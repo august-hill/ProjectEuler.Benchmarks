@@ -1,38 +1,51 @@
 # ProjectEuler.Benchmarks
 
-Cross-language performance comparisons for [Project Euler](https://projecteuler.net/) solutions.
+Cross-language performance comparisons for the first 100 [Project Euler](https://projecteuler.net/) problems.
 
-All benchmarks run on Apple Silicon (M-series) with warmup iterations.
+## About This Project
 
-## Language Repos
+This repository contains benchmark results comparing **9 programming languages** solving the same 100 problems with equivalent algorithms. All solutions were generated using [Claude Code](https://claude.ai/claude-code) powered by **Anthropic's Claude Opus 4.6**.
 
-| Language | Repository |
-|----------|------------|
-| C | [ProjectEuler.C](https://github.com/august-hill/ProjectEuler.C) |
-| C# | [ProjectEuler.CSharp](https://github.com/august-hill/ProjectEuler.CSharp) |
-| C++ | [ProjectEuler.CPlusPlus](https://github.com/august-hill/ProjectEuler.CPlusPlus) |
-| Go | [ProjectEuler.Go](https://github.com/august-hill/ProjectEuler.Go) |
-| Python | [ProjectEuler.Python](https://github.com/august-hill/ProjectEuler.Python) |
-| Rust | [ProjectEuler.Rust](https://github.com/august-hill/ProjectEuler.Rust) |
+### The Question
+
+**Does your choice of programming language actually matter for computational, algorithmic work?**
+
+When an LLM generates equivalent solutions across languages — from low-level C to array-oriented APL — how much does the language itself contribute to (or detract from) performance? Are we paying a real cost for higher-level abstractions, or are modern compilers and runtimes close enough that the algorithm dominates?
+
+### Language Repos
+
+| Language | Repository | Paradigm |
+|----------|------------|----------|
+| [APL](https://github.com/august-hill/ProjectEuler.APL) | ProjectEuler.APL | Array-oriented |
+| [C](https://github.com/august-hill/ProjectEuler.C) | ProjectEuler.C | Imperative |
+| [C#](https://github.com/august-hill/ProjectEuler.CSharp) | ProjectEuler.CSharp | Object-oriented |
+| [C++](https://github.com/august-hill/ProjectEuler.CPlusPlus) | ProjectEuler.CPlusPlus | Multi-paradigm |
+| [Go](https://github.com/august-hill/ProjectEuler.Go) | ProjectEuler.Go | Imperative/CSP |
+| [Haskell](https://github.com/august-hill/ProjectEuler.Haskell) | ProjectEuler.Haskell | Functional |
+| [Java](https://github.com/august-hill/ProjectEuler.Java) | ProjectEuler.Java | Object-oriented |
+| [Python](https://github.com/august-hill/ProjectEuler.Python) | ProjectEuler.Python | Multi-paradigm |
+| [Rust](https://github.com/august-hill/ProjectEuler.Rust) | ProjectEuler.Rust | Systems |
 
 ## Benchmarks
 
 See [BENCHMARKS.md](./BENCHMARKS.md) for detailed performance comparisons.
 
-### Key Takeaways
-
-1. **Rust and C are generally within 20%** of each other for most problems
-2. **Go adds ~50-100% overhead** vs Rust/C for compute-heavy tasks
-3. **LLVM optimizations matter**: Problems 14, 44, 49 show Rust winning big
-4. **C wins on simple loops**: Problems 23, 26, 35 show C's strength
-5. **Algorithmic shortcuts dominate**: Problem 13's shortcut is 60x faster
-
 ## Methodology
 
-- **Warmup**: 10 iterations (sufficient for AOT-compiled languages)
+- **Platform**: Apple Silicon (M-series)
+- **Warmup**: 10 iterations (sufficient for AOT-compiled languages; more for JIT)
 - **Benchmark iterations**: Varies per problem (10-10,000)
 - **Timing**: Language-native high-resolution timers
+  - C: `mach_absolute_time()` (~42ns resolution on macOS)
+  - C++: `std::chrono::high_resolution_clock`
+  - C#: `System.Diagnostics.Stopwatch`
   - Go: `time.Now()` / `time.Since()`
   - Rust: `std::time::Instant`
-  - C: `mach_absolute_time()` (~42ns resolution on macOS)
-  - C#: `System.Diagnostics.Stopwatch`
+  - Java: `System.nanoTime()`
+  - Python: `time.perf_counter_ns()`
+  - Haskell: `System.Clock` / `criterion`
+  - APL: `⎕AI` (Dyalog)
+
+## Generated with Claude
+
+All solutions and benchmarks were generated using Claude Opus 4.6 via [Claude Code](https://claude.ai/claude-code).
