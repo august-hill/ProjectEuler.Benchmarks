@@ -30,17 +30,18 @@ CHARTS_DIR = ROOT_DIR / "charts"
 LANG_NAMES = {
     "c": "C", "cpp": "C++", "csharp": "C#", "go": "Go",
     "rust": "Rust", "python": "Python", "java": "Java",
-    "haskell": "Haskell", "apl": "APL"
+    "haskell": "Haskell", "javascript": "JavaScript", "arm64": "ARM64"
 }
 
 LANG_COLORS = {
     "c": "#555555", "cpp": "#f34b7d", "csharp": "#178600",
     "go": "#00ADD8", "rust": "#dea584", "python": "#3572A5",
-    "java": "#b07219", "haskell": "#5e5086", "apl": "#8B0000"
+    "java": "#b07219", "haskell": "#5e5086", "javascript": "#f1e05a",
+    "arm64": "#6E4C13"
 }
 
 # Desired display order
-LANG_ORDER = ["c", "cpp", "rust", "go", "java", "csharp", "haskell", "python", "apl"]
+LANG_ORDER = ["arm64", "c", "cpp", "rust", "go", "java", "csharp", "javascript", "haskell", "python"]
 
 
 def load_data():

@@ -1,0 +1,506 @@
+{
+  "language": "arm64",
+  "platform": "arm64",
+  "problems": {
+    "001": {
+      "answer": 233168,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "002": {
+      "answer": 4613732,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "003": {
+      "answer": 6857,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "004": {
+      "answer": 906609,
+      "time_ns": 2000,
+      "iterations": 1000
+    },
+    "005": {
+      "answer": 232792560,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "006": {
+      "answer": 25164150,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "007": {
+      "answer": 104743,
+      "time_ns": 279000,
+      "iterations": 1000
+    },
+    "008": {
+      "answer": 23514624000,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "009": {
+      "answer": 31875000,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "010": {
+      "answer": 142913828922,
+      "time_ns": 4670000,
+      "iterations": 100
+    },
+    "011": {
+      "answer": 70600674,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "012": {
+      "answer": 76576500,
+      "time_ns": 65793000,
+      "iterations": 100
+    },
+    "013": {
+      "answer": 5537376230,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "014": {
+      "answer": 837799,
+      "time_ns": 185539000,
+      "iterations": 10
+    },
+    "015": {
+      "answer": 137846528820,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "016": {
+      "answer": 1366,
+      "time_ns": 361000,
+      "iterations": 1000
+    },
+    "017": {
+      "answer": 21124,
+      "time_ns": 2000,
+      "iterations": 1000
+    },
+    "018": {
+      "answer": 1074,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "019": {
+      "answer": 171,
+      "time_ns": 4000,
+      "iterations": 1000
+    },
+    "020": {
+      "answer": 648,
+      "time_ns": 15000,
+      "iterations": 1000
+    },
+    "021": {
+      "answer": 31626,
+      "time_ns": 1681000,
+      "iterations": 100
+    },
+    "022": {
+      "answer": 871198282,
+      "time_ns": 1023000,
+      "iterations": 100
+    },
+    "023": {
+      "answer": 4179871,
+      "time_ns": 11006000,
+      "iterations": 100
+    },
+    "024": {
+      "answer": 2783915460,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "025": {
+      "answer": 4782,
+      "time_ns": 6082000,
+      "iterations": 100
+    },
+    "026": {
+      "answer": 983,
+      "time_ns": 786000,
+      "iterations": 1000
+    },
+    "027": {
+      "answer": -59231,
+      "time_ns": 6626000,
+      "iterations": 100
+    },
+    "028": {
+      "answer": 669171001,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "029": {
+      "answer": 9183,
+      "time_ns": 57464000,
+      "iterations": 100
+    },
+    "030": {
+      "answer": 443839,
+      "time_ns": 1332000,
+      "iterations": 100
+    },
+    "031": {
+      "answer": 73682,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "032": {
+      "answer": 45228,
+      "time_ns": 1147000,
+      "iterations": 100
+    },
+    "033": {
+      "answer": 100,
+      "time_ns": 7000,
+      "iterations": 1000
+    },
+    "034": {
+      "answer": 40730,
+      "time_ns": 10957000,
+      "iterations": 100
+    },
+    "035": {
+      "answer": 55,
+      "time_ns": 1710000,
+      "iterations": 100
+    },
+    "036": {
+      "answer": 872187,
+      "time_ns": 4349000,
+      "iterations": 100
+    },
+    "037": {
+      "answer": 748317,
+      "time_ns": 1316000,
+      "iterations": 100
+    },
+    "038": {
+      "answer": 932718654,
+      "time_ns": 1420000,
+      "iterations": 100
+    },
+    "039": {
+      "answer": 840,
+      "time_ns": 1880000,
+      "iterations": 100
+    },
+    "040": {
+      "answer": 210,
+      "time_ns": 7825000,
+      "iterations": 100
+    },
+    "041": {
+      "answer": 7652413,
+      "time_ns": 6689000,
+      "iterations": 100
+    },
+    "042": {
+      "answer": 162,
+      "time_ns": 18000,
+      "iterations": 1000
+    },
+    "043": {
+      "answer": 16695334890,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "044": {
+      "answer": 5482660,
+      "time_ns": 86668000,
+      "iterations": 100
+    },
+    "045": {
+      "answer": 1533776805,
+      "time_ns": 60000,
+      "iterations": 1000
+    },
+    "046": {
+      "answer": 5777,
+      "time_ns": 3018000,
+      "iterations": 100
+    },
+    "047": {
+      "answer": 134043,
+      "time_ns": 5992000,
+      "iterations": 100
+    },
+    "048": {
+      "answer": 9110846700,
+      "time_ns": 117000,
+      "iterations": 1000
+    },
+    "049": {
+      "answer": 296962999629,
+      "time_ns": 121103000,
+      "iterations": 10
+    },
+    "050": {
+      "answer": 997651,
+      "time_ns": 2656000,
+      "iterations": 100
+    },
+    "051": {
+      "answer": 121313,
+      "time_ns": 378000,
+      "iterations": 1000
+    },
+    "052": {
+      "answer": 142857,
+      "time_ns": 22180000,
+      "iterations": 100
+    },
+    "053": {
+      "answer": 4075,
+      "time_ns": 6000,
+      "iterations": 1000
+    },
+    "054": {
+      "answer": 376,
+      "time_ns": 420000,
+      "iterations": 1000
+    },
+    "055": {
+      "answer": 249,
+      "time_ns": 1435000,
+      "iterations": 100
+    },
+    "056": {
+      "answer": 972,
+      "time_ns": 2170000,
+      "iterations": 100
+    },
+    "057": {
+      "answer": 153,
+      "time_ns": 931000,
+      "iterations": 1000
+    },
+    "058": {
+      "answer": 26241,
+      "time_ns": 35564000,
+      "iterations": 100
+    },
+    "059": {
+      "answer": 129448,
+      "time_ns": 1918000,
+      "iterations": 100
+    },
+    "060": {
+      "answer": 26033,
+      "time_ns": 59407000,
+      "iterations": 100
+    },
+    "061": {
+      "answer": 28684,
+      "time_ns": 19000,
+      "iterations": 1000
+    },
+    "062": {
+      "answer": 127035954683,
+      "time_ns": 974000,
+      "iterations": 100
+    },
+    "063": {
+      "answer": 49,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "064": {
+      "answer": 1322,
+      "time_ns": 2279000,
+      "iterations": 100
+    },
+    "065": {
+      "answer": 272,
+      "time_ns": 26000,
+      "iterations": 1000
+    },
+    "066": {
+      "answer": 661,
+      "time_ns": 55523000,
+      "iterations": 100
+    },
+    "067": {
+      "answer": 7273,
+      "time_ns": 1000,
+      "iterations": 1000
+    },
+    "068": {
+      "answer": 6531031914842725,
+      "time_ns": 10673000,
+      "iterations": 100
+    },
+    "069": {
+      "answer": 510510,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "070": {
+      "answer": 8319823,
+      "time_ns": 223816000,
+      "iterations": 10
+    },
+    "071": {
+      "answer": 428570,
+      "time_ns": 812000,
+      "iterations": 1000
+    },
+    "072": {
+      "answer": 303963552391,
+      "time_ns": 3180000,
+      "iterations": 100
+    },
+    "073": {
+      "answer": 7295372,
+      "time_ns": 409061000,
+      "iterations": 10
+    },
+    "074": {
+      "answer": 402,
+      "time_ns": 5029000,
+      "iterations": 100
+    },
+    "075": {
+      "answer": 161667,
+      "time_ns": 4457000,
+      "iterations": 100
+    },
+    "076": {
+      "answer": 190569291,
+      "time_ns": 3000,
+      "iterations": 1000
+    },
+    "077": {
+      "answer": 71,
+      "time_ns": 20000,
+      "iterations": 1000
+    },
+    "078": {
+      "answer": 55374,
+      "time_ns": 53671000,
+      "iterations": 100
+    },
+    "079": {
+      "answer": 73162890,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "080": {
+      "answer": 40886,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "081": {
+      "answer": 427337,
+      "time_ns": 18000,
+      "iterations": 1000
+    },
+    "082": {
+      "answer": 260324,
+      "time_ns": 40000,
+      "iterations": 1000
+    },
+    "083": {
+      "answer": 425185,
+      "time_ns": 284000,
+      "iterations": 1000
+    },
+    "084": {
+      "answer": 101524,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "085": {
+      "answer": 2772,
+      "time_ns": 9000,
+      "iterations": 1000
+    },
+    "086": {
+      "answer": 1818,
+      "time_ns": 2961000,
+      "iterations": 100
+    },
+    "087": {
+      "answer": 1097343,
+      "time_ns": 5206000,
+      "iterations": 100
+    },
+    "088": {
+      "answer": 7587457,
+      "time_ns": 1068000,
+      "iterations": 100
+    },
+    "089": {
+      "answer": 743,
+      "time_ns": 70000,
+      "iterations": 1000
+    },
+    "090": {
+      "answer": 1217,
+      "time_ns": 41000,
+      "iterations": 1000
+    },
+    "091": {
+      "answer": 14234,
+      "time_ns": 9806000,
+      "iterations": 100
+    },
+    "092": {
+      "answer": 8581146,
+      "time_ns": 45493000,
+      "iterations": 100
+    },
+    "093": {
+      "answer": 1258,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "094": {
+      "answer": 518408346,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "095": {
+      "answer": 14316,
+      "time_ns": 67099000,
+      "iterations": 100
+    },
+    "096": {
+      "answer": 24702,
+      "time_ns": 1551000,
+      "iterations": 100
+    },
+    "097": {
+      "answer": 8739992577,
+      "time_ns": 0,
+      "iterations": 1000
+    },
+    "098": {
+      "answer": 18769,
+      "time_ns": 8728000,
+      "iterations": 100
+    },
+    "099": {
+      "answer": 709,
+      "time_ns": 37000,
+      "iterations": 1000
+    },
+    "100": {
+      "answer": 756872327473,
+      "time_ns": 0,
+      "iterations": 1000
+    }
+  }
+}

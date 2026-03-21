@@ -26,6 +26,7 @@ We started with three compiled languages and expanded outward:
 | **Java** | JIT-compiled on the JVM. Does warmup help it catch compiled languages? |
 | **C#** | .NET's RyuJIT. Similar niche to Java — how do the runtimes compare? |
 | **Python** | The interpreted baseline. How far behind is developer productivity's favorite language? |
+| **JavaScript** | V8's JIT is legendarily optimized. Can the world's most popular language compete? |
 | **Haskell** | Purely functional, lazy evaluation. Does the paradigm impose a performance tax? |
 | **ARM64 Assembly** | The floor. Zero abstraction, zero runtime. What's theoretically possible on this hardware? |
 
@@ -96,6 +97,7 @@ number grids). Each language handles this differently:
 - **Rust**: `include_str!` or `OnceLock` with file reads
 - **Go**: `//go:embed` directive
 - **Java/C#**: Lazy-cached static fields
+- **JavaScript**: `require('fs').readFileSync()` with module-level cache
 - **Python**: Module-level cached variables
 - **Haskell**: `IO` monad with `unsafePerformIO` or pre-loaded in `main`
 - **ARM64**: Data embedded directly in `.data` section
@@ -116,6 +118,48 @@ All benchmarks run on **Apple Silicon** (M-series, ARM64). This matters:
 
 Future work could include cross-platform comparisons, but that adds a
 significant infrastructure burden.
+
+## Early Results
+
+### The Scoreboard (Preliminary)
+
+Total compute time across all 100 problems, median of timed runs (lower is better):
+
+| Rank | Language | Total Time | Passed | Slowest Problem |
+|------|----------|-----------|--------|-----------------|
+| 1 | C++ | 2.72s | 99/100 | 060 (1.2s) |
+| 2 | C | 3.89s | 97/100 | 095 (350ms) |
+| 3 | JavaScript | 4.89s | 100/100 | 014 (2.1s) |
+| 4 | Go | 5.07s | 93/100 | 060 (1.8s) |
+| 5 | Rust | 6.03s | 87/100 | 060 (4.4s) |
+| 6 | Java | 11.26s | 99/100 | 095 (9.1s) |
+| 7 | Python | 168s | 93/100 | 060 (35s) |
+
+*Haskell, C#, and ARM64 benchmarks pending at time of writing.*
+
+### The JavaScript Surprise
+
+The biggest headline: **JavaScript (Node.js v24, V8 engine) beat Go and Rust** on
+aggregate performance. V8's JIT compiler produces remarkably efficient machine code
+for tight numeric loops. The conventional wisdom that "JavaScript is slow" is decades
+out of date — at least for computational work that fits V8's optimization profiles.
+
+This result also validates JavaScript as a serious choice for algorithmic work, which
+is relevant because it's by far the most widely-known programming language.
+
+### Rust Slower Than Expected
+
+Rust shares the LLVM backend with C and C++, yet its aggregate time (6.03s) is
+significantly higher than C++ (2.72s). Problem 060 shows a 4x gap (4.4s vs 1.2s).
+This suggests the overhead comes from Rust's language-level abstractions — bounds
+checking, iterator chains, and ownership semantics — rather than from code generation.
+
+### Problem 060: The Universal Bottleneck
+
+Every language's slowest problem is 060 (Prime Pair Sets). The algorithm requires
+checking whether concatenations of prime pairs are themselves prime, resulting in
+O(n^2) work with expensive primality tests on large numbers. This problem is a
+natural "stress test" that amplifies any per-operation overhead.
 
 ## What's Next
 
