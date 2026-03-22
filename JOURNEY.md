@@ -86,6 +86,18 @@ The ARM64 solutions that used pure assembly were fast, but for complex problems 
 ### Source Code Size
 Python consistently had the shortest solutions. C and ARM64 had the longest. But source code size didn't correlate with correctness or performance -- it's purely an ergonomic metric.
 
+### Benchmark Infrastructure Bugs Masquerade as Language Performance
+
+We nearly concluded "Go beats Rust" based on total benchmark times (Go 5.07s vs Rust 5.52s). This was wrong. When we dug into the per-problem data, a single problem -- 060 (Prime Pair Sets) -- accounted for 3.88s of Rust's total. The Rust solution allocated a 1-billion-element boolean sieve inside `solve()`, which was re-created on every benchmark iteration. Go's equivalent used `sync.Once` to cache its sieve.
+
+The fix was one line: wrapping the sieve in a `OnceLock`. Rust problem 060 went from 3.95 seconds to 54 milliseconds -- a 72x improvement. Further investigation revealed that 5 additional Rust problems were missing init guards, all silently inflating Rust's total time.
+
+With the fixes, Rust dropped to ~1.5s -- faster than Go and close to C, which makes sense since both share the LLVM optimizer backend.
+
+The lesson: **aggregate benchmark numbers hide per-problem anomalies.** A single pathological solution can dominate the total and lead to false conclusions about language performance. Always inspect the distribution, not just the sum. The cross-language comparison framework we built (with per-problem timing data) is what caught this -- if we'd only looked at totals, we'd have published a misleading ranking.
+
+This also illustrates a subtlety of benchmark harness design: languages with explicit caching mechanisms (Go's `sync.Once`, C's `static int initialized`) make it natural to separate one-time setup from repeated computation. Rust's `OnceLock` serves the same purpose but is less commonly used in training data, so Claude didn't reach for it as naturally.
+
 ## Platform Notes
 
 All benchmarks were run on Apple Silicon (M-series, arm64). Key implications:
