@@ -41,7 +41,7 @@ LANG_COLORS = {
 }
 
 # Desired display order
-LANG_ORDER = ["arm64", "c", "cpp", "rust", "go", "java", "csharp", "javascript", "haskell", "python"]
+LANG_ORDER = ["arm64", "c", "cpp", "rust", "go", "java", "csharp", "javascript", "python"]
 
 
 def load_data():
