@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # collect.sh - Copy benchmark_results.json from each sibling repo into data/
-set -euo pipefail
+set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DATA_DIR="$SCRIPT_DIR/../data"
@@ -14,8 +14,8 @@ declare -A REPOS=(
     [rust]="ProjectEuler.Rust"
     [python]="ProjectEuler.Python"
     [java]="ProjectEuler.Java"
-    [haskell]="ProjectEuler.Haskell"
-    [apl]="ProjectEuler.APL"
+    [javascript]="ProjectEuler.JavaScript"
+    [arm64]="ProjectEuler.ARM64"
 )
 
 for name in "${!REPOS[@]}"; do
