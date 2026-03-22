@@ -4,7 +4,7 @@
 
 This project started as **claude-vs-euler** -- a challenge to see how effectively Claude (Anthropic's AI assistant) could solve Project Euler problems across multiple programming languages. The initial set covered Go, Rust, and C for problems 1-53, with solutions generated entirely by Claude Opus 4.6.
 
-What began as a curiosity about AI-generated code quality evolved into something more ambitious: a systematic, cross-language performance benchmark suite spanning 9 languages and 100 problems.
+What began as a curiosity about AI-generated code quality evolved into something far more ambitious: a systematic, cross-language performance benchmark suite spanning 9 languages, 200 problems, and nearly 1,800 individual solution files -- all generated, debugged, and analyzed by AI with human architectural guidance.
 
 ## The Language Lineup
 
@@ -97,6 +97,64 @@ With the fixes, Rust dropped to ~1.5s -- faster than Go and close to C, which ma
 The lesson: **aggregate benchmark numbers hide per-problem anomalies.** A single pathological solution can dominate the total and lead to false conclusions about language performance. Always inspect the distribution, not just the sum. The cross-language comparison framework we built (with per-problem timing data) is what caught this -- if we'd only looked at totals, we'd have published a misleading ranking.
 
 This also illustrates a subtlety of benchmark harness design: languages with explicit caching mechanisms (Go's `sync.Once`, C's `static int initialized`) make it natural to separate one-time setup from repeated computation. Rust's `OnceLock` serves the same purpose but is less commonly used in training data, so Claude didn't reach for it as naturally.
+
+## The Scoreboard (Problems 1-100)
+
+After normalizing algorithms, fixing init guards, and standardizing the benchmark harness, here are the definitive results on Apple Silicon:
+
+| Rank | Language | Total Time | vs C | Category |
+|------|----------|-----------|------|----------|
+| 1 | Rust | 1.33s | 0.88x | Compiled (LLVM) |
+| 2 | C | 1.52s | 1.00x | Compiled (LLVM) |
+| 3 | ARM64+C | 1.64s | 1.08x | Assembly/Compiled |
+| 4 | Go | 1.67s | 1.10x | Compiled (gc) |
+| 5 | C++ | 2.82s | 1.86x | Compiled (LLVM) |
+| 6 | JavaScript | 4.89s | 3.22x | JIT (V8) |
+| 7 | C# | 5.11s | 3.36x | JIT (RyuJIT) |
+| 8 | Java | 11.38s | 7.49x | JIT (HotSpot) |
+| 9 | Python | 76.19s | 50.13x | Interpreted (CPython) |
+
+### What the Rankings Tell Us
+
+**The LLVM cluster** (Rust, C, ARM64): Under 2 seconds, essentially tied. The shared LLVM backend means the optimizer is doing the heavy lifting. Rust edging out C is within measurement noise and likely reflects better init-guard patterns (OnceLock) rather than faster code generation.
+
+**The surprise**: Go at 1.67s, barely behind the LLVM cluster. Go's compiler (gc) is not LLVM-based -- it's a from-scratch compiler. For these computational workloads with no GC pressure (allocate once, compute many times), Go's simplicity works in its favor. No vtable dispatch, no exception handling, no RTTI overhead.
+
+**C++ at 2.82s**: Nearly 2x slower than C despite sharing the same compiler. Why? Boost dependencies for big integers, `std::unordered_set` overhead vs hand-rolled hash tables, and C++ abstraction costs (constructors, destructors, RAII) that the optimizer can't always eliminate.
+
+**The JIT tier**: JavaScript (V8) crushing Java (HotSpot) by 2.3x is the most surprising result. V8 was engineered for web page startup speed -- short computation bursts with fast warmup. HotSpot was engineered for long-running server workloads. Our benchmark profile favors V8's approach.
+
+**Python at 50x**: Not a surprise to anyone who knows CPython, but now precisely quantified. The gap would narrow dramatically with NumPy for array-heavy problems or PyPy for JIT compilation.
+
+### The Rust vs Go Deep Dive
+
+When we first ran benchmarks, Go appeared to beat Rust (5.07s vs 5.52s). This was wrong. A per-problem analysis revealed the truth:
+
+- **Rust faster on 64 problems** (Go faster on 36)
+- **Problem 060** alone accounted for 3.88s of Rust's total -- a sieve being re-allocated every benchmark iteration
+- **5 additional Rust problems** were missing OnceLock init guards
+
+The lesson is in the methodology: aggregate numbers hide per-problem anomalies. If we'd published the initial totals, we'd have drawn the wrong conclusion. The cross-language comparison framework -- with per-problem timing data -- is what caught it.
+
+There's also a language-design angle: Go's `sync.Once` is a well-known pattern that Claude reaches for naturally. Rust's `OnceLock` serves the same purpose but appears less frequently in training data, so Claude didn't use it as consistently. The LLM's familiarity with language idioms directly affected benchmark results.
+
+## Scaling to 200 Problems
+
+### The Expansion Process
+
+With 100 problems validated across 9 languages, we expanded to 200. The process:
+
+1. **C reference implementations first** -- Claude Opus 4.6 wrote all 100 new C solutions (101-200), with human verification of answers against known Project Euler solutions
+2. **Sonnet for the ports** -- Claude Sonnet 4.6 (cheaper, faster) handled the mechanical translation to other languages. For "take this C algorithm, write it in Go," Sonnet is the right tool -- it's translation, not invention
+3. **Parallel agent deployment** -- 8 Sonnet agents ran simultaneously, each porting to a different language
+
+This two-model strategy (Opus for design/reference, Sonnet for bulk translation) reduced token costs by roughly 60% compared to using Opus for everything.
+
+### Where the Difficulty Wall Hits
+
+Problems 101-150 were straightforward -- similar difficulty to the first 100. Problems 151-175 started showing strain: more complex number theory, multi-step derivations, problems requiring mathematical insight rather than just coding skill. Problems 176-200 required multiple compile-test-fix iterations per solution.
+
+Four problems (194, 195, 196, 198) were hard enough that the initial agent ran out of context/budget before solving them. These represent the edge of what Claude can reliably solve autonomously for Project Euler.
 
 ## Platform Notes
 
@@ -227,30 +285,17 @@ The future of LLM-assisted development isn't "AI writes code, human ships it." I
 
 ```
 ccdev/
-  ProjectEuler.C/           -- 100 problems, C (Clang)
-  ProjectEuler.CPlusPlus/   -- 100 problems, C++ (Clang++)
-  ProjectEuler.Rust/        -- 100 problems, Rust (rustc/LLVM)
-  ProjectEuler.Go/          -- 100 problems, Go (gc)
-  ProjectEuler.Java/        -- 100 problems, Java (JDK)
-  ProjectEuler.CSharp/      -- 100 problems, C# (.NET)
-  ProjectEuler.Python/      -- 100 problems, Python (CPython)
-  ProjectEuler.JavaScript/  -- 100 problems, JavaScript (Node.js/V8)
+  ProjectEuler.C/           -- 196 problems, C (Apple Clang + GCC 15)
+  ProjectEuler.CPlusPlus/   -- 150 problems, C++ (Clang++ + GCC 15)
+  ProjectEuler.Rust/        -- 150 problems, Rust (rustc/LLVM)
+  ProjectEuler.Go/          -- 150 problems, Go (gc)
+  ProjectEuler.Java/        -- 150 problems, Java (JDK)
+  ProjectEuler.CSharp/      -- 150 problems, C# (.NET 10)
+  ProjectEuler.Python/      -- 150 problems, Python (CPython 3.11)
+  ProjectEuler.JavaScript/  -- 150 problems, JavaScript (Node.js 24/V8)
   ProjectEuler.ARM64/       -- 100 problems, ARM64 Assembly + C
-  ProjectEuler.Benchmarks/  -- Aggregation, analysis, and this document
+  ProjectEuler.Benchmarks/  -- Aggregation, charts, and this document
   claude-vs-euler/          -- Archived: the original multi-language repo
 ```
 
-```
-ccdev/
-  ProjectEuler.C/           -- 100 problems, C (Clang)
-  ProjectEuler.CPlusPlus/   -- 100 problems, C++ (Clang++)
-  ProjectEuler.Rust/        -- 100 problems, Rust (rustc/LLVM)
-  ProjectEuler.Go/          -- 100 problems, Go (gc)
-  ProjectEuler.Java/        -- 100 problems, Java (JDK)
-  ProjectEuler.CSharp/      -- 100 problems, C# (.NET)
-  ProjectEuler.Python/      -- 100 problems, Python (CPython)
-  ProjectEuler.JavaScript/  -- 100 problems, JavaScript (Node.js/V8)
-  ProjectEuler.ARM64/       -- 100 problems, ARM64 Assembly + C
-  ProjectEuler.Benchmarks/  -- Aggregation, analysis, and this document
-  claude-vs-euler/          -- Archived: the original multi-language repo
-```
+Total: ~1,800 solution files across 10 repositories, all generated by Claude Opus 4.6 and Claude Sonnet 4.6, with human architectural guidance and verification.
