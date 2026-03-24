@@ -21,9 +21,10 @@ type Lang struct {
 	CleanFiles  []string // files to remove after run (relative to probDir)
 	CompilerCmd []string // command to get compiler version, e.g. ["clang", "--version"]
 	// Special hooks
-	ExtraSourceFiles func(probDir string) []string      // additional source files for SLOC (ARM64)
-	BatchBuild       func(repoDir string, problems []string) (failed []string) // C# two-phase
+	ExtraSourceFiles func(probDir string) []string                              // additional source files for SLOC (ARM64)
+	BatchBuild       func(repoDir string, problems []string) (failed []string)  // C# two-phase
 	PreBuild         func(repoDir, probDir, problem string) error               // Java: copy Bench.java
+	SequentialBuild  bool                                                       // true = run build steps sequentially (ARM64: assemble then link)
 }
 
 func envOr(key, def string) string {
@@ -182,8 +183,9 @@ var languages = []Lang{
 			}
 			return [][]string{{cc, "-O2", "-o", "main_bench", "main.c", "-lm"}}
 		},
-		RunArgs:    func(_, _ string) (string, []string) { return "./main_bench", nil },
-		CleanFiles: []string{"main_bench", "solve.o"},
+		RunArgs:         func(_, _ string) (string, []string) { return "./main_bench", nil },
+		CleanFiles:      []string{"main_bench", "solve.o"},
+		SequentialBuild: true, // assemble first, then link — steps must run in order
 		ExtraSourceFiles: func(probDir string) []string {
 			s := filepath.Join(probDir, "solve.s")
 			if _, err := os.Stat(s); err == nil {
@@ -197,7 +199,8 @@ var languages = []Lang{
 		Key: "python", Display: "Python", Repo: "ProjectEuler.Python",
 		SrcFile: "", SrcSubdir: false, // flat structure, handled specially
 		RunArgs: func(repoDir, probDir string) (string, []string) {
-			// probDir is repoDir/problem_NNN — Base gives "problem_NNN"
+			// Note: probDir (repoDir/problem_NNN) doesn't exist as a directory for Python
+			// (flat structure). We only use Base to extract the problem name for the filename.
 			return "python3", []string{filepath.Base(probDir) + ".py"}
 		},
 		CompilerCmd: []string{"python3", "--version"},
