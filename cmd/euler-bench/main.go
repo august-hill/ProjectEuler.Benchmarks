@@ -20,9 +20,25 @@ import (
 	"sync"
 )
 
-var parkedProblems = map[string]bool{
-	"152": true, "167": true, "170": true,
-	"177": true, "180": true, "185": true, "196": true,
+var parkedProblems map[string]bool
+
+func loadParkedProblems(baseDir string) {
+	parkedProblems = make(map[string]bool)
+	path := filepath.Join(baseDir, "ProjectEuler.Benchmarks", "data", "parked.json")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		// Fallback if file not found
+		for _, p := range []string{"152", "167", "170", "177", "180", "185", "196"} {
+			parkedProblems[p] = true
+		}
+		return
+	}
+	var probs []string
+	if json.Unmarshal(data, &probs) == nil {
+		for _, p := range probs {
+			parkedProblems[p] = true
+		}
+	}
 }
 
 func findBaseDir() string {
@@ -58,6 +74,8 @@ func main() {
 		printUsage()
 		os.Exit(1)
 	}
+
+	loadParkedProblems(findBaseDir())
 
 	switch os.Args[1] {
 	case "run":

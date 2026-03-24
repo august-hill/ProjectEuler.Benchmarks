@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"runtime"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -178,8 +179,8 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	if lang.BuildArgs != nil {
 		argSets := lang.BuildArgs(repoDir, probDir)
 
-		// ARM64 special: sequential build steps (assemble, then link)
-		if lang.Key == "arm64" {
+		// Sequential build: run each step in order (ARM64: assemble, then link)
+		if lang.SequentialBuild {
 			for _, args := range argSets {
 				cmd := exec.Command(args[0], args[1:]...)
 				cmd.Dir = probDir
@@ -260,7 +261,7 @@ func runBenchmarks(lang *Lang, repoDir string, problems []string) *BenchmarkResu
 
 	res := &BenchmarkResults{
 		Language:  lang.Key,
-		Platform:  "arm64", // TODO: detect
+		Platform:  runtime.GOARCH,
 		Compiler:  compiler,
 		Timestamp: time.Now().UTC().Format("2006-01-02T15:04:05Z"),
 		Problems:  make(map[string]ProblemResult),
