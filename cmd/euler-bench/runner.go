@@ -26,36 +26,53 @@ type BenchmarkResults struct {
 }
 
 type ProblemResult struct {
-	Answer      json.Number `json:"answer,omitempty"`
-	TimeNs      int64       `json:"time_ns,omitempty"`
-	Iterations  int         `json:"iterations,omitempty"`
-	Status      string      `json:"status"`
-	Error       string      `json:"error,omitempty"`
-	PeakRSS     int64       `json:"peak_rss_bytes,omitempty"`
-	SourceLines int         `json:"source_lines,omitempty"`
-	SourceBytes int         `json:"source_bytes,omitempty"`
+	Answer        json.Number `json:"answer,omitempty"`
+	TimeNs        int64       `json:"time_ns"`
+	ColdStartNs   int64       `json:"cold_start_ns"`
+	Iterations    int         `json:"iterations,omitempty"`
+	Status        string      `json:"status"`
+	Error         string      `json:"error,omitempty"`
+	PeakRSS       int64       `json:"peak_rss_bytes,omitempty"`
+	CompileTimeNs int64       `json:"compile_time_ns"`
+	SourceLines   int         `json:"source_lines,omitempty"`
+	SourceBytes   int         `json:"source_bytes,omitempty"`
 }
 
 var benchRe = regexp.MustCompile(`^BENCHMARK\|problem=(\d+)\|answer=([^|]+)\|time_ns=(\d+)\|iterations=(\d+)`)
+var coldRe = regexp.MustCompile(`^COLDSTART\|time_ns=(\d+)`)
 
 type benchLine struct {
-	Problem    string
-	Answer     string
-	TimeNs     int64
-	Iterations int
+	Problem     string
+	Answer      string
+	TimeNs      int64
+	ColdStartNs int64
+	Iterations  int
 }
 
 func parseBenchmarkLine(stdout []byte) *benchLine {
+	var result *benchLine
 	scanner := bufio.NewScanner(bytes.NewReader(stdout))
 	for scanner.Scan() {
-		m := benchRe.FindStringSubmatch(scanner.Text())
-		if m != nil {
+		line := scanner.Text()
+		if m := benchRe.FindStringSubmatch(line); m != nil {
 			timeNs, _ := strconv.ParseInt(m[3], 10, 64)
 			iters, _ := strconv.Atoi(m[4])
-			return &benchLine{Problem: m[1], Answer: m[2], TimeNs: timeNs, Iterations: iters}
+			if result == nil {
+				result = &benchLine{}
+			}
+			result.Problem = m[1]
+			result.Answer = m[2]
+			result.TimeNs = timeNs
+			result.Iterations = iters
+		} else if m := coldRe.FindStringSubmatch(line); m != nil {
+			coldNs, _ := strconv.ParseInt(m[1], 10, 64)
+			if result == nil {
+				result = &benchLine{}
+			}
+			result.ColdStartNs = coldNs
 		}
 	}
-	return nil
+	return result
 }
 
 func parseRSS(stderr []byte) int64 {
@@ -175,8 +192,10 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 		}
 	}
 
-	// Build
+	// Build (with timing)
+	var compileTimeNs int64
 	if lang.BuildArgs != nil {
+		buildStart := time.Now()
 		argSets := lang.BuildArgs(repoDir, probDir)
 
 		// Sequential build: run each step in order (ARM64: assemble, then link)
@@ -194,6 +213,7 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 				return ProblemResult{Status: "fail", Error: "compile error"}
 			}
 		}
+		compileTimeNs = time.Since(buildStart).Nanoseconds()
 	}
 
 	// Get run command
@@ -239,13 +259,15 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	cleanup(lang, probDir)
 
 	return ProblemResult{
-		Answer:      json.Number(bl.Answer),
-		TimeNs:      bl.TimeNs,
-		Iterations:  bl.Iterations,
-		Status:      "pass",
-		PeakRSS:     rss,
-		SourceLines: sloc,
-		SourceBytes: sbytes,
+		Answer:        json.Number(bl.Answer),
+		TimeNs:        bl.TimeNs,
+		ColdStartNs:   bl.ColdStartNs,
+		Iterations:    bl.Iterations,
+		Status:        "pass",
+		PeakRSS:       rss,
+		CompileTimeNs: compileTimeNs,
+		SourceLines:   sloc,
+		SourceBytes:   sbytes,
 	}
 }
 

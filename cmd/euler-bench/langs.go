@@ -124,16 +124,13 @@ var languages = []Lang{
 		Key: "java", Display: "Java", Repo: "ProjectEuler.Java",
 		SrcFile: "Main.java", SrcSubdir: true,
 		PreBuild: func(repoDir, probDir, _ string) error {
-			bench := filepath.Join(probDir, "Bench.java")
-			if _, err := os.Stat(bench); err != nil {
-				src := filepath.Join(repoDir, "Bench.java")
-				data, err := os.ReadFile(src)
-				if err != nil {
-					return err
-				}
-				return os.WriteFile(bench, data, 0644)
+			// Always copy latest Bench.java (ensures harness updates propagate)
+			src := filepath.Join(repoDir, "Bench.java")
+			data, err := os.ReadFile(src)
+			if err != nil {
+				return err
 			}
-			return nil
+			return os.WriteFile(filepath.Join(probDir, "Bench.java"), data, 0644)
 		},
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			return [][]string{{"javac", "Main.java", "Bench.java"}}
