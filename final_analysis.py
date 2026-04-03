@@ -41,6 +41,15 @@ def _load_parked():
 
 PARKED = _load_parked()
 
+def effective_time_ns(entry):
+    """Return the effective computation time, accounting for cached solutions.
+
+    Some solutions cache their answer after first computation, making warm
+    benchmark time_ns ~0 while the real work is captured in cold_start_ns.
+    Using max() handles both cases correctly.
+    """
+    return max(entry.get('time_ns', 0), entry.get('cold_start_ns', 0))
+
 def load_all():
     data = {}
     for name, cfg in LANGS.items():
@@ -72,8 +81,8 @@ def main():
     lang_times = {}
     for lang in LANGS:
         probs = data.get(lang, {}).get('problems', {})
-        total = sum(v['time_ns'] for k, v in probs.items()
-                    if v.get('status') == 'pass' and k in common and v.get('time_ns', 0) > 0)
+        total = sum(effective_time_ns(v) for k, v in probs.items()
+                    if v.get('status') == 'pass' and k in common and effective_time_ns(v) > 0)
         if total > 0:
             lang_times[lang] = total / 1e9
 
@@ -104,8 +113,8 @@ def main():
         probs = data[lang].get('problems', {})
         c_probs = data['C'].get('problems', {})
         for p in common:
-            c_t = c_probs.get(p, {}).get('time_ns', 0)
-            l_t = probs.get(p, {}).get('time_ns', 0)
+            c_t = effective_time_ns(c_probs.get(p, {}))
+            l_t = effective_time_ns(probs.get(p, {}))
             if c_t > 0 and l_t > 0:
                 ratios.append(l_t / c_t)
         box_data.append(ratios)
@@ -131,8 +140,8 @@ def main():
         if lang == 'Python':
             continue
         probs = data[lang].get('problems', {})
-        total_ns = sum(v['time_ns'] for k, v in probs.items()
-                       if k in common and v.get('status') == 'pass' and v.get('time_ns', 0) > 0)
+        total_ns = sum(effective_time_ns(v) for k, v in probs.items()
+                       if k in common and v.get('status') == 'pass' and effective_time_ns(v) > 0)
         total_sloc = sum(v.get('source_lines', 0) for k, v in probs.items()
                          if k in common and v.get('status') == 'pass')
         avg_sloc = total_sloc / len(common) if common else 0
@@ -158,7 +167,7 @@ def main():
         best_time = float('inf')
         best_lang = None
         for lang in wins:
-            t = data[lang].get('problems', {}).get(prob, {}).get('time_ns', 0)
+            t = effective_time_ns(data[lang].get('problems', {}).get(prob, {}))
             if 0 < t < best_time:
                 best_time = t
                 best_lang = lang
