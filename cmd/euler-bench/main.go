@@ -28,7 +28,7 @@ func loadParkedProblems(baseDir string) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		// Fallback if file not found
-		for _, p := range []string{"152", "167", "170", "177", "180", "185", "196"} {
+		for _, p := range []string{"167", "185", "196"} {
 			parkedProblems[p] = true
 		}
 		return
