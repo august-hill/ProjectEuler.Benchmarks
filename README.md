@@ -8,7 +8,7 @@
 
 ## The Honest Leaderboard
 
-The "best language" depends entirely on what you're measuring. We report three modes — see [THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) for the full analysis.
+The "best language" depends entirely on what you're measuring. We report **two modes** — see [THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) for an additional "from-source build time" view that we keep for completeness but don't lead with (see methodology section below for why).
 
 ### Hot Mode — median of 1000 warm iterations
 *"What's the cost per call if you run this in a tight loop?"* Best for hot paths in long-running services and inner loops in numerical code.
@@ -27,7 +27,7 @@ The "best language" depends entirely on what you're measuring. We report three m
 | 10 | **Python** | 88.1s | 10.15x |
 
 ### Cold Mode — first invocation, no warmup
-*"How long does it take if you run the program once?"* Best for CLI tools, lambdas, and anything invoked once per task. Includes loader cost and (for JIT languages) the first compilation pass.
+*"How long does it take if you run the program once?"* Best for CLI tools, lambdas, scripts, and anything invoked once per task. Includes loader cost, interpreter startup (for Python), JIT warmup (for Java/C#/JS), and the first execution. **Assumes the binary already exists** for compiled languages — see methodology for why we don't include compile time.
 
 | Rank | Language | Total | vs Zig |
 |------|----------|-------|--------|
@@ -42,39 +42,17 @@ The "best language" depends entirely on what you're measuring. We report three m
 | 9 | **JavaScript** | 42.2s | 4.63x |
 | 10 | **Python** | **1090.9s** | **119.7x** |
 
-### Total Mode — compile + cold start
-*"I cloned the repo, built it, and ran it once. How long until I saw the answer?"* Best for CI/CD pipelines, ephemeral environments, and "demos to your friend" workflows. Includes the language's ahead-of-time compilation cost.
+*Both modes computed over 188 common problems where all 10 languages have a passing entry.*
 
-| Rank | Language | Total | vs Zig |
-|------|----------|-------|--------|
-| 1 | **Zig** | 9.47s | 1.00x |
-| 2 | **C#** | 20.3s | 2.15x |
-| 3 | **JavaScript** | 42.2s | 4.46x |
-| 4 | **C** | 77.9s | 8.23x |
-| 5 | **ARM64** | 90.1s | 9.51x |
-| 6 | **Rust** | 171.2s | 18.08x |
-| 7 | **Java** | 189.4s | 20.00x |
-| 8 | **C++** | 266.5s | 28.14x |
-| 9 | **Go** | 295.5s | 31.21x |
-| 10 | **Python** | **1090.9s** | **115.2x** |
+## What the two modes reveal
 
-*All three modes computed over 188 common problems where all 10 languages have a passing entry.*
+- **Zig is rank 1 in both modes** — fast hot loop AND fast cold start. The `comptime` advantage is real and the small standard library means there's almost no startup cost.
+- **Python is dead last in cold mode by ~10x** — Python "looks competitive" in hot mode (rank 10 at 88s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 188 problems that's **1090s of cold-mode time vs 9s for Zig — a 119x gap** that the old "1000-iteration only" methodology hid completely.
+- **Java is rank 7 in hot, rank 8 in cold** — the JIT tax is real and visible. On problem 192, Java is 6 orders of magnitude faster after warmup than on its first call. JVM startup dominates one-shot scripts.
+- **Rust drops several ranks between hot and cold on individual problems** like 074 and 067 — its per-call performance is excellent, but binary startup costs are significant. A 78μs hot-mode time vs 40ms cold start is a 500x difference for the *same code*.
+- **C++ stays strong in both modes** (rank 2 hot, rank 3 cold) — fast inner loops AND fast binary startup. This is the sweet spot for "running one program multiple times" workloads.
 
-## Why three modes matter
-
-The single-leaderboard view hides huge methodology biases:
-
-- **Zig is rank 1 in all three modes** — fast compile + fast cold start + fast hot loop. The `comptime` advantage is real and the small standard library means there's almost no startup cost.
-- **Python is dead last in cold and total modes by 10x** — Python "looks competitive" in hot mode (rank 10 at 88s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 188 problems that's **1090s of cold-mode time vs 9s for Zig — a 119x gap** that the old "1000-iteration" methodology hid completely.
-- **C++ falls from rank 2 (hot) to rank 8 (total)**. The compiler is slow — `clang++ -O2` takes 1-3 seconds per problem, totaling ~256 seconds of pure compile time across the suite.
-- **Go falls from rank 6 (hot) to rank 9 (total)**. "Fast compile + fast run" is true *per problem* but adds up: 188 fresh binaries × ~1.5s each = 295s of compilation.
-- **C# wins among non-Zig languages in total mode** despite being mid-pack in hot and cold — the .NET runtime ships pre-installed, so its compile cost is essentially zero.
-- **Java is rank 7 in hot, rank 8 in cold** — the JIT tax is real and visible. On problem 192, Java is 6 orders of magnitude faster after warmup than on its first call.
-- **Rust drops 7 ranks between hot and cold on individual problems** like 074 and 067 — its per-call performance is excellent, but binary startup costs are significant.
-
-[THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) has the per-problem disagreement tables, the hot/cold quadrant analysis, and the methodology notes.
-
-A legacy single-number ranking using the original `effective_time = max(warm, cold)` metric is preserved in [RESULTS.md](RESULTS.md) for continuity with the project's earlier reports. The three-mode tables above are the current authoritative view.
+[THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) has the per-problem disagreement tables, the hot/cold quadrant analysis, and the third "from-source build" mode preserved for completeness. A legacy single-number ranking using the original `effective_time = max(warm, cold)` metric is in [RESULTS.md](RESULTS.md) for continuity with the project's earlier reports.
 
 ## Methodology — How We Try Not to Lie to Ourselves
 
@@ -94,7 +72,24 @@ The default mode now runs **one language at a time, one problem at a time**, on 
 
 Even sequential measurement isn't free of thermal effects. A long sequential run still warms the chip up over time — the first problem sees a cold CPU, the last sees a hot one. The runner now sleeps **250ms by default** (`-cooldown-ms 250`) between consecutive problems to let the CPU recover thermal headroom. This is configurable; for very fast problems where the runner overhead would dominate, you can set it lower. For very long-running benchmarks, you might set it higher.
 
-### 3. Always measure incrementally
+### 3. Why we don't include compile time in the leaderboard
+
+An earlier version of this report featured a "Total Mode" that summed compile time and cold-start time. The intent was to capture "I cloned the repo and ran it once" workflows like CI/CD pipelines. We removed it from the primary leaderboards because it was misleading about how compiled languages actually get used.
+
+**In real life, you compile once and run many times.** A typical C++ deployment looks like: write the program, build it with `clang++ -O2 -o foo foo.cpp`, copy the binary to `/usr/local/bin/foo`, and from then on every invocation is just `foo` — pure binary load time, zero compile cost. The compile is amortized across thousands or millions of future invocations. Counting it per-invocation in a benchmark is about as fair as counting the time you spent typing the source code.
+
+**The famous benchmarksgame project** (the canonical "language X vs language Y" comparison) explicitly excludes compile time for exactly this reason. The Computer Language Benchmarks Game measures runtime only.
+
+**Cold mode is the honest "running once" measurement.** It captures what each language actually pays per invocation:
+- **Compiled languages** (C, C++, Rust, Go, Zig, ARM64): binary load + program execution. The compile already happened, possibly months ago.
+- **Interpreted languages** (Python, JavaScript): interpreter startup + module imports + parsing + bytecode compile + program execution. Python pays the parse cost on every invocation because `.pyc` caching is fragile and disabled in many deployment scenarios.
+- **JIT'd languages** (Java, C#): runtime startup + class loading + tier-1 baseline JIT + program execution. The JIT only specializes "hot" code, so cold mode shows the un-specialized baseline.
+
+This is fair because **each language pays exactly what it actually pays in production usage**. Compiled languages get charged for binary startup; interpreted languages get charged for parsing every time (because that's what really happens); JIT languages get charged for warmup. The asymmetry in *what counts as cold* is real, not a methodology artifact.
+
+The build-from-source measurement is still computed and preserved in `THREE_MODE_REPORT.md` as a third-axis "from-source first run" view — useful for CI/CD pipeline tuning, container build optimization, or fresh-install timing — but it's no longer presented as a "running cost" measurement.
+
+### 4. Always measure incrementally
 
 When you add a new problem to a language repo, **run it through the bench tool immediately** rather than batching up changes for a sweep at the end:
 
@@ -106,11 +101,11 @@ This is fast (1-2 seconds per problem), it merges into the existing JSON, and cr
 
 The alternative (collect changes and run a full sweep later) means every measurement is taken under whatever load conditions happened to exist during the sweep. Incremental-as-you-go means each problem's number reflects the moment that problem's solution was finalized, which is usually a quiet moment.
 
-### 4. Two notions of "answer"
+### 5. Two notions of "answer"
 
 Earlier the `Answer` field was strictly typed as `json.Number`, which meant the runner crashed when a problem returned a non-numeric answer like `"199740353/29386561536000"` (problem 329's exact fraction). The field is now `interface{}` and stores numeric answers as `json.Number` (so they serialize unquoted) and string-shaped answers as plain strings. Both round-trip through the JSON and downstream tooling.
 
-### 5. What we still don't fix
+### 6. What we still don't fix
 
 A few sources of measurement noise we acknowledge but haven't addressed:
 
@@ -127,11 +122,12 @@ This benchmark suite exists to compare AI-generated code across languages. The p
 ## Key Takeaways
 
 - **Algorithm choice matters 1000x more than language choice.** The biggest performance gaps come from algorithmic differences, not language speed.
-- **Zig wins all three modes.** `comptime` evaluation precomputes work at compile time, the standard library is small enough to keep cold-start near zero, and the compiler is fast enough that even total-mode (compile + cold) stays under 10 seconds across 188 problems.
-- **C++ is the sweet spot for Claude-generated *code*** — C-speed with 35% less SLOC thanks to STL — but its compile time makes it the worst total-mode language.
-- **Rust has a fat tail** — median is C-speed (1.05x) but p90 balloons to 6.44x due to borrow checker workarounds.
-- **Java's JIT tax is real** — the same problem can be 6 orders of magnitude faster after warmup than on the first call. Hot mode rewards JIT, cold mode punishes it.
-- **The "best language" question is malformed** without specifying the workload. Hot-loop code, one-shot scripts, and CI builds have different winners.
+- **Zig wins both leaderboards** — fast hot loop AND fast cold start. `comptime` evaluation precomputes work at compile time, the standard library is small enough to keep cold-start near zero, and the binary is a single statically-linked executable with no runtime dependencies.
+- **C++ is the sweet spot for Claude-generated *code*** — C-speed with 35% less SLOC thanks to STL — and remains a strong contender in both modes (rank 2 hot, rank 3 cold).
+- **Rust has a fat tail** — median is C-speed (1.05x) but p90 balloons to 6.44x due to borrow checker workarounds. And its binary cold start is significantly larger than C++ or Zig.
+- **Java's JIT tax is real** — the same problem can be 6 orders of magnitude faster after warmup than on the first call. Hot mode rewards JIT (rank 7), cold mode punishes it (rank 8).
+- **Python is the slowest in both modes**, but the *gap* differs dramatically: ~10x slower in hot mode, ~120x slower in cold mode. The interpreter startup tax (~50-200ms per invocation) is what makes one-shot Python scripts so slow at scale.
+- **The "best language" question is malformed** without specifying the workload. Hot-loop code (web servers, scientific kernels) and one-shot scripts (CLI tools, lambdas) have different winners — but for *most* workloads, both modes agree on the top 3.
 
 ## The Full Story
 

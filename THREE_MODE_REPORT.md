@@ -5,6 +5,8 @@
 Platform: arm64  
 Common problem set: **188 problems** (the intersection of all 10 languages with a passing entry)
 
+> **Note on Total Mode**: this report contains all three modes (hot, cold, total) for completeness, but the main `README.md` leaderboards now show only **hot** and **cold**. Total mode (which sums compile time and cold start) was removed from the primary view because it misrepresents how compiled languages are actually used in production — you compile once and run thousands of times, so per-invocation compile cost is misleading. Total mode is preserved here as a "from-source first run" measurement useful for CI/CD pipeline tuning, container build optimization, and fresh-install timing — but it is **not** a "running cost" measurement. See the README's methodology section for the full reasoning.
+
 ---
 
 ## Methodology
