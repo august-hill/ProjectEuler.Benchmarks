@@ -254,7 +254,7 @@ def main():
     print(f"\n{'='*60}")
     print(f"FINAL PROJECT STATS")
     print(f"{'='*60}")
-    print(f"Languages:       9")
+    print(f"Languages:       {len(LANGS)}")
     print(f"Problems:        200")
     print(f"Total solutions: {total_solutions}")
     print(f"Total passing:   {total_passing}")
