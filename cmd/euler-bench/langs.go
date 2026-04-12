@@ -202,6 +202,27 @@ var languages = []Lang{
 		},
 		CompilerCmd: []string{"python3", "--version"},
 	},
+	{
+		Key: "zig", Display: "Zig", Repo: "ProjectEuler.Zig",
+		SrcFile: "main.zig", SrcSubdir: true,
+		BuildArgs: func(repoDir, probDir string) [][]string {
+			// Zig module resolution requires absolute paths so the bench module
+			// (bench/bench.zig at repo root) can be found regardless of working directory.
+			mainZig := filepath.Join(probDir, "main.zig")
+			benchZig := filepath.Join(repoDir, "bench", "bench.zig")
+			binOut := filepath.Join(probDir, "main_bench")
+			return [][]string{{
+				"zig", "build-exe", "-O", "ReleaseFast",
+				"--dep", "bench",
+				"-Mroot=" + mainZig,
+				"-Mbench=" + benchZig,
+				"-femit-bin=" + binOut,
+			}}
+		},
+		RunArgs:     func(_, _ string) (string, []string) { return "./main_bench", nil },
+		CleanFiles:  []string{"main_bench"},
+		CompilerCmd: []string{"zig", "version"},
+	},
 }
 
 func langByKey(key string) *Lang {
