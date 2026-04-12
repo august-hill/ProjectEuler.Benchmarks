@@ -26,16 +26,17 @@ type BenchmarkResults struct {
 }
 
 type ProblemResult struct {
-	Answer        json.Number `json:"answer,omitempty"`
-	TimeNs        int64       `json:"time_ns"`
-	ColdStartNs   int64       `json:"cold_start_ns"`
-	Iterations    int         `json:"iterations,omitempty"`
-	Status        string      `json:"status"`
-	Error         string      `json:"error,omitempty"`
-	PeakRSS       int64       `json:"peak_rss_bytes,omitempty"`
-	CompileTimeNs int64       `json:"compile_time_ns"`
-	SourceLines   int         `json:"source_lines,omitempty"`
-	SourceBytes   int         `json:"source_bytes,omitempty"`
+	Answer            json.Number `json:"answer,omitempty"`
+	TimeNs            int64       `json:"time_ns"`
+	ColdStartNs       int64       `json:"cold_start_ns"`
+	SubprocessWallNs  int64       `json:"subprocess_wall_ns,omitempty"`
+	Iterations        int         `json:"iterations,omitempty"`
+	Status            string      `json:"status"`
+	Error             string      `json:"error,omitempty"`
+	PeakRSS           int64       `json:"peak_rss_bytes,omitempty"`
+	CompileTimeNs     int64       `json:"compile_time_ns"`
+	SourceLines       int         `json:"source_lines,omitempty"`
+	SourceBytes       int         `json:"source_bytes,omitempty"`
 }
 
 var benchRe = regexp.MustCompile(`^BENCHMARK\|problem=(\d+)\|answer=([^|]+)\|time_ns=(\d+)\|iterations=(\d+)`)
@@ -240,7 +241,9 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
+	wallStart := time.Now()
 	_ = cmd.Run() // ignore exit code — timeout returns non-zero
+	subprocessWallNs := time.Since(wallStart).Nanoseconds()
 
 	// Parse BENCHMARK line
 	bl := parseBenchmarkLine(stdout.Bytes())
@@ -259,15 +262,16 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	cleanup(lang, probDir)
 
 	return ProblemResult{
-		Answer:        json.Number(bl.Answer),
-		TimeNs:        bl.TimeNs,
-		ColdStartNs:   bl.ColdStartNs,
-		Iterations:    bl.Iterations,
-		Status:        "pass",
-		PeakRSS:       rss,
-		CompileTimeNs: compileTimeNs,
-		SourceLines:   sloc,
-		SourceBytes:   sbytes,
+		Answer:           json.Number(bl.Answer),
+		TimeNs:           bl.TimeNs,
+		ColdStartNs:      bl.ColdStartNs,
+		SubprocessWallNs: subprocessWallNs,
+		Iterations:       bl.Iterations,
+		Status:           "pass",
+		PeakRSS:          rss,
+		CompileTimeNs:    compileTimeNs,
+		SourceLines:      sloc,
+		SourceBytes:      sbytes,
 	}
 }
 
