@@ -30,6 +30,7 @@ LANGS = {
     'JS':   {'dir': 'ProjectEuler.JavaScript', 'color': '#F7DF1E'},
     'Python': {'dir': 'ProjectEuler.Python',   'color': '#3776AB'},
     'ARM64': {'dir': 'ProjectEuler.ARM64',     'color': '#E34F26'},
+    'Zig':  {'dir': 'ProjectEuler.Zig',        'color': '#F7A41D'},
 }
 
 def _load_parked():
