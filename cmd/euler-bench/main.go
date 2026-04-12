@@ -111,9 +111,10 @@ func cmdRun(args []string) {
 	fs := flag.NewFlagSet("run", flag.ExitOnError)
 	langFilter := fs.String("lang", "", "comma-separated languages (default: all)")
 	probFilter := fs.String("problems", "", "comma-separated problem numbers (default: all)")
-	parallel := fs.Bool("parallel", false, "run languages concurrently")
+	parallel := fs.Bool("parallel", false, "run languages concurrently (NOT recommended — saturates CPU and contaminates timings)")
 	noMerge := fs.Bool("no-merge", false, "don't merge with existing results")
 	noMarkdown := fs.Bool("no-markdown", false, "skip BENCHMARKS.md generation")
+	cooldownMs := fs.Int("cooldown-ms", 250, "milliseconds to sleep between problems for thermal recovery (0 to disable)")
 	fs.Parse(args)
 
 	baseDir := findBaseDir()
@@ -142,7 +143,7 @@ func cmdRun(args []string) {
 			}
 		}
 
-		results := runBenchmarks(lang, repoDir, problems)
+		results := runBenchmarks(lang, repoDir, problems, *cooldownMs)
 
 		// Merge
 		outputPath := filepath.Join(repoDir, "benchmark_results.json")
@@ -190,7 +191,8 @@ func cmdFailures(args []string) {
 	langFilter := fs.String("lang", "", "comma-separated languages (default: all)")
 	skipParked := fs.Bool("skip-parked", false, "skip parked problems")
 	dryRun := fs.Bool("dry-run", false, "show what would be run")
-	parallel := fs.Bool("parallel", false, "run languages concurrently")
+	parallel := fs.Bool("parallel", false, "run languages concurrently (NOT recommended — saturates CPU and contaminates timings)")
+	cooldownMs := fs.Int("cooldown-ms", 250, "milliseconds to sleep between problems for thermal recovery (0 to disable)")
 	fs.Parse(args)
 
 	baseDir := findBaseDir()
@@ -275,7 +277,7 @@ func cmdFailures(args []string) {
 		lang := langByKey(j.langKey)
 		fmt.Printf(">>> [%s] running %d problems\n", j.langKey, len(j.problems))
 
-		results := runBenchmarks(lang, j.repoDir, j.problems)
+		results := runBenchmarks(lang, j.repoDir, j.problems, *cooldownMs)
 
 		outputPath := filepath.Join(j.repoDir, "benchmark_results.json")
 		if old, err := loadResults(outputPath); err == nil {

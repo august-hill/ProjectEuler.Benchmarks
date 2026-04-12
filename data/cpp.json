@@ -2,7 +2,7 @@
     "language": "cpp",
     "platform": "arm64",
     "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
-    "timestamp": "2026-04-12T00:33:21Z",
+    "timestamp": "2026-04-12T05:30:26Z",
     "problems": {
         "001": {
             "answer": 233168,
@@ -1468,7 +1468,7 @@
             "source_bytes": 1293
         },
         "134": {
-            "answer": 18613426663617118,
+            "answer": 18613426663617120,
             "time_ns": 5183125,
             "cold_start_ns": 5979709,
             "iterations": 100,
@@ -1677,7 +1677,7 @@
             "source_bytes": 1445
         },
         "153": {
-            "answer": 17971254122360635,
+            "answer": 17971254122360636,
             "time_ns": 3050312750,
             "cold_start_ns": 3172413708,
             "iterations": 3,
@@ -1765,7 +1765,7 @@
             "source_bytes": 1691
         },
         "161": {
-            "answer": 20574308184277971,
+            "answer": 20574308184277972,
             "time_ns": 0,
             "cold_start_ns": 34892291,
             "iterations": 1000,
@@ -1776,7 +1776,7 @@
             "source_bytes": 2356
         },
         "162": {
-            "answer": 4420408745587516162,
+            "answer": 4420408745587516400,
             "time_ns": 41,
             "cold_start_ns": 7292,
             "iterations": 1000,
@@ -1974,7 +1974,7 @@
             "source_bytes": 626
         },
         "180": {
-            "answer": 95064698601558883,
+            "answer": 95064698601558880,
             "time_ns": 10013208,
             "cold_start_ns": 27216625,
             "iterations": 100,
@@ -1985,7 +1985,7 @@
             "source_bytes": 6606
         },
         "181": {
-            "answer": 83735848679360680,
+            "answer": 83735848679360670,
             "time_ns": 7741959,
             "cold_start_ns": 7925042,
             "iterations": 100,
@@ -2102,7 +2102,7 @@
             "source_bytes": 807
         },
         "192": {
-            "answer": 57060635927998347,
+            "answer": 57060635927998344,
             "time_ns": 0,
             "cold_start_ns": 22496042,
             "iterations": 1000,
@@ -2300,7 +2300,7 @@
             "source_bytes": 2385
         },
         "210": {
-            "answer": 1598174770174689458,
+            "answer": 1598174770174689500,
             "time_ns": 608328250,
             "cold_start_ns": 586734875,
             "iterations": 10,
@@ -2365,6 +2365,222 @@
             "source_lines": 66,
             "source_bytes": 1755
         },
+        "252": {
+            "answer": 104924.0,
+            "time_ns": 249125458,
+            "cold_start_ns": 258296583,
+            "subprocess_wall_ns": 3791718375,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 15024128,
+            "compile_time_ns": 715861709,
+            "source_lines": 126,
+            "source_bytes": 4594
+        },
+        "254": {
+            "answer": 67035631070,
+            "time_ns": 381695500,
+            "cold_start_ns": 412060750,
+            "subprocess_wall_ns": 5663688250,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 15958016,
+            "compile_time_ns": 596158083,
+            "source_lines": 142,
+            "source_bytes": 5481
+        },
+        "256": {
+            "answer": 85765680,
+            "time_ns": 1031336500,
+            "cold_start_ns": 1051761209,
+            "subprocess_wall_ns": 14467467041,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 201490432,
+            "compile_time_ns": 605832250,
+            "source_lines": 40,
+            "source_bytes": 1361
+        },
+        "257": {
+            "answer": 139012411,
+            "time_ns": 373733666,
+            "cold_start_ns": 403931209,
+            "subprocess_wall_ns": 5522243500,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 1458176,
+            "compile_time_ns": 648172541,
+            "source_lines": 233,
+            "source_bytes": 9798
+        },
+        "259": {
+            "answer": 20101196798,
+            "time_ns": 4367029708,
+            "cold_start_ns": 4216729083,
+            "subprocess_wall_ns": 30921545708,
+            "iterations": 3,
+            "status": "pass",
+            "peak_rss_bytes": 219299840,
+            "compile_time_ns": 594543833,
+            "source_lines": 107,
+            "source_bytes": 3326
+        },
+        "261": {
+            "answer": 238883108438677,
+            "time_ns": 17029000,
+            "cold_start_ns": 21086250,
+            "subprocess_wall_ns": 2114720833,
+            "iterations": 100,
+            "status": "pass",
+            "peak_rss_bytes": 4980736,
+            "compile_time_ns": 620933208,
+            "source_lines": 106,
+            "source_bytes": 3689
+        },
+        "262": {
+            "answer": 2531.204,
+            "time_ns": 4025864333,
+            "cold_start_ns": 4049133125,
+            "subprocess_wall_ns": 28517248542,
+            "iterations": 3,
+            "status": "pass",
+            "peak_rss_bytes": 53559296,
+            "compile_time_ns": 778659792,
+            "source_lines": 260,
+            "source_bytes": 10027
+        },
+        "303": {
+            "answer": 1111981904675169,
+            "time_ns": 161235000,
+            "cold_start_ns": 181150625,
+            "subprocess_wall_ns": 2624333625,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 3260416,
+            "compile_time_ns": 683659834,
+            "source_lines": 68,
+            "source_bytes": 2198
+        },
+        "304": {
+            "answer": 283988410192,
+            "time_ns": 95717375,
+            "cold_start_ns": 100613041,
+            "subprocess_wall_ns": 10227199166,
+            "iterations": 100,
+            "status": "pass",
+            "peak_rss_bytes": 16924672,
+            "compile_time_ns": 556753500,
+            "source_lines": 95,
+            "source_bytes": 2641
+        },
+        "305": {
+            "answer": 18174995535140,
+            "time_ns": 95833,
+            "cold_start_ns": 129834,
+            "subprocess_wall_ns": 328806625,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1556480,
+            "compile_time_ns": 565458667,
+            "source_lines": 183,
+            "source_bytes": 5005
+        },
+        "306": {
+            "answer": 852938,
+            "time_ns": 54542,
+            "cold_start_ns": 103542,
+            "subprocess_wall_ns": 296041417,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1523712,
+            "compile_time_ns": 555310083,
+            "source_lines": 49,
+            "source_bytes": 1481
+        },
+        "307": {
+            "answer": 0.7311720251,
+            "time_ns": 224875,
+            "cold_start_ns": 228917,
+            "subprocess_wall_ns": 459086750,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1540096,
+            "compile_time_ns": 540690167,
+            "source_lines": 42,
+            "source_bytes": 1215
+        },
+        "310": {
+            "answer": 2586528661783,
+            "time_ns": 65041125,
+            "cold_start_ns": 79054292,
+            "subprocess_wall_ns": 7010553208,
+            "iterations": 100,
+            "status": "pass",
+            "peak_rss_bytes": 2424832,
+            "compile_time_ns": 549710042,
+            "source_lines": 53,
+            "source_bytes": 1502
+        },
+        "315": {
+            "answer": 13090874,
+            "time_ns": 104745667,
+            "cold_start_ns": 107674750,
+            "subprocess_wall_ns": 1686944875,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 4079616,
+            "compile_time_ns": 550266750,
+            "source_lines": 174,
+            "source_bytes": 7219
+        },
+        "317": {
+            "answer": 1856532.8455,
+            "time_ns": 167,
+            "cold_start_ns": 1583,
+            "subprocess_wall_ns": 230913125,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1441792,
+            "compile_time_ns": 487538500,
+            "source_lines": 19,
+            "source_bytes": 616
+        },
+        "321": {
+            "answer": 2470433131948040,
+            "time_ns": 708,
+            "cold_start_ns": 4125,
+            "subprocess_wall_ns": 234898000,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1540096,
+            "compile_time_ns": 505876375,
+            "source_lines": 50,
+            "source_bytes": 1361
+        },
+        "323": {
+            "answer": 6.3551759333,
+            "time_ns": 291,
+            "cold_start_ns": 1625,
+            "subprocess_wall_ns": 213032458,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1458176,
+            "compile_time_ns": 511336083,
+            "source_lines": 23,
+            "source_bytes": 734
+        },
+        "329": {
+            "answer": "199740353/29386561536000",
+            "time_ns": 17000,
+            "cold_start_ns": 15417,
+            "subprocess_wall_ns": 235232208,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1507328,
+            "compile_time_ns": 578808042,
+            "source_lines": 156,
+            "source_bytes": 6662
+        },
         "955": {
             "time_ns": 0,
             "cold_start_ns": 0,
@@ -2406,7 +2622,7 @@
             "source_bytes": 1629
         },
         "967": {
-            "answer": 357591131712034236,
+            "answer": 357591131712034240,
             "time_ns": 416623000,
             "cold_start_ns": 408772667,
             "iterations": 10,

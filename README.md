@@ -74,6 +74,56 @@ The single-leaderboard view hides huge methodology biases:
 
 [THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) has the per-problem disagreement tables, the hot/cold quadrant analysis, and the methodology notes.
 
+A legacy single-number ranking using the original `effective_time = max(warm, cold)` metric is preserved in [RESULTS.md](RESULTS.md) for continuity with the project's earlier reports. The three-mode tables above are the current authoritative view.
+
+## Methodology — How We Try Not to Lie to Ourselves
+
+Cross-language benchmarking is famously easy to do badly. Below are the choices we make and why. The goal is **honest, repeatable measurements** — not the most flattering numbers for any particular language.
+
+### 1. Sequential, never parallel
+
+Earlier versions of the runner had a `-parallel` flag that ran multiple language sweeps concurrently. **We don't use it anymore** (it's still there for emergencies, marked NOT recommended). Running 9-10 language sweeps in parallel saturates every core on the machine and produces measurements that look fast on paper but are systematically contaminated:
+
+- **Thermal throttling**: Apple Silicon (and most modern CPUs) aggressively reduce clock speed under sustained 100% load. Problems run later in a parallel sweep clock slower than problems run earlier in the same sweep. The "median over 1000 iterations" doesn't help — the median sees the throttled clock all the way through.
+- **P-core / E-core scheduling**: macOS will silently move processes onto efficiency cores under load. An E-core is ~3x slower than a P-core. A benchmark that lands on an E-core for half its iterations gets a fake-bad number.
+- **Cache thrashing**: 9 simultaneous benchmarks compete for the shared L2 / system-level cache. A memory-bound problem (like a large sieve) can run 2-3x slower under contention purely as an artifact of the parallel methodology.
+
+The default mode now runs **one language at a time, one problem at a time**, on an otherwise quiet system. It's slower in wall-clock terms (~3-5 hours for a full sweep across 10 languages × 215 problems) but the data is comparable across runs.
+
+### 2. Cooldown between problems
+
+Even sequential measurement isn't free of thermal effects. A long sequential run still warms the chip up over time — the first problem sees a cold CPU, the last sees a hot one. The runner now sleeps **250ms by default** (`-cooldown-ms 250`) between consecutive problems to let the CPU recover thermal headroom. This is configurable; for very fast problems where the runner overhead would dominate, you can set it lower. For very long-running benchmarks, you might set it higher.
+
+### 3. Always measure incrementally
+
+When you add a new problem to a language repo, **run it through the bench tool immediately** rather than batching up changes for a sweep at the end:
+
+```bash
+./cmd/euler-bench/euler-bench run -lang cpp -problems 252 -no-markdown
+```
+
+This is fast (1-2 seconds per problem), it merges into the existing JSON, and crucially **it gives that single problem a quiet system to itself** — no neighbors competing for cache or scheduling. Each problem gets the best measurement conditions available at the moment it's added.
+
+The alternative (collect changes and run a full sweep later) means every measurement is taken under whatever load conditions happened to exist during the sweep. Incremental-as-you-go means each problem's number reflects the moment that problem's solution was finalized, which is usually a quiet moment.
+
+### 4. Two notions of "answer"
+
+Earlier the `Answer` field was strictly typed as `json.Number`, which meant the runner crashed when a problem returned a non-numeric answer like `"199740353/29386561536000"` (problem 329's exact fraction). The field is now `interface{}` and stores numeric answers as `json.Number` (so they serialize unquoted) and string-shaped answers as plain strings. Both round-trip through the JSON and downstream tooling.
+
+### 5. What we still don't fix
+
+A few sources of measurement noise we acknowledge but haven't addressed:
+
+- **Order bias across languages**: if you always run "C, C++, Rust, Go, Java, ..." in alphabetical order, C consistently sees the coldest chip and Java the warmest. The honest fix is randomized order per sweep, which we don't currently do.
+- **Cache state from prior process**: even with cooldowns, the L2 cache may still hold data from the previous benchmark. A randomized inter-problem warmup would smooth this out.
+- **Background processes**: macOS Spotlight, Time Machine, browser tabs, etc. all add jitter. The "right" environment is a dedicated machine in single-user mode. Most of our runs are not that.
+
+These are all moderate effects (typically a few percent) and we choose to take the runtime hit of avoiding the major sources of error rather than chasing every last digit. The goal is **rankings that survive a re-run**, not absolute numbers down to the nanosecond.
+
+### Why we care
+
+This benchmark suite exists to compare AI-generated code across languages. The point is to learn whether Claude writes idiomatic-and-fast code in language X versus Y — not to crown a winner. **A methodology that biases the result undermines the entire premise.** Every choice above is one we made because the previous version produced numbers we couldn't trust.
+
 ## Key Takeaways
 
 - **Algorithm choice matters 1000x more than language choice.** The biggest performance gaps come from algorithmic differences, not language speed.

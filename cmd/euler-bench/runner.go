@@ -26,7 +26,11 @@ type BenchmarkResults struct {
 }
 
 type ProblemResult struct {
-	Answer            json.Number `json:"answer,omitempty"`
+	// Answer is interface{} so it can hold both numeric answers (most problems)
+	// and string answers like fractions ("199740353/29386561536000") or
+	// formatted decimals ("0.7311720251") for problems where the canonical
+	// answer isn't a plain integer.
+	Answer            interface{} `json:"answer,omitempty"`
 	TimeNs            int64       `json:"time_ns"`
 	ColdStartNs       int64       `json:"cold_start_ns"`
 	SubprocessWallNs  int64       `json:"subprocess_wall_ns,omitempty"`
@@ -261,8 +265,18 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 
 	cleanup(lang, probDir)
 
+	// Store the answer as json.Number when it parses as a number (so the JSON
+	// stays compact and unquoted), otherwise as a plain string. This handles
+	// fractional answers ("a/b") and formatted decimals as well as integers.
+	var answer interface{}
+	if _, err := strconv.ParseFloat(bl.Answer, 64); err == nil {
+		answer = json.Number(bl.Answer)
+	} else {
+		answer = bl.Answer
+	}
+
 	return ProblemResult{
-		Answer:           json.Number(bl.Answer),
+		Answer:           answer,
 		TimeNs:           bl.TimeNs,
 		ColdStartNs:      bl.ColdStartNs,
 		SubprocessWallNs: subprocessWallNs,
@@ -282,7 +296,12 @@ func cleanup(lang *Lang, probDir string) {
 }
 
 // runBenchmarks runs benchmarks for a language and returns results.
-func runBenchmarks(lang *Lang, repoDir string, problems []string) *BenchmarkResults {
+// cooldownMs: milliseconds to sleep between problems for thermal recovery (0 to disable).
+// Apple Silicon (and other modern CPUs) throttle aggressively under sustained load.
+// A small pause between problems lets the chip recover so each measurement starts
+// from a comparable thermal state. Without this, problems run later in a sweep
+// will systematically clock slower than problems run earlier.
+func runBenchmarks(lang *Lang, repoDir string, problems []string, cooldownMs int) *BenchmarkResults {
 	compiler := getCompilerVersion(lang.CompilerCmd)
 
 	res := &BenchmarkResults{
@@ -293,7 +312,7 @@ func runBenchmarks(lang *Lang, repoDir string, problems []string) *BenchmarkResu
 		Problems:  make(map[string]ProblemResult),
 	}
 
-	fmt.Printf("  %s Benchmarks (%d problems)\n", lang.Display, len(problems))
+	fmt.Printf("  %s Benchmarks (%d problems, cooldown=%dms)\n", lang.Display, len(problems), cooldownMs)
 	fmt.Printf("  Compiler: %s\n\n", compiler)
 
 	// Batch build (C# only)
@@ -309,7 +328,12 @@ func runBenchmarks(lang *Lang, repoDir string, problems []string) *BenchmarkResu
 	}
 
 	pass, fail := 0, 0
-	for _, prob := range problems {
+	for i, prob := range problems {
+		// Thermal-recovery cooldown between problems (not before the first one).
+		if i > 0 && cooldownMs > 0 {
+			time.Sleep(time.Duration(cooldownMs) * time.Millisecond)
+		}
+
 		if failedSet[prob] {
 			fail++
 			fmt.Printf("  FAIL %s: build failed\n", prob)
