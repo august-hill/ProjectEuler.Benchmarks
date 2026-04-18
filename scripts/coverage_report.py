@@ -40,8 +40,42 @@ PARKED_PATTERNS = [
     re.compile(r"^\s*return\s+-1\s*;?\s*$", re.MULTILINE),  # placeholder
 ]
 
+# Header that introduces a per-repo permanent-skip section in CLAUDE.md.
+SKIP_SECTION_RE = re.compile(r"##+\s+.*permanent\s+skip", re.IGNORECASE)
+# Bullet item like "- **185** — reason..." inside a skip section.
+SKIP_ITEM_RE = re.compile(r"^\s*[-*]\s*\*\*(\d{1,4})\*\*", re.MULTILINE)
 
-def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: str) -> str:
+
+def read_skip_list(repo_dir: Path) -> set[int]:
+    """Parse a repo's CLAUDE.md for an intentional permanent-skip list.
+
+    Returns the set of problem numbers the repo has decided not to attempt.
+    Empty set if no CLAUDE.md or no skip section.
+    """
+    claude_md = repo_dir / "CLAUDE.md"
+    if not claude_md.exists():
+        return set()
+    try:
+        content = claude_md.read_text(errors="ignore")
+    except Exception:
+        return set()
+    # Find the skip section header; collect bullets until the next header.
+    lines = content.split("\n")
+    in_section = False
+    skips = set()
+    for line in lines:
+        if SKIP_SECTION_RE.match(line):
+            in_section = True
+            continue
+        if in_section and re.match(r"^##+\s", line):
+            break  # next section
+        if in_section:
+            for m in SKIP_ITEM_RE.finditer(line):
+                skips.add(int(m.group(1)))
+    return skips
+
+
+def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: str, skip_set: set[int]) -> str:
     """Classify a single (language, problem) cell."""
     if display_name == "ARM64" and problem_num > ARM64_CAP:
         return SCOPE_OUT
@@ -49,6 +83,9 @@ def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: s
     n_str = f"{problem_num:03d}"
     file_path = repo_dir / file_glob.format(n=n_str)
     if not file_path.exists():
+        # Intentional skip per repo's CLAUDE.md → PARKED, not MISSING
+        if problem_num in skip_set:
+            return PARKED
         return MISSING
 
     # File exists — check if PARKED
@@ -75,8 +112,9 @@ def collect_grid():
     grid = {}
     for display_name, repo_name, file_glob in LANGS:
         repo_dir = ROOT / repo_name
+        skip_set = read_skip_list(repo_dir)
         for n in range(1, 1001):
-            grid[(display_name, n)] = status_for(repo_dir, n, file_glob, display_name)
+            grid[(display_name, n)] = status_for(repo_dir, n, file_glob, display_name, skip_set)
     return grid
 
 
@@ -105,11 +143,13 @@ def century_heatmap(grid):
         for display_name, _, _ in LANGS:
             statuses = [grid[(display_name, n)] for n in range(lo, hi + 1)]
             done = statuses.count(DONE)
+            parked = statuses.count(PARKED)
             in_scope = 100 - statuses.count(SCOPE_OUT)
+            covered = done + parked  # parked counts as "intentionally closed"
             if in_scope == 0:
                 cells.append("⬛ —")  # Out of scope (e.g., ARM64 past 200)
-            elif done == in_scope:
-                cells.append(f"🟩 **{done}**")
+            elif covered == in_scope:
+                cells.append(f"🟩 **{done}**")  # all in-scope settled (done or parked)
             elif done >= in_scope * 0.5:
                 cells.append(f"🟨 {done}/{in_scope}")
             elif done > 0:

@@ -1366,6 +1366,10 @@
             "source_lines": 287,
             "source_bytes": 7043
         },
+        "185": {
+            "status": "parked",
+            "parked_reason": "Backtracking too slow; needs algorithmic breakthrough (no language has solved cleanly)"
+        },
         "186": {
             "time_ns": 31463000,
             "iterations": 100,
@@ -1414,6 +1418,10 @@
             "source_lines": 121,
             "source_bytes": 2972
         },
+        "192": {
+            "status": "parked",
+            "parked_reason": "Requires 128-bit continued-fraction arithmetic; impractical in pure assembly"
+        },
         "193": {
             "time_ns": 36060000,
             "iterations": 100,
@@ -1438,6 +1446,10 @@
             "peak_rss_bytes": 1392640,
             "source_lines": 147,
             "source_bytes": 3906
+        },
+        "196": {
+            "status": "parked",
+            "parked_reason": "C reference is a stub returning 0; needs upstream algorithm work first"
         },
         "197": {
             "time_ns": 24000,
