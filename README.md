@@ -17,42 +17,42 @@ The "best language" depends entirely on what you're measuring. We report **two m
 
 | Rank | Language | Total | vs Zig |
 |------|----------|-------|--------|
-| 1 | **Zig** | 8.68s | 1.00x |
-| 2 | **C++** | 10.0s | 1.15x |
-| 3 | **C** | 11.8s | 1.36x |
-| 4 | **ARM64** | 12.1s | 1.39x |
-| 5 | **C#** | 12.3s | 1.42x |
-| 6 | **Go** | 13.5s | 1.56x |
-| 7 | **Java** | 20.4s | 2.35x |
-| 8 | **Rust** | 28.9s | 3.33x |
-| 9 | **JavaScript** | 29.0s | 3.34x |
-| 10 | **Python** | 88.1s | 10.15x |
+| 1 | **Zig** | 2.60s | 1.00x |
+| 2 | **ARM64** | 4.25s | 1.63x |
+| 3 | **C++** | 4.46s | 1.72x |
+| 4 | **C** | 6.42s | 2.47x |
+| 5 | **C#** | 6.43s | 2.47x |
+| 6 | **Go** | 7.10s | 2.73x |
+| 7 | **JavaScript** | 12.8s | 4.93x |
+| 8 | **Java** | 17.8s | 6.85x |
+| 9 | **Rust** | 21.7s | 8.34x |
+| 10 | **Python** | 68.3s | 26.24x |
 
 ### Cold Mode — first invocation, no warmup
 *"How long does it take if you run the program once?"* Best for CLI tools, lambdas, scripts, and anything invoked once per task. Includes loader cost, interpreter startup (for Python), JIT warmup (for Java/C#/JS), and the first execution. **Assumes the binary already exists** for compiled languages — see methodology for why we don't include compile time.
 
 | Rank | Language | Total | vs Zig |
 |------|----------|-------|--------|
-| 1 | **Zig** | 9.11s | 1.00x |
-| 2 | **ARM64** | 13.1s | 1.44x |
-| 3 | **C++** | 13.1s | 1.44x |
-| 4 | **C** | 13.5s | 1.48x |
-| 5 | **Go** | 14.9s | 1.64x |
-| 6 | **C#** | 20.3s | 2.23x |
-| 7 | **Rust** | 28.3s | 3.11x |
-| 8 | **Java** | 38.1s | 4.18x |
-| 9 | **JavaScript** | 42.2s | 4.63x |
-| 10 | **Python** | **1090.9s** | **119.7x** |
+| 1 | **Zig** | 3.04s | 1.00x |
+| 2 | **ARM64** | 4.25s | 1.40x |
+| 3 | **C++** | 6.68s | 2.20x |
+| 4 | **C** | 7.30s | 2.40x |
+| 5 | **Go** | 7.81s | 2.57x |
+| 6 | **C#** | 12.5s | 4.12x |
+| 7 | **Rust** | 21.4s | 7.04x |
+| 8 | **JavaScript** | 23.3s | 7.68x |
+| 9 | **Java** | 30.6s | 10.08x |
+| 10 | **Python** | **805.6s** | **264.97x** |
 
-*Both modes computed over 188 common problems where all 10 languages have a passing entry.*
+*Both modes computed over 151 common problems where all 10 languages have a passing entry.*
 
 ## What the two modes reveal
 
 - **Zig is rank 1 in both modes** — fast hot loop AND fast cold start. The `comptime` advantage is real and the small standard library means there's almost no startup cost.
-- **Python is dead last in cold mode by ~10x** — Python "looks competitive" in hot mode (rank 10 at 88s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 188 problems that's **1090s of cold-mode time vs 9s for Zig — a 119x gap** that the old "1000-iteration only" methodology hid completely.
-- **Java is rank 7 in hot, rank 8 in cold** — the JIT tax is real and visible. On problem 192, Java is 6 orders of magnitude faster after warmup than on its first call. JVM startup dominates one-shot scripts.
+- **Python is dead last in cold mode by a huge margin** — Python "looks competitive" in hot mode (rank 10 at 68s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 151 problems that's **805s of cold-mode time vs 3s for Zig — a 265x gap** that the old "1000-iteration only" methodology hid completely.
+- **Java is rank 8 in hot, rank 9 in cold** — the JIT tax is real and visible. On problem 192, Java is 6 orders of magnitude faster after warmup than on its first call. JVM startup dominates one-shot scripts.
 - **Rust drops several ranks between hot and cold on individual problems** like 074 and 067 — its per-call performance is excellent, but binary startup costs are significant. A 78μs hot-mode time vs 40ms cold start is a 500x difference for the *same code*.
-- **C++ stays strong in both modes** (rank 2 hot, rank 3 cold) — fast inner loops AND fast binary startup. This is the sweet spot for "running one program multiple times" workloads.
+- **C++ stays strong in both modes** (rank 3 hot, rank 3 cold) — fast inner loops AND fast binary startup. This is the sweet spot for "running one program multiple times" workloads.
 
 [THREE_MODE_REPORT.md](THREE_MODE_REPORT.md) has the per-problem disagreement tables, the hot/cold quadrant analysis, and the third "from-source build" mode preserved for completeness. A legacy single-number ranking using the original `effective_time = max(warm, cold)` metric is in [RESULTS.md](RESULTS.md) for continuity with the project's earlier reports.
 

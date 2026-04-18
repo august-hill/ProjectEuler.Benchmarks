@@ -1,11 +1,9 @@
 # Project Euler Cross-Language Benchmark: Three-Mode Analysis
 
-*Generated from benchmark data collected on 2026-04-12T05:30:26Z*
+*Generated from benchmark data collected on 2026-04-18T00:40:02Z*
 
 Platform: arm64  
-Common problem set: **188 problems** (the intersection of all 10 languages with a passing entry)
-
-> **Note on Total Mode**: this report contains all three modes (hot, cold, total) for completeness, but the main `README.md` leaderboards now show only **hot** and **cold**. Total mode (which sums compile time and cold start) was removed from the primary view because it misrepresents how compiled languages are actually used in production — you compile once and run thousands of times, so per-invocation compile cost is misleading. Total mode is preserved here as a "from-source first run" measurement useful for CI/CD pipeline tuning, container build optimization, and fresh-install timing — but it is **not** a "running cost" measurement. See the README's methodology section for the full reasoning.
+Common problem set: **151 problems** (the intersection of all 10 languages with a passing entry)
 
 ---
 
@@ -27,20 +25,20 @@ Three measurements are reported for each language:
 
 ## Section A: Per-Language Totals Across Common Problems
 
-All times are summed over the 188-problem common set.
+All times are summed over the 151-problem common set.
 
 | Language | Hot total | Cold total | Total (compile+cold) | Hot rank | Cold rank | Total rank |
 |----------|-----------|------------|----------------------|----------|-----------|------------|
-| ARM64      |       12.1 s |     13.1 s * |             90.1 s * |        4 |         3 |          5 |
-| C          |       11.8 s |     13.5 s * |             77.9 s * |        3 |         4 |          4 |
-| C#         |       12.3 s |       20.3 s |               20.3 s |        5 |         6 |          2 |
-| C++        |       10.0 s |       13.1 s |              266.5 s |        2 |         2 |          8 |
-| Go         |       13.5 s |       14.9 s |              295.5 s |        6 |         5 |          9 |
-| Java       |       20.4 s |       38.1 s |              189.4 s |        7 |         8 |          7 |
-| JavaScript |       29.0 s |       42.2 s |               42.2 s |        9 |         9 |          3 |
-| Python     |       88.1 s |     1090.9 s |             1090.9 s |       10 |        10 |         10 |
-| Rust       |       28.9 s |     28.3 s * |            171.2 s * |        8 |         7 |          6 |
-| Zig        |       8.68 s |     9.11 s * |             9.47 s * |        1 |         1 |          1 |
+| ARM64      |       4.25 s |     4.25 s * |             4.25 s * |        2 |         2 |          2 |
+| C          |       6.42 s |     7.30 s * |             59.9 s * |        4 |         4 |          5 |
+| C#         |       6.43 s |       12.5 s |               12.5 s |        5 |         6 |          3 |
+| C++        |       4.46 s |       6.68 s |              209.3 s |        3 |         3 |          8 |
+| Go         |       7.10 s |       7.81 s |              224.8 s |        6 |         5 |          9 |
+| Java       |       17.8 s |       30.6 s |              151.7 s |        8 |         9 |          7 |
+| JavaScript |       12.8 s |       23.3 s |               23.3 s |        7 |         8 |          4 |
+| Python     |       68.3 s |      805.6 s |              805.6 s |       10 |        10 |         10 |
+| Rust       |       21.7 s |     21.4 s * |            135.4 s * |        9 |         7 |          6 |
+| Zig        |       2.60 s |     3.04 s * |             3.40 s * |        1 |         1 |          1 |
 
 *\* Cold column uses `subprocess_wall_ns` when nonzero (full user-perceived cold start including interpreter/runtime startup), otherwise falls back to `cold_start_ns`, then `time_ns` as a lower-bound proxy. Languages with entries marked * had some cold=0 problems where warm time was used as a proxy.*
 
@@ -54,66 +52,66 @@ Showing all languages sorted by total time in each mode. Slowdown is relative to
 
 | Rank | Language | Total | Slowdown |
 |------|----------|-------|----------|
-|    1 | Zig        |     8.68 s |     1.00x |
-|    2 | C++        |     10.0 s |     1.15x |
-|    3 | C          |     11.8 s |     1.37x |
-|    4 | ARM64      |     12.1 s |     1.39x |
-|    5 | C#         |     12.3 s |     1.41x |
-|    6 | Go         |     13.5 s |     1.56x |
-|    7 | Java       |     20.4 s |     2.35x |
-|    8 | Rust       |     28.9 s |     3.34x |
-|    9 | JavaScript |     29.0 s |     3.35x |
-|   10 | Python     |     88.1 s |    10.15x |
+|    1 | Zig        |     2.60 s |     1.00x |
+|    2 | ARM64      |     4.25 s |     1.63x |
+|    3 | C++        |     4.46 s |     1.72x |
+|    4 | C          |     6.42 s |     2.47x |
+|    5 | C#         |     6.43 s |     2.47x |
+|    6 | Go         |     7.10 s |     2.73x |
+|    7 | JavaScript |     12.8 s |     4.93x |
+|    8 | Java       |     17.8 s |     6.85x |
+|    9 | Rust       |     21.7 s |     8.34x |
+|   10 | Python     |     68.3 s |    26.24x |
 
 ### Cold Mode (first invocation)
 
 | Rank | Language | Total | Slowdown |
 |------|----------|-------|----------|
-|    1 | Zig        |     9.11 s |     1.00x |
-|    2 | C++        |     13.1 s |     1.44x |
-|    3 | ARM64      |     13.1 s |     1.44x |
-|    4 | C          |     13.5 s |     1.48x |
-|    5 | Go         |     14.9 s |     1.64x |
-|    6 | C#         |     20.3 s |     2.22x |
-|    7 | Rust       |     28.3 s |     3.10x |
-|    8 | Java       |     38.1 s |     4.18x |
-|    9 | JavaScript |     42.2 s |     4.63x |
-|   10 | Python     |   1090.9 s |   119.76x |
+|    1 | Zig        |     3.04 s |     1.00x |
+|    2 | ARM64      |     4.25 s |     1.40x |
+|    3 | C++        |     6.68 s |     2.20x |
+|    4 | C          |     7.30 s |     2.40x |
+|    5 | Go         |     7.81 s |     2.57x |
+|    6 | C#         |     12.5 s |     4.12x |
+|    7 | Rust       |     21.4 s |     7.04x |
+|    8 | JavaScript |     23.3 s |     7.68x |
+|    9 | Java       |     30.6 s |    10.08x |
+|   10 | Python     |    805.6 s |   264.97x |
 
 ### Total Mode (compile + cold start)
 
 | Rank | Language | Total | Slowdown |
 |------|----------|-------|----------|
-|    1 | Zig        |     9.47 s |     1.00x |
-|    2 | C#         |     20.3 s |     2.14x |
-|    3 | JavaScript |     42.2 s |     4.45x |
-|    4 | C          |     77.9 s |     8.22x |
-|    5 | ARM64      |     90.1 s |     9.52x |
-|    6 | Rust       |    171.2 s |    18.08x |
-|    7 | Java       |    189.4 s |    20.01x |
-|    8 | C++        |    266.5 s |    28.15x |
-|    9 | Go         |    295.5 s |    31.20x |
-|   10 | Python     |   1090.9 s |   115.22x |
+|    1 | Zig        |     3.40 s |     1.00x |
+|    2 | ARM64      |     4.25 s |     1.25x |
+|    3 | C#         |     12.5 s |     3.68x |
+|    4 | JavaScript |     23.3 s |     6.87x |
+|    5 | C          |     59.9 s |    17.62x |
+|    6 | Rust       |    135.4 s |    39.82x |
+|    7 | Java       |    151.7 s |    44.63x |
+|    8 | C++        |    209.3 s |    61.56x |
+|    9 | Go         |    224.8 s |    66.13x |
+|   10 | Python     |    805.6 s |   237.00x |
 
 ---
 
 ## Section C: Hot/Cold Quadrant Analysis
 
 Each language is placed in (hot rank, cold rank) space using its median rank
-across all 188 common problems. Lower rank = faster.
+across all 151 common problems. Lower rank = faster.
 
 | Language | Median hot rank | Median cold rank | Quadrant |
 |----------|-----------------|------------------|----------|
-| ARM64      |             4.0 |              3.0 | Fast-fast (AOT compiled) |
+| ARM64      |             5.0 |              2.0 | Fast-fast (AOT compiled) |
 | C          |             3.0 |              3.0 | Fast-fast (AOT compiled) |
 | C#         |             7.0 |              8.0 | Slow-slow (interpreter) |
-| C++        |             3.0 |              4.0 | Fast-fast (AOT compiled) |
+| C++        |             4.0 |              5.0 | Fast-fast (AOT compiled) |
 | Go         |             6.0 |              6.0 | Slow-slow (interpreter) |
-| Java       |             6.0 |              8.0 | Slow-slow (interpreter) |
+| Java       |             7.0 |              8.0 | Slow-slow (interpreter) |
 | JavaScript |             8.0 |              8.0 | Slow-slow (interpreter) |
 | Python     |            10.0 |             10.0 | Slow-slow (interpreter) |
 | Rust       |             5.0 |              4.0 | Fast-fast (AOT compiled) |
-| Zig        |             2.0 |              1.0 | Fast-fast (AOT compiled) |
+| Zig        |             2.0 |              2.0 | Fast-fast (AOT compiled) |
 
 ### ASCII Art: Median Hot Rank vs Median Cold Rank
 
@@ -125,14 +123,14 @@ Grid is 10x10; each cell is ~1.0 rank units.
      hot rank -->
      1 2 3 4 5 6 7 8 9 10
      --------------------
-c  1|..Zg................
-   2|....................
-   3|....C AS............
-   4|....C+..Rs..........
-   5|....................
+c  1|....................
+   2|..Zg....AS..........
+   3|....C ..............
+   4|........Rs..........
+   5|......C+............
 o  6|..........Go........
    7|....................
-   8|..........JaC#JS....
+   8|............JaJS....
    9|....................
 v 10|..................Py
 
@@ -152,88 +150,13 @@ v 10|..................Py
 The following problems exhibit the largest rank swings between hot and cold measurement.
 They are the clearest illustration of why methodology choice matters.
 
-### Problem 153
-
-| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
-|----------|----------|-----------|----------|-----------|------------|
-| Python     |     83 ns |     33.3 s |        1 |        10 | +9 |
-| Java       |    125 ns |     3.19 s |        2 |         7 | +5 |
-| ARM64      |    2.81 s |     2.70 s |        3 |         1 | -2 |
-| C          |    2.85 s |     2.95 s |        4 |         2 | -2 |
-| C#         |    2.93 s |     3.05 s |        5 |         3 | -2 |
-| C++        |    3.05 s |     3.17 s |        6 |         6 | 0 |
-| Go         |    3.06 s |     3.07 s |        7 |         4 | -3 |
-| Zig        |    3.15 s |     3.15 s |        8 |         5 | -3 |
-| Rust       |    3.84 s |     3.61 s |        9 |         8 | -1 |
-| JavaScript |    12.7 s |     14.3 s |       10 |         9 | -1 |
-
-### Problem 159
-
-| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
-|----------|----------|-----------|----------|-----------|------------|
-| Python     |     83 ns |     917 ms |        1 |        10 | +9 |
-| ARM64      |     51 µs |      15 ms |        2 |         4 | +2 |
-| C++        |     51 µs |      13 ms |        3 |         3 | 0 |
-| C          |     52 µs |      26 ms |        4 |         7 | +3 |
-| Zig        |     52 µs |      52 µs |        5 |         1 | -4 |
-| Go         |    434 µs |      32 ms |        6 |         8 | +2 |
-| Java       |    664 µs |      36 ms |        7 |         9 | +2 |
-| C#         |    665 µs |      23 ms |        8 |         6 | -2 |
-| JavaScript |    830 µs |     2.1 ms |        9 |         2 | -7 |
-| Rust       |     14 ms |      23 ms |       10 |         5 | -5 |
-
-### Problem 200
-
-| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
-|----------|----------|-----------|----------|-----------|------------|
-| Python     |     83 ns |     201 ms |        1 |        10 | +9 |
-| Go         |    7.6 ms |      10 ms |        2 |         4 | +2 |
-| Zig        |    8.1 ms |     8.1 ms |        3 |         1 | -2 |
-| ARM64      |    8.1 ms |      16 ms |        4 |         6 | +2 |
-| C++        |    8.1 ms |      10 ms |        5 |         3 | -2 |
-| C          |    8.1 ms |     9.8 ms |        6 |         2 | -4 |
-| Rust       |    9.1 ms |      12 ms |        7 |         5 | -2 |
-| Java       |     15 ms |      65 ms |        8 |         9 | +1 |
-| C#         |     18 ms |      51 ms |        9 |         8 | -1 |
-| JavaScript |     40 ms |      44 ms |       10 |         7 | -3 |
-
-### Problem 179
-
-| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
-|----------|----------|-----------|----------|-----------|------------|
-| Python     |     83 ns |     12.3 s |        1 |        10 | +9 |
-| C++        |    694 µs |     253 ms |        2 |         4 | +2 |
-| ARM64      |    840 µs |     307 ms |        3 |         5 | +2 |
-| C          |    1.1 ms |     307 ms |        4 |         6 | +2 |
-| Go         |    5.5 ms |     459 ms |        5 |         7 | +2 |
-| Java       |    9.0 ms |     527 ms |        6 |         8 | +2 |
-| C#         |     13 ms |     608 ms |        7 |         9 | +2 |
-| JavaScript |     17 ms |      18 ms |        8 |         1 | -7 |
-| Zig        |    248 ms |     248 ms |        9 |         2 | -7 |
-| Rust       |    264 ms |     248 ms |       10 |         3 | -7 |
-
-### Problem 187
-
-| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
-|----------|----------|-----------|----------|-----------|------------|
-| Python     |     83 ns |     8.28 s |        1 |        10 | +9 |
-| Zig        |     53 µs |      53 µs |        2 |         1 | -1 |
-| Go         |     77 µs |     403 ms |        3 |         2 | -1 |
-| Java       |     81 µs |     589 ms |        4 |         9 | +5 |
-| ARM64      |     83 µs |     532 ms |        5 |         6 | +1 |
-| C++        |     83 µs |     450 ms |        6 |         4 | -2 |
-| C          |     83 µs |     570 ms |        7 |         8 | +1 |
-| C#         |     86 µs |     428 ms |        8 |         3 | -5 |
-| Rust       |    380 ms |     451 ms |        9 |         5 | -4 |
-| JavaScript |    493 ms |     569 ms |       10 |         7 | -3 |
-
 ### Problem 189
 
 | Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
 |----------|----------|-----------|----------|-----------|------------|
 | Python     |     83 ns |     18.1 s |        1 |        10 | +9 |
-| ARM64      |    165 ms |     159 ms |        2 |         2 | 0 |
-| C++        |    170 ms |     151 ms |        3 |         1 | -2 |
+| ARM64      |    115 ms |     115 ms |        2 |         1 | -1 |
+| C++        |    170 ms |     151 ms |        3 |         2 | -1 |
 | Zig        |    174 ms |     174 ms |        4 |         4 | 0 |
 | Rust       |    190 ms |     194 ms |        5 |         5 | 0 |
 | C          |    193 ms |     166 ms |        6 |         3 | -3 |
@@ -242,20 +165,95 @@ They are the clearest illustration of why methodology choice matters.
 | C#         |    466 ms |     474 ms |        9 |         8 | -1 |
 | JavaScript |    862 ms |     889 ms |       10 |         9 | -1 |
 
+### Problem 163
+
+| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
+|----------|----------|-----------|----------|-----------|------------|
+| C          |    122 ms |     122 ms |        1 |         2 | +1 |
+| C++        |    127 ms |     127 ms |        2 |         3 | +1 |
+| Zig        |    144 ms |     149 ms |        3 |         4 | +1 |
+| Rust       |    148 ms |     165 ms |        4 |         6 | +2 |
+| ARM64      |    161 ms |     161 ms |        5 |         5 | 0 |
+| Go         |    171 ms |     175 ms |        6 |         7 | +1 |
+| C#         |    188 ms |     323 ms |        7 |         9 | +2 |
+| Java       |    229 ms |     235 ms |        8 |         8 | 0 |
+| JavaScript |    527 ms |     562 ms |        9 |        10 | +1 |
+| Python     |    2.77 s |      36 ms |       10 |         1 | -9 |
+
+### Problem 200
+
+| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
+|----------|----------|-----------|----------|-----------|------------|
+| Python     |     83 ns |     201 ms |        1 |        10 | +9 |
+| Go         |    7.6 ms |      10 ms |        2 |         4 | +2 |
+| Zig        |    8.1 ms |     8.1 ms |        3 |         1 | -2 |
+| C++        |    8.1 ms |      10 ms |        4 |         3 | -1 |
+| C          |    8.1 ms |     9.8 ms |        5 |         2 | -3 |
+| Rust       |    9.1 ms |      12 ms |        6 |         5 | -1 |
+| Java       |     15 ms |      65 ms |        7 |         8 | +1 |
+| C#         |     18 ms |      51 ms |        8 |         7 | -1 |
+| JavaScript |     40 ms |      44 ms |        9 |         6 | -3 |
+| ARM64      |     73 ms |      73 ms |       10 |         9 | -1 |
+
+### Problem 159
+
+| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
+|----------|----------|-----------|----------|-----------|------------|
+| Python     |     83 ns |     917 ms |        1 |        10 | +9 |
+| C++        |     51 µs |      13 ms |        2 |         4 | +2 |
+| C          |     52 µs |      26 ms |        3 |         7 | +4 |
+| Zig        |     52 µs |      52 µs |        4 |         1 | -3 |
+| Go         |    434 µs |      32 ms |        5 |         8 | +3 |
+| Java       |    664 µs |      36 ms |        6 |         9 | +3 |
+| C#         |    665 µs |      23 ms |        7 |         6 | -1 |
+| JavaScript |    830 µs |     2.1 ms |        8 |         2 | -6 |
+| ARM64      |     12 ms |      12 ms |        9 |         3 | -6 |
+| Rust       |     14 ms |      23 ms |       10 |         5 | -5 |
+
 ### Problem 156
 
 | Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
 |----------|----------|-----------|----------|-----------|------------|
 | Python     |     42 ns |     7.50 s |        1 |        10 | +9 |
 | Zig        |     79 ms |      79 ms |        2 |         1 | -1 |
-| Rust       |    102 ms |     110 ms |        3 |         3 | 0 |
-| C          |    109 ms |     116 ms |        4 |         4 | 0 |
+| Rust       |    102 ms |     110 ms |        3 |         2 | -1 |
+| C          |    109 ms |     116 ms |        4 |         3 | -1 |
 | C#         |    114 ms |     282 ms |        5 |         8 | +3 |
-| C++        |    117 ms |     127 ms |        6 |         5 | -1 |
-| ARM64      |    123 ms |      94 ms |        7 |         2 | -5 |
+| C++        |    117 ms |     127 ms |        6 |         4 | -2 |
+| ARM64      |    143 ms |     143 ms |        7 |         6 | -1 |
 | Go         |    148 ms |     160 ms |        8 |         7 | -1 |
-| Java       |    159 ms |     128 ms |        9 |         6 | -3 |
+| Java       |    159 ms |     128 ms |        9 |         5 | -4 |
 | JavaScript |    1.48 s |     1.32 s |       10 |         9 | -1 |
+
+### Problem 187
+
+| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
+|----------|----------|-----------|----------|-----------|------------|
+| Python     |     83 ns |     8.28 s |        1 |        10 | +9 |
+| ARM64      |     53 µs |      53 µs |        2 |         1 | -1 |
+| Zig        |     53 µs |      53 µs |        3 |         2 | -1 |
+| Go         |     77 µs |     403 ms |        4 |         3 | -1 |
+| Java       |     81 µs |     589 ms |        5 |         9 | +4 |
+| C++        |     83 µs |     450 ms |        6 |         5 | -1 |
+| C          |     83 µs |     570 ms |        7 |         8 | +1 |
+| C#         |     86 µs |     428 ms |        8 |         4 | -4 |
+| Rust       |    380 ms |     451 ms |        9 |         6 | -3 |
+| JavaScript |    493 ms |     569 ms |       10 |         7 | -3 |
+
+### Problem 074
+
+| Language | Hot time | Cold time | Hot rank | Cold rank | Rank delta |
+|----------|----------|-----------|----------|-----------|------------|
+| Rust       |     78 µs |      40 ms |        1 |         9 | +8 |
+| C++        |    706 µs |      11 ms |        2 |         5 | +3 |
+| ARM64      |    4.5 ms |     4.5 ms |        3 |         1 | -2 |
+| C          |    5.0 ms |     5.2 ms |        4 |         3 | -1 |
+| Zig        |    5.1 ms |     5.1 ms |        5 |         2 | -3 |
+| Go         |    8.7 ms |     7.1 ms |        6 |         4 | -2 |
+| C#         |     10 ms |      14 ms |        7 |         6 | -1 |
+| Java       |     13 ms |      20 ms |        8 |         8 | 0 |
+| JavaScript |     14 ms |      18 ms |        9 |         7 | -2 |
+| Python     |    660 ms |     9.26 s |       10 |        10 | 0 |
 
 ---
 
@@ -263,14 +261,14 @@ They are the clearest illustration of why methodology choice matters.
 
 | Language | hot=0 entries (cold used as proxy) | cold=0 entries (hot used as proxy) |
 |----------|-------------------------------------|-------------------------------------|
-| ARM64      |                                  98 |                                  30 |
-| C          |                                  40 |                                  14 |
-| C#         |                                   6 |                                   0 |
-| C++        |                                  24 |                                   0 |
-| Go         |                                  18 |                                   0 |
+| ARM64      |                                  48 |                                 298 |
+| C          |                                  32 |                                  14 |
+| C#         |                                   4 |                                   0 |
+| C++        |                                  20 |                                   0 |
+| Go         |                                  14 |                                   0 |
 | Java       |                                   0 |                                   0 |
 | JavaScript |                                   0 |                                   0 |
 | Python     |                                   0 |                                   0 |
-| Rust       |                                  14 |                                   2 |
-| Zig        |                                 142 |                                 374 |
+| Rust       |                                  12 |                                   2 |
+| Zig        |                                 114 |                                 298 |
 

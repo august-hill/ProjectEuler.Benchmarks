@@ -1,8 +1,8 @@
 {
     "language": "javascript",
     "platform": "arm64",
-    "compiler": "v24.14.1",
-    "timestamp": "2026-04-12T00:33:21Z",
+    "compiler": "node v24.15.0",
+    "timestamp": "2026-04-18T01:43:03Z",
     "problems": {
         "001": {
             "answer": 233168,
@@ -1788,14 +1788,14 @@
         },
         "163": {
             "answer": 343047,
-            "time_ns": 208,
-            "cold_start_ns": 10458,
-            "iterations": 1000,
+            "time_ns": 526668875,
+            "cold_start_ns": 561684416,
+            "iterations": 10,
             "status": "pass",
-            "peak_rss_bytes": 46350336,
-            "compile_time_ns": 0,
-            "source_lines": 12,
-            "source_bytes": 321
+            "peak_rss_bytes": 62029824,
+            "source_lines": 154,
+            "source_bytes": 4917,
+            "compile_time_ns": 0
         },
         "164": {
             "answer": 378158756814587,
@@ -2350,6 +2350,56 @@
             "compile_time_ns": 0,
             "source_lines": 60,
             "source_bytes": 1633
+        },
+        "216": {
+            "answer": 5437849,
+            "time_ns": 7500336584,
+            "cold_start_ns": 7103595500,
+            "iterations": 3,
+            "status": "pass",
+            "peak_rss_bytes": 142245888,
+            "source_lines": 127,
+            "source_bytes": 4178
+        },
+        "217": {
+            "answer": 6273134,
+            "time_ns": 8903584,
+            "cold_start_ns": 10716416,
+            "iterations": 100,
+            "status": "pass",
+            "peak_rss_bytes": 70762496,
+            "source_lines": 138,
+            "source_bytes": 5078
+        },
+        "218": {
+            "answer": 0,
+            "time_ns": 83,
+            "cold_start_ns": 819315666,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 51789824,
+            "source_lines": 75,
+            "source_bytes": 2565
+        },
+        "219": {
+            "answer": 64564225042,
+            "time_ns": 83,
+            "cold_start_ns": 47834,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 47022080,
+            "source_lines": 57,
+            "source_bytes": 1889
+        },
+        "220": {
+            "answer": 139776963904,
+            "time_ns": 666,
+            "cold_start_ns": 282583,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 53772288,
+            "source_lines": 219,
+            "source_bytes": 6635
         }
     }
 }
