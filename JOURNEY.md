@@ -493,4 +493,4 @@ For AOT-compiled languages (C, C++, Rust, Go), cold and warm times are essential
 
 The two-model strategy (Opus designs algorithms in C, Sonnet ports to other languages) ensures algorithmic consistency. The performance differences in the benchmark are genuine language-level differences, not algorithm-selection artifacts.
 
-This validates the benchmark's core claim: when the algorithm is held constant, language choice produces a 2-6x performance spread, while algorithm choice (as demonstrated by the problem 173 sqrt fix) produces 1000x+ differences.
+This validates the benchmark's core claim: when the algorithm is held constant, language choice produces a 2-6x performance spread, while algorithm choice produces 1000x+ differences (one fix on a single problem yielded a 23,000x speedup across all 10 languages).

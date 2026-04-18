@@ -314,7 +314,7 @@ def main():
 
 3. **Rust has a fat tail** — median 1.05x (essentially C-speed) but p90 is 6.44x. Claude occasionally generates suboptimal Rust due to borrow checker workarounds.
 
-4. **Algorithm choice matters 1000x more than language choice.** The biggest per-problem spreads are algorithm divergence, not language speed. Problem 173's sqrt fix was a 23,000x improvement.
+4. **Algorithm choice matters 1000x more than language choice.** The biggest per-problem spreads are algorithm divergence, not language speed. A single algorithmic improvement on one problem yielded a 23,000x speedup across all languages.
 
 5. **Python is ~40x slower for computation** but its compact syntax (42 avg SLOC vs 72 for C) makes it ideal for prototyping. 5 problems simply can't finish within timeout.
 
