@@ -17,39 +17,39 @@ The "best language" depends entirely on what you're measuring. We report **two m
 
 | Rank | Language | Total | vs Zig |
 |------|----------|-------|--------|
-| 1 | **Zig** | 2.60s | 1.00x |
-| 2 | **ARM64** | 4.25s | 1.63x |
-| 3 | **C++** | 4.46s | 1.72x |
-| 4 | **C** | 6.42s | 2.47x |
-| 5 | **C#** | 6.43s | 2.47x |
-| 6 | **Go** | 7.10s | 2.73x |
-| 7 | **JavaScript** | 12.8s | 4.93x |
-| 8 | **Java** | 17.8s | 6.85x |
-| 9 | **Rust** | 21.7s | 8.34x |
-| 10 | **Python** | 68.3s | 26.24x |
+| 1 | **Zig** | 2.74s | 1.00x |
+| 2 | **ARM64** | 4.38s | 1.60x |
+| 3 | **C++** | 4.58s | 1.67x |
+| 4 | **C** | 6.54s | 2.39x |
+| 5 | **C#** | 6.57s | 2.40x |
+| 6 | **Go** | 7.23s | 2.64x |
+| 7 | **JavaScript** | 12.8s | 4.68x |
+| 8 | **Java** | 18.0s | 6.56x |
+| 9 | **Rust** | 21.8s | 7.97x |
+| 10 | **Python** | 68.3s | 24.93x |
 
 ### Cold Mode — first invocation, no warmup
 *"How long does it take if you run the program once?"* Best for CLI tools, lambdas, scripts, and anything invoked once per task. Includes loader cost, interpreter startup (for Python), JIT warmup (for Java/C#/JS), and the first execution. **Assumes the binary already exists** for compiled languages — see methodology for why we don't include compile time.
 
 | Rank | Language | Total | vs Zig |
 |------|----------|-------|--------|
-| 1 | **Zig** | 3.04s | 1.00x |
-| 2 | **ARM64** | 4.25s | 1.40x |
-| 3 | **C++** | 6.68s | 2.20x |
-| 4 | **C** | 7.30s | 2.40x |
-| 5 | **Go** | 7.81s | 2.57x |
-| 6 | **C#** | 12.5s | 4.12x |
-| 7 | **Rust** | 21.4s | 7.04x |
-| 8 | **JavaScript** | 23.3s | 7.68x |
-| 9 | **Java** | 30.6s | 10.08x |
-| 10 | **Python** | **805.6s** | **264.97x** |
+| 1 | **Zig** | 3.19s | 1.00x |
+| 2 | **ARM64** | 4.40s | 1.38x |
+| 3 | **C++** | 6.82s | 2.14x |
+| 4 | **C** | 7.42s | 2.33x |
+| 5 | **Go** | 7.95s | 2.49x |
+| 6 | **C#** | 12.7s | 3.97x |
+| 7 | **Rust** | 21.5s | 6.76x |
+| 8 | **JavaScript** | 23.6s | 7.39x |
+| 9 | **Java** | 30.8s | 9.66x |
+| 10 | **Python** | **813.2s** | **255.03x** |
 
-*Both modes computed over 151 common problems where all 10 languages have a passing entry.*
+*Both modes computed over 152 common problems where all 10 languages have a passing entry.*
 
 ## What the two modes reveal
 
 - **Zig is rank 1 in both modes** — fast hot loop AND fast cold start. The `comptime` advantage is real and the small standard library means there's almost no startup cost.
-- **Python is dead last in cold mode by a huge margin** — Python "looks competitive" in hot mode (rank 10 at 68s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 151 problems that's **805s of cold-mode time vs 3s for Zig — a 265x gap** that the old "1000-iteration only" methodology hid completely.
+- **Python is dead last in cold mode by a huge margin** — Python "looks competitive" in hot mode (rank 10 at 68s) but the CPython interpreter takes ~50-200ms to launch *per invocation*. Across 152 problems that's **813s of cold-mode time vs 3s for Zig — a 255x gap** that the old "1000-iteration only" methodology hid completely.
 - **Java is rank 8 in hot, rank 9 in cold** — the JIT tax is real and visible. On problem 192, Java is 6 orders of magnitude faster after warmup than on its first call. JVM startup dominates one-shot scripts.
 - **Rust drops several ranks between hot and cold on individual problems** like 074 and 067 — its per-call performance is excellent, but binary startup costs are significant. A 78μs hot-mode time vs 40ms cold start is a 500x difference for the *same code*.
 - **C++ stays strong in both modes** (rank 3 hot, rank 3 cold) — fast inner loops AND fast binary startup. This is the sweet spot for "running one program multiple times" workloads.
