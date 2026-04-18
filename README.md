@@ -4,6 +4,8 @@
 
 200+ Project Euler problems solved in C, C++, Rust, Go, Zig, Java, C#, JavaScript, Python, and ARM64 Assembly — every solution written by [Claude](https://claude.ai) (Opus 4.6 for algorithm design, Sonnet/Haiku for language ports). Benchmarked on Apple Silicon.
 
+> 📊 **Coverage at a glance:** see [COVERAGE.md](COVERAGE.md) for a per-language, per-problem dashboard with heatmaps, frontier markers, and gap analysis. Regenerate with `python3 scripts/coverage_report.py`.
+
 ![Total Benchmark Time](charts/final_total_time.png)
 
 ## The Honest Leaderboard
