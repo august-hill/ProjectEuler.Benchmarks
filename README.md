@@ -105,7 +105,7 @@ The alternative (collect changes and run a full sweep later) means every measure
 
 ### 5. Two notions of "answer"
 
-Earlier the `Answer` field was strictly typed as `json.Number`, which meant the runner crashed when a problem returned a non-numeric answer like `"199740353/29386561536000"` (problem 329's exact fraction). The field is now `interface{}` and stores numeric answers as `json.Number` (so they serialize unquoted) and string-shaped answers as plain strings. Both round-trip through the JSON and downstream tooling.
+Earlier the `Answer` field was strictly typed as `json.Number`, which meant the runner crashed when a problem returned a non-numeric answer (e.g. an exact fraction like `"a/b"`). The field is now `interface{}` and stores numeric answers as `json.Number` (so they serialize unquoted) and string-shaped answers as plain strings. Both round-trip through the JSON and downstream tooling.
 
 ### 6. What we still don't fix
 

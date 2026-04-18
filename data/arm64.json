@@ -881,7 +881,6 @@
             "source_bytes": 1224
         },
         "106": {
-            "answer": 2501,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -898,7 +897,6 @@
             "error": "no output"
         },
         "112": {
-            "answer": 1587000,
             "time_ns": 7817000,
             "iterations": 100,
             "status": "pass",
@@ -911,7 +909,6 @@
             "error": "no output"
         },
         "114": {
-            "answer": 16475640049,
             "time_ns": 3000,
             "iterations": 1000,
             "status": "pass",
@@ -928,7 +925,6 @@
             "error": "no output"
         },
         "117": {
-            "answer": 100808458960497,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -937,7 +933,6 @@
             "source_bytes": 1603
         },
         "118": {
-            "answer": 44680,
             "time_ns": 131052000,
             "iterations": 10,
             "status": "pass",
@@ -946,7 +941,6 @@
             "source_bytes": 8646
         },
         "119": {
-            "answer": 248155780267521,
             "time_ns": 19000,
             "iterations": 1000,
             "status": "pass",
@@ -963,7 +957,6 @@
             "error": "no output"
         },
         "122": {
-            "answer": 1582,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -972,7 +965,6 @@
             "source_bytes": 5056
         },
         "123": {
-            "answer": 21035,
             "time_ns": 2990000,
             "iterations": 100,
             "status": "pass",
@@ -981,7 +973,6 @@
             "source_bytes": 3818
         },
         "124": {
-            "answer": 21417,
             "time_ns": 7487000,
             "iterations": 100,
             "status": "pass",
@@ -990,7 +981,6 @@
             "source_bytes": 4044
         },
         "126": {
-            "answer": 18522,
             "time_ns": 3285000,
             "iterations": 100,
             "status": "pass",
@@ -999,7 +989,6 @@
             "source_bytes": 3048
         },
         "127": {
-            "answer": 18407904,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1012,7 +1001,6 @@
             "error": "no output"
         },
         "129": {
-            "answer": 1000023,
             "time_ns": 9464000,
             "iterations": 100,
             "status": "pass",
@@ -1029,7 +1017,6 @@
             "error": "no output"
         },
         "132": {
-            "answer": 843296,
             "time_ns": 3349000,
             "iterations": 100,
             "status": "pass",
@@ -1038,7 +1025,6 @@
             "source_bytes": 2743
         },
         "133": {
-            "answer": 453647705,
             "time_ns": 2142000,
             "iterations": 100,
             "status": "pass",
@@ -1047,7 +1033,6 @@
             "source_bytes": 3681
         },
         "134": {
-            "answer": 1197563469141352254,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1056,7 +1041,6 @@
             "source_bytes": 532
         },
         "135": {
-            "answer": 4989,
             "time_ns": 3184000,
             "iterations": 100,
             "status": "pass",
@@ -1065,7 +1049,6 @@
             "source_bytes": 3001
         },
         "137": {
-            "answer": 1120149658760,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1082,7 +1065,6 @@
             "error": "no output"
         },
         "140": {
-            "answer": 5673835352990,
             "time_ns": 1000,
             "iterations": 1000,
             "status": "pass",
@@ -1095,7 +1077,6 @@
             "error": "no output"
         },
         "142": {
-            "answer": 1006193,
             "time_ns": 2189000,
             "iterations": 100,
             "status": "pass",
@@ -1104,7 +1085,6 @@
             "source_bytes": 3854
         },
         "144": {
-            "answer": 354,
             "time_ns": 10000,
             "iterations": 1000,
             "status": "pass",
@@ -1113,7 +1093,6 @@
             "source_bytes": 5110
         },
         "145": {
-            "answer": 608720,
             "time_ns": 75471000,
             "iterations": 100,
             "status": "pass",
@@ -1122,7 +1101,6 @@
             "source_bytes": 2055
         },
         "146": {
-            "answer": 676333270,
             "time_ns": 2659288000,
             "iterations": 3,
             "status": "pass",
@@ -1139,7 +1117,6 @@
             "error": "no output"
         },
         "149": {
-            "answer": 52852124,
             "time_ns": 36803000,
             "iterations": 100,
             "status": "pass",
@@ -1148,7 +1125,6 @@
             "source_bytes": 10969
         },
         "150": {
-            "answer": -271248680,
             "time_ns": 124035000,
             "iterations": 10,
             "status": "pass",
@@ -1157,7 +1133,6 @@
             "source_bytes": 6047
         },
         "151": {
-            "answer": 464399,
             "time_ns": 5000,
             "iterations": 1000,
             "status": "pass",
@@ -1166,7 +1141,6 @@
             "source_bytes": 10521
         },
         "152": {
-            "answer": 301,
             "time_ns": 1580386000,
             "iterations": 3,
             "status": "pass",
@@ -1179,7 +1153,6 @@
             "error": "no output"
         },
         "154": {
-            "answer": 479742450,
             "time_ns": 3427734000,
             "iterations": 3,
             "status": "pass",
@@ -1188,7 +1161,6 @@
             "source_bytes": 5815
         },
         "155": {
-            "answer": 3857447,
             "time_ns": 699609000,
             "iterations": 10,
             "status": "pass",
@@ -1197,7 +1169,6 @@
             "source_bytes": 10449
         },
         "156": {
-            "answer": 21295121502550,
             "time_ns": 143353000,
             "iterations": 10,
             "status": "pass",
@@ -1210,7 +1181,6 @@
             "error": "no output"
         },
         "158": {
-            "answer": 409511334375,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1219,7 +1189,6 @@
             "source_bytes": 1349
         },
         "159": {
-            "answer": 14489159,
             "time_ns": 12240000,
             "iterations": 100,
             "status": "pass",
@@ -1232,7 +1201,6 @@
             "error": "no output"
         },
         "161": {
-            "answer": 20574308184277971,
             "time_ns": 44610000,
             "iterations": 100,
             "status": "pass",
@@ -1241,7 +1209,6 @@
             "source_bytes": 6746
         },
         "162": {
-            "answer": 4420408745587516162,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1250,7 +1217,6 @@
             "source_bytes": 3836
         },
         "163": {
-            "answer": 343047,
             "time_ns": 0,
             "cold_start_ns": 160897000,
             "iterations": 1000,
@@ -1260,7 +1226,6 @@
             "source_bytes": 18124
         },
         "164": {
-            "answer": 378158756814587,
             "time_ns": 4000,
             "iterations": 1000,
             "status": "pass",
@@ -1269,7 +1234,6 @@
             "source_bytes": 3680
         },
         "165": {
-            "answer": 2868868,
             "time_ns": 638803000,
             "iterations": 10,
             "status": "pass",
@@ -1278,7 +1242,6 @@
             "source_bytes": 9716
         },
         "166": {
-            "answer": 7130034,
             "time_ns": 167939000,
             "iterations": 10,
             "status": "pass",
@@ -1287,7 +1250,6 @@
             "source_bytes": 4102
         },
         "167": {
-            "answer": 3916160068885,
             "time_ns": 122936000,
             "cold_start_ns": 145587000,
             "iterations": 10,
@@ -1297,7 +1259,6 @@
             "source_bytes": 21661
         },
         "168": {
-            "answer": 59206,
             "time_ns": 33000,
             "iterations": 1000,
             "status": "pass",
@@ -1306,7 +1267,6 @@
             "source_bytes": 4985
         },
         "169": {
-            "answer": 13217943,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1315,7 +1275,6 @@
             "source_bytes": 2834
         },
         "171": {
-            "answer": 142989277,
             "time_ns": 2141000,
             "iterations": 100,
             "status": "pass",
@@ -1324,7 +1283,6 @@
             "source_bytes": 5079
         },
         "172": {
-            "answer": 227485267000992000,
             "time_ns": 3000,
             "iterations": 1000,
             "status": "pass",
@@ -1333,7 +1291,6 @@
             "source_bytes": 6048
         },
         "173": {
-            "answer": 15198944656,
             "time_ns": 2287000,
             "iterations": 100,
             "status": "pass",
@@ -1342,7 +1299,6 @@
             "source_bytes": 2943
         },
         "174": {
-            "answer": 209566,
             "time_ns": 2443000,
             "iterations": 100,
             "status": "pass",
@@ -1351,7 +1307,6 @@
             "source_bytes": 3801
         },
         "175": {
-            "answer": 181,
             "time_ns": 0,
             "iterations": 1000,
             "status": "pass",
@@ -1360,7 +1315,6 @@
             "source_bytes": 3233
         },
         "176": {
-            "answer": 96818198400000,
             "time_ns": 262000,
             "iterations": 1000,
             "status": "pass",
@@ -1369,7 +1323,6 @@
             "source_bytes": 13545
         },
         "177": {
-            "answer": 129325,
             "time_ns": 6463476000,
             "iterations": 3,
             "status": "pass",
@@ -1378,7 +1331,6 @@
             "source_bytes": 13137
         },
         "178": {
-            "answer": 126461847755,
             "time_ns": 324000,
             "iterations": 1000,
             "status": "pass",
@@ -1391,7 +1343,6 @@
             "error": "no output"
         },
         "181": {
-            "answer": 83735848679360680,
             "time_ns": 2622000,
             "iterations": 100,
             "status": "pass",
@@ -1400,7 +1351,6 @@
             "source_bytes": 3454
         },
         "183": {
-            "answer": 48861552,
             "time_ns": 673000,
             "iterations": 1000,
             "status": "pass",
@@ -1409,7 +1359,6 @@
             "source_bytes": 3200
         },
         "184": {
-            "answer": 1728883861600,
             "time_ns": 1015000,
             "iterations": 100,
             "status": "pass",
@@ -1418,7 +1367,6 @@
             "source_bytes": 7043
         },
         "186": {
-            "answer": 2325629,
             "time_ns": 31463000,
             "iterations": 100,
             "status": "pass",
@@ -1427,7 +1375,6 @@
             "source_bytes": 6755
         },
         "187": {
-            "answer": 17427258,
             "time_ns": 53000,
             "iterations": 1000,
             "status": "pass",
@@ -1436,7 +1383,6 @@
             "source_bytes": 4373
         },
         "188": {
-            "answer": 95962097,
             "time_ns": 2000,
             "iterations": 1000,
             "status": "pass",
@@ -1445,7 +1391,6 @@
             "source_bytes": 5275
         },
         "189": {
-            "answer": 10834896897689856,
             "time_ns": 115080000,
             "iterations": 10,
             "status": "pass",
@@ -1454,7 +1399,6 @@
             "source_bytes": 5545
         },
         "190": {
-            "answer": 371048281,
             "time_ns": 1000,
             "iterations": 1000,
             "status": "pass",
@@ -1463,7 +1407,6 @@
             "source_bytes": 1751
         },
         "191": {
-            "answer": 1918080160,
             "time_ns": 1000,
             "iterations": 1000,
             "status": "pass",
@@ -1472,7 +1415,6 @@
             "source_bytes": 2972
         },
         "193": {
-            "answer": 684465067343069,
             "time_ns": 36060000,
             "iterations": 100,
             "status": "pass",
@@ -1481,7 +1423,6 @@
             "source_bytes": 3469
         },
         "194": {
-            "answer": 61190912,
             "time_ns": 3000,
             "cold_start_ns": 3000,
             "iterations": 1000,
@@ -1491,7 +1432,6 @@
             "source_bytes": 10017
         },
         "195": {
-            "answer": 75443028,
             "time_ns": 233089000,
             "iterations": 10,
             "status": "pass",
@@ -1500,7 +1440,6 @@
             "source_bytes": 3906
         },
         "197": {
-            "answer": 1710637717,
             "time_ns": 24000,
             "iterations": 1000,
             "status": "pass",
@@ -1509,7 +1448,6 @@
             "source_bytes": 2383
         },
         "199": {
-            "answer": 396087,
             "time_ns": 1422000,
             "iterations": 100,
             "status": "pass",
@@ -1518,7 +1456,6 @@
             "source_bytes": 4979
         },
         "200": {
-            "answer": 229161792008,
             "time_ns": 73061000,
             "iterations": 100,
             "status": "pass",
@@ -1527,7 +1464,6 @@
             "source_bytes": 13243
         },
         "206": {
-            "answer": 1389019170,
             "time_ns": 66730000,
             "iterations": 100,
             "status": "pass",
@@ -1536,7 +1472,6 @@
             "source_bytes": 3601
         },
         "207": {
-            "answer": 44043947822,
             "time_ns": 136000,
             "iterations": 1000,
             "status": "pass",
