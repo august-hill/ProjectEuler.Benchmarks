@@ -2,7 +2,7 @@
     "language": "rust",
     "platform": "arm64",
     "compiler": "rustc 1.87.0 (17067e9ac 2025-05-09)",
-    "timestamp": "2026-04-18T01:42:24Z",
+    "timestamp": "2026-04-18T06:45:45Z",
     "problems": {
         "001": {
             "answer": 233168,
@@ -1831,11 +1831,14 @@
             "source_bytes": 1853
         },
         "167": {
-            "time_ns": 0,
-            "cold_start_ns": 0,
-            "status": "fail",
-            "error": "no output",
-            "compile_time_ns": 0
+            "answer": 3916160068885,
+            "time_ns": 125234833,
+            "cold_start_ns": 129581250,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 101285888,
+            "source_lines": 245,
+            "source_bytes": 6710
         },
         "168": {
             "answer": 59206,

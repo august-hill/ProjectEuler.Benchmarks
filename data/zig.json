@@ -1,8 +1,8 @@
 {
     "language": "zig",
     "platform": "arm64",
-    "compiler": "0.15.2",
-    "timestamp": "2026-04-12T02:18:32Z",
+    "compiler": "zig 0.15.2",
+    "timestamp": "2026-04-18T06:45:59Z",
     "problems": {
         "001": {
             "answer": 233168,
@@ -1789,14 +1789,14 @@
         },
         "163": {
             "answer": 343047,
-            "time_ns": 0,
-            "cold_start_ns": 0,
-            "iterations": 1000,
+            "time_ns": 143647000,
+            "cold_start_ns": 149345000,
+            "iterations": 10,
             "status": "pass",
-            "peak_rss_bytes": 1327104,
-            "compile_time_ns": 0,
-            "source_lines": 15,
-            "source_bytes": 437
+            "peak_rss_bytes": 1425408,
+            "source_lines": 182,
+            "source_bytes": 5687,
+            "compile_time_ns": 0
         },
         "164": {
             "answer": 378158756814587,
@@ -1830,6 +1830,16 @@
             "compile_time_ns": 0,
             "source_lines": 70,
             "source_bytes": 2435
+        },
+        "167": {
+            "answer": 3916160068885,
+            "time_ns": 136424000,
+            "cold_start_ns": 148282000,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 79298560,
+            "source_lines": 255,
+            "source_bytes": 8152
         },
         "168": {
             "answer": 59206,

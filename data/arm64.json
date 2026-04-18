@@ -2,28 +2,8 @@
     "language": "arm64",
     "platform": "arm64",
     "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-    "timestamp": "2026-04-18T01:17:47Z",
+    "timestamp": "2026-04-18T06:46:02Z",
     "problems": {
-        "194": {
-            "answer": 61190912,
-            "time_ns": 3000,
-            "cold_start_ns": 3000,
-            "iterations": 1000,
-            "status": "pass",
-            "peak_rss_bytes": 1376256,
-            "source_lines": 365,
-            "source_bytes": 10017
-        },
-        "163": {
-            "answer": 343047,
-            "time_ns": 0,
-            "cold_start_ns": 160897000,
-            "iterations": 1000,
-            "status": "pass",
-            "peak_rss_bytes": 1490944,
-            "source_lines": 657,
-            "source_bytes": 18124
-        },
         "001": {
             "answer": 233168,
             "time_ns": 1000,
@@ -1269,6 +1249,16 @@
             "source_lines": 126,
             "source_bytes": 3836
         },
+        "163": {
+            "answer": 343047,
+            "time_ns": 0,
+            "cold_start_ns": 160897000,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1490944,
+            "source_lines": 657,
+            "source_bytes": 18124
+        },
         "164": {
             "answer": 378158756814587,
             "time_ns": 4000,
@@ -1295,6 +1285,16 @@
             "peak_rss_bytes": 1392640,
             "source_lines": 202,
             "source_bytes": 4102
+        },
+        "167": {
+            "answer": 3916160068885,
+            "time_ns": 122936000,
+            "cold_start_ns": 145587000,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 136183808,
+            "source_lines": 714,
+            "source_bytes": 21661
         },
         "168": {
             "answer": 59206,
@@ -1479,6 +1479,16 @@
             "peak_rss_bytes": 68485120,
             "source_lines": 141,
             "source_bytes": 3469
+        },
+        "194": {
+            "answer": 61190912,
+            "time_ns": 3000,
+            "cold_start_ns": 3000,
+            "iterations": 1000,
+            "status": "pass",
+            "peak_rss_bytes": 1376256,
+            "source_lines": 365,
+            "source_bytes": 10017
         },
         "195": {
             "answer": 75443028,

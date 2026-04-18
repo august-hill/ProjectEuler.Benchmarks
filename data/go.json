@@ -2,7 +2,7 @@
     "language": "go",
     "platform": "arm64",
     "compiler": "go1.26.2",
-    "timestamp": "2026-04-18T01:42:08Z",
+    "timestamp": "2026-04-18T06:45:43Z",
     "problems": {
         "001": {
             "answer": 233168,
@@ -1831,11 +1831,14 @@
             "source_bytes": 1375
         },
         "167": {
-            "time_ns": 0,
-            "cold_start_ns": 0,
-            "status": "fail",
-            "error": "no output",
-            "compile_time_ns": 0
+            "answer": 3916160068885,
+            "time_ns": 126149334,
+            "cold_start_ns": 131300708,
+            "iterations": 10,
+            "status": "pass",
+            "peak_rss_bytes": 209190912,
+            "source_lines": 231,
+            "source_bytes": 5086
         },
         "168": {
             "answer": 59206,
