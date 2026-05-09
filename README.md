@@ -124,6 +124,7 @@ This benchmark suite exists to compare AI-generated code across languages. The p
 ## Key Takeaways
 
 - **Algorithm choice matters 1000x more than language choice.** The biggest performance gaps come from algorithmic differences, not language speed.
+- **Python earns its keep as a *prospector*, not as a deployment target.** `sympy`, `mpmath`, and `Fraction` collapse weeks of theorist tooling into one-line calls, making it 5-10x faster to find the right algorithm in Python than in any compiled language. The natural workflow is *Python to discover, C++ to ship* — see [JOURNEY.md § Python as Prospector, C++ as Ship](JOURNEY.md#python-as-prospector-c-as-ship) for the full lesson. This frames Python's slowness in the leaderboards correctly: it's the wrong language to deploy from, but the right language to *arrive at correct C++* with.
 - **Zig wins both leaderboards** — fast hot loop AND fast cold start. `comptime` evaluation precomputes work at compile time, the standard library is small enough to keep cold-start near zero, and the binary is a single statically-linked executable with no runtime dependencies.
 - **C++ is the sweet spot for Claude-generated *code*** — C-speed with 35% less SLOC thanks to STL — and remains a strong contender in both modes (rank 2 hot, rank 3 cold).
 - **Rust has a fat tail** — median is C-speed (1.05x) but p90 balloons to 6.44x due to borrow checker workarounds. And its binary cold start is significantly larger than C++ or Zig.
