@@ -74,6 +74,22 @@ Problem 095 (Amicable Chains) was the poster child. The C version ran in 7 secon
 
 This pattern repeated: C++ problems using Boost big integers were 1000x slower than the same algorithm with modular arithmetic. Rust problem 009 used O(n^2) brute force while C used O(n) algebra. The language choice was noise compared to the algorithm choice.
 
+### Python as Prospector, C++ as Ship
+
+The natural workflow that emerged for solving new problems is two-language, not one. Python is the *discovery* surface; C++ is the *deployment* target.
+
+Python's strength on PE is not raw speed -- it's that `sympy.factorint`, `sympy.divisors`, `sympy.totient`, `mpmath` at arbitrary precision, and `fractions.Fraction` for exact rationals collapse weeks of theorist tooling into one-line calls. Trying five candidate algorithms takes 30 seconds in Python; the same exploration in C++ would burn 30+ minutes per attempt on compile + bigint plumbing alone. For algorithm-choice questions ("is this a sieve, a DP, or a closed form?") the iteration cycle in Python is roughly 5-10x faster than in any compiled language.
+
+But Python loses on scale. A prototype that runs at N=1000 in 30 seconds may not extend to N=10^12. So the recipe is:
+
+1. Find the algorithm in Python on a small case.
+2. Verify with `mpmath` (decimals) or `Fraction` (rationals) that the math is right.
+3. Port to C++ for the real run, with the answer already known so you can detect drift.
+
+This third step also catches a quiet failure mode: a wrong placeholder answer in a comment. The C++ implementation can confidently produce the wrong number for the right reason (overflow, off-by-one, comment drift) and "pass" the harness. Cross-checking against an independent Python computation -- even one that takes 60 seconds at small scale -- catches every divergence.
+
+The honest framing is that the benchmark measures what *C++ produces*, not what *the project produces*. Python is half of how the project arrives at correct C++. Removing it doesn't speed anything up; it removes the cheapest way to be right.
+
 ### The LLVM Confound
 C (Clang), C++, and Rust all use LLVM as their optimizer backend. When they produce similar performance, we can't tell if that's the language design or the shared optimizer. GCC for C/C++ would help isolate this variable -- a future direction.
 
