@@ -6,3 +6,9 @@
 
 # Backup files (e.g., data/cpp.json.bak from in-place edits)
 *.bak
+
+# Local diagnostic state from auto-publish gate trips (lang_repo_post_commit.sh)
+.pe-exception.json
+
+# Compiled Go binary (rebuilt on demand from check_timing_delta.go)
+scripts/check_timing_delta
