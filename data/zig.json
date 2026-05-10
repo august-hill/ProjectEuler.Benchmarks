@@ -4,6 +4,16 @@
   "compiler": "zig 0.15.2",
   "timestamp": "2026-05-10T23:34:28Z",
   "problems": {
+    "500": {
+      "time_ns": 40289000,
+      "compile_time_ns": 402096000,
+      "cold_start_ns": 40449000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 19857408,
+      "source_lines": 76,
+      "source_bytes": 2386
+    },
     "845": {
       "time_ns": 355000,
       "compile_time_ns": 368341000,
