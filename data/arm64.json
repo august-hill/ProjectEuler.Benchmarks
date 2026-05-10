@@ -2,8 +2,133 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T02:44:26Z",
+  "timestamp": "2026-05-10T02:47:03Z",
   "problems": {
+    "048": {
+      "answer": 1575116,
+      "time_ns": 53000,
+      "compile_time_ns": 137410000,
+      "cold_start_ns": 61000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 97,
+      "source_bytes": 2327
+    },
+    "070": {
+      "answer": 9983167,
+      "time_ns": 303122000,
+      "compile_time_ns": 148816000,
+      "cold_start_ns": 310639000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 41435136,
+      "source_lines": 201,
+      "source_bytes": 4830
+    },
+    "092": {
+      "answer": 15328,
+      "time_ns": 114688000,
+      "compile_time_ns": 138079000,
+      "cold_start_ns": 180501000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 140,
+      "source_bytes": 3100
+    },
+    "097": {
+      "answer": 335859185,
+      "time_ns": 0,
+      "compile_time_ns": 137827000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 73,
+      "source_bytes": 1509
+    },
+    "106": {
+      "time_ns": 0,
+      "compile_time_ns": 136943000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 108,
+      "source_bytes": 3138
+    },
+    "134": {
+      "time_ns": 0,
+      "compile_time_ns": 142866000,
+      "cold_start_ns": 21000000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 2490368,
+      "source_lines": 175,
+      "source_bytes": 4529
+    },
+    "169": {
+      "time_ns": 0,
+      "compile_time_ns": 161189000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 114,
+      "source_bytes": 2834
+    },
+    "173": {
+      "time_ns": 2316000,
+      "compile_time_ns": 156082000,
+      "cold_start_ns": 10436000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 114,
+      "source_bytes": 2943
+    },
+    "175": {
+      "time_ns": 0,
+      "compile_time_ns": 132566000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 141,
+      "source_bytes": 3233
+    },
+    "189": {
+      "time_ns": 116928000,
+      "compile_time_ns": 161978000,
+      "cold_start_ns": 140049000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1474560,
+      "source_lines": 214,
+      "source_bytes": 5545
+    },
+    "194": {
+      "time_ns": 9000,
+      "compile_time_ns": 139230000,
+      "cold_start_ns": 9000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 365,
+      "source_bytes": 10017
+    },
+    "198": {
+      "time_ns": 0,
+      "compile_time_ns": 141571000,
+      "cold_start_ns": 169655000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1458176,
+      "source_lines": 134,
+      "source_bytes": 3901,
+      "subprocess_wall_ns": 559573500
+    },
     "161": {
       "time_ns": 46357000,
       "compile_time_ns": 188720000,
@@ -33,16 +158,6 @@
       "peak_rss_bytes": 1376256,
       "source_lines": 126,
       "source_bytes": 3454
-    },
-    "189": {
-      "time_ns": 120234000,
-      "compile_time_ns": 132610000,
-      "cold_start_ns": 137586000,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1474560,
-      "source_lines": 214,
-      "source_bytes": 5545
     },
     "075": {
       "answer": 161667,
@@ -579,17 +694,6 @@
       "source_lines": 171,
       "source_bytes": 3824
     },
-    "048": {
-      "answer": 1575116,
-      "time_ns": 47000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 97,
-      "source_bytes": 2327
-    },
     "049": {
       "answer": 296962999629,
       "time_ns": 795000,
@@ -810,17 +914,6 @@
       "source_lines": 88,
       "source_bytes": 1778
     },
-    "070": {
-      "answer": 9983167,
-      "time_ns": 295784000,
-      "cold_start_ns": 0,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 41435136,
-      "compile_time_ns": 0,
-      "source_lines": 201,
-      "source_bytes": 4830
-    },
     "071": {
       "answer": 428570,
       "time_ns": 812000,
@@ -1033,17 +1126,6 @@
       "source_lines": 119,
       "source_bytes": 2348
     },
-    "092": {
-      "answer": 15328,
-      "time_ns": 113618000,
-      "cold_start_ns": 0,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 140,
-      "source_bytes": 3100
-    },
     "093": {
       "answer": 1258,
       "time_ns": 9098000,
@@ -1088,17 +1170,6 @@
       "source_lines": 404,
       "source_bytes": 9495
     },
-    "097": {
-      "answer": 335859185,
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "compile_time_ns": 0,
-      "source_lines": 73,
-      "source_bytes": 1509
-    },
     "099": {
       "answer": 709,
       "time_ns": 50000,
@@ -1120,16 +1191,6 @@
       "compile_time_ns": 0,
       "source_lines": 50,
       "source_bytes": 1224
-    },
-    "106": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "compile_time_ns": 0,
-      "source_lines": 108,
-      "source_bytes": 3138
     },
     "108": {
       "time_ns": 0,
@@ -1330,16 +1391,6 @@
       "compile_time_ns": 0,
       "source_lines": 154,
       "source_bytes": 3681
-    },
-    "134": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "compile_time_ns": 0,
-      "source_lines": 22,
-      "source_bytes": 532
     },
     "135": {
       "time_ns": 3184000,
@@ -1617,16 +1668,6 @@
       "source_lines": 187,
       "source_bytes": 4985
     },
-    "169": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 114,
-      "source_bytes": 2834
-    },
     "171": {
       "time_ns": 2141000,
       "cold_start_ns": 0,
@@ -1647,16 +1688,6 @@
       "source_lines": 268,
       "source_bytes": 6048
     },
-    "173": {
-      "time_ns": 2287000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "compile_time_ns": 0,
-      "source_lines": 114,
-      "source_bytes": 2943
-    },
     "174": {
       "time_ns": 2443000,
       "cold_start_ns": 0,
@@ -1666,16 +1697,6 @@
       "compile_time_ns": 0,
       "source_lines": 133,
       "source_bytes": 3801
-    },
-    "175": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 141,
-      "source_bytes": 3233
     },
     "176": {
       "time_ns": 262000,
@@ -1794,16 +1815,6 @@
       "source_lines": 141,
       "source_bytes": 3469
     },
-    "194": {
-      "time_ns": 3000,
-      "cold_start_ns": 3000,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 365,
-      "source_bytes": 10017
-    },
     "195": {
       "time_ns": 233089000,
       "cold_start_ns": 0,
@@ -1823,17 +1834,6 @@
       "compile_time_ns": 0,
       "source_lines": 91,
       "source_bytes": 2383
-    },
-    "198": {
-      "time_ns": 0,
-      "cold_start_ns": 131746000,
-      "subprocess_wall_ns": 559573500,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1474560,
-      "compile_time_ns": 153689125,
-      "source_lines": 134,
-      "source_bytes": 3901
     },
     "199": {
       "time_ns": 1422000,
