@@ -18,7 +18,7 @@ Reading the columns:
 | C# | 220 | 48.70 s | 67.06 s | 69.86 s |
 | Java | 219 | 48.37 s | 267.06 s | 437.40 s |
 | JS | 218 | 103.34 s | 192.55 s | 192.55 s |
-| Python | 195 | 216.32 s | 422.63 s | 422.63 s |
+| Python | 196 | 234.11 s | 440.35 s | 440.35 s |
 
 ## Comptime / constant-fold detection
 
@@ -259,6 +259,7 @@ Each cell: `runtime / compile`. Sorted by problem number.
 | 218 | — | — | 0 ns / 0 ns | 0 ns / 0 ns | — | 0 ns / 0 ns | 83 ns / 0 ns | 83 ns / 0 ns | — |
 | 219 | — | — | 958 ns / 0 ns | 2.7 µs / 0 ns | — | 0 ns / 0 ns | 4.5 µs / 0 ns | 83 ns / 0 ns | — |
 | 220 | — | — | 291 ns / 0 ns | 750 ns / 0 ns | — | 0 ns / 0 ns | 1.8 µs / 0 ns | 666 ns / 0 ns | — |
+| 357 | — | — | — | — | — | — | — | — | 17.80 s / 0 ns |
 | 416 | — | — | — | — | — | 0 ns / 0 ns | — | — | — |
 | 437 | — | — | — | — | — | — | — | — | 33.96 s / 0 ns |
 | 496 | — | — | — | — | — | — | — | — | 42.58 s / 0 ns |
