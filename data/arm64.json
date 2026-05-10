@@ -2,8 +2,40 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T02:59:55Z",
+  "timestamp": "2026-05-10T03:38:48Z",
   "problems": {
+    "189": {
+      "time_ns": 114917000,
+      "compile_time_ns": 192810000,
+      "cold_start_ns": 143238000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1490944,
+      "source_lines": 214,
+      "source_bytes": 5635
+    },
+    "092": {
+      "answer": 8581146,
+      "time_ns": 113650000,
+      "compile_time_ns": 150030000,
+      "cold_start_ns": 142593000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 139,
+      "source_bytes": 3199
+    },
+    "070": {
+      "answer": 8319823,
+      "time_ns": 292652000,
+      "compile_time_ns": 159317000,
+      "cold_start_ns": 325901000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 41418752,
+      "source_lines": 207,
+      "source_bytes": 5340
+    },
     "175": {
       "time_ns": 0,
       "compile_time_ns": 139917000,
@@ -66,28 +98,6 @@
       "source_lines": 108,
       "source_bytes": 3068
     },
-    "070": {
-      "answer": 9983167,
-      "time_ns": 303122000,
-      "compile_time_ns": 148816000,
-      "cold_start_ns": 310639000,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 41435136,
-      "source_lines": 201,
-      "source_bytes": 4830
-    },
-    "092": {
-      "answer": 15328,
-      "time_ns": 114688000,
-      "compile_time_ns": 138079000,
-      "cold_start_ns": 180501000,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "source_lines": 140,
-      "source_bytes": 3100
-    },
     "134": {
       "time_ns": 0,
       "compile_time_ns": 142866000,
@@ -97,16 +107,6 @@
       "peak_rss_bytes": 2490368,
       "source_lines": 175,
       "source_bytes": 4529
-    },
-    "189": {
-      "time_ns": 116928000,
-      "compile_time_ns": 161978000,
-      "cold_start_ns": 140049000,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1474560,
-      "source_lines": 214,
-      "source_bytes": 5545
     },
     "194": {
       "time_ns": 9000,
