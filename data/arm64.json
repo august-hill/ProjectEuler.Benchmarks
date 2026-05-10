@@ -2,8 +2,48 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T02:38:40Z",
+  "timestamp": "2026-05-10T02:44:26Z",
   "problems": {
+    "161": {
+      "time_ns": 46357000,
+      "compile_time_ns": 188720000,
+      "cold_start_ns": 52547000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 9764864,
+      "source_lines": 272,
+      "source_bytes": 6746
+    },
+    "162": {
+      "time_ns": 0,
+      "compile_time_ns": 138365000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 126,
+      "source_bytes": 3836
+    },
+    "181": {
+      "time_ns": 2528000,
+      "compile_time_ns": 164821000,
+      "cold_start_ns": 12048000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 126,
+      "source_bytes": 3454
+    },
+    "189": {
+      "time_ns": 120234000,
+      "compile_time_ns": 132610000,
+      "cold_start_ns": 137586000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1474560,
+      "source_lines": 214,
+      "source_bytes": 5545
+    },
     "075": {
       "answer": 161667,
       "time_ns": 6399000,
@@ -1517,26 +1557,6 @@
       "error": "no output",
       "compile_time_ns": 0
     },
-    "161": {
-      "time_ns": 44610000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 9764864,
-      "compile_time_ns": 0,
-      "source_lines": 272,
-      "source_bytes": 6746
-    },
-    "162": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "compile_time_ns": 0,
-      "source_lines": 126,
-      "source_bytes": 3836
-    },
     "163": {
       "time_ns": 0,
       "cold_start_ns": 160897000,
@@ -1694,16 +1714,6 @@
       "error": "no output",
       "compile_time_ns": 0
     },
-    "181": {
-      "time_ns": 2622000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 1376256,
-      "compile_time_ns": 0,
-      "source_lines": 126,
-      "source_bytes": 3454
-    },
     "183": {
       "time_ns": 673000,
       "cold_start_ns": 0,
@@ -1753,16 +1763,6 @@
       "compile_time_ns": 0,
       "source_lines": 159,
       "source_bytes": 5275
-    },
-    "189": {
-      "time_ns": 115080000,
-      "cold_start_ns": 0,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1474560,
-      "compile_time_ns": 0,
-      "source_lines": 214,
-      "source_bytes": 5545
     },
     "190": {
       "time_ns": 1000,
