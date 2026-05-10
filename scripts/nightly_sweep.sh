@@ -114,4 +114,12 @@ echo ""
 echo "Staged $DIRTY change(s) in $BENCHMARKS_REPO"
 echo "Review tomorrow with: cd $BENCHMARKS_REPO && git diff --cached"
 echo ""
+
+# Queue a Todoist task for morning review (silent no-op if no token at ~/.todoist_token)
+"$BENCHMARKS_REPO/scripts/notify_todoist.sh" \
+    --content "Review nightly bench sweep ($(date +%Y-%m-%d))" \
+    --description "Full sweep target: ${FULL_SWEEP_LANG:-none}. Staged ${DIRTY} change(s) in ${BENCHMARKS_REPO}. Log: ${LOG}" \
+    --priority 2 \
+    --due "today 9am" || true
+
 echo "Done at $(date)."

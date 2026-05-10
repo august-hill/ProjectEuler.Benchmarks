@@ -97,5 +97,12 @@ rm -f "$LOG"
 
 # Report
 DIRTY=$(cd "$BENCHMARKS_REPO" && git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+COMMIT_SHA=$(cd "$LANG_REPO" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 echo "[pe-bench] Staged $DIRTY change(s) in $BENCHMARKS_REPO."
 echo "[pe-bench] Run 'cd $BENCHMARKS_REPO && git commit -m \"refresh ${LANG_NAME} p${PROBLEMS}\"' to publish."
+
+# Queue a Todoist task (silent no-op if no token configured at ~/.todoist_token)
+"$BENCHMARKS_REPO/scripts/notify_todoist.sh" \
+    --content "Review Benchmarks: refresh ${LANG_NAME} p${PROBLEMS}" \
+    --description "Staged ${DIRTY} change(s) from ${LANG_NAME}@${COMMIT_SHA}. Review: cd ${BENCHMARKS_REPO} && git diff --cached" \
+    --priority 2 || true
