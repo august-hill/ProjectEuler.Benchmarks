@@ -2,8 +2,18 @@
   "language": "javascript",
   "platform": "arm64",
   "compiler": "node v24.15.0",
-  "timestamp": "2026-04-18T06:45:51Z",
+  "timestamp": "2026-05-10T14:57:22Z",
   "problems": {
+    "194": {
+      "time_ns": 4583,
+      "compile_time_ns": 0,
+      "cold_start_ns": 193209,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 50708480,
+      "source_lines": 80,
+      "source_bytes": 2322
+    },
     "001": {
       "answer": 233168,
       "time_ns": 291,
@@ -2026,16 +2036,6 @@
       "compile_time_ns": 0,
       "source_lines": 64,
       "source_bytes": 1712
-    },
-    "194": {
-      "time_ns": 3227500,
-      "cold_start_ns": 9375250,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 50003968,
-      "compile_time_ns": 0,
-      "source_lines": 64,
-      "source_bytes": 1922
     },
     "195": {
       "time_ns": 727349541,
