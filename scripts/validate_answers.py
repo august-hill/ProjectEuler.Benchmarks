@@ -4,14 +4,20 @@ PE benchmark cross-validation:
   - Take C++ as canonical for problems 1-200.
   - Mark any other language's problem as fail if answer != C++'s.
   - Output: corrected per-language pass/fail counts and per-problem mismatch report.
+
+Note: data/*.json is sanitized (no `answer` for problems >100 per public-repo
+policy). Answers are read from sibling private repos' benchmark_results.json.
 """
 import json
 from pathlib import Path
 
 DATA = Path("/Users/augusthill/ccdev/ProjectEuler.Benchmarks/data")
+SIBLINGS = Path("/Users/augusthill/ccdev")
 LANGS = ["c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig", "arm64"]
+REPO_NAMES = {"cpp":"CPlusPlus","c":"C","csharp":"CSharp","go":"Go","java":"Java",
+              "javascript":"JavaScript","python":"Python","rust":"Rust","zig":"Zig","arm64":"ARM64"}
 
-# Load all
+# Load sanitized data (timings + answers for ≤100)
 data = {}
 for lang in LANGS:
     f = DATA / f"{lang}.json"
@@ -24,13 +30,21 @@ if "cpp" not in data:
     print("ERROR: cpp.json not present, cannot cross-validate.")
     raise SystemExit(1)
 
-# Build canonical answer map from C++
-canonical = {}
-for p, v in data["cpp"]["problems"].items():
-    if v.get("status") == "pass" and v.get("answer") is not None:
-        canonical[p] = v["answer"]
+# Per-lang answer maps from sibling private repos
+def _load_answers(lang):
+    sib = SIBLINGS / f"ProjectEuler.{REPO_NAMES[lang]}" / "benchmark_results.json"
+    if sib.exists():
+        full = json.load(open(sib))
+        return {p: v.get("answer") for p, v in full["problems"].items()
+                if v.get("status") == "pass" and v.get("answer") is not None}
+    # Fallback to sanitized data (≤100 only)
+    return {p: v["answer"] for p, v in data.get(lang, {}).get("problems", {}).items()
+            if v.get("status") == "pass" and v.get("answer") is not None}
 
-print(f"Canonical answers from C++: {len(canonical)} of {len(data['cpp']['problems'])}")
+answers = {l: _load_answers(l) for l in LANGS if l in data}
+canonical = answers.get("cpp", {})
+
+print(f"Canonical answers from C++ (sibling repo): {len(canonical)} of {len(data['cpp']['problems'])}")
 
 # Cross-validate each language
 print()
@@ -50,7 +64,7 @@ for lang in LANGS:
             continue
         if v.get("status") == "pass":
             reported_pass += 1
-            ans = v.get("answer")
+            ans = answers.get(lang, {}).get(p)
             if ans is None:
                 no_answer.append(p)
                 continue
