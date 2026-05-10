@@ -2,8 +2,414 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T03:38:48Z",
+  "timestamp": "2026-05-10T04:42:57Z",
   "problems": {
+    "098": {
+      "answer": 18769,
+      "time_ns": 0,
+      "compile_time_ns": 133399000,
+      "cold_start_ns": 47941000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1507328,
+      "source_lines": 451,
+      "source_bytes": 12574
+    },
+    "101": {
+      "time_ns": 2000,
+      "compile_time_ns": 140250000,
+      "cold_start_ns": 2000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 129,
+      "source_bytes": 4616
+    },
+    "102": {
+      "time_ns": 60000,
+      "compile_time_ns": 155206000,
+      "cold_start_ns": 1975000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1458176,
+      "source_lines": 210,
+      "source_bytes": 5630
+    },
+    "103": {
+      "time_ns": 7261000,
+      "compile_time_ns": 143729000,
+      "cold_start_ns": 21895000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 235,
+      "source_bytes": 6468
+    },
+    "104": {
+      "time_ns": 6350000,
+      "compile_time_ns": 141000000,
+      "cold_start_ns": 20070000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 139,
+      "source_bytes": 3919
+    },
+    "105": {
+      "time_ns": 2507000,
+      "compile_time_ns": 166173000,
+      "cold_start_ns": 8179000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1441792,
+      "source_lines": 275,
+      "source_bytes": 6864
+    },
+    "107": {
+      "time_ns": 44000,
+      "compile_time_ns": 147978000,
+      "cold_start_ns": 1415000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1441792,
+      "source_lines": 249,
+      "source_bytes": 6145
+    },
+    "110": {
+      "time_ns": 5594000,
+      "compile_time_ns": 167059000,
+      "cold_start_ns": 28909000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 163,
+      "source_bytes": 5129
+    },
+    "111": {
+      "time_ns": 955000,
+      "compile_time_ns": 150504000,
+      "cold_start_ns": 1438000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 396,
+      "source_bytes": 12142
+    },
+    "125": {
+      "time_ns": 2303000,
+      "compile_time_ns": 142143000,
+      "cold_start_ns": 9768000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 127,
+      "source_bytes": 3087
+    },
+    "136": {
+      "time_ns": 0,
+      "compile_time_ns": 131265000,
+      "cold_start_ns": 634302000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 51396608,
+      "source_lines": 144,
+      "source_bytes": 3702
+    },
+    "143": {
+      "time_ns": 0,
+      "compile_time_ns": 138567000,
+      "cold_start_ns": 69960000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4358144,
+      "source_lines": 335,
+      "source_bytes": 10390
+    },
+    "170": {
+      "time_ns": 0,
+      "compile_time_ns": 139255000,
+      "cold_start_ns": 38774712000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 543,
+      "source_bytes": 15621
+    },
+    "180": {
+      "time_ns": 0,
+      "compile_time_ns": 143044000,
+      "cold_start_ns": 22942000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1572864,
+      "source_lines": 432,
+      "source_bytes": 12877
+    },
+    "182": {
+      "time_ns": 0,
+      "compile_time_ns": 145302000,
+      "cold_start_ns": 244426000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 113,
+      "source_bytes": 2519
+    },
+    "185": {
+      "time_ns": 91917000,
+      "compile_time_ns": 134691000,
+      "cold_start_ns": 132510000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 342,
+      "source_bytes": 8681
+    },
+    "043": {
+      "answer": 16695334890,
+      "time_ns": 15543000,
+      "compile_time_ns": 130418000,
+      "cold_start_ns": 30625000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 204,
+      "source_bytes": 5295,
+      "error": "no output"
+    },
+    "087": {
+      "answer": 1097343,
+      "time_ns": 0,
+      "compile_time_ns": 139934000,
+      "cold_start_ns": 22223000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 51412992,
+      "source_lines": 193,
+      "source_bytes": 5020,
+      "error": "no output"
+    },
+    "090": {
+      "answer": 1217,
+      "time_ns": 96000,
+      "compile_time_ns": 160814000,
+      "cold_start_ns": 314000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 192,
+      "source_bytes": 4798,
+      "error": "no output"
+    },
+    "108": {
+      "time_ns": 292000,
+      "compile_time_ns": 144422000,
+      "cold_start_ns": 1248000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 150,
+      "source_bytes": 3713,
+      "error": "no output"
+    },
+    "109": {
+      "time_ns": 54000,
+      "compile_time_ns": 147784000,
+      "cold_start_ns": 80000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 174,
+      "source_bytes": 4476,
+      "error": "no output"
+    },
+    "113": {
+      "time_ns": 0,
+      "compile_time_ns": 152675000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 97,
+      "source_bytes": 2412,
+      "error": "no output"
+    },
+    "115": {
+      "time_ns": 808000,
+      "compile_time_ns": 188115000,
+      "cold_start_ns": 2007000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 137,
+      "source_bytes": 3393,
+      "error": "no output"
+    },
+    "116": {
+      "time_ns": 2000,
+      "compile_time_ns": 190040000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 108,
+      "source_bytes": 3080,
+      "error": "no output"
+    },
+    "120": {
+      "time_ns": 587000,
+      "compile_time_ns": 155268000,
+      "cold_start_ns": 2180000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 73,
+      "source_bytes": 1766,
+      "error": "no output"
+    },
+    "121": {
+      "time_ns": 0,
+      "compile_time_ns": 152069000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 96,
+      "source_bytes": 2171,
+      "error": "no output"
+    },
+    "128": {
+      "time_ns": 7218000,
+      "compile_time_ns": 151600000,
+      "cold_start_ns": 33342000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 139,
+      "source_bytes": 3389,
+      "error": "no output"
+    },
+    "130": {
+      "time_ns": 30404000,
+      "compile_time_ns": 146065000,
+      "cold_start_ns": 62303000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 112,
+      "source_bytes": 2647,
+      "error": "no output"
+    },
+    "131": {
+      "time_ns": 38000,
+      "compile_time_ns": 142772000,
+      "cold_start_ns": 42000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 105,
+      "source_bytes": 2122,
+      "error": "no output"
+    },
+    "138": {
+      "time_ns": 0,
+      "compile_time_ns": 175730000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 48,
+      "source_bytes": 1207,
+      "error": "no output"
+    },
+    "139": {
+      "time_ns": 230114000,
+      "compile_time_ns": 156905000,
+      "cold_start_ns": 264443000,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 127,
+      "source_bytes": 3106,
+      "error": "no output"
+    },
+    "141": {
+      "time_ns": 0,
+      "compile_time_ns": 140693000,
+      "cold_start_ns": 1478591000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 142,
+      "source_bytes": 3469,
+      "error": "no output"
+    },
+    "147": {
+      "time_ns": 3671000,
+      "compile_time_ns": 155044000,
+      "cold_start_ns": 11811000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 135,
+      "source_bytes": 3010,
+      "error": "no output"
+    },
+    "153": {
+      "time_ns": 0,
+      "compile_time_ns": 140576000,
+      "cold_start_ns": 2365396000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 153,
+      "source_bytes": 3803,
+      "error": "no output"
+    },
+    "160": {
+      "time_ns": 0,
+      "compile_time_ns": 149091000,
+      "cold_start_ns": 580000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1409024,
+      "source_lines": 249,
+      "source_bytes": 7110,
+      "error": "no output"
+    },
+    "179": {
+      "time_ns": 0,
+      "compile_time_ns": 184247000,
+      "cold_start_ns": 200485000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 21397504,
+      "source_lines": 103,
+      "source_bytes": 2550,
+      "error": "no output"
+    },
+    "148": {
+      "time_ns": 0,
+      "compile_time_ns": 130949000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 124,
+      "source_bytes": 3261,
+      "error": "no output"
+    },
+    "157": {
+      "time_ns": 4831000,
+      "compile_time_ns": 167426000,
+      "cold_start_ns": 8029000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1376256,
+      "source_lines": 171,
+      "source_bytes": 3784,
+      "error": "no output"
+    },
     "189": {
       "time_ns": 114917000,
       "compile_time_ns": 192810000,
@@ -643,13 +1049,6 @@
       "source_lines": 1121,
       "source_bytes": 71773
     },
-    "043": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "044": {
       "answer": 5482660,
       "time_ns": 76058000,
@@ -1079,13 +1478,6 @@
       "source_lines": 76,
       "source_bytes": 1555
     },
-    "087": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "088": {
       "answer": 7587457,
       "time_ns": 1157000,
@@ -1107,13 +1499,6 @@
       "compile_time_ns": 0,
       "source_lines": 253,
       "source_bytes": 5115
-    },
-    "090": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "091": {
       "answer": 14234,
@@ -1192,20 +1577,6 @@
       "source_lines": 50,
       "source_bytes": 1224
     },
-    "108": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "109": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "112": {
       "time_ns": 7817000,
       "cold_start_ns": 0,
@@ -1216,13 +1587,6 @@
       "source_lines": 121,
       "source_bytes": 2927
     },
-    "113": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "114": {
       "time_ns": 3000,
       "cold_start_ns": 0,
@@ -1232,20 +1596,6 @@
       "compile_time_ns": 0,
       "source_lines": 96,
       "source_bytes": 2387
-    },
-    "115": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "116": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "117": {
       "time_ns": 0,
@@ -1276,20 +1626,6 @@
       "compile_time_ns": 0,
       "source_lines": 122,
       "source_bytes": 2899
-    },
-    "120": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "121": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "122": {
       "time_ns": 0,
@@ -1341,13 +1677,6 @@
       "source_lines": 235,
       "source_bytes": 5669
     },
-    "128": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "129": {
       "time_ns": 9464000,
       "cold_start_ns": 0,
@@ -1357,20 +1686,6 @@
       "compile_time_ns": 0,
       "source_lines": 80,
       "source_bytes": 2248
-    },
-    "130": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "131": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "132": {
       "time_ns": 3349000,
@@ -1412,20 +1727,6 @@
       "source_lines": 41,
       "source_bytes": 1081
     },
-    "138": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "139": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "140": {
       "time_ns": 1000,
       "cold_start_ns": 0,
@@ -1435,13 +1736,6 @@
       "compile_time_ns": 0,
       "source_lines": 156,
       "source_bytes": 3716
-    },
-    "141": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "142": {
       "time_ns": 2189000,
@@ -1483,20 +1777,6 @@
       "source_lines": 267,
       "source_bytes": 5750
     },
-    "147": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
-    "148": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "149": {
       "time_ns": 36803000,
       "cold_start_ns": 0,
@@ -1537,13 +1817,6 @@
       "source_lines": 245,
       "source_bytes": 8179
     },
-    "153": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "154": {
       "time_ns": 3427734000,
       "cold_start_ns": 0,
@@ -1574,13 +1847,6 @@
       "source_lines": 287,
       "source_bytes": 7767
     },
-    "157": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
-    },
     "158": {
       "time_ns": 0,
       "cold_start_ns": 0,
@@ -1600,13 +1866,6 @@
       "compile_time_ns": 0,
       "source_lines": 118,
       "source_bytes": 2755
-    },
-    "160": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "163": {
       "time_ns": 0,
@@ -1727,13 +1986,6 @@
       "compile_time_ns": 0,
       "source_lines": 175,
       "source_bytes": 4291
-    },
-    "179": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "183": {
       "time_ns": 673000,
