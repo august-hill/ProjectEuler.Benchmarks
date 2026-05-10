@@ -5,28 +5,46 @@ Uses C++ answers as canonical (cross-validated). Reports:
   - Per-language verified-pass count, hot/cold/compile geomean and median.
   - Per-problem fastest-language counts (wins).
   - Source code size summary.
+
+Note: data/*.json is sanitized (no `answer` for problems >100 per public-repo
+policy). Answers are read from sibling private repos' benchmark_results.json
+for cross-validation.
 """
 import json, math, statistics
 from pathlib import Path
 
 DATA = Path("/Users/augusthill/ccdev/ProjectEuler.Benchmarks/data")
+SIBLINGS = Path("/Users/augusthill/ccdev")
 LANGS = ["cpp", "c", "csharp", "go", "java", "javascript", "python", "rust", "zig", "arm64"]
 LABELS = {"cpp":"C++","c":"C","csharp":"C#","go":"Go","java":"Java",
           "javascript":"JS","python":"Python","rust":"Rust","zig":"Zig","arm64":"ARM64"}
+REPO_NAMES = {"cpp":"CPlusPlus","c":"C","csharp":"CSharp","go":"Go","java":"Java",
+              "javascript":"JavaScript","python":"Python","rust":"Rust","zig":"Zig","arm64":"ARM64"}
 
 data = {l: json.load(open(DATA/f"{l}.json")) for l in LANGS if (DATA/f"{l}.json").exists()}
 
-# Canonical: C++ answers (only verified-pass)
-canonical = {}
-for p, v in data["cpp"]["problems"].items():
-    if v.get("status") == "pass" and v.get("answer") is not None:
-        canonical[p] = v["answer"]
+# Per-lang answer maps from sibling private repos (data/*.json is sanitized for >100).
+def _load_answers(lang):
+    sib = SIBLINGS / f"ProjectEuler.{REPO_NAMES[lang]}" / "benchmark_results.json"
+    if sib.exists():
+        full = json.load(open(sib))
+        return {p: v.get("answer") for p, v in full["problems"].items()
+                if v.get("status") == "pass" and v.get("answer") is not None}
+    # Fallback to sanitized data (≤100 only) if sibling unavailable
+    return {p: v["answer"] for p, v in data.get(lang, {}).get("problems", {}).items()
+            if v.get("status") == "pass" and v.get("answer") is not None}
+
+answers = {l: _load_answers(l) for l in LANGS if l in data}
+canonical = answers.get("cpp", {})
+if not any(p for p in canonical if int(p) > 100):
+    print("WARNING: no canonical answers for problems >100; cross-validation limited to ≤100")
 
 def is_verified_pass(lang, p):
     v = data[lang]["problems"].get(p, {})
     if v.get("status") != "pass": return False
-    if v.get("answer") is None: return False
-    if p in canonical and str(v["answer"]) != str(canonical[p]): return False
+    ans = answers.get(lang, {}).get(p)
+    if ans is None: return False
+    if p in canonical and str(ans) != str(canonical[p]): return False
     return True
 
 def fmt_ns(x):
