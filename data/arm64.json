@@ -2,8 +2,19 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T02:47:03Z",
+  "timestamp": "2026-05-10T02:51:26Z",
   "problems": {
+    "097": {
+      "answer": 8739992577,
+      "time_ns": 1000,
+      "compile_time_ns": 148267000,
+      "cold_start_ns": 1000,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1392640,
+      "source_lines": 108,
+      "source_bytes": 3068
+    },
     "048": {
       "answer": 1575116,
       "time_ns": 53000,
@@ -36,17 +47,6 @@
       "peak_rss_bytes": 1376256,
       "source_lines": 140,
       "source_bytes": 3100
-    },
-    "097": {
-      "answer": 335859185,
-      "time_ns": 0,
-      "compile_time_ns": 137827000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1392640,
-      "source_lines": 73,
-      "source_bytes": 1509
     },
     "106": {
       "time_ns": 0,
