@@ -2,8 +2,18 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-10T22:55:08Z",
+  "timestamp": "2026-05-10T22:56:21Z",
   "problems": {
+    "346": {
+      "time_ns": 19266000,
+      "compile_time_ns": 430557000,
+      "cold_start_ns": 35153000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 39157760,
+      "source_lines": 54,
+      "source_bytes": 1844
+    },
     "469": {
       "time_ns": 0,
       "compile_time_ns": 385650000,
