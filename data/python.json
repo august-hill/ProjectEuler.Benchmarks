@@ -2,8 +2,18 @@
   "language": "python",
   "platform": "arm64",
   "compiler": "Python 3.11.7",
-  "timestamp": "2026-05-10T21:46:43Z",
+  "timestamp": "2026-05-10T21:51:21Z",
   "problems": {
+    "381": {
+      "time_ns": 528465917,
+      "compile_time_ns": 0,
+      "cold_start_ns": 510345792,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 404979712,
+      "source_lines": 36,
+      "source_bytes": 1138
+    },
     "357": {
       "time_ns": 17798266417,
       "compile_time_ns": 0,
