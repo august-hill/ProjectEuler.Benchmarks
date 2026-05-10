@@ -1,9 +1,42 @@
 {
   "language": "arm64",
   "platform": "arm64",
-  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-04-18T08:17:18Z",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102) + Apple clang version 21.0.0 (clang-2100.0.123.102)",
+  "timestamp": "2026-05-10T02:38:40Z",
   "problems": {
+    "075": {
+      "answer": 161667,
+      "time_ns": 6399000,
+      "compile_time_ns": 168537000,
+      "cold_start_ns": 16842000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 4440064,
+      "source_lines": 176,
+      "source_bytes": 4191
+    },
+    "050": {
+      "answer": 997651,
+      "time_ns": 2401000,
+      "compile_time_ns": 143102000,
+      "cold_start_ns": 3880000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 4112384,
+      "source_lines": 159,
+      "source_bytes": 4480
+    },
+    "041": {
+      "answer": 7652413,
+      "time_ns": 7523000,
+      "compile_time_ns": 184378000,
+      "cold_start_ns": 18990000,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 9093120,
+      "source_lines": 159,
+      "source_bytes": 4554
+    },
     "001": {
       "answer": 233168,
       "time_ns": 1000,
@@ -444,17 +477,6 @@
       "source_lines": 123,
       "source_bytes": 3095
     },
-    "041": {
-      "answer": 0,
-      "time_ns": 4895000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 9076736,
-      "compile_time_ns": 0,
-      "source_lines": 186,
-      "source_bytes": 4116
-    },
     "042": {
       "answer": 162,
       "time_ns": 9000,
@@ -538,17 +560,6 @@
       "compile_time_ns": 0,
       "source_lines": 240,
       "source_bytes": 5682
-    },
-    "050": {
-      "answer": 0,
-      "time_ns": 693000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 3440640,
-      "compile_time_ns": 0,
-      "source_lines": 158,
-      "source_bytes": 3557
     },
     "051": {
       "answer": 121313,
@@ -813,17 +824,6 @@
       "compile_time_ns": 0,
       "source_lines": 199,
       "source_bytes": 4724
-    },
-    "075": {
-      "answer": 0,
-      "time_ns": 4663000,
-      "cold_start_ns": 0,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 4423680,
-      "compile_time_ns": 0,
-      "source_lines": 173,
-      "source_bytes": 3898
     },
     "076": {
       "answer": 190569291,
