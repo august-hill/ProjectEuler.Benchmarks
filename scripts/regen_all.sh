@@ -24,4 +24,5 @@ python3 final_analysis.py
 
 echo ""
 echo "Done. Updated artifacts:"
-ls -la COVERAGE.md RESULTS.md THREE_MODE_REPORT.md *.png 2>/dev/null | head -10
+ls -la COVERAGE.md RESULTS.md THREE_MODE_REPORT.md 2>/dev/null
+ls -la charts/*.png 2>/dev/null | head -10 || true

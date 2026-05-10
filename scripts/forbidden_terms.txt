@@ -1,0 +1,88 @@
+# Forbidden terms in proximity to problem numbers >100 in MD/script content.
+# Lines starting with # are comments. One term per line. Case-insensitive.
+# Used by .git/hooks/pre-commit (via sanitization_gate.py) to reject Benchmarks
+# repo commits that pair a forbidden technique term with a problem number >100
+# in the same staged hunk. Existing pre-staged content is not re-scanned —
+# only +/- lines in `git diff --cached` are checked.
+#
+# This list is intentionally over-inclusive: false positives can be resolved by
+# (a) refining the line, (b) adding the term to allowlisted_phrases.txt, or
+# (c) using `git commit --no-verify` (discouraged).
+
+# Number theory algorithms
+Pollard
+Pollard rho
+Pollard kangaroo
+Pollard's lambda
+Tonelli
+Shanks
+Tonelli-Shanks
+Miller-Rabin
+Miller Rabin
+Lucas-Lehmer
+Pohlig
+Hellman
+Pohlig-Hellman
+baby-step
+giant-step
+baby-step giant-step
+Berlekamp
+Massey
+Berlekamp-Massey
+LLL algorithm
+lattice reduction
+Schmerl
+Spiegel
+Schmerl-Spiegel
+Stern-Brocot
+Farey sequence
+primitive root
+quadratic residue
+modular inverse
+mod_inv
+continued fraction
+totient
+Möbius
+Mobius function
+Euler product
+Chinese Remainder
+SPF sieve
+NTT
+Number Theoretic Transform
+FFT
+Fast Fourier Transform
+
+# Combinatorics / probability
+linearity of expectation
+generating function
+inclusion-exclusion
+Burnside
+Cayley
+Catalan number
+
+# Optimization / search
+simulated annealing
+genetic algorithm
+gradient descent
+hill climbing
+beam search
+A-star
+A*
+
+# Linear algebra / analysis
+matrix exponentiation
+matexp
+mat_exp
+mat_pow
+Steiner formula
+Steiner integral
+Cassini identity
+
+# Geometry / packing
+circle packing
+Zalgaller-Los
+
+# Specific recurrences / encodings
+matrix recurrence
+state machine recurrence
+log-N recurrence
