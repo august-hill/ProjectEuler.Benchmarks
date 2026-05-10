@@ -118,7 +118,13 @@ echo ""
 # Queue a Todoist task for morning review (silent no-op if no token at ~/.todoist_token)
 "$BENCHMARKS_REPO/scripts/notify_todoist.sh" \
     --content "Review nightly bench sweep ($(date +%Y-%m-%d))" \
-    --description "Full sweep target: ${FULL_SWEEP_LANG:-none}. Staged ${DIRTY} change(s) in ${BENCHMARKS_REPO}. Log: ${LOG}" \
+    --description "Full sweep target: ${FULL_SWEEP_LANG:-none}. Staged ${DIRTY} change(s) in Benchmarks.
+
+REVIEW:   cd ${BENCHMARKS_REPO} && git diff --cached
+PUBLISH:  pe-publish \"nightly refresh $(date +%Y-%m-%d)\"
+   (auto-closes this task on success)
+SNAPSHOT: pe-status
+LOG:      ${LOG}" \
     --priority 2 \
     --due "today 9am" || true
 

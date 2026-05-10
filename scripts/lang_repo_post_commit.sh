@@ -104,5 +104,10 @@ echo "[pe-bench] Run 'cd $BENCHMARKS_REPO && git commit -m \"refresh ${LANG_NAME
 # Queue a Todoist task (silent no-op if no token configured at ~/.todoist_token)
 "$BENCHMARKS_REPO/scripts/notify_todoist.sh" \
     --content "Review Benchmarks: refresh ${LANG_NAME} p${PROBLEMS}" \
-    --description "Staged ${DIRTY} change(s) from ${LANG_NAME}@${COMMIT_SHA}. Review: cd ${BENCHMARKS_REPO} && git diff --cached" \
+    --description "Staged ${DIRTY} change(s) in Benchmarks from ${LANG_NAME}@${COMMIT_SHA}.
+
+REVIEW:   cd ${BENCHMARKS_REPO} && git diff --cached
+PUBLISH:  pe-publish \"refresh ${LANG_NAME} p${PROBLEMS}\"
+   (auto-closes this task on success)
+SNAPSHOT: pe-status" \
     --priority 2 || true
