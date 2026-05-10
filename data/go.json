@@ -2,8 +2,28 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go1.26.2",
-  "timestamp": "2026-05-10T01:14:52Z",
+  "timestamp": "2026-05-10T01:39:32Z",
   "problems": {
+    "200": {
+      "time_ns": 7684458,
+      "compile_time_ns": 378603000,
+      "cold_start_ns": 26830458,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 47579136,
+      "source_lines": 211,
+      "source_bytes": 3513
+    },
+    "192": {
+      "time_ns": 41,
+      "compile_time_ns": 283899000,
+      "cold_start_ns": 81826792,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 10665984,
+      "source_lines": 147,
+      "source_bytes": 3252
+    },
     "180": {
       "time_ns": 41,
       "compile_time_ns": 311855000,
@@ -2010,16 +2030,6 @@
       "source_lines": 45,
       "source_bytes": 739
     },
-    "192": {
-      "time_ns": 0,
-      "cold_start_ns": 19626833,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 4145152,
-      "compile_time_ns": 1091548500,
-      "source_lines": 119,
-      "source_bytes": 2125
-    },
     "193": {
       "time_ns": 51188041,
       "cold_start_ns": 388725250,
@@ -2087,16 +2097,6 @@
       "compile_time_ns": 611184250,
       "source_lines": 45,
       "source_bytes": 955
-    },
-    "200": {
-      "time_ns": 7625917,
-      "cold_start_ns": 10308958,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 47333376,
-      "compile_time_ns": 537698209,
-      "source_lines": 211,
-      "source_bytes": 3454
     },
     "201": {
       "time_ns": 1249002083,
