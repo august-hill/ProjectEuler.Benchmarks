@@ -2,8 +2,19 @@
   "language": "cpp",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-10T22:53:05Z",
+  "timestamp": "2026-05-10T22:54:21Z",
   "problems": {
+    "262": {
+      "time_ns": 4058909333,
+      "compile_time_ns": 717920000,
+      "cold_start_ns": 4080109792,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 53526528,
+      "source_lines": 257,
+      "source_bytes": 9993,
+      "subprocess_wall_ns": 28517248542
+    },
     "252": {
       "time_ns": 243123500,
       "compile_time_ns": 647541000,
@@ -2892,17 +2903,6 @@
       "source_lines": 106,
       "source_bytes": 3689,
       "subprocess_wall_ns": 2114720833
-    },
-    "262": {
-      "time_ns": 3872591041,
-      "compile_time_ns": 597135000,
-      "cold_start_ns": 3917537042,
-      "iterations": 3,
-      "status": "pass",
-      "peak_rss_bytes": 53379072,
-      "source_lines": 260,
-      "source_bytes": 10027,
-      "subprocess_wall_ns": 28517248542
     },
     "263": {
       "status": "fail",
