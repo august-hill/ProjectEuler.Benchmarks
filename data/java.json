@@ -2,8 +2,18 @@
   "language": "java",
   "platform": "arm64",
   "compiler": "openjdk version \"21.0.2\" 2024-01-16 LTS",
-  "timestamp": "2026-04-18T06:45:40Z",
+  "timestamp": "2026-05-10T01:16:46Z",
   "problems": {
+    "180": {
+      "time_ns": 27500417,
+      "compile_time_ns": 433065000,
+      "cold_start_ns": 67421583,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 751108096,
+      "source_lines": 200,
+      "source_bytes": 7939
+    },
     "001": {
       "answer": 233168,
       "time_ns": 2375,
@@ -1890,16 +1900,6 @@
       "compile_time_ns": 804070625,
       "source_lines": 29,
       "source_bytes": 793
-    },
-    "180": {
-      "time_ns": 11688791,
-      "cold_start_ns": 35818500,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 157040640,
-      "compile_time_ns": 743104584,
-      "source_lines": 192,
-      "source_bytes": 7378
     },
     "181": {
       "time_ns": 20609375,
