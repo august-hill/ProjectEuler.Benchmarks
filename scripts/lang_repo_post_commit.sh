@@ -89,7 +89,9 @@ Inspect:  cd ${BENCHMARKS_REPO} && git diff --cached
 Resolve:  pe-publish \"refresh ${LANG_NAME} p${PROBLEMS}\"   (accept and publish)
    or:    cd ${BENCHMARKS_REPO} && git restore --staged .   (abandon)
 Status:   pe-status" \
-        --priority 3 >/dev/null 2>&1 || true
+        --priority 3 \
+        --dedupe-key "${LANG_NAME} @ ${LANG_COMMIT_SHA}" \
+        >/dev/null 2>&1 || true
 }
 
 # ---------------------------------------------------------------------------
