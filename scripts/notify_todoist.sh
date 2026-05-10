@@ -50,8 +50,9 @@ print(json.dumps(body))
 ' "$CONTENT" "$DESCRIPTION" "$PRIORITY" "$DUE")
 
 # Best-effort POST; warn but don't fail if API errors.
+# Endpoint: /api/v1/tasks (the unified API; old /rest/v2 was deprecated, returns 410).
 HTTP_STATUS=$(curl -sS -o /dev/null -w "%{http_code}" \
-    -X POST 'https://api.todoist.com/rest/v2/tasks' \
+    -X POST 'https://api.todoist.com/api/v1/tasks' \
     -H "Authorization: Bearer $TOKEN" \
     -H "Content-Type: application/json" \
     -d "$JSON" 2>/dev/null) || HTTP_STATUS="000"
