@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+launchd job for nightly PE benchmark sweep.
+Runs daily at 03:00 local time.
+
+To activate:
+  cp scripts/com.augusthill.pe-bench-nightly.plist.template \
+     ~/Library/LaunchAgents/com.augusthill.pe-bench-nightly.plist
+  launchctl load ~/Library/LaunchAgents/com.augusthill.pe-bench-nightly.plist
+
+To disable:
+  launchctl unload ~/Library/LaunchAgents/com.augusthill.pe-bench-nightly.plist
+  rm ~/Library/LaunchAgents/com.augusthill.pe-bench-nightly.plist
+
+To verify it's loaded:
+  launchctl list | grep pe-bench
+
+Logs to ~/.pe-bench-nightly.log (rotated weekly).
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.augusthill.pe-bench-nightly</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/augusthill/ccdev/ProjectEuler.Benchmarks/scripts/nightly_sweep.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>3</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/augusthill/.pe-bench-nightly.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/augusthill/.pe-bench-nightly.log</string>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/augusthill/ccdev/ProjectEuler.Benchmarks</string>
+
+  <!-- Don't run if missed (e.g., laptop was asleep) — wait for next 03:00. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <!-- Niceness: run at low priority so it doesn't starve foreground work. -->
+  <key>Nice</key>
+  <integer>10</integer>
+</dict>
+</plist>
