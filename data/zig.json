@@ -2,8 +2,28 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-11T01:31:22Z",
+  "timestamp": "2026-05-11T01:32:02Z",
   "problems": {
+    "272": {
+      "time_ns": 6517282000,
+      "compile_time_ns": 411740000,
+      "cold_start_ns": 6505721000,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 5881856,
+      "source_lines": 136,
+      "source_bytes": 4251
+    },
+    "330": {
+      "time_ns": 0,
+      "compile_time_ns": 893893000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1441792,
+      "source_lines": 117,
+      "source_bytes": 3764
+    },
     "252": {
       "time_ns": 248034000,
       "compile_time_ns": 542929000,
