@@ -2292,16 +2292,6 @@
       "peak_rss_bytes": 41418752,
       "source_lines": 219,
       "source_bytes": 6704
-    },
-    "416": {
-      "time_ns": 0,
-      "cold_start_ns": 252625,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 41238528,
-      "compile_time_ns": 0,
-      "source_lines": 14,
-      "source_bytes": 236
     }
   }
 }
