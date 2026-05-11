@@ -2,8 +2,49 @@
   "language": "java",
   "platform": "arm64",
   "compiler": "openjdk version \"21.0.2\" 2024-01-16 LTS",
-  "timestamp": "2026-05-10T15:06:10Z",
+  "timestamp": "2026-05-11T14:36:09Z",
   "problems": {
+    "015": {
+      "answer": 137846528820,
+      "time_ns": 125,
+      "compile_time_ns": 477732000,
+      "cold_start_ns": 2333,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 44957696,
+      "source_lines": 21,
+      "source_bytes": 499
+    },
+    "162": {
+      "time_ns": 9625,
+      "compile_time_ns": 427188000,
+      "cold_start_ns": 1322583,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 73744384,
+      "source_lines": 42,
+      "source_bytes": 1590
+    },
+    "184": {
+      "time_ns": 2079500,
+      "compile_time_ns": 436525000,
+      "cold_start_ns": 14477791,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 145408000,
+      "source_lines": 70,
+      "source_bytes": 2210
+    },
+    "195": {
+      "time_ns": 233610083,
+      "compile_time_ns": 427395000,
+      "cold_start_ns": 236824625,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 45449216,
+      "source_lines": 48,
+      "source_bytes": 1305
+    },
     "198": {
       "time_ns": 463839292,
       "compile_time_ns": 384843000,
@@ -187,17 +228,6 @@
       "compile_time_ns": 749364500,
       "source_lines": 37,
       "source_bytes": 893
-    },
-    "015": {
-      "answer": 137846528820,
-      "time_ns": 125,
-      "cold_start_ns": 6917,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 43745280,
-      "compile_time_ns": 895740791,
-      "source_lines": 21,
-      "source_bytes": 499
     },
     "016": {
       "answer": 1366,
@@ -1744,16 +1774,6 @@
       "source_lines": 82,
       "source_bytes": 2732
     },
-    "162": {
-      "time_ns": 11083,
-      "cold_start_ns": 1237667,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 69697536,
-      "compile_time_ns": 985933541,
-      "source_lines": 42,
-      "source_bytes": 1603
-    },
     "163": {
       "time_ns": 229227667,
       "cold_start_ns": 234546292,
@@ -1951,16 +1971,6 @@
       "source_lines": 39,
       "source_bytes": 1085
     },
-    "184": {
-      "time_ns": 2163125,
-      "cold_start_ns": 21710166,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 136511488,
-      "compile_time_ns": 741476959,
-      "source_lines": 70,
-      "source_bytes": 2210
-    },
     "185": {
       "time_ns": 0,
       "cold_start_ns": 0,
@@ -2047,16 +2057,6 @@
       "compile_time_ns": 851936209,
       "source_lines": 69,
       "source_bytes": 2140
-    },
-    "195": {
-      "time_ns": 256370833,
-      "cold_start_ns": 259081416,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 43548672,
-      "compile_time_ns": 628401625,
-      "source_lines": 48,
-      "source_bytes": 1305
     },
     "196": {
       "time_ns": 0,
