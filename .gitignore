@@ -12,3 +12,9 @@
 
 # Compiled Go binary (rebuilt on demand from check_timing_delta.go)
 scripts/check_timing_delta
+
+# Dud audit: binary + baseline are local-only. Baseline contains comment-vs-bench
+# detail that would leak answers for problems >100 if published. Hook regenerates
+# baseline on first run if missing.
+scripts/dud_audit
+scripts/dud_audit_baseline.json

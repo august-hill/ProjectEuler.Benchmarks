@@ -4,6 +4,7 @@
 #
 # What it installs:
 #   - ProjectEuler.Benchmarks/.git/hooks/pre-commit  (sanitization gate)
+#   - ProjectEuler.{Lang}/.git/hooks/pre-commit      (dud-audit regression gate)
 #   - ProjectEuler.{Lang}/.git/hooks/post-commit     (auto-bench + sanitize-and-copy + stage)
 #
 # Hooks live in .git/hooks/ which is NOT version-controlled (per git design).
@@ -31,7 +32,7 @@ chmod +x "$PRE"
 echo "  installed: $PRE"
 
 echo ""
-echo "=== Installing post-commit hooks in 10 lang repos ==="
+echo "=== Installing pre+post commit hooks in 10 lang repos ==="
 for i in "${!LANGS[@]}"; do
     REPO_NAME="${LANGS[$i]}"
     LANG_KEY="${LANG_KEYS[$i]}"
@@ -40,15 +41,25 @@ for i in "${!LANGS[@]}"; do
         echo "  SKIP: $REPO not a git repo"
         continue
     fi
-    HOOK="$REPO/.git/hooks/post-commit"
-    cat > "$HOOK" <<EOF
+    POST="$REPO/.git/hooks/post-commit"
+    cat > "$POST" <<EOF
 #!/usr/bin/env bash
 # Auto-installed by ProjectEuler.Benchmarks/scripts/install_hooks.sh
 # Re-run that script to update.
 exec "$BENCHMARKS_REPO/scripts/lang_repo_post_commit.sh" --lang "$LANG_KEY"
 EOF
-    chmod +x "$HOOK"
-    echo "  installed: $HOOK (--lang $LANG_KEY)"
+    chmod +x "$POST"
+    echo "  installed: $POST (--lang $LANG_KEY)"
+
+    PRE_LANG="$REPO/.git/hooks/pre-commit"
+    cat > "$PRE_LANG" <<EOF
+#!/usr/bin/env bash
+# Auto-installed by ProjectEuler.Benchmarks/scripts/install_hooks.sh
+# Pre-commit dud-audit regression gate. Re-run install_hooks.sh to update.
+exec "$BENCHMARKS_REPO/scripts/lang_repo_pre_commit.sh" --lang "$LANG_KEY"
+EOF
+    chmod +x "$PRE_LANG"
+    echo "  installed: $PRE_LANG (--lang $LANG_KEY)"
 done
 
 echo ""
