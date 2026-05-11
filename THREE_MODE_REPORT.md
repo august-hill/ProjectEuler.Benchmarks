@@ -17,7 +17,7 @@ Reading the columns:
 | ARM64 | 200 | 19.70 s | 45.74 s | 54.65 s |
 | C# | 219 | 48.70 s | 67.06 s | 69.86 s |
 | Java | 219 | 48.35 s | 267.03 s | 435.89 s |
-| JS | 218 | 103.34 s | 192.55 s | 192.55 s |
+| JS | 218 | 103.25 s | 192.45 s | 192.45 s |
 | Python | 198 | 234.66 s | 440.88 s | 440.88 s |
 
 ## Comptime / constant-fold detection
@@ -200,7 +200,7 @@ Each cell: `runtime / compile`. Sorted by problem number.
 | 159 | 51.7 µs / 336.8 ms | 52.0 µs / 0 ns | 13.8 ms / 1.93 s | 433.5 µs / 1.47 s | 12.2 ms / 0 ns | 665.4 µs / 0 ns | 663.5 µs / 1.04 s | 829.5 µs / 0 ns | 83 ns / 0 ns |
 | 160 | 234.7 µs / 410.5 ms | 0 ns / 0 ns | 198.3 µs / 1.90 s | 234.4 µs / 1.42 s | 0 ns / 149.1 ms | 355.1 µs / 0 ns | 234.6 µs / 1.02 s | 1.3 ms / 0 ns | 3.1 ms / 0 ns |
 | 161 | 0 ns / 375.0 ms | 0 ns / 0 ns | 28.2 ms / 867.0 ms | 0 ns / 1.92 s | 46.4 ms / 188.7 ms | 0 ns / 0 ns | 42 ns / 1.27 s | 166 ns / 0 ns | 83 ns / 0 ns |
-| 162 | 0 ns / 406.7 ms | 0 ns / 0 ns | 500 ns / 565.6 ms | 3.3 µs / 2.18 s | 0 ns / 380.0 ms | 3.9 µs / 0 ns | 9.6 µs / 427.2 ms | 3.7 µs / 0 ns | 4.5 µs / 0 ns |
+| 162 | 0 ns / 406.7 ms | 0 ns / 0 ns | 500 ns / 565.6 ms | 3.3 µs / 2.18 s | 0 ns / 380.0 ms | 3.9 µs / 0 ns | 9.6 µs / 427.2 ms | 1.9 µs / 0 ns | 4.5 µs / 0 ns |
 | 163 | 0 ns / 252.5 ms | 143.6 ms / 0 ns | 147.8 ms / 826.3 ms | 170.6 ms / 1.59 s | 0 ns / 0 ns | 188.3 ms / 0 ns | 229.2 ms / 1.15 s | 526.7 ms / 0 ns | 2.77 s / 0 ns |
 | 164 | 3.5 µs / 298.0 ms | 0 ns / 0 ns | 4.2 µs / 1.41 s | 3.9 µs / 2.57 s | 4.0 µs / 0 ns | 17.0 µs / 0 ns | 16.6 µs / 1.18 s | 20.8 µs / 0 ns | 331.6 µs / 0 ns |
 | 165 | 0 ns / 300.2 ms | 0 ns / 0 ns | 531.7 ms / 2.02 s | 0 ns / 1.63 s | 638.8 ms / 0 ns | 41 ns / 0 ns | 84 ns / 1.19 s | 208 ns / 0 ns | 83 ns / 0 ns |
@@ -233,7 +233,7 @@ Each cell: `runtime / compile`. Sorted by problem number.
 | 192 | 0 ns / 383.6 ms | 0 ns / 0 ns | 19.3 ms / 573.1 ms | 41 ns / 283.9 ms | — | 0 ns / 0 ns | 125 ns / 901.0 ms | 69.7 ms / 0 ns | 42 ns / 0 ns |
 | 193 | 36.5 ms / 364.2 ms | 36.8 ms / 0 ns | 366.5 ms / 165.3 ms | 51.2 ms / 906.5 ms | 36.1 ms / 0 ns | 41.6 ms / 0 ns | 53.3 ms / 851.9 ms | 1.30 s / 0 ns | 2.80 s / 0 ns |
 | 194 | 1.6 µs / 105.6 ms | 5.0 µs / 389.3 ms | 2.0 µs / 71.4 ms | 2.2 µs / 302.1 ms | 9.0 µs / 139.2 ms | 9.4 µs / 888.2 ms | 1.6 µs / 389.9 ms | 4.6 µs / 0 ns | 1.2 µs / 0 ns |
-| 195 | 274.3 ms / 796.1 ms | 0 ns / 0 ns | 227.9 ms / 227.7 ms | 269.2 ms / 979.8 ms | 233.1 ms / 0 ns | 256.5 ms / 0 ns | 233.6 ms / 427.4 ms | 727.3 ms / 0 ns | 1.11 s / 0 ns |
+| 195 | 274.3 ms / 796.1 ms | 0 ns / 0 ns | 227.9 ms / 227.7 ms | 269.2 ms / 979.8 ms | 233.1 ms / 0 ns | 256.5 ms / 0 ns | 233.6 ms / 427.4 ms | 636.4 ms / 0 ns | 1.11 s / 0 ns |
 | 196 | 0 ns / 122.4 ms | — | 0 ns / 64.7 ms | 0 ns / 788.4 ms | — | 0 ns / 0 ns | 0 ns / 696.1 ms | 0 ns / 0 ns | — |
 | 197 | 16.9 µs / 473.4 ms | 44.0 µs / 0 ns | 17.9 µs / 105.0 ms | 66.0 µs / 604.3 ms | 24.0 µs / 0 ns | 27.0 µs / 0 ns | 55.8 µs / 513.2 ms | 19.7 µs / 0 ns | 96.8 µs / 0 ns |
 | 198 | 0 ns / 100.0 ms | 0 ns / 384.2 ms | 124.8 ms / 57.5 ms | 311.2 ms / 271.8 ms | 0 ns / 141.6 ms | 475.0 ms / 870.2 ms | 463.8 ms / 384.8 ms | 772.5 ms / 0 ns | 11.84 s / 0 ns |

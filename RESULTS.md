@@ -15,7 +15,7 @@
 | 6 | **Go** | 47.93s | 1.34x | 63 | 4 |
 | 7 | **Rust** | 59.10s | 1.65x | 55 | 21 |
 | 8 | **Java** | 79.28s | 2.21x | 51 | 2 |
-| 9 | **JS** | 96.29s | 2.68x | 44 | 5 |
+| 9 | **JS** | 96.19s | 2.68x | 44 | 5 |
 | 10 | **Python** | 304.52s | 8.49x | 41 | 0 |
 
 *198 common problems, excluding 8 parked (algorithm redesign needed)*
