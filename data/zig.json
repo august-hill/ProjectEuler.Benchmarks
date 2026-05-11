@@ -2,8 +2,38 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-11T02:32:56Z",
+  "timestamp": "2026-05-11T14:37:57Z",
   "problems": {
+    "162": {
+      "time_ns": 0,
+      "compile_time_ns": 566868000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1458176,
+      "source_lines": 35,
+      "source_bytes": 820
+    },
+    "175": {
+      "time_ns": 0,
+      "compile_time_ns": 423737000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1458176,
+      "source_lines": 58,
+      "source_bytes": 1412
+    },
+    "323": {
+      "time_ns": 0,
+      "compile_time_ns": 380076000,
+      "cold_start_ns": 0,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1441792,
+      "source_lines": 49,
+      "source_bytes": 1915
+    },
     "314": {
       "time_ns": 5043002000,
       "compile_time_ns": 383623000,
@@ -1405,16 +1435,6 @@
       "peak_rss_bytes": 1441792,
       "source_lines": 41,
       "source_bytes": 1280
-    },
-    "323": {
-      "time_ns": 0,
-      "compile_time_ns": 354432000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1458176,
-      "source_lines": 49,
-      "source_bytes": 1916
     },
     "296": {
       "status": "fail",
@@ -3271,16 +3291,6 @@
       "source_lines": 102,
       "source_bytes": 3034
     },
-    "162": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1343488,
-      "compile_time_ns": 0,
-      "source_lines": 36,
-      "source_bytes": 861
-    },
     "163": {
       "time_ns": 143647000,
       "cold_start_ns": 149345000,
@@ -3399,16 +3409,6 @@
       "compile_time_ns": 0,
       "source_lines": 46,
       "source_bytes": 1077
-    },
-    "175": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1343488,
-      "compile_time_ns": 0,
-      "source_lines": 58,
-      "source_bytes": 1429
     },
     "176": {
       "time_ns": 46000,
