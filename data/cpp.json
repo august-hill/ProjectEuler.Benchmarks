@@ -2,8 +2,58 @@
   "language": "cpp",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.0.123.102)",
-  "timestamp": "2026-05-11T18:43:32Z",
+  "timestamp": "2026-05-11T19:50:54Z",
   "problems": {
+    "358": {
+      "time_ns": 50708,
+      "compile_time_ns": 536389000,
+      "cold_start_ns": 60291,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1458176,
+      "source_lines": 108,
+      "source_bytes": 3202
+    },
+    "437": {
+      "time_ns": 6899382417,
+      "compile_time_ns": 566248000,
+      "cold_start_ns": 7305003375,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 158220288,
+      "source_lines": 122,
+      "source_bytes": 3789
+    },
+    "443": {
+      "time_ns": 7560917,
+      "compile_time_ns": 724653000,
+      "cold_start_ns": 7415833,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1507328,
+      "source_lines": 146,
+      "source_bytes": 4416
+    },
+    "451": {
+      "time_ns": 0,
+      "compile_time_ns": 568453000,
+      "cold_start_ns": 4392471500,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 81444864,
+      "source_lines": 163,
+      "source_bytes": 4714
+    },
+    "463": {
+      "time_ns": 208,
+      "compile_time_ns": 573031000,
+      "cold_start_ns": 667,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1605632,
+      "source_lines": 116,
+      "source_bytes": 3819
+    },
     "607": {
       "time_ns": 6334,
       "compile_time_ns": 482696000,
@@ -498,16 +548,6 @@
       "peak_rss_bytes": 1458176,
       "source_lines": 19,
       "source_bytes": 465
-    },
-    "437": {
-      "time_ns": 6839723208,
-      "compile_time_ns": 537133000,
-      "cold_start_ns": 7317259958,
-      "iterations": 3,
-      "status": "pass",
-      "peak_rss_bytes": 158236672,
-      "source_lines": 122,
-      "source_bytes": 3789
     },
     "002": {
       "answer": 4613732,
@@ -4135,16 +4175,6 @@
       "source_lines": 127,
       "source_bytes": 4147
     },
-    "443": {
-      "time_ns": 7606125,
-      "compile_time_ns": 552724000,
-      "cold_start_ns": 7469333,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 1507328,
-      "source_lines": 146,
-      "source_bytes": 4416
-    },
     "449": {
       "time_ns": 42,
       "compile_time_ns": 451193000,
@@ -4154,16 +4184,6 @@
       "peak_rss_bytes": 1458176,
       "source_lines": 61,
       "source_bytes": 2150
-    },
-    "451": {
-      "time_ns": 0,
-      "compile_time_ns": 522221000,
-      "cold_start_ns": 4376326083,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 81444864,
-      "source_lines": 163,
-      "source_bytes": 4714
     },
     "452": {
       "time_ns": 0,
@@ -4194,16 +4214,6 @@
       "peak_rss_bytes": 2703360,
       "source_lines": 151,
       "source_bytes": 4909
-    },
-    "463": {
-      "time_ns": 250,
-      "compile_time_ns": 517373000,
-      "cold_start_ns": 709,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1572864,
-      "source_lines": 116,
-      "source_bytes": 3819
     },
     "467": {
       "time_ns": 0,
