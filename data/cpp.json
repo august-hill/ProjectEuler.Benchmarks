@@ -2,8 +2,18 @@
   "language": "cpp",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
-  "timestamp": "2026-05-12T18:23:53Z",
+  "timestamp": "2026-05-12T18:50:07Z",
   "problems": {
+    "365": {
+      "time_ns": 0,
+      "compile_time_ns": 578874000,
+      "cold_start_ns": 267201167,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4096000,
+      "source_lines": 161,
+      "source_bytes": 5297
+    },
     "484": {
       "time_ns": 396768000,
       "compile_time_ns": 514872000,
