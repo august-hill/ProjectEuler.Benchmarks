@@ -2,8 +2,12 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-12T00:19:06Z",
+  "timestamp": "2026-05-12T00:34:52Z",
   "problems": {
+    "296": {
+      "status": "fail",
+      "error": "no output"
+    },
     "245": {
       "time_ns": 1244063000,
       "compile_time_ns": 655463000,
@@ -3010,10 +3014,6 @@
       "peak_rss_bytes": 307576832,
       "source_lines": 234,
       "source_bytes": 7938
-    },
-    "296": {
-      "status": "fail",
-      "error": "no output"
     },
     "297": {
       "time_ns": 1000,
