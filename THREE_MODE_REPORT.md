@@ -258,7 +258,7 @@ Each cell: `runtime / compile`. Sorted by problem number.
 | 217 | — | 0 ns / 378.7 ms | 1.1 ms / 0 ns | 1.3 ms / 0 ns | — | 1.6 ms / 0 ns | 1.5 ms / 0 ns | 8.9 ms / 0 ns | — |
 | 218 | — | 0 ns / 361.6 ms | 0 ns / 0 ns | 0 ns / 0 ns | — | 0 ns / 0 ns | 83 ns / 0 ns | 83 ns / 0 ns | — |
 | 219 | — | 3.0 µs / 382.5 ms | 958 ns / 0 ns | 2.7 µs / 0 ns | — | 0 ns / 0 ns | 4.5 µs / 0 ns | 83 ns / 0 ns | — |
-| 220 | — | 2.0 µs / 392.2 ms | 291 ns / 0 ns | 750 ns / 0 ns | — | 0 ns / 0 ns | 1.8 µs / 0 ns | 666 ns / 0 ns | — |
+| 220 | — | 3.0 µs / 395.4 ms | 291 ns / 0 ns | 750 ns / 0 ns | — | 0 ns / 0 ns | 1.8 µs / 0 ns | 666 ns / 0 ns | — |
 | 221 | — | 13.6 ms / 493.3 ms | — | — | — | — | — | — | — |
 | 222 | — | 1.76 s / 379.0 ms | — | — | — | — | — | — | — |
 | 223 | — | 6.80 s / 457.3 ms | — | — | — | — | — | — | — |
