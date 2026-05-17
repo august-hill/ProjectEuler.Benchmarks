@@ -2,8 +2,38 @@
   "language": "cpp",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
-  "timestamp": "2026-05-17T22:10:00Z",
+  "timestamp": "2026-05-17T22:10:21Z",
   "problems": {
+    "926": {
+      "time_ns": 107788791,
+      "compile_time_ns": 814256000,
+      "cold_start_ns": 115626875,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 14155776,
+      "source_lines": 61,
+      "source_bytes": 1715
+    },
+    "940": {
+      "time_ns": 41125,
+      "compile_time_ns": 627629000,
+      "cold_start_ns": 42083,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1474560,
+      "source_lines": 84,
+      "source_bytes": 2282
+    },
+    "980": {
+      "time_ns": 188321625,
+      "compile_time_ns": 584030000,
+      "cold_start_ns": 187888416,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 1441792,
+      "source_lines": 58,
+      "source_bytes": 1767
+    },
     "899": {
       "time_ns": 0,
       "compile_time_ns": 603509000,
@@ -240,36 +270,6 @@
       "peak_rss_bytes": 1605632,
       "source_lines": 130,
       "source_bytes": 3395
-    },
-    "926": {
-      "time_ns": 103320625,
-      "compile_time_ns": 665899000,
-      "cold_start_ns": 103391542,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 14155776,
-      "source_lines": 61,
-      "source_bytes": 1715
-    },
-    "940": {
-      "time_ns": 40292,
-      "compile_time_ns": 598134000,
-      "cold_start_ns": 41417,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1490944,
-      "source_lines": 84,
-      "source_bytes": 2282
-    },
-    "980": {
-      "time_ns": 182940209,
-      "compile_time_ns": 532090000,
-      "cold_start_ns": 184514916,
-      "iterations": 10,
-      "status": "pass",
-      "peak_rss_bytes": 1474560,
-      "source_lines": 58,
-      "source_bytes": 1767
     },
     "828": {
       "time_ns": 350436208,

@@ -1,6 +1,6 @@
 # Project Euler — Coverage Dashboard
 
-_Generated: 2026-05-17 15:10_
+_Generated: 2026-05-17 17:07_
 
 Legend: 🟩 done · 🟨 parked / known issue · 🟥 missing · ⬛ out of scope
 
