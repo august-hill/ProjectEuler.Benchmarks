@@ -1,3 +1,3 @@
 module three-mode-report
 
-go 1.22
+go 1.25
