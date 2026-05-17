@@ -2,8 +2,41 @@
   "language": "rust",
   "platform": "arm64",
   "compiler": "rustc 1.87.0 (17067e9ac 2025-05-09)",
-  "timestamp": "2026-05-11T14:36:20Z",
+  "timestamp": "2026-05-17T21:52:36Z",
   "problems": {
+    "007": {
+      "answer": 104743,
+      "time_ns": 851084,
+      "compile_time_ns": 79331000,
+      "cold_start_ns": 899667,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1966080,
+      "source_lines": 30,
+      "source_bytes": 616
+    },
+    "010": {
+      "answer": 142913828922,
+      "time_ns": 545375,
+      "compile_time_ns": 82499000,
+      "cold_start_ns": 2149458,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 3604480,
+      "source_lines": 39,
+      "source_bytes": 771
+    },
+    "013": {
+      "answer": 5537376230,
+      "time_ns": 16625,
+      "compile_time_ns": 67226000,
+      "cold_start_ns": 71333,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1720320,
+      "source_lines": 119,
+      "source_bytes": 6576
+    },
     "162": {
       "time_ns": 500,
       "compile_time_ns": 565636000,
@@ -140,17 +173,6 @@
       "source_lines": 15,
       "source_bytes": 277
     },
-    "007": {
-      "answer": 104743,
-      "time_ns": 855375,
-      "cold_start_ns": 1017375,
-      "iterations": 100,
-      "status": "pass",
-      "peak_rss_bytes": 1851392,
-      "compile_time_ns": 529202667,
-      "source_lines": 30,
-      "source_bytes": 616
-    },
     "008": {
       "answer": 23514624000,
       "time_ns": 4125,
@@ -173,17 +195,6 @@
       "source_lines": 21,
       "source_bytes": 467
     },
-    "010": {
-      "answer": 142913828922,
-      "time_ns": 536834,
-      "cold_start_ns": 2135500,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 3506176,
-      "compile_time_ns": 787903875,
-      "source_lines": 39,
-      "source_bytes": 771
-    },
     "011": {
       "answer": 70600674,
       "time_ns": 0,
@@ -205,17 +216,6 @@
       "compile_time_ns": 504357333,
       "source_lines": 31,
       "source_bytes": 586
-    },
-    "013": {
-      "answer": 5537376230,
-      "time_ns": 15834,
-      "cold_start_ns": 70667,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1638400,
-      "compile_time_ns": 919232208,
-      "source_lines": 119,
-      "source_bytes": 6576
     },
     "014": {
       "answer": 837799,
