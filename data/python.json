@@ -2,17 +2,47 @@
   "language": "python",
   "platform": "arm64",
   "compiler": "Python 3.11.7",
-  "timestamp": "2026-05-18T02:26:30Z",
+  "timestamp": "2026-05-18T02:47:52Z",
   "problems": {
-    "714": {
-      "time_ns": 17832536709,
+    "378": {
+      "time_ns": 2718643375,
       "compile_time_ns": 0,
-      "cold_start_ns": 18230854792,
+      "cold_start_ns": 2729591375,
       "iterations": 3,
       "status": "pass",
-      "peak_rss_bytes": 16416768,
-      "source_lines": 191,
-      "source_bytes": 6238
+      "peak_rss_bytes": 303939584,
+      "source_lines": 123,
+      "source_bytes": 4281
+    },
+    "593": {
+      "time_ns": 292127125,
+      "compile_time_ns": 0,
+      "cold_start_ns": 294978167,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 68468736,
+      "source_lines": 185,
+      "source_bytes": 6179
+    },
+    "714": {
+      "time_ns": 17473752292,
+      "compile_time_ns": 0,
+      "cold_start_ns": 17460808208,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 16351232,
+      "source_lines": 193,
+      "source_bytes": 6312
+    },
+    "946": {
+      "time_ns": 9025951083,
+      "compile_time_ns": 0,
+      "cold_start_ns": 9008463041,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 14286848,
+      "source_lines": 126,
+      "source_bytes": 4230
     },
     "359": {
       "time_ns": 182042,
