@@ -2,8 +2,18 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go1.26.3",
-  "timestamp": "2026-05-22T20:16:55Z",
+  "timestamp": "2026-05-22T20:37:53Z",
   "problems": {
+    "331": {
+      "time_ns": 6384165834,
+      "compile_time_ns": 269374000,
+      "cold_start_ns": 6524659750,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 353255424,
+      "source_lines": 146,
+      "source_bytes": 4398
+    },
     "301": {
       "time_ns": 41,
       "compile_time_ns": 281827000,
