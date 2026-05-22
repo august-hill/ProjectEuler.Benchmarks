@@ -2,8 +2,128 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go1.26.3",
-  "timestamp": "2026-05-22T19:31:38Z",
+  "timestamp": "2026-05-22T19:34:58Z",
   "problems": {
+    "289": {
+      "time_ns": 41,
+      "compile_time_ns": 293057000,
+      "cold_start_ns": 14459,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4210688,
+      "source_lines": 294,
+      "source_bytes": 8088
+    },
+    "429": {
+      "time_ns": 530157875,
+      "compile_time_ns": 297531000,
+      "cold_start_ns": 580343250,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 30867456,
+      "source_lines": 80,
+      "source_bytes": 1750
+    },
+    "430": {
+      "time_ns": 648484000,
+      "compile_time_ns": 284302000,
+      "cold_start_ns": 665446875,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 4145152,
+      "source_lines": 91,
+      "source_bytes": 2464
+    },
+    "433": {
+      "time_ns": 0,
+      "compile_time_ns": 279725000,
+      "cold_start_ns": 11500,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4243456,
+      "source_lines": 41,
+      "source_bytes": 1602
+    },
+    "434": {
+      "time_ns": 41,
+      "compile_time_ns": 326937000,
+      "cold_start_ns": 14042,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4374528,
+      "source_lines": 26,
+      "source_bytes": 1031
+    },
+    "437": {
+      "time_ns": 3650527916,
+      "compile_time_ns": 382994000,
+      "cold_start_ns": 3670804625,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 56770560,
+      "source_lines": 195,
+      "source_bytes": 3888
+    },
+    "438": {
+      "time_ns": 41,
+      "compile_time_ns": 314147000,
+      "cold_start_ns": 14375,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4128768,
+      "source_lines": 428,
+      "source_bytes": 10245
+    },
+    "442": {
+      "time_ns": 105042,
+      "compile_time_ns": 281982000,
+      "cold_start_ns": 186208,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 10289152,
+      "source_lines": 226,
+      "source_bytes": 5441
+    },
+    "443": {
+      "time_ns": 35694875,
+      "compile_time_ns": 303061000,
+      "cold_start_ns": 47631125,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 11960320,
+      "source_lines": 236,
+      "source_bytes": 4918
+    },
+    "447": {
+      "time_ns": 1449854416,
+      "compile_time_ns": 313965000,
+      "cold_start_ns": 1456182208,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 61718528,
+      "source_lines": 148,
+      "source_bytes": 3840
+    },
+    "451": {
+      "time_ns": 9207776416,
+      "compile_time_ns": 347109000,
+      "cold_start_ns": 9150832500,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 330039296,
+      "source_lines": 174,
+      "source_bytes": 4636
+    },
+    "456": {
+      "time_ns": 42,
+      "compile_time_ns": 355473000,
+      "cold_start_ns": 25458,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4194304,
+      "source_lines": 122,
+      "source_bytes": 3342
+    },
     "218": {
       "time_ns": 659501792,
       "compile_time_ns": 283254000,
