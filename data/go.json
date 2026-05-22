@@ -2,8 +2,78 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go1.26.3",
-  "timestamp": "2026-05-22T19:18:21Z",
+  "timestamp": "2026-05-22T19:31:38Z",
   "problems": {
+    "218": {
+      "time_ns": 659501792,
+      "compile_time_ns": 283254000,
+      "cold_start_ns": 670892958,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 4243456,
+      "source_lines": 87,
+      "source_bytes": 2054
+    },
+    "428": {
+      "time_ns": 10625548292,
+      "compile_time_ns": 286460000,
+      "cold_start_ns": 11974428666,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 23237754880,
+      "source_lines": 154,
+      "source_bytes": 4103
+    },
+    "431": {
+      "time_ns": 692228041,
+      "compile_time_ns": 294575000,
+      "cold_start_ns": 697213375,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 4227072,
+      "source_lines": 131,
+      "source_bytes": 3535
+    },
+    "432": {
+      "time_ns": 804261250,
+      "compile_time_ns": 290589000,
+      "cold_start_ns": 843959333,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 523124736,
+      "source_lines": 173,
+      "source_bytes": 4013
+    },
+    "435": {
+      "time_ns": 1424583,
+      "compile_time_ns": 323834000,
+      "cold_start_ns": 2907292,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 11321344,
+      "source_lines": 107,
+      "source_bytes": 2739
+    },
+    "436": {
+      "time_ns": 0,
+      "compile_time_ns": 286689000,
+      "cold_start_ns": 14333,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4096000,
+      "source_lines": 58,
+      "source_bytes": 1924
+    },
+    "457": {
+      "time_ns": 325992833,
+      "compile_time_ns": 288768000,
+      "cold_start_ns": 330827625,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 40976384,
+      "source_lines": 209,
+      "source_bytes": 4915
+    },
     "449": {
       "time_ns": 83,
       "compile_time_ns": 289592000,
@@ -3075,15 +3145,6 @@
       "peak_rss_bytes": 11534336,
       "source_lines": 134,
       "source_bytes": 3583
-    },
-    "218": {
-      "time_ns": 0,
-      "cold_start_ns": 691394083,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 4390912,
-      "source_lines": 95,
-      "source_bytes": 2174
     },
     "219": {
       "time_ns": 2666,
