@@ -2,8 +2,18 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-22T16:25:56Z",
+  "timestamp": "2026-05-22T18:08:57Z",
   "problems": {
+    "232": {
+      "time_ns": 1349666,
+      "compile_time_ns": 376773000,
+      "cold_start_ns": 2941875,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1523712,
+      "source_lines": 102,
+      "source_bytes": 4108
+    },
     "460": {
       "time_ns": 2974735875,
       "compile_time_ns": 413678000,
@@ -2518,16 +2528,6 @@
       "peak_rss_bytes": 1441792,
       "source_lines": 91,
       "source_bytes": 2968
-    },
-    "232": {
-      "time_ns": 251000,
-      "compile_time_ns": 529678000,
-      "cold_start_ns": 263000,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 1458176,
-      "source_lines": 100,
-      "source_bytes": 4331
     },
     "234": {
       "time_ns": 1838000,
