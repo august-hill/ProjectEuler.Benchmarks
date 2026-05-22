@@ -2,8 +2,138 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go1.26.3",
-  "timestamp": "2026-05-22T22:46:34Z",
+  "timestamp": "2026-05-22T23:20:23Z",
   "problems": {
+    "330": {
+      "time_ns": 365500,
+      "compile_time_ns": 380954000,
+      "cold_start_ns": 1150625,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4390912,
+      "source_lines": 102,
+      "source_bytes": 1637
+    },
+    "332": {
+      "time_ns": 1343784250,
+      "compile_time_ns": 413926000,
+      "cold_start_ns": 1339984083,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 10846208,
+      "source_lines": 129,
+      "source_bytes": 2438
+    },
+    "333": {
+      "time_ns": 468059042,
+      "compile_time_ns": 356376000,
+      "cold_start_ns": 474537333,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 103284736,
+      "source_lines": 113,
+      "source_bytes": 1914
+    },
+    "334": {
+      "time_ns": 121000,
+      "compile_time_ns": 448427000,
+      "cold_start_ns": 327416,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 11157504,
+      "source_lines": 102,
+      "source_bytes": 2746
+    },
+    "335": {
+      "time_ns": 1834,
+      "compile_time_ns": 362577000,
+      "cold_start_ns": 33166,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 4210688,
+      "source_lines": 75,
+      "source_bytes": 1324
+    },
+    "337": {
+      "time_ns": 2366697834,
+      "compile_time_ns": 504190000,
+      "cold_start_ns": 2665048875,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 1030094848,
+      "source_lines": 100,
+      "source_bytes": 1514
+    },
+    "339": {
+      "time_ns": 2659251750,
+      "compile_time_ns": 498675000,
+      "cold_start_ns": 2830440166,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 8454144,
+      "source_lines": 117,
+      "source_bytes": 1873
+    },
+    "340": {
+      "time_ns": 1625,
+      "compile_time_ns": 404464000,
+      "cold_start_ns": 178042,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 5177344,
+      "source_lines": 71,
+      "source_bytes": 1634
+    },
+    "341": {
+      "time_ns": 166094250,
+      "compile_time_ns": 392878000,
+      "cold_start_ns": 200788417,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 646742016,
+      "source_lines": 113,
+      "source_bytes": 1921
+    },
+    "343": {
+      "time_ns": 62416375,
+      "compile_time_ns": 387529000,
+      "cold_start_ns": 84981125,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 81182720,
+      "source_lines": 161,
+      "source_bytes": 2709
+    },
+    "345": {
+      "time_ns": 1657375,
+      "compile_time_ns": 486659000,
+      "cold_start_ns": 1620333,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 9355264,
+      "source_lines": 63,
+      "source_bytes": 2128
+    },
+    "346": {
+      "time_ns": 66043500,
+      "compile_time_ns": 456131000,
+      "cold_start_ns": 86345792,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 80478208,
+      "source_lines": 44,
+      "source_bytes": 700
+    },
+    "347": {
+      "time_ns": 13512208,
+      "compile_time_ns": 367965000,
+      "cold_start_ns": 22852292,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 25313280,
+      "source_lines": 71,
+      "source_bytes": 1155
+    },
     "401": {
       "time_ns": 992256250,
       "compile_time_ns": 285293000,

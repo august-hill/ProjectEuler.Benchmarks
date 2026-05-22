@@ -1,9 +1,129 @@
 {
   "language": "rust",
   "platform": "arm64",
-  "compiler": "rustc 1.87.0 (17067e9ac 2025-05-09)",
-  "timestamp": "2026-05-17T21:52:36Z",
+  "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
+  "timestamp": "2026-05-22T23:23:24Z",
   "problems": {
+    "221": {
+      "time_ns": 9965583,
+      "compile_time_ns": 908542000,
+      "cold_start_ns": 11051666,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 14041088,
+      "source_lines": 109,
+      "source_bytes": 3076
+    },
+    "330": {
+      "time_ns": 793583,
+      "compile_time_ns": 420938000,
+      "cold_start_ns": 2135250,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1654784,
+      "source_lines": 85,
+      "source_bytes": 1909
+    },
+    "333": {
+      "time_ns": 363559583,
+      "compile_time_ns": 421864000,
+      "cold_start_ns": 440134458,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 64159744,
+      "source_lines": 101,
+      "source_bytes": 2296
+    },
+    "334": {
+      "time_ns": 14459,
+      "compile_time_ns": 387810000,
+      "cold_start_ns": 19584,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1622016,
+      "source_lines": 66,
+      "source_bytes": 1448
+    },
+    "335": {
+      "time_ns": 3583,
+      "compile_time_ns": 351173000,
+      "cold_start_ns": 33375,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1589248,
+      "source_lines": 68,
+      "source_bytes": 1399
+    },
+    "337": {
+      "time_ns": 1460959833,
+      "compile_time_ns": 381646000,
+      "cold_start_ns": 1388738208,
+      "iterations": 3,
+      "status": "pass",
+      "peak_rss_bytes": 397410304,
+      "source_lines": 97,
+      "source_bytes": 2121
+    },
+    "340": {
+      "time_ns": 0,
+      "compile_time_ns": 334631000,
+      "cold_start_ns": 42,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 1572864,
+      "source_lines": 44,
+      "source_bytes": 902
+    },
+    "341": {
+      "time_ns": 140141125,
+      "compile_time_ns": 379286000,
+      "cold_start_ns": 174586042,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 241631232,
+      "source_lines": 114,
+      "source_bytes": 2705
+    },
+    "343": {
+      "time_ns": 67781834,
+      "compile_time_ns": 435203000,
+      "cold_start_ns": 92263209,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 35192832,
+      "source_lines": 159,
+      "source_bytes": 3656
+    },
+    "345": {
+      "time_ns": 858167,
+      "compile_time_ns": 381196000,
+      "cold_start_ns": 1125292,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 1867776,
+      "source_lines": 50,
+      "source_bytes": 2241
+    },
+    "346": {
+      "time_ns": 21793084,
+      "compile_time_ns": 415634000,
+      "cold_start_ns": 37628791,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 39387136,
+      "source_lines": 50,
+      "source_bytes": 1298
+    },
+    "347": {
+      "time_ns": 13481417,
+      "compile_time_ns": 364000000,
+      "cold_start_ns": 27863083,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 13926400,
+      "source_lines": 68,
+      "source_bytes": 1644
+    },
     "007": {
       "answer": 104743,
       "time_ns": 851084,
