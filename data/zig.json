@@ -2,7 +2,7 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "zig 0.15.2",
-  "timestamp": "2026-05-22T19:08:57Z",
+  "timestamp": "2026-05-22T19:27:49Z",
   "problems": {
     "751": {
       "time_ns": 142791,
@@ -2548,11 +2548,6 @@
       "peak_rss_bytes": 2703360,
       "source_lines": 92,
       "source_bytes": 3249
-    },
-    "236": {
-      "status": "fail",
-      "error": "compile error",
-      "compile_time_ns": 143006000
     },
     "237": {
       "time_ns": 0,
