@@ -2,7 +2,7 @@
   "language": "python",
   "platform": "arm64",
   "compiler": "Python 3.11.7",
-  "timestamp": "2026-05-23T22:23:58Z",
+  "timestamp": "2026-05-23T23:47:54Z",
   "problems": {
     "001": {
       "time_ns": 375,
@@ -27,26 +27,26 @@
       "source_bytes": 466
     },
     "003": {
-      "time_ns": 7594459,
-      "cold_start_ns": 7650334,
-      "cold_min_ns": 7449541,
-      "cold_max_ns": 7907666,
+      "time_ns": 5483625,
+      "cold_start_ns": 5581625,
+      "cold_min_ns": 5452916,
+      "cold_max_ns": 5689709,
       "cold_samples": 10,
-      "subprocess_wall_ns": 874713625,
+      "subprocess_wall_ns": 647593958,
       "status": "pass",
       "source_lines": 30,
-      "source_bytes": 600
+      "source_bytes": 601
     },
     "004": {
-      "time_ns": 55861750,
-      "cold_start_ns": 56013833,
-      "cold_min_ns": 55601959,
-      "cold_max_ns": 56658958,
+      "time_ns": 55262333,
+      "cold_start_ns": 55372792,
+      "cold_min_ns": 55148959,
+      "cold_max_ns": 56301333,
       "cold_samples": 10,
-      "subprocess_wall_ns": 5872356833,
+      "subprocess_wall_ns": 5815058459,
       "status": "pass",
-      "source_lines": 25,
-      "source_bytes": 462
+      "source_lines": 24,
+      "source_bytes": 439
     },
     "005": {
       "time_ns": 1000,
@@ -82,26 +82,26 @@
       "source_bytes": 470
     },
     "008": {
-      "time_ns": 852417,
-      "cold_start_ns": 877417,
-      "cold_min_ns": 837208,
-      "cold_max_ns": 983500,
+      "time_ns": 853667,
+      "cold_start_ns": 891583,
+      "cold_min_ns": 837292,
+      "cold_max_ns": 926292,
       "cold_samples": 10,
-      "subprocess_wall_ns": 895187625,
+      "subprocess_wall_ns": 896031875,
       "status": "pass",
       "source_lines": 42,
       "source_bytes": 1504
     },
     "009": {
-      "time_ns": 4706625,
-      "cold_start_ns": 4723292,
-      "cold_min_ns": 4613166,
-      "cold_max_ns": 4756292,
+      "time_ns": 4622208,
+      "cold_start_ns": 4640416,
+      "cold_min_ns": 4568750,
+      "cold_max_ns": 4776916,
       "cold_samples": 10,
-      "subprocess_wall_ns": 514419833,
+      "subprocess_wall_ns": 509744833,
       "status": "pass",
-      "source_lines": 20,
-      "source_bytes": 402
+      "source_lines": 18,
+      "source_bytes": 355
     },
     "010": {
       "time_ns": 5246250,

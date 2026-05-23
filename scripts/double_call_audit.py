@@ -37,8 +37,8 @@ USAGE:
   python3 double_call_audit.py --lang cpp --problems 1,3,7
   python3 double_call_audit.py --lang cpp --problems 1
 
-NOTE: as of 2026-05-23 this is C++-only.  Per-language harness patches and
-adapters land here as we extend the 10×10 audit to each language.
+NOTE: as of 2026-05-23 covers cpp, c, arm64, rust, go, zig, java, javascript,
+python, csharp.  Each lang's harness emits COLDSTART|time_ns=N|answer=A.
 """
 
 import argparse
@@ -114,6 +114,91 @@ LANG_CONFIG = {
         # target/ is gitignored; no manual cleanup needed
         "skip_binary_cleanup": True,
     },
+    "go": {
+        "repo_dir": BASE / "ProjectEuler.Go",
+        "prob_dir": lambda p: BASE / "ProjectEuler.Go" / f"problem_{p:03d}",
+        # Per ProjectEuler.Go/CLAUDE.md: `go build -o main_bench main.go`
+        "build_cmd_base": ["go", "build", "-o", "main_bench", "main.go"],
+        "build_extra_libs": [[]],
+        "src_files": {"main.go"},
+        "run_cmd": ["./main_bench"],
+        "binary_name": "main_bench",
+    },
+    "zig": {
+        "repo_dir": BASE / "ProjectEuler.Zig",
+        "prob_dir": lambda p: BASE / "ProjectEuler.Zig" / f"problem_{p:03d}",
+        # Per ProjectEuler.Zig/benchmark.sh:58 — must build from repo root so
+        # module imports resolve.  We wrap in sh -c so the audit's
+        # cwd=prob_dir contract still holds for the run step; the build step
+        # explicitly `cd`'s to the repo root.
+        "build_cmd_base": lambda p: [
+            "sh", "-c",
+            f"cd {BASE / 'ProjectEuler.Zig'} && "
+            f"zig build-exe -O ReleaseFast --dep bench "
+            f"-Mroot=problem_{p:03d}/main.zig "
+            f"-Mbench=bench/bench.zig "
+            f"-femit-bin=problem_{p:03d}/main_bench",
+        ],
+        "build_extra_libs": [[]],
+        "src_files": {"main.zig"},
+        "run_cmd": ["./main_bench"],
+        "binary_name": "main_bench",
+        # Zig drops a couple of build artifacts next to the binary
+        "extra_cleanup": ["main_bench.o"],
+    },
+    "java": {
+        "repo_dir": BASE / "ProjectEuler.Java",
+        "prob_dir": lambda p: BASE / "ProjectEuler.Java" / f"problem_{p:03d}",
+        # Mirrors the cmd/euler-bench langs.go PreBuild: copy the shared
+        # Bench.java into the problem dir, then `javac Bench.java Main.java`.
+        "pre_build": lambda repo_dir, prob_dir, p: (prob_dir / "Bench.java").write_bytes(
+            (repo_dir / "Bench.java").read_bytes()
+        ),
+        "build_cmd_base": ["javac", "Bench.java", "Main.java"],
+        "build_extra_libs": [[]],
+        "src_files": {"Main.java"},
+        "run_cmd": ["java", "Main"],
+        # No single "binary" — Java drops .class files.  Use extra_cleanup
+        # for both and skip the binary unlink.  Note: we do NOT clean up
+        # Bench.java — it is a committed file in each problem dir (the
+        # repo ships a synced copy alongside Main.java), and pre_build
+        # overwrites it from the repo-root canonical each run anyway.
+        "skip_binary_cleanup": True,
+        "extra_cleanup": ["Main.class", "Bench.class"],
+    },
+    "javascript": {
+        "repo_dir": BASE / "ProjectEuler.JavaScript",
+        "prob_dir": lambda p: BASE / "ProjectEuler.JavaScript" / f"problem_{p:03d}",
+        # No build step.  Run main.js with node.
+        "build_cmd_base": None,
+        "src_files": {"main.js"},
+        "run_cmd": ["node", "main.js"],
+        "skip_binary_cleanup": True,
+    },
+    "python": {
+        "repo_dir": BASE / "ProjectEuler.Python",
+        # File-based layout (unique among the suite): problem_NNN.py lives at
+        # the repo root, not in a per-problem dir.  We point prob_dir at the
+        # repo root, then src_files names the file we expect.
+        "prob_dir": lambda p: BASE / "ProjectEuler.Python",
+        "build_cmd_base": None,
+        "src_files": lambda p: {f"problem_{p:03d}.py"},
+        "run_cmd": lambda p: ["python3", f"problem_{p:03d}.py"],
+        "skip_binary_cleanup": True,
+    },
+    "csharp": {
+        "repo_dir": BASE / "ProjectEuler.CSharp",
+        "prob_dir": lambda p: BASE / "ProjectEuler.CSharp" / f"problem_{p:03d}",
+        # Per ProjectEuler.CSharp/CLAUDE.md: `dotnet build -c Release`,
+        # then `dotnet bin/Release/net10.0/problem_NNN.dll`.
+        # --nologo --verbosity quiet keeps stdout clean.
+        "build_cmd_base": ["dotnet", "build", "-c", "Release", "--nologo", "-v", "quiet"],
+        "build_extra_libs": [[]],
+        "src_files": {"Program.cs"},
+        "run_cmd": lambda p: ["dotnet", f"bin/Release/net10.0/problem_{p:03d}.dll"],
+        # bin/ and obj/ are gitignored; no in-tree binary to clean.
+        "skip_binary_cleanup": True,
+    },
 }
 
 # Parse the bench-output format.  Both keys (time_ns, answer) appear
@@ -150,9 +235,10 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
         return result
     # Verify expected source file(s) exist before attempting the build.
     # Configs that don't expose source names (e.g. wrapped in sh -c) can list
-    # them explicitly via `src_files`.
+    # them explicitly via `src_files` — which itself may be a set or a
+    # callable(problem_int)→set (e.g. Python's file-based layout).
     if "src_files" in cfg:
-        src_files = cfg["src_files"]
+        src_files = cfg["src_files"](problem) if callable(cfg["src_files"]) else cfg["src_files"]
     else:
         src_files = {arg for arg in cfg["build_cmd_base"]
                      if arg.endswith((".c", ".cpp", ".cs", ".go", ".java", ".js", ".py", ".rs", ".s", ".zig"))}
@@ -161,29 +247,48 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
             result.notes.append(f"no {src} in {prob_dir}")
             return result
 
+    # Optional pre-build hook (e.g. Java copies Bench.java into the prob dir).
+    pre_build = cfg.get("pre_build")
+    if pre_build is not None:
+        try:
+            pre_build(cfg["repo_dir"], prob_dir, problem)
+        except Exception as e:
+            result.notes.append(f"pre-build failed: {e}")
+            return result
+
     # 1. Build.  Try the base command first; if it fails, retry with each
     # extra-lib combo (mirrors benchmark.sh's fallback chain for primesieve/fmt).
-    build_ok = False
-    last_err = ""
-    for extra in cfg.get("build_extra_libs", [[]]):
-        try:
-            build = subprocess.run(
-                cfg["build_cmd_base"] + extra,
-                cwd=prob_dir,
-                capture_output=True,
-                text=True,
-                timeout=60,
-            )
-            if build.returncode == 0:
-                build_ok = True
-                break
-            last_err = build.stderr[:200].strip()
-        except subprocess.TimeoutExpired:
-            result.notes.append("build timeout (60s)")
+    # `build_cmd_base` may be a list (fixed), callable(problem_int)→list
+    # (per-prob, e.g. Zig's build-from-repo-root sh -c), or None (no build
+    # step needed — e.g. interpreted languages like Python and JavaScript).
+    build_cmd_base = cfg["build_cmd_base"]
+    if build_cmd_base is None:
+        # No build step.  The "run" step will do everything.
+        pass
+    else:
+        if callable(build_cmd_base):
+            build_cmd_base = build_cmd_base(problem)
+        build_ok = False
+        last_err = ""
+        for extra in cfg.get("build_extra_libs", [[]]):
+            try:
+                build = subprocess.run(
+                    build_cmd_base + extra,
+                    cwd=prob_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                if build.returncode == 0:
+                    build_ok = True
+                    break
+                last_err = build.stderr[:200].strip() or build.stdout[:200].strip()
+            except subprocess.TimeoutExpired:
+                result.notes.append("build timeout (60s)")
+                return result
+        if not build_ok:
+            result.notes.append(f"build failed (all link combos): {last_err}")
             return result
-    if not build_ok:
-        result.notes.append(f"build failed (all link combos): {last_err}")
-        return result
 
     # 2. Run (always clean up the binary, regardless of outcome).
     # `run_cmd` may be a list (fixed) or callable(problem_int)→list (per-prob).
@@ -252,8 +357,10 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
             )
     finally:
         # Always clean up the binary so the working tree stays untracked-free.
-        # Some langs (Rust) keep their binary in a gitignored target/ dir and
-        # don't need explicit cleanup — set `skip_binary_cleanup: True`.
+        # Some langs (Rust, JS, Python, Java, C#) either have no in-tree
+        # binary or put their build artifacts in gitignored dirs — set
+        # `skip_binary_cleanup: True` and use `extra_cleanup` for any
+        # incidental files (e.g. Java's .class files).
         if not cfg.get("skip_binary_cleanup", False):
             binary = prob_dir / cfg["binary_name"]
             if binary.exists():

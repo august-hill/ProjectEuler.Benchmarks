@@ -2,7 +2,7 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "0.15.2",
-  "timestamp": "2026-05-23T22:23:58Z",
+  "timestamp": "2026-05-23T23:48:22Z",
   "problems": {
     "001": {
       "time_ns": 0,
@@ -68,15 +68,15 @@
       "source_bytes": 402
     },
     "007": {
-      "time_ns": 206458,
-      "cold_start_ns": 556375,
-      "cold_min_ns": 351792,
-      "cold_max_ns": 1219875,
+      "time_ns": 171000,
+      "cold_start_ns": 181583,
+      "cold_min_ns": 169708,
+      "cold_max_ns": 243958,
       "cold_samples": 10,
-      "subprocess_wall_ns": 220588041,
+      "subprocess_wall_ns": 184075375,
       "status": "pass",
-      "source_lines": 43,
-      "source_bytes": 905
+      "source_lines": 47,
+      "source_bytes": 1121
     },
     "008": {
       "time_ns": 1166,
@@ -101,15 +101,15 @@
       "source_bytes": 746
     },
     "010": {
-      "time_ns": 1956542,
-      "cold_start_ns": 2216542,
-      "cold_min_ns": 2193208,
-      "cold_max_ns": 5325250,
+      "time_ns": 2165709,
+      "cold_start_ns": 2110250,
+      "cold_min_ns": 1998875,
+      "cold_max_ns": 2190958,
       "cold_samples": 10,
-      "subprocess_wall_ns": 213589709,
+      "subprocess_wall_ns": 226728042,
       "status": "pass",
-      "source_lines": 37,
-      "source_bytes": 737
+      "source_lines": 42,
+      "source_bytes": 950
     },
     "011": {
       "time_ns": 0,

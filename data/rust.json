@@ -2,7 +2,7 @@
   "language": "rust",
   "platform": "arm64",
   "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
-  "timestamp": "2026-05-23T22:36:22Z",
+  "timestamp": "2026-05-23T23:47:58Z",
   "problems": {
     "001": {
       "time_ns": 41,
@@ -26,37 +26,37 @@
       "source_bytes": 288
     },
     "003": {
-      "time_ns": 27417,
-      "cold_start_ns": 28292,
-      "cold_min_ns": 27083,
-      "cold_max_ns": 35792,
+      "time_ns": 50375,
+      "cold_start_ns": 72791,
+      "cold_min_ns": 69708,
+      "cold_max_ns": 215250,
       "cold_samples": 10,
-      "subprocess_wall_ns": 36042250,
+      "subprocess_wall_ns": 58302292,
       "status": "pass",
       "source_lines": 23,
-      "source_bytes": 408
+      "source_bytes": 720
     },
     "004": {
-      "time_ns": 12667,
-      "cold_start_ns": 14166,
-      "cold_min_ns": 13125,
-      "cold_max_ns": 24042,
+      "time_ns": 13166,
+      "cold_start_ns": 13500,
+      "cold_min_ns": 13292,
+      "cold_max_ns": 17708,
       "cold_samples": 10,
-      "subprocess_wall_ns": 20635833,
+      "subprocess_wall_ns": 19690875,
       "status": "pass",
-      "source_lines": 36,
-      "source_bytes": 723
+      "source_lines": 35,
+      "source_bytes": 1013
     },
     "005": {
-      "time_ns": 125,
-      "cold_start_ns": 416,
-      "cold_min_ns": 334,
-      "cold_max_ns": 750,
+      "time_ns": 333,
+      "cold_start_ns": 584,
+      "cold_min_ns": 500,
+      "cold_max_ns": 666,
       "cold_samples": 10,
-      "subprocess_wall_ns": 7113750,
+      "subprocess_wall_ns": 6396750,
       "status": "pass",
-      "source_lines": 17,
-      "source_bytes": 268
+      "source_lines": 12,
+      "source_bytes": 288
     },
     "006": {
       "time_ns": 41,

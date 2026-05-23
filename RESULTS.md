@@ -17,16 +17,16 @@ the headline per-problem number, and we sum across the 10 problems for the total
 
 | Rank | Language | Total (10 problems) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C** | 317.2 µs | 357 | 1.00× |
-| 2 | **C++** | 345.8 µs | 268 | 1.09× |
-| 3 | **Rust** | 1.04 ms | 225 | 3.27× |
-| 4 | **Zig** | 2.78 ms | 363 | 8.77× |
-| 5 | **Go** | 4.36 ms | 366 | 13.75× |
-| 6 | **ARM64** | 5.07 ms | 717 | 15.99× |
-| 7 | **Java** | 10.20 ms | 356 | 32.16× |
-| 8 | **JavaScript** | 13.36 ms | 254 | 42.14× |
-| 9 | **C#** | 16.15 ms | 307 | 50.93× |
-| 10 | **Python** | 75.95 ms | 247 | 239.46× |
+| 1 | **C** | 318.0 µs | 349 | 1.00× |
+| 2 | **C++** | 346.0 µs | 256 | 1.09× |
+| 3 | **Rust** | 1.08 ms | 219 | 3.40× |
+| 4 | **Zig** | 2.30 ms | 372 | 7.23× |
+| 5 | **Go** | 4.15 ms | 340 | 13.05× |
+| 6 | **ARM64** | 4.34 ms | 721 | 13.65× |
+| 7 | **Java** | 10.20 ms | 356 | 32.08× |
+| 8 | **JavaScript** | 13.36 ms | 254 | 42.03× |
+| 9 | **C#** | 16.15 ms | 307 | 50.80× |
+| 10 | **Python** | 73.17 ms | 244 | 230.13× |
 
 ## Speed vs Code Size
 
@@ -60,16 +60,16 @@ are sorted by total (fastest language at top).
 
 | Language | p001 | p002 | p003 | p004 | p005 | p006 | p007 | p008 | p009 | p010 |
 |----------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
-| **C** | 42 ns | 42 ns | 667 ns | 3.4 µs | 375 ns | 42 ns | 26.7 µs | 1.8 µs | 250 ns | 283.8 µs |
-| **C++** | 42 ns | 125 ns | 28.0 µs | 26.0 µs | 333 ns | 42 ns | 24.5 µs | 3.1 µs | 292 ns | 263.4 µs |
-| **Rust** | 42 ns | 84 ns | 28.3 µs | 14.2 µs | 416 ns | 42 ns | 194.1 µs | 10.5 µs | 250 ns | 789.5 µs |
-| **Zig** | 41 ns | 42 ns | 625 ns | 4.0 µs | 500 ns | 42 ns | 556.4 µs | 2.1 µs | 333 ns | 2.22 ms |
-| **Go** | 1.8 µs | 2.1 µs | 2.5 µs | 5.6 µs | 2.2 µs | 2.0 µs | 356.3 µs | 5.4 µs | 2.1 µs | 3.98 ms |
-| **ARM64** | 2.0 µs | 0 ns | 1.0 µs | 3.0 µs | 1.0 µs | 0 ns | 282.0 µs | 4.0 µs | 1.0 µs | 4.78 ms |
+| **C** | 42 ns | 42 ns | 667 ns | 3.4 µs | 375 ns | 42 ns | 26.7 µs | 2.6 µs | 250 ns | 283.8 µs |
+| **C++** | 42 ns | 125 ns | 28.0 µs | 26.0 µs | 458 ns | 42 ns | 24.5 µs | 3.1 µs | 292 ns | 263.4 µs |
+| **Rust** | 42 ns | 84 ns | 72.8 µs | 13.5 µs | 584 ns | 42 ns | 194.1 µs | 10.5 µs | 250 ns | 789.5 µs |
+| **Zig** | 41 ns | 42 ns | 625 ns | 4.0 µs | 500 ns | 42 ns | 181.6 µs | 2.1 µs | 333 ns | 2.11 ms |
+| **Go** | 1.8 µs | 2.1 µs | 2.5 µs | 5.6 µs | 2.2 µs | 2.0 µs | 356.3 µs | 5.0 µs | 2.1 µs | 3.77 ms |
+| **ARM64** | 0 ns | 0 ns | 1.0 µs | 3.0 µs | 1.0 µs | 0 ns | 239.0 µs | 4.0 µs | 1.0 µs | 4.09 ms |
 | **Java** | 2.6 µs | 3.4 µs | 8.9 µs | 317.3 µs | 5.2 µs | 2.2 µs | 1.58 ms | 54.5 µs | 6.5 µs | 8.22 ms |
 | **JavaScript** | 20.7 µs | 12.7 µs | 53.2 µs | 98.6 µs | 31.1 µs | 8.0 µs | 2.73 ms | 96.3 µs | 28.7 µs | 10.28 ms |
 | **C#** | 300.1 µs | 283.7 µs | 320.0 µs | 440.7 µs | 2.02 ms | 276.9 µs | 1.02 ms | 491.9 µs | 704.2 µs | 10.29 ms |
-| **Python** | 1.7 µs | 3.3 µs | 7.65 ms | 56.01 ms | 4.7 µs | 917 ns | 1.36 ms | 877.4 µs | 4.72 ms | 5.32 ms |
+| **Python** | 1.7 µs | 3.3 µs | 5.58 ms | 55.37 ms | 4.7 µs | 917 ns | 1.36 ms | 891.6 µs | 4.64 ms | 5.32 ms |
 
 ## Method
 
@@ -106,6 +106,38 @@ measurements:
 Note: Java/JS/C# show a runtime startup penalty in the per-invocation cost
 because their JIT/runtime warm-up happens *every* fresh process.  This is
 the honest cost of the language model under a CLI-invocation workload.
+
+### Note on Zig timings (comptime-fold bias)
+
+> Of the 10 problems benchmarked, **5 (p001, p002, p005, p006, p009)** are fully
+> constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
+> literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
+> constant return.  Those 5 cells in the Zig column measure "the cost of returning
+> an immediate," not algorithm execution.  The remaining 5 (p003, p004, p007,
+> p008, p010) do nontrivial runtime work and are honest timings.
+>
+> This is a systematic methodological bias that pulls Zig's aggregate ranking
+> downward relative to languages whose optimizers don't fold as aggressively at
+> these problem sizes.  Other compiled langs (C, C++ at `-O2`, Rust at `-O3`, Go,
+> ARM64) also fold trivial closed-form cases; Zig is just particularly aggressive
+> about it.  We flag it here for transparency rather than as a knock on Zig — the
+> timings are real measurements of what `-O ReleaseFast` produces.
+
+### Note on C# timings (JIT-warmup artifact)
+
+> The CLR JIT-compiles each `solve()` body (and any LINQ lambda chains inside it)
+> on the **first** call in a fresh process.  The double-call invocation-isolation
+> audit surfaced this on `p005`: cold ≈ 1.5 ms vs warm < 2 µs (~750× ratio),
+> despite the source containing no cache — it is a vanilla
+> `Enumerable.Range(2,19).Aggregate(...)`.
+>
+> The warm timing therefore understates per-call algorithmic cost for any C# cell
+> whose `solve()` body invokes uncompiled LINQ.  Within the per-invocation framing
+> of this report (every binary runs in a fresh process, so warmup *is* part of the
+> honest cost), the cold portion of the median already captures this.  The
+> structural fix (a panel-wide JIT pre-warm step in `Bench.cs`) is queued
+> separately; we flag the artifact here so the C# column is read with the same
+> transparency as the Zig column above.
 
 ### Language idioms: stdlib vs ecosystem packages
 
