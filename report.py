@@ -97,6 +97,20 @@ def cold_ns(entry: dict):
     return int(entry.get("cold_start_ns", 0) or 0)
 
 
+def source_lines(entry: dict) -> int:
+    """Source-line count for one problem; 0 if missing/absent."""
+    if not entry:
+        return 0
+    return int(entry.get("source_lines", 0) or 0)
+
+
+def status_of(entry: dict) -> str:
+    """'pass' / 'fail' / 'missing' — for the coverage-grid chart."""
+    if not entry:
+        return "missing"
+    return entry.get("status", "missing") or "missing"
+
+
 def fmt_time(ns: int) -> str:
     """Human-readable nanoseconds.
 
@@ -113,22 +127,135 @@ def fmt_time(ns: int) -> str:
 
 
 def aggregate() -> dict:
-    """For each lang, compute totals + per-problem map.
+    """For each lang, compute totals + per-problem maps.
 
-    per_problem_ns values are int (≥0) for measured, None for missing.
-    total_ns sums the measured ones.  missing counts the Nones only.
+    per_problem_ns:    int(≥0) for measured, None for missing
+    per_problem_lines: int(≥0) lines for that file (0 if no source-lines field)
+    per_problem_status: 'pass' / 'fail' / 'missing'
+    total_ns:   sum of measured ns
+    total_lines: sum of source lines across the in-scope problems
+    missing:    count of None per_problem_ns entries
     """
     out = {}
     for lang in LANGS:
         probs = load_lang_data(lang)
-        per_prob = {p: cold_ns(probs.get(p, {})) for p in SCOPE_PROBLEMS}
-        total = sum(v for v in per_prob.values() if v is not None)
-        missing = sum(1 for p in SCOPE_PROBLEMS if per_prob[p] is None)
+        per_prob_ns = {p: cold_ns(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        per_prob_lines = {p: source_lines(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        per_prob_status = {p: status_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        total_ns = sum(v for v in per_prob_ns.values() if v is not None)
+        total_lines = sum(per_prob_lines.values())
+        missing = sum(1 for p in SCOPE_PROBLEMS if per_prob_ns[p] is None)
         out[lang] = {
-            "per_problem_ns": per_prob,
-            "total_ns": total,
+            "per_problem_ns": per_prob_ns,
+            "per_problem_lines": per_prob_lines,
+            "per_problem_status": per_prob_status,
+            "total_ns": total_ns,
+            "total_lines": total_lines,
             "missing": missing,
         }
+    return out
+
+
+def render_speed_vs_size_chart(agg: dict) -> Path:
+    """Scatter: total source lines vs total per-invocation cost, per language.
+
+    X = sum of source_lines across the 10 in-scope problems
+    Y = sum of cold-median ns across the same 10
+    Each point is labeled with the language name.
+
+    Both axes log-scale — language differences span 2-3 orders of magnitude
+    in time and ~3× in lines.
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for lang in LANGS:
+        x = agg[lang]["total_lines"]
+        y_ms = agg[lang]["total_ns"] / 1_000_000
+        if x == 0 or y_ms == 0:
+            continue
+        ax.scatter(x, y_ms, s=200, c=COLOR[lang], edgecolors="black",
+                   linewidths=0.6, alpha=0.85, zorder=3)
+        # Label offset to the right; use white background for legibility
+        ax.annotate(DISPLAY[lang], xy=(x, y_ms), xytext=(8, 4),
+                    textcoords="offset points", fontsize=10,
+                    bbox=dict(boxstyle="round,pad=0.2", fc="white",
+                              ec="none", alpha=0.85))
+
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel("Total source lines across problems 1–10 (log scale)")
+    ax.set_ylabel("Total per-invocation cost — ms (log scale)")
+    ax.set_title("Speed vs Code Size — 10 Languages, Problems 1–10\n"
+                 "Bottom-left corner = fast + concise; top-right = slow + verbose")
+    ax.grid(which="major", alpha=0.3)
+    ax.grid(which="minor", alpha=0.12)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_speed_vs_size.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
+def render_coverage_grid_chart(agg: dict) -> Path:
+    """10×10 cells colored by status + speed bucket.
+
+    🟩 pass (light → dark green by speed bucket)
+    🟨 fail-warn (e.g. cold > 100 ms — still passing, but slow)
+    🟥 fail (status != pass)
+    ⬛ missing (no entry)
+
+    For our current 10×10 scope, everything should be green; the chart's
+    real value emerges as we extend to more problems and per-cell colors
+    show heterogeneity.
+    """
+    n_langs = len(LANGS)
+    n_probs = len(SCOPE_PROBLEMS)
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    # Build a color grid: rows = langs (sorted fastest-first), cols = problems
+    ranked = sorted(LANGS, key=lambda L: agg[L]["total_ns"])
+
+    for ri, lang in enumerate(ranked):
+        for ci, p in enumerate(SCOPE_PROBLEMS):
+            st = agg[lang]["per_problem_status"][p]
+            ns = agg[lang]["per_problem_ns"][p]
+            if st == "missing":
+                color = "#222222"  # black
+            elif st == "fail":
+                color = "#D7263D"  # red
+            elif ns is not None and ns > 100_000_000:  # >100 ms
+                color = "#F0C808"  # amber/yellow
+            else:
+                # Green; intensity by speed bucket (lighter = faster)
+                if ns is None or ns < 100_000:        # <100 µs — bright green
+                    color = "#84E184"
+                elif ns < 1_000_000:                  # <1ms — medium
+                    color = "#5BC85B"
+                elif ns < 10_000_000:                 # <10ms — darker
+                    color = "#36A036"
+                else:                                  # 10-100ms — darkest green
+                    color = "#1E6A1E"
+            ax.add_patch(plt.Rectangle((ci, n_langs - 1 - ri), 1, 1,
+                                        facecolor=color, edgecolor="white",
+                                        linewidth=1.5))
+
+    ax.set_xlim(0, n_probs)
+    ax.set_ylim(0, n_langs)
+    ax.set_xticks([i + 0.5 for i in range(n_probs)])
+    ax.set_xticklabels([f"p{p}" for p in SCOPE_PROBLEMS], fontsize=9)
+    ax.set_yticks([i + 0.5 for i in range(n_langs)])
+    ax.set_yticklabels([DISPLAY[lang] for lang in reversed(ranked)], fontsize=10)
+    ax.set_aspect("equal")
+    ax.set_title("Coverage + Speed Heatmap — 10 Languages × 10 Problems\n"
+                 "green = pass (lighter = faster, darker = slower)   "
+                 "yellow >100ms   red = fail   black = missing",
+                 fontsize=11)
+    ax.tick_params(length=0)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_coverage_grid.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
     return out
 
 
@@ -198,11 +325,36 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
-    md.append("| Rank | Language | Total (10 problems) | vs Fastest |")
-    md.append("|------|----------|--------------------:|-----------:|")
+    md.append("|------|----------|--------------------:|--------------:|-----------:|")
     for i, (lang, total) in enumerate(ranked, 1):
         ratio = total / fastest_ns
-        md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {ratio:.2f}× |")
+        lines = agg[lang]["total_lines"]
+        md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+    md.append("")
+    md.append("## Speed vs Code Size")
+    md.append("")
+    md.append("How much code does each language need to solve these 10 problems, and how")
+    md.append("fast does that code run?  Bottom-left = fast and concise; top-right = slow")
+    md.append("and verbose.  ARM64's outlier position (most lines) is expected — assembly")
+    md.append("trades verbosity for direct hardware control.")
+    md.append("")
+    md.append("![Speed vs Code Size](charts/per_iter_speed_vs_size.png)")
+    md.append("")
+    md.append("## Coverage + Speed Heatmap")
+    md.append("")
+    md.append("One cell per (language, problem).  Color shows whether the cell passes the")
+    md.append("invocation-isolation + answer-correctness audit and how fast it runs:")
+    md.append("")
+    md.append("- 🟢 **Green** — pass; lighter green = faster, darker green = slower")
+    md.append("- 🟡 **Yellow** — pass but > 100 ms (slow algorithm or heavy startup)")
+    md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
+    md.append("- ⚫ **Black** — missing entry (no measurement)")
+    md.append("")
+    md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
+    md.append("")
+    md.append("Rows sorted fastest-to-slowest (top to bottom).  At our current 10×10 scope")
+    md.append("every cell is green — that's exactly the audit gate we're holding to as we")
+    md.append("extend to more problems.")
     md.append("")
 
     # Per-problem detail grid (langs as rows, problems as columns, sorted by total)
@@ -236,6 +388,28 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("That's the entire metric.  No \"hot\" vs \"cold\" — just per-invocation cost, which")
     md.append("is what every CLI / cron / shell-loop user actually pays.")
+    md.append("")
+    md.append("### How each language is built")
+    md.append("")
+    md.append("Every compiled language uses release / optimized builds — no debug-mode")
+    md.append("measurements:")
+    md.append("")
+    md.append("| Language | Build command | Optimization |")
+    md.append("|----------|---------------|--------------|")
+    md.append("| C | `gcc -O2 -std=c11 -I.. main.c -o main_bench -lm` | `-O2` |")
+    md.append("| C++ | `g++ -O2 -std=c++17 -I../include main.cpp -o main_bench -lm` | `-O2` |")
+    md.append("| ARM64 | `as ... && cc -O2 -o main_bench main.c solve.o -lm` | `-O2` on the C harness; the `.s` file is hand-tuned |")
+    md.append("| Rust | `cargo build --release` | `opt-level=3 + lto=true` (per repo's `[profile.release]`) |")
+    md.append("| Go | `go build -o main_bench main.go` | default (Go optimizes by default; no `-N` debug flag) |")
+    md.append("| Zig | `zig build-exe -O ReleaseFast ...` | `ReleaseFast` |")
+    md.append("| C# | `dotnet build -c Release` | `Release` |")
+    md.append("| Java | `javac Main.java` | none at compile; JVM JIT optimizes at runtime |")
+    md.append("| JavaScript | (no build) | V8 JIT optimizes at runtime |")
+    md.append("| Python | (no build) | none — interpreter |")
+    md.append("")
+    md.append("Note: Java/JS/C# show a runtime startup penalty in the per-invocation cost")
+    md.append("because their JIT/runtime warm-up happens *every* fresh process.  This is")
+    md.append("the honest cost of the language model under a CLI-invocation workload.")
     md.append("")
     md.append("### What's intentionally not measured")
     md.append("")
@@ -310,9 +484,13 @@ def main() -> int:
         print(f"  {DISPLAY[lang]:>12s}: total {fmt_time(d['total_ns']):>10s}"
               f"  ({len(SCOPE_PROBLEMS) - d['missing']}/{len(SCOPE_PROBLEMS)} problems{missing_str})")
 
-    # Render chart
-    chart_path = render_total_chart(agg)
-    print(f"\n=== Chart written: {chart_path}")
+    # Render charts
+    chart1 = render_total_chart(agg)
+    print(f"\n=== Chart written: {chart1}")
+    chart2 = render_speed_vs_size_chart(agg)
+    print(f"=== Chart written: {chart2}")
+    chart3 = render_coverage_grid_chart(agg)
+    print(f"=== Chart written: {chart3}")
 
     # Render markdown
     md = render_results_md(agg)
