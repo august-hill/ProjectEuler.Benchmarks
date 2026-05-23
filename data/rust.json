@@ -2,95 +2,115 @@
   "language": "rust",
   "platform": "arm64",
   "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
-  "timestamp": "2026-05-23T22:13:25Z",
+  "timestamp": "2026-05-23T22:23:58Z",
   "problems": {
     "001": {
       "time_ns": 41,
       "cold_start_ns": 42,
       "cold_max_ns": 42,
       "cold_samples": 10,
-      "subprocess_wall_ns": 6469166,
-      "status": "pass"
+      "subprocess_wall_ns": 6697167,
+      "status": "pass",
+      "source_lines": 20,
+      "source_bytes": 531
     },
     "002": {
       "time_ns": 41,
-      "cold_start_ns": 83,
-      "cold_min_ns": 41,
-      "cold_max_ns": 125,
+      "cold_start_ns": 84,
+      "cold_min_ns": 42,
+      "cold_max_ns": 166,
       "cold_samples": 10,
-      "subprocess_wall_ns": 6627000,
-      "status": "pass"
+      "subprocess_wall_ns": 7260625,
+      "status": "pass",
+      "source_lines": 17,
+      "source_bytes": 288
     },
     "003": {
-      "time_ns": 27583,
-      "cold_start_ns": 27958,
-      "cold_min_ns": 27125,
-      "cold_max_ns": 35833,
+      "time_ns": 27417,
+      "cold_start_ns": 28292,
+      "cold_min_ns": 27083,
+      "cold_max_ns": 35792,
       "cold_samples": 10,
-      "subprocess_wall_ns": 35729375,
-      "status": "pass"
+      "subprocess_wall_ns": 36042250,
+      "status": "pass",
+      "source_lines": 23,
+      "source_bytes": 408
     },
     "004": {
-      "time_ns": 12708,
-      "cold_start_ns": 13584,
-      "cold_min_ns": 13042,
-      "cold_max_ns": 28208,
+      "time_ns": 12667,
+      "cold_start_ns": 14166,
+      "cold_min_ns": 13125,
+      "cold_max_ns": 24042,
       "cold_samples": 10,
-      "subprocess_wall_ns": 20231625,
-      "status": "pass"
+      "subprocess_wall_ns": 20635833,
+      "status": "pass",
+      "source_lines": 36,
+      "source_bytes": 723
     },
     "005": {
       "time_ns": 125,
-      "cold_start_ns": 417,
-      "cold_min_ns": 333,
-      "cold_max_ns": 625,
+      "cold_start_ns": 416,
+      "cold_min_ns": 334,
+      "cold_max_ns": 750,
       "cold_samples": 10,
-      "subprocess_wall_ns": 8147375,
-      "status": "pass"
+      "subprocess_wall_ns": 7113750,
+      "status": "pass",
+      "source_lines": 17,
+      "source_bytes": 268
     },
     "006": {
       "time_ns": 41,
-      "cold_start_ns": 41,
-      "cold_max_ns": 84,
+      "cold_start_ns": 42,
+      "cold_max_ns": 42,
       "cold_samples": 10,
-      "subprocess_wall_ns": 6224250,
-      "status": "pass"
+      "subprocess_wall_ns": 6385792,
+      "status": "pass",
+      "source_lines": 15,
+      "source_bytes": 277
     },
     "007": {
-      "time_ns": 370333,
-      "cold_start_ns": 385625,
-      "cold_min_ns": 376167,
-      "cold_max_ns": 514917,
+      "time_ns": 373250,
+      "cold_start_ns": 390166,
+      "cold_min_ns": 372167,
+      "cold_max_ns": 934375,
       "cold_samples": 10,
-      "subprocess_wall_ns": 386888375,
-      "status": "pass"
+      "subprocess_wall_ns": 389692083,
+      "status": "pass",
+      "source_lines": 35,
+      "source_bytes": 1003
     },
     "008": {
       "time_ns": 3708,
-      "cold_start_ns": 10708,
-      "cold_min_ns": 8625,
-      "cold_max_ns": 33458,
+      "cold_start_ns": 10459,
+      "cold_min_ns": 8208,
+      "cold_max_ns": 22417,
       "cold_samples": 10,
-      "subprocess_wall_ns": 11995917,
-      "status": "pass"
+      "subprocess_wall_ns": 11309166,
+      "status": "pass",
+      "source_lines": 41,
+      "source_bytes": 1513
     },
     "009": {
       "time_ns": 167,
       "cold_start_ns": 250,
-      "cold_min_ns": 209,
-      "cold_max_ns": 334,
+      "cold_min_ns": 208,
+      "cold_max_ns": 1042,
       "cold_samples": 10,
-      "subprocess_wall_ns": 6218666,
-      "status": "pass"
+      "subprocess_wall_ns": 7309959,
+      "status": "pass",
+      "source_lines": 21,
+      "source_bytes": 467
     },
     "010": {
-      "time_ns": 515209,
-      "cold_start_ns": 2048625,
-      "cold_min_ns": 2024292,
-      "cold_max_ns": 3067667,
+      "time_ns": 515792,
+      "cold_start_ns": 2106125,
+      "cold_min_ns": 2009500,
+      "cold_max_ns": 3087666,
       "cold_samples": 10,
-      "subprocess_wall_ns": 533769917,
-      "status": "pass"
+      "subprocess_wall_ns": 536574292,
+      "status": "pass",
+      "source_lines": 39,
+      "source_bytes": 771
     },
     "011": {
       "time_ns": 0,

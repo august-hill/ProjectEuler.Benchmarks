@@ -122,6 +122,29 @@ func readCanonicalAnswer(lang *Lang, baseDir, problem string) (string, error) {
 	return strings.TrimSpace(string(m[1])), nil
 }
 
+// countSourceMetrics returns (lines, bytes) for the canonical source file
+// (the one with the `// Answer:` header).  For ARM64 that's solve.s, the
+// algorithm-bearing file.  Returns (0, 0) on read error rather than
+// failing the bench — a missing source-line count is non-fatal.
+func countSourceMetrics(lang *Lang, baseDir, problem string) (lines, bytes int) {
+	path := canonicalAnswerSourcePath(lang, baseDir, problem)
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return 0, 0
+	}
+	bytes = len(data)
+	for _, b := range data {
+		if b == '\n' {
+			lines++
+		}
+	}
+	// Count the final unterminated line if the file doesn't end with \n
+	if bytes > 0 && data[bytes-1] != '\n' {
+		lines++
+	}
+	return lines, bytes
+}
+
 // writePublicEntry constructs the entry that lands in the public data file.
 // The entry NEVER contains the answer field — this function has no code path
 // that would set entry.Answer.  Mismatch detection still runs (against the
@@ -267,9 +290,15 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 	for _, r := range results {
 		canonical, _ := readCanonicalAnswer(lang, baseDir, r.Problem)
 		problemNum, _ := strconv.Atoi(r.Problem)
+		srcLines, srcBytes := countSourceMetrics(lang, baseDir, r.Problem)
 
 		pubEntry := writePublicEntry(r, canonical, problemNum)
+		pubEntry.SourceLines = srcLines
+		pubEntry.SourceBytes = srcBytes
+
 		privEntry := writePrivateEntry(r, canonical)
+		privEntry.SourceLines = srcLines
+		privEntry.SourceBytes = srcBytes
 
 		if pubEntry.Status == "fail" && strings.Contains(pubEntry.Error, "mismatch") {
 			mismatches++
