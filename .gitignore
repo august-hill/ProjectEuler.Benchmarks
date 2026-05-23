@@ -27,3 +27,7 @@ scripts/dud_audit_baseline.json
 # the public data/*.json files are sanitized at write time by euler-bench
 # per-iter --write, which strips the answer field for any problem >100.
 data/private/
+
+# Python bytecode cache (auto-generated; ignored everywhere)
+__pycache__/
+*.pyc
