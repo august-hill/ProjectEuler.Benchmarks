@@ -711,3 +711,140 @@ The mechanical strip campaign produced 155 commits and discovered ~3
 real algorithm bugs, then was reverted entirely. The principle it surfaced —
 and the operating rules that fell out of the failure mode it produced — were
 worth more than the strips themselves would have been.
+
+## Episode: From In-Process Warm to Process-Per-Iteration (2026-05-23)
+
+After the cache-strip campaign reset (previous chapter), we built the
+double-call invocation-isolation audit and started auditing language by
+language: C++, C, ARM64, Rust each verified clean on problems 1-10.  Then
+a single problem changed the framing of the entire benchmark.
+
+### The Rust p010 OnceLock question
+
+Rust's solution to "sum of all primes below 2,000,000" uses `OnceLock`:
+
+```rust
+use std::sync::OnceLock;
+static SIEVE: OnceLock<Vec<bool>> = OnceLock::new();
+
+fn solve() -> i64 {
+    let is_prime = SIEVE.get_or_init(init_sieve);  // builds once, ever
+    let mut sum: i64 = 0;
+    for i in 2..is_prime.len() { if is_prime[i] { sum += i as i64; } }
+    sum
+}
+```
+
+This passes the mechanical double-call audit (the answer is deterministic
+because the sieve is immutable after init) but represents an apparent
+*cross-language fairness* issue: C, C++, and ARM64 solutions of p010 build
+a fresh sieve on every warm bench iteration, while Rust's `OnceLock`
+amortizes the sieve build across all warm iterations of one process.  In
+the in-process warm metric this looked like Rust was 5× faster than it
+"really" was.
+
+We considered three responses: refactor Rust to NOT use OnceLock (matching
+C++'s sieve-per-call pattern), keep OnceLock with an explanatory comment,
+or step back and ask whether the harness was measuring the wrong thing.
+
+### The harness-itself question
+
+The user articulated the principle:
+
+> "If I took this program and put it in a bash/zsh loop, that Vec would
+> be recreated on each process invocation.  There would be no doubt of
+> that.  Same for that C++ library.  Unless you store data in some OS
+> cross-process memory, the process boundary wins for a very good
+> reason... nothing leaks out of it.  Now that process creation adds
+> overhead, but it's the same no matter where we come from."
+
+And, on language idioms:
+
+> "I want all of our languages to look like they were written
+> independently and not just a copy of another language, I want the
+> idioms of C++, Rust, Python to shine through and not be... oh a Rust
+> dev would never write it like this, but we had to, to fix the harness."
+
+These two points coupled mean: **the OS-enforced process boundary is the
+natural and perfect invocation-isolation guarantee**, and the harness's
+in-process warm-iter mode forces unnatural code patterns to compensate.
+
+### Process-per-iter audit
+
+A new measurement script was added (`scripts/process_per_iter_audit.py`)
+that wraps the existing bench binary and runs it N times in fresh
+processes, capturing the COLDSTART time from each.  Results across the
+four already-audited languages (C++, C, ARM64, Rust) on problems 1-10:
+
+The most revealing single problem is **p007 (10001st prime)**:
+
+| Lang  | In-process warm | Process-per-iter cold (median × 10 runs) | What the cold-median actually measures |
+|-------|----------------:|------------------------------------------:|----------------------------------------|
+| C++   | 3.5 µs          | 25.6 µs                                   | primesieve library does sieve init once per process |
+| C     | 155 µs          | 167.6 µs                                  | hand-rolled sieve, malloc'd each call |
+| ARM64 | 264 µs          | 282 µs                                    | hand-rolled assembly sieve |
+| Rust  | 819 µs          | 880 µs                                    | hand-rolled sieve |
+
+In the in-process warm column, C++ looks **75× faster than C** — a
+benchmark lie, because the warm number is measuring "primesieve has the
+answer cached," not "C++ solved this faster."  In the process-per-iter
+cold-median column, C++ is still fastest but the ratio is **6.5× over
+C** — a real algorithmic difference (primesieve's sieve algorithm
+genuinely beats the naive sieve), with no library-cache distortion.
+
+Same insight on **p010** (the OnceLock problem):
+
+| Lang  | In-process warm | Process-per-iter cold (median × 10) | Divergence |
+|-------|----------------:|--------------------------------------:|------------:|
+| C++   | 219 µs          | 261 µs                                | 1.2× |
+| C     | 1.9 ms          | 2.1 ms                                | 1.1× |
+| ARM64 | 4.5 ms          | 4.7 ms                                | 1.0× |
+| Rust  | **505 µs**      | **2.0 ms**                            | **4.0×** |
+
+The Rust OnceLock cache effect, surfaced clearly: in-process warm hides
+~1.5 ms of sieve-build cost per fresh-process invocation.  In the
+process-per-iter view, Rust pays for the sieve build every time — exactly
+matching C and ARM64's per-call cost (and showing Rust's sieve impl is
+genuinely competitive with hand-rolled C).
+
+### Resolution: process-per-iter as the headline metric
+
+The decision is to make **process-per-iter cold-median** the chart's
+primary metric, with the in-process warm time retained as a *secondary*
+view (relevant for "server/daemon" use cases where solve() runs many
+times in one process).  This:
+
+- **Lets each language be idiomatic**: Rust can keep `OnceLock`, C++ can
+  use `primesieve`, Python can use `@lru_cache`.  The OS clears
+  everything between invocations regardless.
+- **Matches the user-facing mental model**: "how long does this take to
+  run as a command?" — exactly what `time ./prog` answers.
+- **Removes the entire class of in-process state-leak benchmark bugs**.
+  No more cache-pattern detector chasing; no more cross-language
+  divergence on what counts as legitimate memoization.  The OS doesn't
+  argue.
+
+### Operating rules added from this episode
+
+1. **Process-per-iter is the headline.**  The "1000 invocations a day"
+   mental model wins over the "long-running daemon" one for a general-
+   purpose cross-language chart.
+2. **In-process warm becomes a secondary metric**, reported only with
+   the caveat that it reflects steady-state cost in a long-running
+   process (cache effects, JIT warmup, etc., all included as intended).
+3. **Each language stays idiomatic.**  No more reshaping code to satisfy
+   the harness.  Anti-pattern: telling a Rust dev "don't use OnceLock"
+   to fix a measurement methodology.  If the harness can't measure
+   accurately, fix the harness, not the code.
+4. **Trivial problems (sub-microsecond algorithm) become unmeasurable**
+   under this model — process spawn floor (~6-10 ms on macOS) dominates.
+   This is honest: those problems aren't where meaningful cross-language
+   comparison lives anyway.  The interesting signal starts at p007+
+   where algorithm cost ≥ spawn cost.
+
+Next: build a unified Go harness (per the durable-tooling rule in
+`~/ccdev/CLAUDE.md`) that drives this measurement across all 10
+languages using known-good timing primitives — Go's monotonic clock,
+cross-validated against `/usr/bin/time -l` for max-fidelity wall +
+RSS data.  The current Python audit was the prototype; the production
+tool lives in Go.
