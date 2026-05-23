@@ -23,7 +23,7 @@ _All 10 languages; the apples-to-apples cross-language comparison surface._
 | ARM64 | 200 | 19.79 s | 45.97 s | 55.16 s |
 | C# | 200 | 30.80 s | 52.41 s | 63.27 s |
 | Java | 200 | 37.06 s | 142.35 s | 301.16 s |
-| JS | 199 | 62.36 s | 94.19 s | 94.19 s |
+| JS | 200 | 62.50 s | 94.34 s | 94.34 s |
 | Python | 200 | 178.57 s | 686.10 s | 686.10 s |
 
 ### Deep Coverage — problems 201-300
@@ -60,7 +60,7 @@ Includes historical exceptions; useful only as a per-language workload sanity ch
 | ARM64 | 202 | 19.86 s | 45.97 s | 55.16 s |
 | C# | 220 | 49.80 s | 66.63 s | 77.49 s |
 | Java | 220 | 49.02 s | 175.43 s | 344.59 s |
-| JS | 219 | 103.61 s | 152.88 s | 152.88 s |
+| JS | 220 | 103.75 s | 153.02 s | 153.02 s |
 | Python | 423 | 1198.70 s | 1839.33 s | 1839.33 s |
 
 ## Comptime / constant-fold detection
@@ -267,7 +267,7 @@ Each cell: `runtime / compile`. Sorted by problem number. `⬛` marks cells wher
 | 182 | 252.9 ms / 269.6 ms | 196.4 ms / 440.0 ms | 270.2 ms / 360.4 ms | 217.8 ms / 689.1 ms | 216.6 ms / 1.13 s | 0 ns / 145.3 ms | 230.8 ms / 0 ns | 217.7 ms / 958.1 ms | 524.2 ms / 0 ns | 437.6 ms / 0 ns |
 | 183 | 696.8 µs / 527.5 ms | 880.8 µs / 450.6 ms | 877.0 µs / 375.6 ms | 670.0 µs / 586.8 ms | 828.1 µs / 1.37 s | 673.0 µs / 0 ns | 620.6 µs / 0 ns | 655.5 µs / 755.1 ms | 772.8 µs / 0 ns | 4.2 ms / 0 ns |
 | 184 | 2.6 ms / 163.1 ms | 2.5 ms / 625.4 ms | 1.8 ms / 483.6 ms | 1.4 ms / 371.0 ms | 41 ns / 373.9 ms | 1.1 ms / 172.4 ms | 2.4 ms / 1.09 s | 2.1 ms / 436.5 ms | 83 ns / 0 ns | 83 ns / 0 ns |
-| 185 | 160.3 µs / 154.1 ms | 155.4 ms / 562.1 ms | 47.0 ms / 395.1 ms | 366.1 µs / 57.2 ms | 24.4 ms / 293.3 ms | 91.9 ms / 134.7 ms | 930.6 ms / 834.0 ms | 462.8 ms / 423.0 ms | — | 1.01 s / 0 ns |
+| 185 | 160.3 µs / 154.1 ms | 155.4 ms / 562.1 ms | 47.0 ms / 395.1 ms | 366.1 µs / 57.2 ms | 24.4 ms / 293.3 ms | 91.9 ms / 134.7 ms | 930.6 ms / 834.0 ms | 462.8 ms / 423.0 ms | 139.3 ms / 0 ns | 1.01 s / 0 ns |
 | 186 | 51.2 ms / 405.6 ms | 33.7 ms / 458.1 ms | 0 ns / 356.0 ms | 53.0 ms / 598.9 ms | 86.3 ms / 1.07 s | 31.5 ms / 0 ns | 52.9 ms / 0 ns | 72.0 ms / 979.0 ms | 162.1 ms / 0 ns | 125 ns / 0 ns |
 | 187 | 83.2 µs / 611.1 ms | 78.2 µs / 473.8 ms | 54.0 µs / 375.2 ms | 380.5 ms / 568.2 ms | 77.4 µs / 989.2 ms | 53.0 µs / 0 ns | 85.7 µs / 0 ns | 80.7 µs / 724.1 ms | 492.8 ms / 0 ns | 83 ns / 0 ns |
 | 188 | 5.5 µs / 633.2 ms | 6.8 µs / 455.1 ms | 0 ns / 372.9 ms | 1.3 µs / 498.7 ms | 19.7 µs / 829.5 ms | 2.0 µs / 0 ns | 5.3 µs / 0 ns | 1.7 µs / 822.4 ms | 18.2 µs / 0 ns | 25.5 µs / 0 ns |
