@@ -25,7 +25,7 @@ the headline per-problem number, and we sum across the 10 problems for the total
 | 6 | **ARM64** | 5.07 ms | 14.96× |
 | 7 | **Java** | 9.89 ms | 29.21× |
 | 8 | **JavaScript** | 13.07 ms | 38.60× |
-| 9 | **C#** | 14.71 ms | 43.44× |
+| 9 | **C#** | 17.05 ms | 50.34× |
 | 10 | **Python** | 92.43 ms | 272.94× |
 
 ## Per-Problem Detail
@@ -43,7 +43,7 @@ are sorted by total (fastest language at top).
 | **ARM64** | 2.0 µs | 0 ns | 1.0 µs | 2.0 µs | 1.0 µs | 0 ns | 289.0 µs | 3.0 µs | 1.0 µs | 4.77 ms |
 | **Java** | 3.2 µs | 3.5 µs | 8.2 µs | 295.8 µs | 4.7 µs | 2.4 µs | 1.57 ms | 59.5 µs | 6.6 µs | 7.93 ms |
 | **JavaScript** | 16.3 µs | 11.7 µs | 54.8 µs | 91.3 µs | 28.8 µs | 6.8 µs | 2.65 ms | 95.7 µs | 27.7 µs | 10.09 ms |
-| **C#** | 255.9 µs | 243.3 µs | 1.88 ms | 278.2 µs | — | 206.0 µs | 920.0 µs | — | 654.5 µs | 10.27 ms |
+| **C#** | 252.3 µs | 239.8 µs | 1.89 ms | 316.9 µs | 2.06 ms | 207.5 µs | 923.3 µs | 339.2 µs | 691.4 µs | 10.13 ms |
 | **Python** | 1.7 µs | 2.8 µs | 7.69 ms | 55.45 ms | 28.1 µs | 5.7 µs | 1.39 ms | 863.3 µs | 4.67 ms | 22.33 ms |
 
 ## Method

@@ -188,7 +188,11 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		}
 	}
 
-	// Build
+	// Build.  Three pathways depending on lang's adapter:
+	//   - BatchBuild (C# only): one `dotnet build` per problem; called here
+	//     for the single problem at hand
+	//   - SequentialBuild + BuildArgs (ARM64): run each arg-set in order
+	//   - BuildArgs (most langs): try arg-sets as fallback chain
 	if lang.BuildArgs != nil {
 		argSets := lang.BuildArgs(repoDir, probDir)
 		if lang.SequentialBuild {
@@ -207,6 +211,13 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 				r.BuildErr = "build: " + err.Error()
 				return r
 			}
+		}
+	} else if lang.BatchBuild != nil {
+		// BatchBuild's signature accepts a list of problems; call it with
+		// just our one so the per-iter path stays single-problem-scoped.
+		if failed := lang.BatchBuild(repoDir, []string{problem}); len(failed) > 0 {
+			r.BuildErr = fmt.Sprintf("BatchBuild reported failures: %v", failed)
+			return r
 		}
 	}
 
