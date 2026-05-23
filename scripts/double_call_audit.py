@@ -84,6 +84,22 @@ LANG_CONFIG = {
         "run_cmd": ["./main_bench"],
         "binary_name": "main_bench",
     },
+    "arm64": {
+        "repo_dir": BASE / "ProjectEuler.ARM64",
+        "prob_dir": lambda p: BASE / "ProjectEuler.ARM64" / f"problem_{p:03d}",
+        # ARM64 builds in two steps: assemble solve.s then link with main.c.
+        # Per ProjectEuler.ARM64/CLAUDE.md.  sh -c chains the two cleanly.
+        "build_cmd_base": [
+            "sh", "-c",
+            "as -o solve.o solve.s && cc -O2 -o main_bench main.c solve.o -lm",
+        ],
+        "build_extra_libs": [[]],
+        "src_files": {"solve.s", "main.c"},
+        "run_cmd": ["./main_bench"],
+        "binary_name": "main_bench",
+        # solve.o is a build artifact we also clean up
+        "extra_cleanup": ["solve.o"],
+    },
 }
 
 # Parse the bench-output format.  Both keys (time_ns, answer) appear
@@ -118,10 +134,14 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
     if not prob_dir.is_dir():
         result.notes.append(f"problem dir missing: {prob_dir}")
         return result
-    # Each lang's build_cmd_base names the source file as a positional arg —
-    # we look for it in prob_dir as a generic check.
-    src_files = {arg for arg in cfg["build_cmd_base"]
-                 if arg.endswith((".c", ".cpp", ".cs", ".go", ".java", ".js", ".py", ".rs", ".s", ".zig"))}
+    # Verify expected source file(s) exist before attempting the build.
+    # Configs that don't expose source names (e.g. wrapped in sh -c) can list
+    # them explicitly via `src_files`.
+    if "src_files" in cfg:
+        src_files = cfg["src_files"]
+    else:
+        src_files = {arg for arg in cfg["build_cmd_base"]
+                     if arg.endswith((".c", ".cpp", ".cs", ".go", ".java", ".js", ".py", ".rs", ".s", ".zig"))}
     for src in src_files:
         if not (prob_dir / src).is_file():
             result.notes.append(f"no {src} in {prob_dir}")
@@ -219,6 +239,11 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
         binary = prob_dir / cfg["binary_name"]
         if binary.exists():
             binary.unlink()
+        # Extra cleanup for multi-step builds (e.g. ARM64's solve.o)
+        for extra in cfg.get("extra_cleanup", []):
+            path = prob_dir / extra
+            if path.exists():
+                path.unlink()
 
     return result
 
