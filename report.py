@@ -245,13 +245,29 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     ax.set_yticks([i + 0.5 for i in range(n_langs)])
     ax.set_yticklabels([DISPLAY[lang] for lang in reversed(ranked)], fontsize=10)
     ax.set_aspect("equal")
-    ax.set_title("Coverage + Speed Heatmap — 10 Languages × 10 Problems\n"
-                 "green = pass (lighter = faster, darker = slower)   "
-                 "yellow >100ms   red = fail   black = missing",
-                 fontsize=11)
+    ax.set_title("Coverage + Speed Heatmap — 10 Languages × 10 Problems",
+                 fontsize=12)
     ax.tick_params(length=0)
     for spine in ax.spines.values():
         spine.set_visible(False)
+
+    # Real colored-patch legend.  matplotlib's font on macOS doesn't render
+    # emoji squares in color (Apple Color Emoji isn't in matplotlib's font
+    # list), so we use Patch objects — same visual outcome, font-independent.
+    from matplotlib.patches import Patch
+    legend_items = [
+        Patch(facecolor="#84E184", edgecolor="black", linewidth=0.5, label="pass · <100µs"),
+        Patch(facecolor="#5BC85B", edgecolor="black", linewidth=0.5, label="pass · <1ms"),
+        Patch(facecolor="#36A036", edgecolor="black", linewidth=0.5, label="pass · <10ms"),
+        Patch(facecolor="#1E6A1E", edgecolor="black", linewidth=0.5, label="pass · <100ms"),
+        Patch(facecolor="#F0C808", edgecolor="black", linewidth=0.5, label="pass · ≥100ms"),
+        Patch(facecolor="#D7263D", edgecolor="black", linewidth=0.5, label="fail"),
+        Patch(facecolor="#222222", edgecolor="black", linewidth=0.5, label="missing"),
+    ]
+    ax.legend(handles=legend_items, loc="upper center",
+              bbox_to_anchor=(0.5, -0.06), ncol=4, fontsize=9,
+              frameon=False, handlelength=1.5, handleheight=1.2,
+              columnspacing=1.2)
     plt.tight_layout()
     out = CHARTS_DIR / "per_iter_coverage_grid.png"
     plt.savefig(out, dpi=130, bbox_inches="tight")
