@@ -14,10 +14,13 @@ PE's publishing rule (projecteuler.net/about#publish) restricts public solution 
 - **Methodology** — benchmark harness, warmup strategy, three-metric schema
 - **Aggregate analysis** — language-vs-language ratios, fastest-on-average, etc.
 - **Project narrative** — JOURNEY.md, README.md, story content
-- **Anything for problems ≤100** — PE permits public discussion; answers, techniques, and code are all fine for these
+- **Narrative discussion of ≤100 answers / techniques / code** — PE permits this; MDs and narrative content may reference these freely
+
+### NEVER allowed in `data/*.json` (the machine-readable bulk data)
+- **`answer` field for ANY problem** — regardless of number. Policy tightened 2026-05-23: the previous ≤100 carve-out offered zero functional value (bench data is about timings), so the rule is now uniformly "no `answer` key in public data, ever." Full data with answers lives in `data/private/<lang>.json` (gitignored, local-only) for verification and debugging.
 
 ### NEVER allowed in this repo (for problems >100)
-- **Answer values** — no `answer` field in `data/*.json`, no answers in MDs
+- **Answer values in any form** — no answers in MDs, RESULTS, READMEs, scripts. (For ≤100 narrative use is OK per the rule above.)
 - **Algorithm or technique names** — don't say "Pollard rho for p347", "Tonelli-Shanks for p516", "linearity of expectation for p491", etc.
 - **Solution code** — no `.cpp` / `.py` / `.go` source files
 - **Hints that narrow approach** — e.g. "this benefits from int128" already leaks that the answer fits in 128 bits

@@ -2,17 +2,19 @@
 // with sanitization, plus a private full-data file at data/private/<lang>.json.
 //
 // SANITIZATION POLICY (CRITICAL — this repo is public):
-//   - Per PE's publishing rule (projecteuler.net/about#publish), public
-//     discussion of solutions is permitted ONLY for problems 1–100.
-//   - For any problem with number > 100, the `answer` field MUST NOT appear
-//     in data/<lang>.json.  Everything else (timings, RSS, etc.) is fine.
-//   - The full data including answers for ALL problems is written to
-//     data/private/<lang>.json — a gitignored path, local-only.
-//   - The single point of sanitization is `writePublicEntry` below: it
-//     decides per-problem whether the answer field is included.  There is
-//     no code path that writes an answer for problem > 100 to the public
-//     file.  A secondary script (scripts/sanitization_gate.py) verifies
-//     this at pre-commit time as defense-in-depth.
+//   - Public data files NEVER contain the `answer` field, regardless of
+//     problem number.  PE's publishing rule (projecteuler.net/about#publish)
+//     permits public discussion of ≤100 answers, but the bench data file's
+//     purpose is timings — answers add no value here and only enlarge the
+//     leak surface.  Narrative discussion (JOURNEY.md, etc.) is unaffected.
+//   - Full data including answers for ALL problems is written to
+//     data/private/<lang>.json — a gitignored path, local-only, for
+//     verification and debugging.
+//   - The single point of decision is `writePublicEntry` below — it has
+//     no code path that writes the answer field at all.  The post-write
+//     readback assertion + scripts/sanitization_gate.py both verify the
+//     invariant "no public data file has any answer key, ever" as
+//     defense-in-depth.
 //
 // VERIFICATION (inline Gate 1):
 //   - For each (lang, problem) measured, the tool reads the canonical
@@ -37,10 +39,11 @@ import (
 	"time"
 )
 
-// SanitizationCutoff is the highest problem number whose answer may appear in
-// public data files. Problems with number > SanitizationCutoff have their
-// answer field stripped at write time.
-const SanitizationCutoff = 100
+// (SanitizationCutoff retired 2026-05-23: public data files now NEVER include
+// the answer field. The previous ≤100 carve-out aligned with PE policy's
+// upper bound but offered no functional value to the bench data — answers
+// add no information to a timing-focused file. Simpler rule, smaller leak
+// surface, no per-problem branching.)
 
 // publicEntry is the JSON shape of a problem result in data/<lang>.json.
 // Order matters for human-readable diffs — fields are listed in the same
@@ -119,18 +122,20 @@ func readCanonicalAnswer(lang *Lang, baseDir, problem string) (string, error) {
 	return strings.TrimSpace(string(m[1])), nil
 }
 
-// writePublicEntry constructs the entry that lands in the public data file,
-// applying the sanitization policy (no answer field for problem > Cutoff).
-// This is the SINGLE POINT where the public-vs-private decision is made.
+// writePublicEntry constructs the entry that lands in the public data file.
+// The entry NEVER contains the answer field — this function has no code path
+// that would set entry.Answer.  Mismatch detection still runs (against the
+// canonical from `// Answer:` source comment) but the error message never
+// reveals the value.
 func writePublicEntry(r *perIterResult, canonical string, problemNum int) publicEntry {
 	entry := publicEntry{
-		TimeNs:       r.InProcWarmNs,
-		ColdStartNs:  r.coldMedianNs(),
-		ColdMinNs:    r.coldMinNs(),
-		ColdMaxNs:    r.coldMaxNs(),
-		ColdSamples:  len(r.ColdSamplesNs),
+		TimeNs:           r.InProcWarmNs,
+		ColdStartNs:      r.coldMedianNs(),
+		ColdMinNs:        r.coldMinNs(),
+		ColdMaxNs:        r.coldMaxNs(),
+		ColdSamples:      len(r.ColdSamplesNs),
 		SubprocessWallNs: r.wallMedianNs(),
-		Status:       "pass",
+		Status:           "pass",
 	}
 	if r.BuildErr != "" {
 		entry.Status = "fail"
@@ -146,27 +151,12 @@ func writePublicEntry(r *perIterResult, canonical string, problemNum int) public
 		}
 		return entry
 	}
-	// ─── Sanitization: include answer ONLY for problems ≤ Cutoff ─────────
-	if problemNum <= SanitizationCutoff && r.Answer != "" {
-		// Numeric answers go in as json.Number for compact output (no quotes);
-		// non-numeric (string answers for problems like p336) stay as strings.
-		if _, err := strconv.ParseFloat(r.Answer, 64); err == nil {
-			entry.Answer = json.Number(r.Answer)
-		} else {
-			entry.Answer = r.Answer
-		}
-	}
-	// Mismatch handling: if canonical disagrees with measured, mark fail even
-	// if answer was technically produced.  Note: the answer is STILL withheld
-	// for >100 even on mismatch; the error message indicates the discrepancy
-	// without revealing the value.
+	// Mismatch handling: if canonical disagrees with measured, mark fail.
+	// The error message NEVER reveals the answer value — only that a
+	// mismatch occurred, with a reference to where the canonical lives.
 	if canonical != "" && canonical != r.Answer {
 		entry.Status = "fail"
-		if problemNum <= SanitizationCutoff {
-			entry.Error = fmt.Sprintf("answer mismatch: measured=%s canonical=%s", r.Answer, canonical)
-		} else {
-			entry.Error = "answer mismatch vs canonical Answer: header"
-		}
+		entry.Error = "answer mismatch vs canonical `// Answer:` source comment"
 	}
 	return entry
 }
@@ -296,9 +286,9 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 		return mismatches, fmt.Errorf("write private: %w", err)
 	}
 
-	// Sanity assertion: re-read the public file and verify no problem > 100
-	// has an `answer` field.  This is paranoid belt-and-braces against a
-	// future bug that bypasses writePublicEntry.
+	// Sanity assertion: re-read the public file and verify NO problem has an
+	// `answer` field anywhere.  Paranoid belt-and-braces against a future
+	// bug that bypasses writePublicEntry.
 	verify, err := os.ReadFile(publicPath)
 	if err != nil {
 		return mismatches, err
@@ -309,18 +299,16 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 	if err := json.Unmarshal(verify, &check); err == nil {
 		var leaked []string
 		for k, v := range check.Problems {
-			n, _ := strconv.Atoi(k)
-			if n > SanitizationCutoff {
-				if _, has := v["answer"]; has {
-					leaked = append(leaked, k)
-				}
+			if _, has := v["answer"]; has {
+				leaked = append(leaked, k)
 			}
 		}
 		if len(leaked) > 0 {
 			sort.Strings(leaked)
 			return mismatches, fmt.Errorf(
-				"SANITIZATION VIOLATION: %s contains answer field for problems > %d: %v",
-				publicPath, SanitizationCutoff, leaked,
+				"SANITIZATION VIOLATION: %s contains answer field for: %v "+
+					"(public data must never contain the answer key)",
+				publicPath, leaked,
 			)
 		}
 	}
