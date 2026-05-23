@@ -3,7 +3,12 @@
 Sanitization gate for ProjectEuler.Benchmarks (the public repo).
 
 Two checks against staged content:
-  1. data/*.json: no `"answer": <value>` for any problem with key > 100.
+  1. data/*.json: NO `"answer": <value>` for ANY problem, regardless of
+     number.  (Policy tightened 2026-05-23: previously the rule allowed
+     answers ≤100 per PE's publishing rule, but public bench data is about
+     timings — including answers added zero value while enlarging the
+     leak surface.  Narrative discussion of ≤100 answers in MDs / JOURNEY
+     stays allowed by the rule below.)
   2. MDs / scripts: no forbidden technique term in proximity (same line) to a
      problem reference (p<N> or problem_<N>) where N > 100.
 
@@ -65,11 +70,18 @@ def staged_hunks(path):
 
 
 def check_json_answer_leak(path):
-    """For data/*.json: no `answer` field for problem >100."""
-    if not str(path).endswith(".json"):
+    """For data/*.json: NO `answer` field for ANY problem.
+
+    Skips data/private/ (that path is gitignored and intentionally holds
+    full answer values for local verification + debugging).
+    """
+    p = str(path)
+    if not p.endswith(".json"):
         return []
-    if "data/" not in str(path):
+    if "data/" not in p:
         return []
+    if "data/private/" in p:
+        return []  # gitignored; full data with answers lives here on purpose
     try:
         obj = json.loads(path.read_text())
     except (json.JSONDecodeError, ValueError):
@@ -78,12 +90,8 @@ def check_json_answer_leak(path):
         return []
     leaked = []
     for k, v in obj["problems"].items():
-        try:
-            n = int(k)
-        except ValueError:
-            continue
-        if n > 100 and isinstance(v, dict) and v.get("answer") is not None:
-            leaked.append(f"  {path.name}: p{k} has answer={v['answer']!r}")
+        if isinstance(v, dict) and v.get("answer") is not None:
+            leaked.append(f"  {path.name}: p{k} has answer field (NEVER allowed in public data)")
     return leaked
 
 
@@ -132,12 +140,12 @@ def main():
     print("=" * 70, file=sys.stderr)
 
     if answer_violations:
-        print("\nAnswer field present for problems >100 (NEVER allowed in public data):", file=sys.stderr)
+        print("\nAnswer field present in public data (NEVER allowed, for any problem):", file=sys.stderr)
         for v in answer_violations:
             print(v, file=sys.stderr)
-        print("\nFix: run `bash scripts/collect.sh` (sanitize-then-copy) instead of raw `cp`,", file=sys.stderr)
+        print("\nFix: re-write via `euler-bench per-iter --write` (strips answers at write-time),", file=sys.stderr)
         print("or strip manually:", file=sys.stderr)
-        print("  jq '.problems |= with_entries(if (.key|tonumber) > 100 then .value |= del(.answer) else . end)' data/{lang}.json > /tmp/x && mv /tmp/x data/{lang}.json", file=sys.stderr)
+        print("  jq '.problems |= with_entries(.value |= del(.answer))' data/{lang}.json > /tmp/x && mv /tmp/x data/{lang}.json", file=sys.stderr)
 
     if proximity_violations:
         print("\nForbidden term in proximity to problem >100 in staged content:", file=sys.stderr)

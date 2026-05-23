@@ -2016,7 +2016,6 @@
       "source_bytes": 1329
     },
     "015": {
-      "answer": 137846528820,
       "time_ns": 125,
       "compile_time_ns": 361945000,
       "cold_start_ns": 21959,
@@ -2107,7 +2106,6 @@
       "source_bytes": 5544
     },
     "001": {
-      "answer": 233168,
       "time_ns": 0,
       "cold_start_ns": 11000,
       "iterations": 1000,
@@ -2118,7 +2116,6 @@
       "source_bytes": 538
     },
     "002": {
-      "answer": 4613732,
       "time_ns": 0,
       "cold_start_ns": 11625,
       "iterations": 1000,
@@ -2129,7 +2126,6 @@
       "source_bytes": 448
     },
     "003": {
-      "answer": 6857,
       "time_ns": 375,
       "cold_start_ns": 12375,
       "iterations": 1000,
@@ -2140,7 +2136,6 @@
       "source_bytes": 790
     },
     "004": {
-      "answer": 906609,
       "time_ns": 1666,
       "cold_start_ns": 14166,
       "iterations": 1000,
@@ -2151,7 +2146,6 @@
       "source_bytes": 985
     },
     "005": {
-      "answer": 232792560,
       "time_ns": 125,
       "cold_start_ns": 11083,
       "iterations": 1000,
@@ -2162,7 +2156,6 @@
       "source_bytes": 631
     },
     "006": {
-      "answer": 25164150,
       "time_ns": 41,
       "cold_start_ns": 11375,
       "iterations": 1000,
@@ -2173,7 +2166,6 @@
       "source_bytes": 455
     },
     "007": {
-      "answer": 104743,
       "time_ns": 355958,
       "cold_start_ns": 373459,
       "iterations": 1000,
@@ -2184,7 +2176,6 @@
       "source_bytes": 819
     },
     "008": {
-      "answer": 23514624000,
       "time_ns": 1625,
       "cold_start_ns": 13667,
       "iterations": 1000,
@@ -2195,7 +2186,6 @@
       "source_bytes": 2289
     },
     "009": {
-      "answer": 31875000,
       "time_ns": 833,
       "cold_start_ns": 18625,
       "iterations": 1000,
@@ -2206,7 +2196,6 @@
       "source_bytes": 605
     },
     "010": {
-      "answer": 142913828922,
       "time_ns": 4442458,
       "cold_start_ns": 4059834,
       "iterations": 100,
@@ -2217,7 +2206,6 @@
       "source_bytes": 754
     },
     "011": {
-      "answer": 70600674,
       "time_ns": 1542,
       "cold_start_ns": 12916,
       "iterations": 1000,
@@ -2228,7 +2216,6 @@
       "source_bytes": 2829
     },
     "012": {
-      "answer": 76576500,
       "time_ns": 47739042,
       "cold_start_ns": 47565375,
       "iterations": 100,
@@ -2239,7 +2226,6 @@
       "source_bytes": 630
     },
     "013": {
-      "answer": 5537376230,
       "time_ns": 34542,
       "cold_start_ns": 82000,
       "iterations": 1000,
@@ -2250,7 +2236,6 @@
       "source_bytes": 6013
     },
     "014": {
-      "answer": 837799,
       "time_ns": 194911292,
       "cold_start_ns": 200085208,
       "iterations": 10,
@@ -2261,7 +2246,6 @@
       "source_bytes": 621
     },
     "016": {
-      "answer": 1366,
       "time_ns": 451083,
       "cold_start_ns": 470666,
       "iterations": 1000,
@@ -2272,7 +2256,6 @@
       "source_bytes": 647
     },
     "017": {
-      "answer": 21124,
       "time_ns": 7250,
       "cold_start_ns": 25542,
       "iterations": 1000,
@@ -2283,7 +2266,6 @@
       "source_bytes": 1219
     },
     "018": {
-      "answer": 1074,
       "time_ns": 375,
       "cold_start_ns": 18625,
       "iterations": 1000,
@@ -2294,7 +2276,6 @@
       "source_bytes": 1173
     },
     "019": {
-      "answer": 171,
       "time_ns": 4042,
       "cold_start_ns": 15625,
       "iterations": 1000,
@@ -2305,7 +2286,6 @@
       "source_bytes": 1004
     },
     "020": {
-      "answer": 648,
       "time_ns": 1917,
       "cold_start_ns": 52875,
       "iterations": 1000,
@@ -2316,7 +2296,6 @@
       "source_bytes": 443
     },
     "021": {
-      "answer": 31626,
       "time_ns": 1188917,
       "cold_start_ns": 1247541,
       "iterations": 100,
@@ -2327,7 +2306,6 @@
       "source_bytes": 663
     },
     "022": {
-      "answer": 871198282,
       "time_ns": 537250,
       "cold_start_ns": 600459,
       "iterations": 1000,
@@ -2338,7 +2316,6 @@
       "source_bytes": 810
     },
     "023": {
-      "answer": 4179871,
       "time_ns": 11062583,
       "cold_start_ns": 17214541,
       "iterations": 100,
@@ -2349,7 +2326,6 @@
       "source_bytes": 1212
     },
     "024": {
-      "answer": 2783915460,
       "time_ns": 166,
       "cold_start_ns": 18417,
       "iterations": 1000,
@@ -2360,7 +2336,6 @@
       "source_bytes": 747
     },
     "025": {
-      "answer": 4782,
       "time_ns": 73166,
       "cold_start_ns": 208958,
       "iterations": 1000,
@@ -2371,7 +2346,6 @@
       "source_bytes": 599
     },
     "026": {
-      "answer": 983,
       "time_ns": 2103083,
       "cold_start_ns": 2083833,
       "iterations": 100,
@@ -2382,7 +2356,6 @@
       "source_bytes": 769
     },
     "027": {
-      "answer": -59231,
       "time_ns": 7056709,
       "cold_start_ns": 5774875,
       "iterations": 100,
@@ -2393,7 +2366,6 @@
       "source_bytes": 1048
     },
     "028": {
-      "answer": 669171001,
       "time_ns": 1042,
       "cold_start_ns": 18875,
       "iterations": 1000,
@@ -2404,7 +2376,6 @@
       "source_bytes": 499
     },
     "029": {
-      "answer": 9183,
       "time_ns": 9875834,
       "cold_start_ns": 10192791,
       "iterations": 100,
@@ -2415,7 +2386,6 @@
       "source_bytes": 670
     },
     "030": {
-      "answer": 443839,
       "time_ns": 1683375,
       "cold_start_ns": 1692167,
       "iterations": 100,
@@ -2426,7 +2396,6 @@
       "source_bytes": 598
     },
     "031": {
-      "answer": 73682,
       "time_ns": 1417,
       "cold_start_ns": 17625,
       "iterations": 1000,
@@ -2437,7 +2406,6 @@
       "source_bytes": 534
     },
     "032": {
-      "answer": 45228,
       "time_ns": 22046417,
       "cold_start_ns": 26446416,
       "iterations": 100,
@@ -2448,7 +2416,6 @@
       "source_bytes": 908
     },
     "033": {
-      "answer": 100,
       "time_ns": 5750,
       "cold_start_ns": 20083,
       "iterations": 1000,
@@ -2459,7 +2426,6 @@
       "source_bytes": 893
     },
     "034": {
-      "answer": 40730,
       "time_ns": 15585708,
       "cold_start_ns": 14008250,
       "iterations": 100,
@@ -2470,7 +2436,6 @@
       "source_bytes": 606
     },
     "035": {
-      "answer": 55,
       "time_ns": 3764083,
       "cold_start_ns": 6843541,
       "iterations": 100,
@@ -2481,7 +2446,6 @@
       "source_bytes": 1201
     },
     "036": {
-      "answer": 872187,
       "time_ns": 74010375,
       "cold_start_ns": 59495542,
       "iterations": 100,
@@ -2492,7 +2456,6 @@
       "source_bytes": 641
     },
     "037": {
-      "answer": 748317,
       "time_ns": 2685208,
       "cold_start_ns": 2572000,
       "iterations": 100,
@@ -2503,7 +2466,6 @@
       "source_bytes": 1310
     },
     "038": {
-      "answer": 932718654,
       "time_ns": 806125,
       "cold_start_ns": 825583,
       "iterations": 100,
@@ -2514,7 +2476,6 @@
       "source_bytes": 883
     },
     "039": {
-      "answer": 840,
       "time_ns": 89750,
       "cold_start_ns": 103084,
       "iterations": 1000,
@@ -2525,7 +2486,6 @@
       "source_bytes": 754
     },
     "040": {
-      "answer": 210,
       "time_ns": 6261416,
       "cold_start_ns": 3448209,
       "iterations": 100,
@@ -2536,7 +2496,6 @@
       "source_bytes": 607
     },
     "041": {
-      "answer": 7652413,
       "time_ns": 12400875,
       "cold_start_ns": 11488166,
       "iterations": 100,
@@ -2547,7 +2506,6 @@
       "source_bytes": 1235
     },
     "042": {
-      "answer": 162,
       "time_ns": 38500,
       "cold_start_ns": 507708,
       "iterations": 1000,
@@ -2558,7 +2516,6 @@
       "source_bytes": 1105
     },
     "043": {
-      "answer": 16695334890,
       "time_ns": 23109959,
       "cold_start_ns": 40112000,
       "iterations": 100,
@@ -2569,7 +2526,6 @@
       "source_bytes": 1391
     },
     "044": {
-      "answer": 5482660,
       "time_ns": 203649834,
       "cold_start_ns": 190691667,
       "iterations": 10,
@@ -2580,7 +2536,6 @@
       "source_bytes": 774
     },
     "045": {
-      "answer": 1533776805,
       "time_ns": 51000,
       "cold_start_ns": 158042,
       "iterations": 1000,
@@ -2591,7 +2546,6 @@
       "source_bytes": 815
     },
     "046": {
-      "answer": 5777,
       "time_ns": 4277500,
       "cold_start_ns": 4827500,
       "iterations": 100,
@@ -2602,7 +2556,6 @@
       "source_bytes": 936
     },
     "047": {
-      "answer": 134043,
       "time_ns": 6253583,
       "cold_start_ns": 6026500,
       "iterations": 100,
@@ -2613,7 +2566,6 @@
       "source_bytes": 1193
     },
     "048": {
-      "answer": 9110846700,
       "time_ns": 355167,
       "cold_start_ns": 1092333,
       "iterations": 100,
@@ -2624,7 +2576,6 @@
       "source_bytes": 494
     },
     "049": {
-      "answer": 296962999629,
       "time_ns": 46440375,
       "cold_start_ns": 36031875,
       "iterations": 100,
@@ -2635,7 +2586,6 @@
       "source_bytes": 1407
     },
     "050": {
-      "answer": 997651,
       "time_ns": 7356167,
       "cold_start_ns": 4786333,
       "iterations": 100,
@@ -2646,7 +2596,6 @@
       "source_bytes": 966
     },
     "051": {
-      "answer": 121313,
       "time_ns": 1750500,
       "cold_start_ns": 1571292,
       "iterations": 100,
@@ -2657,7 +2606,6 @@
       "source_bytes": 1411
     },
     "052": {
-      "answer": 142857,
       "time_ns": 74976333,
       "cold_start_ns": 56045625,
       "iterations": 100,
@@ -2668,7 +2616,6 @@
       "source_bytes": 634
     },
     "053": {
-      "answer": 4075,
       "time_ns": 29917,
       "cold_start_ns": 30166,
       "iterations": 1000,
@@ -2679,7 +2626,6 @@
       "source_bytes": 683
     },
     "054": {
-      "answer": 376,
       "time_ns": 6335208,
       "cold_start_ns": 10102416,
       "iterations": 100,
@@ -2690,7 +2636,6 @@
       "source_bytes": 3994
     },
     "055": {
-      "answer": 249,
       "time_ns": 22311625,
       "cold_start_ns": 26296166,
       "iterations": 100,
@@ -2701,7 +2646,6 @@
       "source_bytes": 939
     },
     "056": {
-      "answer": 972,
       "time_ns": 4518875,
       "cold_start_ns": 4196916,
       "iterations": 100,
@@ -2712,7 +2656,6 @@
       "source_bytes": 654
     },
     "057": {
-      "answer": 153,
       "time_ns": 2344333,
       "cold_start_ns": 1883459,
       "iterations": 100,
@@ -2723,7 +2666,6 @@
       "source_bytes": 898
     },
     "058": {
-      "answer": 26241,
       "time_ns": 26940209,
       "cold_start_ns": 31678625,
       "iterations": 100,
@@ -2734,7 +2676,6 @@
       "source_bytes": 978
     },
     "059": {
-      "answer": 129448,
       "time_ns": 1898625,
       "cold_start_ns": 1957667,
       "iterations": 100,
@@ -2745,7 +2686,6 @@
       "source_bytes": 1261
     },
     "060": {
-      "answer": 26033,
       "time_ns": 73407625,
       "cold_start_ns": 425130292,
       "iterations": 100,
@@ -2756,7 +2696,6 @@
       "source_bytes": 3170
     },
     "061": {
-      "answer": 28684,
       "time_ns": 26292,
       "cold_start_ns": 5891333,
       "iterations": 1000,
@@ -2767,7 +2706,6 @@
       "source_bytes": 1877
     },
     "062": {
-      "answer": 127035954683,
       "time_ns": 4133959,
       "cold_start_ns": 4259083,
       "iterations": 100,
@@ -2778,7 +2716,6 @@
       "source_bytes": 837
     },
     "063": {
-      "answer": 49,
       "time_ns": 4792,
       "cold_start_ns": 59459,
       "iterations": 1000,
@@ -2789,7 +2726,6 @@
       "source_bytes": 660
     },
     "064": {
-      "answer": 1322,
       "time_ns": 2158250,
       "cold_start_ns": 2216208,
       "iterations": 100,
@@ -2800,7 +2736,6 @@
       "source_bytes": 604
     },
     "065": {
-      "answer": 272,
       "time_ns": 9667,
       "cold_start_ns": 55375,
       "iterations": 1000,
@@ -2811,7 +2746,6 @@
       "source_bytes": 730
     },
     "066": {
-      "answer": 661,
       "time_ns": 4893750,
       "cold_start_ns": 4070042,
       "iterations": 100,
@@ -2822,7 +2756,6 @@
       "source_bytes": 1260
     },
     "067": {
-      "answer": 7273,
       "time_ns": 5459,
       "cold_start_ns": 441625,
       "iterations": 1000,
@@ -2833,7 +2766,6 @@
       "source_bytes": 1250
     },
     "068": {
-      "answer": 6531031914842725,
       "time_ns": 22501458,
       "cold_start_ns": 25257125,
       "iterations": 100,
@@ -2844,7 +2776,6 @@
       "source_bytes": 1692
     },
     "069": {
-      "answer": 510510,
       "time_ns": 41,
       "cold_start_ns": 33167,
       "iterations": 1000,
@@ -2855,7 +2786,6 @@
       "source_bytes": 546
     },
     "070": {
-      "answer": 8319823,
       "time_ns": 358121834,
       "cold_start_ns": 313019542,
       "iterations": 10,
@@ -2866,7 +2796,6 @@
       "source_bytes": 923
     },
     "071": {
-      "answer": 428570,
       "time_ns": 1968875,
       "cold_start_ns": 1977084,
       "iterations": 100,
@@ -2877,7 +2806,6 @@
       "source_bytes": 488
     },
     "072": {
-      "answer": 303963552391,
       "time_ns": 6518708,
       "cold_start_ns": 33187666,
       "iterations": 100,
@@ -2888,7 +2816,6 @@
       "source_bytes": 569
     },
     "073": {
-      "answer": 7295372,
       "time_ns": 26331833,
       "cold_start_ns": 42380583,
       "iterations": 100,
@@ -2899,7 +2826,6 @@
       "source_bytes": 567
     },
     "074": {
-      "answer": 402,
       "time_ns": 8734500,
       "cold_start_ns": 7126375,
       "iterations": 100,
@@ -2910,7 +2836,6 @@
       "source_bytes": 1584
     },
     "075": {
-      "answer": 161667,
       "time_ns": 6785750,
       "cold_start_ns": 5512250,
       "iterations": 100,
@@ -2921,7 +2846,6 @@
       "source_bytes": 924
     },
     "076": {
-      "answer": 190569291,
       "time_ns": 6750,
       "cold_start_ns": 27208,
       "iterations": 1000,
@@ -2932,7 +2856,6 @@
       "source_bytes": 471
     },
     "077": {
-      "answer": 71,
       "time_ns": 22250,
       "cold_start_ns": 72834,
       "iterations": 1000,
@@ -2943,7 +2866,6 @@
       "source_bytes": 1003
     },
     "078": {
-      "answer": 55374,
       "time_ns": 51405000,
       "cold_start_ns": 47957375,
       "iterations": 100,
@@ -2954,7 +2876,6 @@
       "source_bytes": 915
     },
     "079": {
-      "answer": 73162890,
       "time_ns": 250,
       "cold_start_ns": 245375,
       "iterations": 1000,
@@ -2965,7 +2886,6 @@
       "source_bytes": 1815
     },
     "080": {
-      "answer": 40886,
       "time_ns": 261041,
       "cold_start_ns": 322709,
       "iterations": 1000,
@@ -2976,7 +2896,6 @@
       "source_bytes": 1107
     },
     "081": {
-      "answer": 427337,
       "time_ns": 10209,
       "cold_start_ns": 529042,
       "iterations": 1000,
@@ -2987,7 +2906,6 @@
       "source_bytes": 1457
     },
     "082": {
-      "answer": 260324,
       "time_ns": 33708,
       "cold_start_ns": 635417,
       "iterations": 1000,
@@ -2998,7 +2916,6 @@
       "source_bytes": 1659
     },
     "083": {
-      "answer": 425185,
       "time_ns": 778292,
       "cold_start_ns": 1460417,
       "iterations": 1000,
@@ -3009,7 +2926,6 @@
       "source_bytes": 2318
     },
     "084": {
-      "answer": 101524,
       "time_ns": 185041,
       "cold_start_ns": 205125,
       "iterations": 100,
@@ -3020,7 +2936,6 @@
       "source_bytes": 2340
     },
     "085": {
-      "answer": 2772,
       "time_ns": 10750,
       "cold_start_ns": 24625,
       "iterations": 1000,
@@ -3031,7 +2946,6 @@
       "source_bytes": 716
     },
     "086": {
-      "answer": 1818,
       "time_ns": 2318500,
       "cold_start_ns": 2331750,
       "iterations": 100,
@@ -3042,7 +2956,6 @@
       "source_bytes": 608
     },
     "087": {
-      "answer": 1097343,
       "time_ns": 8428583,
       "cold_start_ns": 12765916,
       "iterations": 100,
@@ -3053,7 +2966,6 @@
       "source_bytes": 1116
     },
     "088": {
-      "answer": 7587457,
       "time_ns": 1177792,
       "cold_start_ns": 2784917,
       "iterations": 100,
@@ -3064,7 +2976,6 @@
       "source_bytes": 992
     },
     "089": {
-      "answer": 743,
       "time_ns": 102542,
       "cold_start_ns": 148125,
       "iterations": 1000,
@@ -3075,7 +2986,6 @@
       "source_bytes": 1396
     },
     "090": {
-      "answer": 1217,
       "time_ns": 127167,
       "cold_start_ns": 201125,
       "iterations": 1000,
@@ -3086,7 +2996,6 @@
       "source_bytes": 1460
     },
     "091": {
-      "answer": 14234,
       "time_ns": 9267875,
       "cold_start_ns": 11659458,
       "iterations": 100,
@@ -3097,7 +3006,6 @@
       "source_bytes": 922
     },
     "092": {
-      "answer": 8581146,
       "time_ns": 73691584,
       "cold_start_ns": 64155459,
       "iterations": 100,
@@ -3108,7 +3016,6 @@
       "source_bytes": 1001
     },
     "093": {
-      "answer": 1258,
       "time_ns": 14963334,
       "cold_start_ns": 15135417,
       "iterations": 100,
@@ -3119,7 +3026,6 @@
       "source_bytes": 2400
     },
     "094": {
-      "answer": 518408346,
       "time_ns": 42,
       "cold_start_ns": 17875,
       "iterations": 1000,
@@ -3130,7 +3036,6 @@
       "source_bytes": 1010
     },
     "095": {
-      "answer": 14316,
       "time_ns": 139895750,
       "cold_start_ns": 142951083,
       "iterations": 100,
@@ -3141,7 +3046,6 @@
       "source_bytes": 1669
     },
     "096": {
-      "answer": 24702,
       "time_ns": 4530791,
       "cold_start_ns": 9760042,
       "iterations": 100,
@@ -3152,7 +3056,6 @@
       "source_bytes": 1838
     },
     "097": {
-      "answer": 8739992577,
       "time_ns": 3083,
       "cold_start_ns": 15792,
       "iterations": 1000,
@@ -3163,7 +3066,6 @@
       "source_bytes": 845
     },
     "098": {
-      "answer": 18769,
       "time_ns": 11082000,
       "cold_start_ns": 15784000,
       "iterations": 100,
@@ -3174,7 +3076,6 @@
       "source_bytes": 2941
     },
     "099": {
-      "answer": 709,
       "time_ns": 109791,
       "cold_start_ns": 380375,
       "iterations": 1000,
@@ -3185,7 +3086,6 @@
       "source_bytes": 873
     },
     "100": {
-      "answer": 756872327473,
       "time_ns": 41,
       "cold_start_ns": 11584,
       "iterations": 1000,

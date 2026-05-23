@@ -89,7 +89,6 @@
       "source_bytes": 2352
     },
     "060": {
-      "answer": 26033,
       "time_ns": 59562208,
       "compile_time_ns": 0,
       "cold_start_ns": 601817208,
@@ -2296,7 +2295,6 @@
       "source_bytes": 2358
     },
     "015": {
-      "answer": 137846528820,
       "time_ns": 83,
       "compile_time_ns": 0,
       "cold_start_ns": 2334,
@@ -2434,7 +2432,6 @@
       "source_bytes": 3364
     },
     "001": {
-      "answer": 233168,
       "time_ns": 417,
       "cold_start_ns": 1791,
       "subprocess_wall_ns": 54878666,
@@ -2446,7 +2443,6 @@
       "source_bytes": 379
     },
     "002": {
-      "answer": 4613732,
       "time_ns": 750,
       "cold_start_ns": 2708,
       "subprocess_wall_ns": 53124416,
@@ -2458,7 +2454,6 @@
       "source_bytes": 455
     },
     "003": {
-      "answer": 6857,
       "time_ns": 7750000,
       "cold_start_ns": 8116709,
       "subprocess_wall_ns": 942452208,
@@ -2470,7 +2465,6 @@
       "source_bytes": 600
     },
     "004": {
-      "answer": 906609,
       "time_ns": 57810750,
       "cold_start_ns": 58217625,
       "subprocess_wall_ns": 6171296292,
@@ -2482,7 +2476,6 @@
       "source_bytes": 462
     },
     "005": {
-      "answer": 232792560,
       "time_ns": 9209,
       "cold_start_ns": 29417,
       "subprocess_wall_ns": 101633375,
@@ -2494,7 +2487,6 @@
       "source_bytes": 804
     },
     "006": {
-      "answer": 25164150,
       "time_ns": 3834,
       "cold_start_ns": 7291,
       "subprocess_wall_ns": 41414792,
@@ -2506,7 +2498,6 @@
       "source_bytes": 396
     },
     "007": {
-      "answer": 104743,
       "time_ns": 1341833,
       "cold_start_ns": 1423000,
       "subprocess_wall_ns": 228503291,
@@ -2518,7 +2509,6 @@
       "source_bytes": 470
     },
     "008": {
-      "answer": 23514624000,
       "time_ns": 880709,
       "cold_start_ns": 934375,
       "subprocess_wall_ns": 929485958,
@@ -2530,7 +2520,6 @@
       "source_bytes": 1504
     },
     "009": {
-      "answer": 31875000,
       "time_ns": 4697750,
       "cold_start_ns": 4660917,
       "subprocess_wall_ns": 562602875,
@@ -2542,7 +2531,6 @@
       "source_bytes": 402
     },
     "010": {
-      "answer": 142913828922,
       "time_ns": 23701666,
       "cold_start_ns": 23317541,
       "subprocess_wall_ns": 2555464417,
@@ -2554,7 +2542,6 @@
       "source_bytes": 598
     },
     "011": {
-      "answer": 70600674,
       "time_ns": 217958,
       "cold_start_ns": 247209,
       "subprocess_wall_ns": 276151417,
@@ -2566,7 +2553,6 @@
       "source_bytes": 2748
     },
     "012": {
-      "answer": 76576500,
       "time_ns": 1585477625,
       "cold_start_ns": 1674446125,
       "subprocess_wall_ns": 11260070000,
@@ -2578,7 +2564,6 @@
       "source_bytes": 573
     },
     "013": {
-      "answer": 5537376230,
       "time_ns": 1875,
       "cold_start_ns": 4583,
       "subprocess_wall_ns": 45538542,
@@ -2590,7 +2575,6 @@
       "source_bytes": 5816
     },
     "014": {
-      "answer": 837799,
       "time_ns": 6342067291,
       "cold_start_ns": 6349731625,
       "subprocess_wall_ns": 44977556959,
@@ -2602,7 +2586,6 @@
       "source_bytes": 551
     },
     "016": {
-      "answer": 1366,
       "time_ns": 21709,
       "cold_start_ns": 26125,
       "subprocess_wall_ns": 69116458,
@@ -2614,7 +2597,6 @@
       "source_bytes": 191
     },
     "017": {
-      "answer": 21124,
       "time_ns": 168542,
       "cold_start_ns": 173667,
       "subprocess_wall_ns": 214888500,
@@ -2626,7 +2608,6 @@
       "source_bytes": 971
     },
     "018": {
-      "answer": 1074,
       "time_ns": 12417,
       "cold_start_ns": 18417,
       "subprocess_wall_ns": 59748625,
@@ -2638,7 +2619,6 @@
       "source_bytes": 920
     },
     "019": {
-      "answer": 171,
       "time_ns": 139041,
       "cold_start_ns": 135917,
       "subprocess_wall_ns": 182987125,
@@ -2650,7 +2630,6 @@
       "source_bytes": 916
     },
     "020": {
-      "answer": 648,
       "time_ns": 11708,
       "cold_start_ns": 17958,
       "subprocess_wall_ns": 55994375,
@@ -2662,7 +2641,6 @@
       "source_bytes": 226
     },
     "021": {
-      "answer": 31626,
       "time_ns": 26593708,
       "cold_start_ns": 26990333,
       "subprocess_wall_ns": 2812921459,
@@ -2674,7 +2652,6 @@
       "source_bytes": 617
     },
     "022": {
-      "answer": 871198282,
       "time_ns": 2546541,
       "cold_start_ns": 4125375,
       "subprocess_wall_ns": 330207416,
@@ -2686,7 +2663,6 @@
       "source_bytes": 490
     },
     "023": {
-      "answer": 4179871,
       "time_ns": 601173292,
       "cold_start_ns": 603954750,
       "subprocess_wall_ns": 8444749541,
@@ -2698,7 +2674,6 @@
       "source_bytes": 820
     },
     "024": {
-      "answer": 2783915460,
       "time_ns": 2000,
       "cold_start_ns": 10042,
       "subprocess_wall_ns": 43646625,
@@ -2710,7 +2685,6 @@
       "source_bytes": 507
     },
     "025": {
-      "answer": 4782,
       "time_ns": 23286375,
       "cold_start_ns": 23230375,
       "subprocess_wall_ns": 2495552959,
@@ -2722,7 +2696,6 @@
       "source_bytes": 299
     },
     "026": {
-      "answer": 983,
       "time_ns": 7748417,
       "cold_start_ns": 8170500,
       "subprocess_wall_ns": 845377584,
@@ -2734,7 +2707,6 @@
       "source_bytes": 481
     },
     "027": {
-      "answer": -59231,
       "time_ns": 423710667,
       "cold_start_ns": 413710583,
       "subprocess_wall_ns": 5952789042,
@@ -2746,7 +2718,6 @@
       "source_bytes": 775
     },
     "028": {
-      "answer": 669171001,
       "time_ns": 33958,
       "cold_start_ns": 34834,
       "subprocess_wall_ns": 81409084,
@@ -2758,7 +2729,6 @@
       "source_bytes": 274
     },
     "029": {
-      "answer": 9183,
       "time_ns": 2678375,
       "cold_start_ns": 2897875,
       "subprocess_wall_ns": 320862084,
@@ -2770,7 +2740,6 @@
       "source_bytes": 213
     },
     "030": {
-      "answer": 443839,
       "time_ns": 222823625,
       "cold_start_ns": 228631542,
       "subprocess_wall_ns": 3139150292,
@@ -2782,7 +2751,6 @@
       "source_bytes": 294
     },
     "031": {
-      "answer": 73682,
       "time_ns": 45333,
       "cold_start_ns": 47458,
       "subprocess_wall_ns": 82188334,
@@ -2794,7 +2762,6 @@
       "source_bytes": 391
     },
     "032": {
-      "answer": 45228,
       "time_ns": 43296625,
       "cold_start_ns": 44862250,
       "subprocess_wall_ns": 4519992541,
@@ -2806,7 +2773,6 @@
       "source_bytes": 542
     },
     "033": {
-      "answer": 100,
       "time_ns": 336959,
       "cold_start_ns": 348333,
       "subprocess_wall_ns": 378714500,
@@ -2818,7 +2784,6 @@
       "source_bytes": 689
     },
     "034": {
-      "answer": 40730,
       "time_ns": 1714215625,
       "cold_start_ns": 1846719625,
       "subprocess_wall_ns": 12190268084,
@@ -2830,7 +2795,6 @@
       "source_bytes": 339
     },
     "035": {
-      "answer": 55,
       "time_ns": 98946833,
       "cold_start_ns": 104337917,
       "subprocess_wall_ns": 10486989458,
@@ -2842,7 +2806,6 @@
       "source_bytes": 690
     },
     "036": {
-      "answer": 872187,
       "time_ns": 151233458,
       "cold_start_ns": 154202459,
       "subprocess_wall_ns": 2198283750,
@@ -2854,7 +2817,6 @@
       "source_bytes": 282
     },
     "037": {
-      "answer": 748317,
       "time_ns": 77992666,
       "cold_start_ns": 81061417,
       "subprocess_wall_ns": 8276458959,
@@ -2866,7 +2828,6 @@
       "source_bytes": 875
     },
     "038": {
-      "answer": 932718654,
       "time_ns": 4198667,
       "cold_start_ns": 4159125,
       "subprocess_wall_ns": 477914500,
@@ -2878,7 +2839,6 @@
       "source_bytes": 520
     },
     "039": {
-      "answer": 840,
       "time_ns": 8974333,
       "cold_start_ns": 9101167,
       "subprocess_wall_ns": 991602875,
@@ -2890,7 +2850,6 @@
       "source_bytes": 526
     },
     "040": {
-      "answer": 210,
       "time_ns": 17842458,
       "cold_start_ns": 18241083,
       "subprocess_wall_ns": 1889565291,
@@ -2902,7 +2861,6 @@
       "source_bytes": 321
     },
     "041": {
-      "answer": 7652413,
       "time_ns": 50708,
       "cold_start_ns": 59542,
       "subprocess_wall_ns": 88826584,
@@ -2914,7 +2872,6 @@
       "source_bytes": 608
     },
     "042": {
-      "answer": 162,
       "time_ns": 788167,
       "cold_start_ns": 1227084,
       "subprocess_wall_ns": 856468458,
@@ -2926,7 +2883,6 @@
       "source_bytes": 548
     },
     "043": {
-      "answer": 16695334890,
       "time_ns": 965170083,
       "cold_start_ns": 954055542,
       "subprocess_wall_ns": 13432305167,
@@ -2938,7 +2894,6 @@
       "source_bytes": 610
     },
     "044": {
-      "answer": 5482660,
       "time_ns": 171783458,
       "cold_start_ns": 163202875,
       "subprocess_wall_ns": 2432411417,
@@ -2950,7 +2905,6 @@
       "source_bytes": 499
     },
     "045": {
-      "answer": 1533776805,
       "time_ns": 3740208,
       "cold_start_ns": 3896667,
       "subprocess_wall_ns": 442984208,
@@ -2962,7 +2916,6 @@
       "source_bytes": 587
     },
     "046": {
-      "answer": 5777,
       "time_ns": 21128958,
       "cold_start_ns": 21577042,
       "subprocess_wall_ns": 2239894750,
@@ -2974,7 +2927,6 @@
       "source_bytes": 901
     },
     "047": {
-      "answer": 134043,
       "time_ns": 415028792,
       "cold_start_ns": 415942958,
       "subprocess_wall_ns": 5774361750,
@@ -2986,7 +2938,6 @@
       "source_bytes": 667
     },
     "048": {
-      "answer": 9110846700,
       "time_ns": 682500,
       "cold_start_ns": 639000,
       "subprocess_wall_ns": 717439542,
@@ -2998,7 +2949,6 @@
       "source_bytes": 224
     },
     "049": {
-      "answer": 296962999629,
       "time_ns": 81809583,
       "cold_start_ns": 82687375,
       "subprocess_wall_ns": 8521414167,
@@ -3010,7 +2960,6 @@
       "source_bytes": 916
     },
     "050": {
-      "answer": 997651,
       "time_ns": 101484750,
       "cold_start_ns": 106524584,
       "subprocess_wall_ns": 1454640917,
@@ -3022,7 +2971,6 @@
       "source_bytes": 804
     },
     "051": {
-      "answer": 121313,
       "time_ns": 53953834,
       "cold_start_ns": 61062375,
       "subprocess_wall_ns": 5760776125,
@@ -3034,7 +2982,6 @@
       "source_bytes": 1553
     },
     "052": {
-      "answer": 142857,
       "time_ns": 100963959,
       "cold_start_ns": 102309625,
       "subprocess_wall_ns": 1478793875,
@@ -3046,7 +2993,6 @@
       "source_bytes": 304
     },
     "053": {
-      "answer": 4075,
       "time_ns": 370750,
       "cold_start_ns": 372292,
       "subprocess_wall_ns": 417860750,
@@ -3058,7 +3004,6 @@
       "source_bytes": 510
     },
     "054": {
-      "answer": 376,
       "time_ns": 5229917,
       "cold_start_ns": 5625042,
       "subprocess_wall_ns": 602680500,
@@ -3070,7 +3015,6 @@
       "source_bytes": 1626
     },
     "055": {
-      "answer": 249,
       "time_ns": 16216584,
       "cold_start_ns": 16303959,
       "subprocess_wall_ns": 1729372417,
@@ -3082,7 +3026,6 @@
       "source_bytes": 464
     },
     "056": {
-      "answer": 972,
       "time_ns": 55770000,
       "cold_start_ns": 56948291,
       "subprocess_wall_ns": 5834630000,
@@ -3094,7 +3037,6 @@
       "source_bytes": 254
     },
     "057": {
-      "answer": 153,
       "time_ns": 1871084,
       "cold_start_ns": 1816666,
       "subprocess_wall_ns": 229639708,
@@ -3106,7 +3048,6 @@
       "source_bytes": 319
     },
     "058": {
-      "answer": 26241,
       "time_ns": 938014333,
       "cold_start_ns": 958070667,
       "subprocess_wall_ns": 13155484917,
@@ -3118,7 +3059,6 @@
       "source_bytes": 766
     },
     "059": {
-      "answer": 129448,
       "time_ns": 118000167,
       "cold_start_ns": 118180750,
       "subprocess_wall_ns": 1709847542,
@@ -3130,7 +3070,6 @@
       "source_bytes": 1145
     },
     "061": {
-      "answer": 28684,
       "time_ns": 1314875,
       "cold_start_ns": 1277209,
       "subprocess_wall_ns": 178037500,
@@ -3142,7 +3081,6 @@
       "source_bytes": 1634
     },
     "062": {
-      "answer": 127035954683,
       "time_ns": 6036125,
       "cold_start_ns": 6499541,
       "subprocess_wall_ns": 672200500,
@@ -3154,7 +3092,6 @@
       "source_bytes": 459
     },
     "063": {
-      "answer": 49,
       "time_ns": 5625,
       "cold_start_ns": 13375,
       "subprocess_wall_ns": 46500041,
@@ -3166,7 +3103,6 @@
       "source_bytes": 305
     },
     "064": {
-      "answer": 1322,
       "time_ns": 25726917,
       "cold_start_ns": 25472709,
       "subprocess_wall_ns": 2714894750,
@@ -3178,7 +3114,6 @@
       "source_bytes": 588
     },
     "065": {
-      "answer": 272,
       "time_ns": 15417,
       "cold_start_ns": 24666,
       "subprocess_wall_ns": 64204167,
@@ -3190,7 +3125,6 @@
       "source_bytes": 485
     },
     "066": {
-      "answer": 661,
       "time_ns": 2347250,
       "cold_start_ns": 2446042,
       "subprocess_wall_ns": 284947041,
@@ -3202,7 +3136,6 @@
       "source_bytes": 883
     },
     "067": {
-      "answer": 7273,
       "time_ns": 530375,
       "cold_start_ns": 1301583,
       "subprocess_wall_ns": 584796208,
@@ -3214,7 +3147,6 @@
       "source_bytes": 632
     },
     "068": {
-      "answer": 6531031914842725,
       "time_ns": 992620084,
       "cold_start_ns": 975752584,
       "subprocess_wall_ns": 13900448542,
@@ -3226,7 +3158,6 @@
       "source_bytes": 922
     },
     "069": {
-      "answer": 510510,
       "time_ns": 333,
       "cold_start_ns": 1667,
       "subprocess_wall_ns": 37474416,
@@ -3238,7 +3169,6 @@
       "source_bytes": 323
     },
     "070": {
-      "answer": 8319823,
       "time_ns": 12014978875,
       "cold_start_ns": 12155311458,
       "subprocess_wall_ns": 84884178500,
@@ -3250,7 +3180,6 @@
       "source_bytes": 625
     },
     "071": {
-      "answer": 428570,
       "time_ns": 76371250,
       "cold_start_ns": 74340417,
       "subprocess_wall_ns": 7979728291,
@@ -3262,7 +3191,6 @@
       "source_bytes": 361
     },
     "072": {
-      "answer": 303963552391,
       "time_ns": 497392833,
       "cold_start_ns": 526412959,
       "subprocess_wall_ns": 6885870500,
@@ -3274,7 +3202,6 @@
       "source_bytes": 403
     },
     "073": {
-      "answer": 7295372,
       "time_ns": 1008438292,
       "cold_start_ns": 995190542,
       "subprocess_wall_ns": 7047578375,
@@ -3286,7 +3213,6 @@
       "source_bytes": 453
     },
     "074": {
-      "answer": 402,
       "time_ns": 660256875,
       "cold_start_ns": 659509292,
       "subprocess_wall_ns": 9255601709,
@@ -3298,7 +3224,6 @@
       "source_bytes": 1138
     },
     "075": {
-      "answer": 161667,
       "time_ns": 139336083,
       "cold_start_ns": 124669083,
       "subprocess_wall_ns": 1922682208,
@@ -3310,7 +3235,6 @@
       "source_bytes": 667
     },
     "076": {
-      "answer": 190569291,
       "time_ns": 197042,
       "cold_start_ns": 195166,
       "subprocess_wall_ns": 241614417,
@@ -3322,7 +3246,6 @@
       "source_bytes": 346
     },
     "077": {
-      "answer": 71,
       "time_ns": 872500,
       "cold_start_ns": 852208,
       "subprocess_wall_ns": 916583250,
@@ -3334,7 +3257,6 @@
       "source_bytes": 798
     },
     "078": {
-      "answer": 55374,
       "time_ns": 1130946625,
       "cold_start_ns": 1121776291,
       "subprocess_wall_ns": 8195690959,
@@ -3346,7 +3268,6 @@
       "source_bytes": 674
     },
     "079": {
-      "answer": 73162890,
       "time_ns": 32000,
       "cold_start_ns": 50542,
       "subprocess_wall_ns": 82873375,
@@ -3358,7 +3279,6 @@
       "source_bytes": 1300
     },
     "080": {
-      "answer": 40886,
       "time_ns": 1633959,
       "cold_start_ns": 1835167,
       "subprocess_wall_ns": 245382542,
@@ -3370,7 +3290,6 @@
       "source_bytes": 525
     },
     "081": {
-      "answer": 427337,
       "time_ns": 776333,
       "cold_start_ns": 6239542,
       "subprocess_wall_ns": 1161153875,
@@ -3382,7 +3301,6 @@
       "source_bytes": 1058
     },
     "082": {
-      "answer": 260324,
       "time_ns": 857500,
       "cold_start_ns": 2199125,
       "subprocess_wall_ns": 936479875,
@@ -3394,7 +3312,6 @@
       "source_bytes": 1171
     },
     "083": {
-      "answer": 425185,
       "time_ns": 4112625,
       "cold_start_ns": 5316459,
       "subprocess_wall_ns": 488040000,
@@ -3406,7 +3323,6 @@
       "source_bytes": 1380
     },
     "084": {
-      "answer": 101524,
       "time_ns": 10794791,
       "cold_start_ns": 11400500,
       "subprocess_wall_ns": 1174711541,
@@ -3418,7 +3334,6 @@
       "source_bytes": 2015
     },
     "085": {
-      "answer": 2772,
       "time_ns": 1292208,
       "cold_start_ns": 1253542,
       "subprocess_wall_ns": 170800959,
@@ -3430,7 +3345,6 @@
       "source_bytes": 603
     },
     "086": {
-      "answer": 1818,
       "time_ns": 279540917,
       "cold_start_ns": 280431583,
       "subprocess_wall_ns": 3928199917,
@@ -3442,7 +3356,6 @@
       "source_bytes": 554
     },
     "087": {
-      "answer": 1097343,
       "time_ns": 192654250,
       "cold_start_ns": 189947333,
       "subprocess_wall_ns": 2925215625,
@@ -3454,7 +3367,6 @@
       "source_bytes": 913
     },
     "088": {
-      "answer": 7587457,
       "time_ns": 95123292,
       "cold_start_ns": 89181625,
       "subprocess_wall_ns": 9943413959,
@@ -3466,7 +3378,6 @@
       "source_bytes": 746
     },
     "089": {
-      "answer": 743,
       "time_ns": 2080625,
       "cold_start_ns": 2418084,
       "subprocess_wall_ns": 257714583,
@@ -3478,7 +3389,6 @@
       "source_bytes": 1530
     },
     "090": {
-      "answer": 1217,
       "time_ns": 4026708,
       "cold_start_ns": 4002750,
       "subprocess_wall_ns": 473910458,
@@ -3490,7 +3400,6 @@
       "source_bytes": 859
     },
     "091": {
-      "answer": 14234,
       "time_ns": 731700375,
       "cold_start_ns": 731601125,
       "subprocess_wall_ns": 10775406250,
@@ -3502,7 +3411,6 @@
       "source_bytes": 924
     },
     "092": {
-      "answer": 8581146,
       "time_ns": 4792314459,
       "cold_start_ns": 4862877458,
       "subprocess_wall_ns": 33757435291,
@@ -3514,7 +3422,6 @@
       "source_bytes": 885
     },
     "093": {
-      "answer": 1258,
       "time_ns": 152264083,
       "cold_start_ns": 150916375,
       "subprocess_wall_ns": 2186067833,
@@ -3526,7 +3433,6 @@
       "source_bytes": 1381
     },
     "094": {
-      "answer": 518408346,
       "time_ns": 1167,
       "cold_start_ns": 4792,
       "subprocess_wall_ns": 136194750,
@@ -3538,7 +3444,6 @@
       "source_bytes": 703
     },
     "095": {
-      "answer": 14316,
       "time_ns": 2022726167,
       "cold_start_ns": 3093929875,
       "subprocess_wall_ns": 14037254084,
@@ -3550,7 +3455,6 @@
       "source_bytes": 1257
     },
     "096": {
-      "answer": 24702,
       "time_ns": 176022917,
       "cold_start_ns": 176520125,
       "subprocess_wall_ns": 2493118875,
@@ -3562,7 +3466,6 @@
       "source_bytes": 1938
     },
     "097": {
-      "answer": 8739992577,
       "time_ns": 1958,
       "cold_start_ns": 4375,
       "subprocess_wall_ns": 39399542,
@@ -3574,7 +3477,6 @@
       "source_bytes": 228
     },
     "098": {
-      "answer": 18769,
       "time_ns": 42152208,
       "cold_start_ns": 43955125,
       "subprocess_wall_ns": 4421580917,
@@ -3586,7 +3488,6 @@
       "source_bytes": 15275
     },
     "099": {
-      "answer": 709,
       "time_ns": 239541,
       "cold_start_ns": 654041,
       "subprocess_wall_ns": 308126667,
@@ -3598,7 +3499,6 @@
       "source_bytes": 642
     },
     "100": {
-      "answer": 756872327473,
       "time_ns": 1541,
       "cold_start_ns": 3542,
       "subprocess_wall_ns": 37186834,
