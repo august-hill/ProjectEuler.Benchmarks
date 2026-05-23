@@ -12,8 +12,7 @@
       "status": "pass",
       "peak_rss_bytes": 1720320,
       "source_lines": 280,
-      "source_bytes": 10210,
-      "error": "no output"
+      "source_bytes": 10210
     },
     "336": {
       "time_ns": 266424334,
