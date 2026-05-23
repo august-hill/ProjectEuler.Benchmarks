@@ -2,37 +2,17 @@
   "language": "javascript",
   "platform": "arm64",
   "compiler": "node v24.16.0",
-  "timestamp": "2026-05-23T03:06:21Z",
+  "timestamp": "2026-05-23T03:32:41Z",
   "problems": {
-    "162": {
-      "time_ns": 1916,
+    "196": {
+      "time_ns": 264972958,
       "compile_time_ns": 0,
-      "cold_start_ns": 32667,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 52871168,
-      "source_lines": 29,
-      "source_bytes": 722
-    },
-    "184": {
-      "time_ns": 83,
-      "compile_time_ns": 0,
-      "cold_start_ns": 12970000,
-      "iterations": 1000,
-      "status": "pass",
-      "peak_rss_bytes": 58556416,
-      "source_lines": 65,
-      "source_bytes": 1641
-    },
-    "195": {
-      "time_ns": 636356666,
-      "compile_time_ns": 0,
-      "cold_start_ns": 645775208,
+      "cold_start_ns": 303019500,
       "iterations": 10,
       "status": "pass",
-      "peak_rss_bytes": 58966016,
-      "source_lines": 45,
-      "source_bytes": 1121
+      "peak_rss_bytes": 204505088,
+      "source_lines": 161,
+      "source_bytes": 5478
     },
     "198": {
       "time_ns": 772497625,
@@ -1764,6 +1744,16 @@
       "source_lines": 85,
       "source_bytes": 2240
     },
+    "162": {
+      "time_ns": 3667,
+      "cold_start_ns": 72541,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 52051968,
+      "compile_time_ns": 0,
+      "source_lines": 29,
+      "source_bytes": 754
+    },
     "163": {
       "time_ns": 526668875,
       "cold_start_ns": 561684416,
@@ -1970,6 +1960,16 @@
       "source_lines": 37,
       "source_bytes": 815
     },
+    "184": {
+      "time_ns": 83,
+      "cold_start_ns": 17941500,
+      "iterations": 1000,
+      "status": "pass",
+      "peak_rss_bytes": 57180160,
+      "compile_time_ns": 0,
+      "source_lines": 65,
+      "source_bytes": 1641
+    },
     "185": {
       "time_ns": 0,
       "cold_start_ns": 0,
@@ -2056,6 +2056,16 @@
       "compile_time_ns": 0,
       "source_lines": 64,
       "source_bytes": 1712
+    },
+    "195": {
+      "time_ns": 727349541,
+      "cold_start_ns": 737010292,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 58474496,
+      "compile_time_ns": 0,
+      "source_lines": 45,
+      "source_bytes": 1121
     },
     "197": {
       "time_ns": 19666,
