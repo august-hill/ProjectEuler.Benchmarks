@@ -12,8 +12,7 @@
       "status": "pass",
       "peak_rss_bytes": 215498752,
       "source_lines": 165,
-      "source_bytes": 5705,
-      "error": "no output"
+      "source_bytes": 5705
     },
     "015": {
       "answer": 137846528820,

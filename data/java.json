@@ -2,15 +2,15 @@
   "language": "java",
   "platform": "arm64",
   "compiler": "openjdk version \"21.0.2\" 2024-01-16 LTS",
-  "timestamp": "2026-05-23T03:30:29Z",
+  "timestamp": "2026-05-23T03:30:57Z",
   "problems": {
     "196": {
-      "time_ns": 206794375,
-      "compile_time_ns": 607954000,
-      "cold_start_ns": 238067042,
+      "time_ns": 207568041,
+      "compile_time_ns": 574084000,
+      "cold_start_ns": 242471709,
       "iterations": 10,
       "status": "pass",
-      "peak_rss_bytes": 463798272,
+      "peak_rss_bytes": 464109568,
       "source_lines": 143,
       "source_bytes": 5136
     },
