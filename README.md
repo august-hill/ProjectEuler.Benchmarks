@@ -86,8 +86,7 @@ This repo is **public**; the lang repos are **private**.  Per the project's
 | `data/<lang>.json` | Public bench data (sanitized) |
 | `data/private/` | Full bench data (gitignored) |
 | `scripts/sanitization_gate.py` | Pre-commit hook: enforce no-answer-in-public-data |
-| `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era) — historical reference only |
-| `COVERAGE.md` | Per-language audit status |
+| `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era + per-tier coverage) — historical reference only |
 
 ## License + contact
 

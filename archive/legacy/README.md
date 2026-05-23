@@ -15,6 +15,11 @@ benchmark pipeline anymore:
   Replaced by `../../report.py`.
 - `three_metric_report.py` — generated `THREE_MODE_REPORT.md`.  Retired.
 - `THREE_MODE_REPORT.md` — the deep three-mode analysis (74 KB).  Retired.
+- `coverage_report.py` — generated `COVERAGE.md`, the per-language per-tier
+  dashboard.  Retired alongside the three-tier scope.  With the new 10×10
+  scope, the audited grid is implicit in `../../RESULTS.md` — every cell
+  with a number is a verified measurement.
+- `COVERAGE.md` — the per-tier coverage dashboard.  Retired.
 - `charts/final_*.png` — chart variants from the three-mode era (total time
   with `max(warm, cold)` band-aid heuristic, slowdown distribution, etc.).
 
