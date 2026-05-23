@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # regen_all.sh - Run all report regenerators in order, after data/*.json refresh.
+#
+# All four reports are tier-aware as of 2026-05-22. Tier definitions live in
+# `data/tiers.json` (single source of truth, consumed via `scripts/tiers.py`).
+# To re-tier the suite, edit tiers.json then re-run this script.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

@@ -1,37 +1,53 @@
 #!/usr/bin/env python3
 """Generate COVERAGE.md — a visual dashboard of Project Euler coverage across
-all 10 language repos. Run from anywhere; outputs to ProjectEuler.Benchmarks/COVERAGE.md.
+all 10 language repos, organized by tier.
+
+Tier model (see ``data/tiers.json``):
+- Tier 1 Foundation: all 10 langs, problems 1-200 (apples-to-apples surface).
+- Tier 2 Deep Coverage: C++, Go, Zig, Python, problems 201-300.
+- Tier 3 Frontier: C++, Go, problems 301+.
+
+Out-of-scope cells render as ⬛ via :func:`tiers.in_scope`. Historical
+exceptions (e.g., Rust's existing 201+ work) are NOT shown in tier sections
+where the lang isn't in scope; they remain committed in their repos.
+
+Run from anywhere; outputs to ProjectEuler.Benchmarks/COVERAGE.md.
 """
 from __future__ import annotations
 import datetime
-import os
 import re
+import sys
 from pathlib import Path
+
+# Allow `import tiers` regardless of where this script is invoked from.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from tiers import (
+    load_tiers, tier_for_problem, langs_in_tier, in_scope,
+    tier_label, tier_problem_range, tier_range_label, TIER_ORDER,
+)
 
 ROOT = Path("/Users/augusthill/ccdev")
 OUTPUT = ROOT / "ProjectEuler.Benchmarks" / "COVERAGE.md"
 
-# (display_name, repo_name, solution_file_glob)
+# (display_name, tier_key, repo_name, solution_file_glob)
+# tier_key matches the lowercase lang keys in tiers.json.
 LANGS = [
-    ("C", "ProjectEuler.C", "problem_{n}/main.c"),
-    ("C++", "ProjectEuler.CPlusPlus", "problem_{n}/main.cpp"),
-    ("C#", "ProjectEuler.CSharp", "problem_{n}/Program.cs"),
-    ("Go", "ProjectEuler.Go", "problem_{n}/main.go"),
-    ("Java", "ProjectEuler.Java", "problem_{n}/Main.java"),
-    ("JS", "ProjectEuler.JavaScript", "problem_{n}/main.js"),
-    ("Py", "ProjectEuler.Python", "problem_{n}.py"),
-    ("Rust", "ProjectEuler.Rust", "problem_{n}/src/main.rs"),
-    ("Zig", "ProjectEuler.Zig", "problem_{n}/main.zig"),
-    ("ARM64", "ProjectEuler.ARM64", "problem_{n}/solve.s"),
+    ("C",     "c",          "ProjectEuler.C",          "problem_{n}/main.c"),
+    ("C++",   "cpp",        "ProjectEuler.CPlusPlus",  "problem_{n}/main.cpp"),
+    ("C#",    "csharp",     "ProjectEuler.CSharp",     "problem_{n}/Program.cs"),
+    ("Go",    "go",         "ProjectEuler.Go",         "problem_{n}/main.go"),
+    ("Java",  "java",       "ProjectEuler.Java",       "problem_{n}/Main.java"),
+    ("JS",    "javascript", "ProjectEuler.JavaScript", "problem_{n}/main.js"),
+    ("Py",    "python",     "ProjectEuler.Python",     "problem_{n}.py"),
+    ("Rust",  "rust",       "ProjectEuler.Rust",       "problem_{n}/src/main.rs"),
+    ("Zig",   "zig",        "ProjectEuler.Zig",        "problem_{n}/main.zig"),
+    ("ARM64", "arm64",      "ProjectEuler.ARM64",      "problem_{n}/solve.s"),
 ]
-
-# ARM64 capped at 200 by user decision.
-ARM64_CAP = 200
 
 DONE = "🟩"
 PARKED = "🟨"
 MISSING = "🟥"
-SCOPE_OUT = "⬛"  # out of scope (e.g., ARM64 past 200)
+SCOPE_OUT = "⬛"  # out of scope for this lang's max tier (e.g., ARM64 past 200)
 
 PARKED_PATTERNS = [
     re.compile(r"PARKED", re.IGNORECASE),
@@ -75,9 +91,10 @@ def read_skip_list(repo_dir: Path) -> set[int]:
     return skips
 
 
-def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: str, skip_set: set[int]) -> str:
-    """Classify a single (language, problem) cell."""
-    if display_name == "ARM64" and problem_num > ARM64_CAP:
+def status_for(repo_dir: Path, problem_num: int, file_glob: str,
+               tier_key: str, tiers: dict, skip_set: set[int]) -> str:
+    """Classify a single (language, problem) cell with tier awareness."""
+    if not in_scope(tier_key, problem_num, tiers):
         return SCOPE_OUT
 
     n_str = f"{problem_num:03d}"
@@ -88,13 +105,13 @@ def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: s
             return PARKED
         return MISSING
 
-    # File exists — check if PARKED
+    # File exists — check if PARKED via short-file + marker heuristic.
     try:
         content = file_path.read_text(errors="ignore")
     except Exception:
         return DONE  # can't read but it's there
 
-    # Heuristic: very short file (<=2 non-comment lines) AND has PARKED comment
+    # Heuristic: very short file (≤8 non-comment lines) AND has PARKED marker
     nontrivial = [
         ln for ln in content.split("\n")
         if ln.strip() and not ln.strip().startswith(("//", "#", "/*", "*"))
@@ -107,121 +124,167 @@ def status_for(repo_dir: Path, problem_num: int, file_glob: str, display_name: s
     return DONE
 
 
-def collect_grid():
-    """Returns: dict[(lang_name, problem_num)] -> status emoji."""
+def collect_grid(tiers: dict) -> dict:
+    """Returns: dict[(display_name, problem_num)] -> status emoji."""
     grid = {}
-    for display_name, repo_name, file_glob in LANGS:
+    for display_name, tier_key, repo_name, file_glob in LANGS:
         repo_dir = ROOT / repo_name
         skip_set = read_skip_list(repo_dir)
         for n in range(1, 1001):
-            grid[(display_name, n)] = status_for(repo_dir, n, file_glob, display_name, skip_set)
+            grid[(display_name, n)] = status_for(repo_dir, n, file_glob,
+                                                  tier_key, tiers, skip_set)
     return grid
 
 
-def per_language_stats(grid):
+def per_language_stats(grid: dict) -> list[tuple]:
+    """Overall per-lang stats across all tiers the lang is in scope for."""
     rows = []
-    for display_name, _, _ in LANGS:
+    for display_name, _, _, _ in LANGS:
         statuses = [grid[(display_name, n)] for n in range(1, 1001)]
         done = statuses.count(DONE)
         parked = statuses.count(PARKED)
         missing = statuses.count(MISSING)
         scope_out = statuses.count(SCOPE_OUT)
-        in_scope = 1000 - scope_out
-        coverage_pct = (done / in_scope * 100) if in_scope else 0
+        in_scope_n = 1000 - scope_out
+        coverage_pct = (done / in_scope_n * 100) if in_scope_n else 0
         rows.append((display_name, done, parked, missing, scope_out, coverage_pct))
     return rows
 
 
-def century_heatmap(grid):
-    """For each 100-block, show count of done per language."""
-    centuries = [(c * 100 + 1, c * 100 + 100) for c in range(10)]
-    header = "| Range | " + " | ".join(name for name, _, _ in LANGS) + " |"
-    sep = "|" + "---|" * (len(LANGS) + 1)
-    rows = [header, sep]
-    for lo, hi in centuries:
-        cells = []
-        for display_name, _, _ in LANGS:
-            statuses = [grid[(display_name, n)] for n in range(lo, hi + 1)]
-            done = statuses.count(DONE)
-            parked = statuses.count(PARKED)
-            in_scope = 100 - statuses.count(SCOPE_OUT)
-            covered = done + parked  # parked counts as "intentionally closed"
-            if in_scope == 0:
-                cells.append("⬛ —")  # Out of scope (e.g., ARM64 past 200)
-            elif covered == in_scope:
-                cells.append(f"🟩 **{done}**")  # all in-scope settled (done or parked)
-            elif done >= in_scope * 0.5:
-                cells.append(f"🟨 {done}/{in_scope}")
-            elif done > 0:
-                cells.append(f"🟥 {done}/{in_scope}")
-            else:
-                cells.append(f"🟥 0/{in_scope}")
-        rows.append(f"| {lo:03d}–{hi:03d} | " + " | ".join(cells) + " |")
-    return "\n".join(rows)
+def tier_section(tier_key: str, tiers: dict, grid: dict) -> str:
+    """Render one tier's heatmap + detail strip + tier-scoped stats."""
+    lo, hi = tier_problem_range(tier_key, tiers)
+    # Clamp upper bound for detail rendering (no point past p1000).
+    hi_render = hi if hi is not None else 1000
+    tier_langs_lower = set(langs_in_tier(tier_key, tiers))
 
+    # Filter LANGS to those in this tier (preserve display order from LANGS).
+    in_tier_rows = [(d, tk, r, g) for d, tk, r, g in LANGS if tk in tier_langs_lower]
 
-def detail_strip(grid, lo, hi):
-    """Per-problem heatmap for a range. One row per language; one emoji per problem,
-    grouped in blocks of 10 with spaces between."""
     out = []
-    for display_name, _, _ in LANGS:
+    out.append(f"## {tier_label(tier_key, tiers)} — problems {tier_range_label(tier_key, tiers)}")
+    out.append("")
+    out.append(f"_{tiers[tier_key]['description']}_")
+    out.append("")
+    out.append(f"**{len(in_tier_rows)} languages in scope:** "
+               + ", ".join(d for d, _, _, _ in in_tier_rows))
+    out.append("")
+
+    # Per-tier stats table
+    out.append("| Language | 🟩 Done | 🟨 Parked | 🟥 Missing | Coverage |")
+    out.append("|---|---|---|---|---|")
+    for display_name, _, _, _ in in_tier_rows:
+        done = parked = missing = 0
+        for n in range(lo, hi_render + 1):
+            s = grid[(display_name, n)]
+            if s == DONE: done += 1
+            elif s == PARKED: parked += 1
+            elif s == MISSING: missing += 1
+        in_scope_n = done + parked + missing
+        pct = (done / in_scope_n * 100) if in_scope_n else 0
+        out.append(f"| **{display_name}** | {done} | {parked} | {missing} | {pct:.1f}% |")
+    out.append("")
+
+    # Per-century heatmap scoped to this tier's range
+    out.append("### Per-century heatmap (in-tier languages only)")
+    out.append("")
+    century_lo = ((lo - 1) // 100) * 100 + 1
+    century_hi = hi_render
+    header = "| Range | " + " | ".join(d for d, _, _, _ in in_tier_rows) + " |"
+    sep = "|" + "---|" * (len(in_tier_rows) + 1)
+    out.append(header)
+    out.append(sep)
+    for c_lo in range(century_lo, century_hi + 1, 100):
+        c_hi = min(c_lo + 99, hi_render)
+        if c_lo < lo:
+            c_lo = lo  # don't include below-tier problems in the first century
         cells = []
-        for i, n in enumerate(range(lo, hi + 1)):
+        for display_name, _, _, _ in in_tier_rows:
+            statuses = [grid[(display_name, n)] for n in range(c_lo, c_hi + 1)]
+            done_c = statuses.count(DONE)
+            parked_c = statuses.count(PARKED)
+            in_scope_c = len(statuses) - statuses.count(SCOPE_OUT)
+            covered = done_c + parked_c
+            if in_scope_c == 0:
+                cells.append("⬛ —")
+            elif covered == in_scope_c:
+                cells.append(f"🟩 **{done_c}**")
+            elif done_c >= in_scope_c * 0.5:
+                cells.append(f"🟨 {done_c}/{in_scope_c}")
+            elif done_c > 0:
+                cells.append(f"🟥 {done_c}/{in_scope_c}")
+            else:
+                cells.append(f"🟥 0/{in_scope_c}")
+        out.append(f"| {c_lo:03d}–{c_hi:03d} | " + " | ".join(cells) + " |")
+    out.append("")
+
+    # Per-problem detail strip (only for the tier's range, only in-tier langs)
+    out.append("### Per-problem detail")
+    out.append("")
+    out.append("```")
+    for display_name, _, _, _ in in_tier_rows:
+        cells = []
+        for i, n in enumerate(range(lo, hi_render + 1)):
             cells.append(grid[(display_name, n)])
             if (i + 1) % 10 == 0:
                 cells.append(" ")
-        out.append(f"`{display_name:<6}` {''.join(cells).rstrip()}")
-    return "\n\n".join(out)
+        out.append(f"{display_name:<6} {''.join(cells).rstrip()}")
+    out.append("```")
+    out.append("")
+    return "\n".join(out)
 
 
-def known_issues(grid):
-    """Surface PARKED entries grouped by language."""
+def known_issues(grid: dict) -> str:
+    """Surface PARKED entries grouped by language (across all tiers)."""
     out = []
-    for display_name, _, _ in LANGS:
+    for display_name, _, _, _ in LANGS:
         parked = [n for n in range(1, 1001) if grid[(display_name, n)] == PARKED]
         if parked:
             out.append(f"- **{display_name}**: parked {parked}")
     return "\n".join(out) if out else "_(none detected)_"
 
 
-def suggested_actions(grid):
-    """Find lowest gaps suitable for next-session work, accounting for parked status."""
+def suggested_actions(tiers: dict, grid: dict) -> str:
+    """Per-tier next-action suggestions."""
     out = []
-    # Lowest absolute gap (any missing, any language)
-    for n in range(1, 1001):
-        missing_langs = [name for name, _, _ in LANGS if grid[(name, n)] == MISSING]
-        if missing_langs:
-            out.append(f"- **Lowest absolute gap:** problem **{n}** (missing from {missing_langs})")
-            break
-    # Lowest single-language gap
-    for n in range(1, 1001):
-        missing_langs = [name for name, _, _ in LANGS if grid[(name, n)] == MISSING]
-        if len(missing_langs) == 1:
-            out.append(f"- **Lowest single-language gap:** problem **{n}** (only {missing_langs[0]} missing)")
-            break
-    # Lowest broad gap (missing from ≥5 languages)
-    for n in range(1, 1001):
-        missing_langs = [name for name, _, _ in LANGS if grid[(name, n)] == MISSING]
-        if len(missing_langs) >= 5:
-            out.append(f"- **Lowest broad gap (≥5 langs):** problem **{n}** (missing from {missing_langs})")
-            break
-    # Per-language frontier (highest contiguous problem number from 1)
-    out.append("")
-    out.append("**Per-language contiguous frontier (highest n with no gap in 1..n):**")
-    for display_name, _, _ in LANGS:
-        frontier = 0
-        for n in range(1, 1001):
-            s = grid[(display_name, n)]
-            if s in (DONE, PARKED, SCOPE_OUT):
-                frontier = n
-            else:
+    for tier_key in TIER_ORDER:
+        if tier_key not in tiers:
+            continue
+        lo, hi = tier_problem_range(tier_key, tiers)
+        hi_render = hi if hi is not None else 1000
+        tier_langs_lower = set(langs_in_tier(tier_key, tiers))
+        in_tier_display = [d for d, tk, _, _ in LANGS if tk in tier_langs_lower]
+
+        # Lowest absolute gap within this tier
+        first_gap = None
+        for n in range(lo, hi_render + 1):
+            missing_langs = [d for d in in_tier_display if grid[(d, n)] == MISSING]
+            if missing_langs:
+                first_gap = (n, missing_langs)
                 break
-        out.append(f"  - {display_name}: 1–**{frontier}**")
-    return "\n".join(out) if out else "_(no gaps found)_"
+        out.append(f"**{tier_label(tier_key, tiers)} ({tier_range_label(tier_key, tiers)}):**")
+        if first_gap is None:
+            out.append("  - _(no gaps in tier)_")
+        else:
+            n, langs = first_gap
+            out.append(f"  - Lowest gap: problem **{n}** (missing from {langs})")
+            # Per-lang frontier within this tier
+            for display_name in in_tier_display:
+                frontier = lo - 1
+                for n2 in range(lo, hi_render + 1):
+                    s = grid[(display_name, n2)]
+                    if s in (DONE, PARKED, SCOPE_OUT):
+                        frontier = n2
+                    else:
+                        break
+                out.append(f"  - {display_name}: contiguous through **{frontier}**")
+        out.append("")
+    return "\n".join(out)
 
 
 def main():
-    grid = collect_grid()
+    tiers = load_tiers()
+    grid = collect_grid(tiers)
     stats = per_language_stats(grid)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -232,31 +295,24 @@ def main():
     md.append("")
     md.append("Legend: 🟩 done · 🟨 parked / known issue · 🟥 missing · ⬛ out of scope")
     md.append("")
-    md.append("## Per-Language Summary (problems 1–1000)")
+    md.append("Coverage is reported in three tiers — see `data/tiers.json` for definitions. "
+              "Historical exceptions (existing committed solves beyond a language's max tier) "
+              "stay in the source repos but do not contribute to tier-comparison stats.")
+    md.append("")
+
+    md.append("## Per-Language Summary (across all tiers in scope)")
     md.append("")
     md.append("| Language | 🟩 Done | 🟨 Parked | 🟥 Missing | ⬛ Out-of-scope | Coverage |")
     md.append("|---|---|---|---|---|---|")
     for name, done, parked, missing, scope_out, pct in stats:
         md.append(f"| **{name}** | {done} | {parked} | {missing} | {scope_out} | {pct:.1f}% |")
     md.append("")
-    md.append("## Per-Century Coverage Heatmap")
-    md.append("")
-    md.append("Each cell shows: `<done>/100` followed by 🟩 (full) / 🟨 (≥50%) / 🟥 (some) / ⬛ (none)")
-    md.append("")
-    md.append(century_heatmap(grid))
-    md.append("")
-    md.append("## Detailed Problem Map")
-    md.append("")
-    md.append("Each row shows problems left-to-right in groups of 10. ")
-    md.append("🟩 done · 🟨 parked · 🟥 missing · ⬛ out of scope.")
-    md.append("")
-    for lo in (1, 101, 201, 301, 401):
-        md.append(f"### Problems {lo:03d}–{lo+99:03d}")
-        md.append("")
-        md.append("```")
-        md.append(detail_strip(grid, lo, lo + 99))
-        md.append("```")
-        md.append("")
+
+    # Per-tier sections
+    for tier_key in TIER_ORDER:
+        if tier_key not in tiers:
+            continue
+        md.append(tier_section(tier_key, tiers, grid))
 
     md.append("## Known Parked / Issues")
     md.append("")
@@ -264,7 +320,7 @@ def main():
     md.append("")
     md.append("## Suggested Next Actions")
     md.append("")
-    md.append(suggested_actions(grid))
+    md.append(suggested_actions(tiers, grid))
     md.append("")
     md.append("---")
     md.append("")

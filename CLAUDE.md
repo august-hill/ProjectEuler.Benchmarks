@@ -37,4 +37,4 @@ Before committing changes to this repo, scan for:
 
 ## Verification protocol (cross-cutting reminder)
 
-This repo doesn't run verification itself, but the suite's policy is: **no submission to projecteuler.net**; verify by independent Python and C++ implementations agreeing. The 10 language CLAUDE.md files contain the full PE Project Rules block — apply them when working on any sibling repo.
+This repo doesn't run verification itself, but the suite's policy is: **no submission to projecteuler.net**; verify by independent **Go and C++ implementations** agreeing (2026-05-22 change — Python's wall cost above level 4 displaced it as C++'s pair; see `data/tiers.json` for the tiered language model). The 10 language CLAUDE.md files contain the full PE Project Rules block — apply them when working on any sibling repo.
