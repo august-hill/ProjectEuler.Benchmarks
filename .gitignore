@@ -10,6 +10,9 @@
 # Local diagnostic state from auto-publish gate trips (lang_repo_post_commit.sh)
 .pe-exception.json
 
+# Lockfile for serializing concurrent lang-repo post-commit hooks (flock target)
+.pe-bench-hook.lock
+
 # Compiled Go binary (rebuilt on demand from check_timing_delta.go)
 scripts/check_timing_delta
 
