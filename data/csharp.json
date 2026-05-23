@@ -2,8 +2,19 @@
   "language": "csharp",
   "platform": "arm64",
   "compiler": ".NET 10.0.101",
-  "timestamp": "2026-05-11T14:37:33Z",
+  "timestamp": "2026-05-23T03:30:14Z",
   "problems": {
+    "196": {
+      "time_ns": 195653292,
+      "compile_time_ns": 1191204000,
+      "cold_start_ns": 225194792,
+      "iterations": 10,
+      "status": "pass",
+      "peak_rss_bytes": 215498752,
+      "source_lines": 165,
+      "source_bytes": 5705,
+      "error": "no output"
+    },
     "015": {
       "answer": 137846528820,
       "time_ns": 167,
@@ -2059,14 +2070,6 @@
       "compile_time_ns": 0,
       "source_lines": 62,
       "source_bytes": 1483
-    },
-    "196": {
-      "time_ns": 0,
-      "cold_start_ns": 1885448362,
-      "status": "pass",
-      "compile_time_ns": 0,
-      "source_lines": 140,
-      "source_bytes": 4209
     },
     "197": {
       "time_ns": 27000,
