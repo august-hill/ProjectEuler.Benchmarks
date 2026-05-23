@@ -29,6 +29,26 @@ Before committing changes to this repo, scan for:
 - New MDs/scripts that pair a specific problem number >100 with technique vocabulary
 - `data/*.json.bak` or similar backup files (these should be gitignored)
 
+## Pre-publish ranking sanity check (added 2026-05-22)
+
+Before any `git push origin main` that updates **RESULTS.md** or **charts/*.png**, spot-check the headline ranking against established priors. Publishing a misleading ranking to a public repo and then walking it back costs more than a 30-second sanity check.
+
+**Expected priors for hot-loop computational benchmarks:**
+- Compiled native langs (C, C++, Rust, Zig, ARM64) should cluster in the **top half** of the speed ranking.
+- Managed langs (C#, Java) typically 2-5× slower than the fastest native; **never #1**.
+- JavaScript: similar to managed langs, sometimes faster on numeric work due to V8 typed-array optimizations.
+- Python: 10-50× slower than native for computation-heavy workloads; should be last or near-last on speed.
+
+**If the chart violates these priors, the chart is wrong before the priors are.** Likely root causes (see auto-memory for details):
+- `solve()` cache pattern — warm bench iterations measure cache-return instead of real algorithm cost (see [[project_pe_cache_pattern_campaign]]).
+- Per-lang harness asymmetry — one lang's cold-start measurement includes work others' do not (see [[project_pe_arm64_relative_output_bug]] for the historical example).
+- Algorithm-choice diversity — same problem benchmarked with different algorithms across langs.
+- Stale entries from old harness versions.
+
+**The check:** run `python3 final_analysis.py 2>&1 | grep -A 20 'Foundation ranking'` after regen. If a managed lang is in the top 3, OR a compiled lang is below #6, **investigate before pushing.** Add a caveat to RESULTS.md if the issue can't be resolved in-session; do not push the ranking as authoritative.
+
+**Reference incident:** 2026-05-22 session 477aafc3 pushed a chart with C# at #1 over ARM64/Zig/C++. User caught it on review; investigation surfaced two structural bugs. Caveated chart now in place; multi-session cache-strip campaign queued.
+
 ## History notes
 
 **2026-04-18 cleanup (commit `2a24766`)**: stripped answers and technique mentions for problems >100 from the live tree. Pre-`2a24766` git history was NOT rewritten — the trade-off was accepted because archaeology is unlikely. That pre-`2a24766` history still contains pre-cleanup data.
