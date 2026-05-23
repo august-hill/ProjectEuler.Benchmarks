@@ -21,3 +21,9 @@ scripts/check_timing_delta
 # baseline on first run if missing.
 scripts/dud_audit
 scripts/dud_audit_baseline.json
+
+# Per-iter bench private data: full output WITH answer values for every problem
+# (including >100). Used locally for verification + debugging. NEVER committed —
+# the public data/*.json files are sanitized at write time by euler-bench
+# per-iter --write, which strips the answer field for any problem >100.
+data/private/

@@ -274,6 +274,10 @@ func cmdPerIter(args []string) {
 	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all') — default: all configured")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
 	iters := fs.Int("iters", 10, "fresh-process invocations per problem")
+	write := fs.Bool("write", false,
+		"write results to data/<lang>.json (sanitized: no answer field for problems > 100) "+
+			"AND data/private/<lang>.json (full, gitignored). "+
+			"Existing entries for unmeasured problems are preserved.")
 	if err := fs.Parse(args); err != nil {
 		os.Exit(2)
 	}
@@ -378,5 +382,46 @@ func cmdPerIter(args []string) {
 	}
 	if !notable {
 		fmt.Println("  (none)")
+	}
+
+	// ──────────────────────────────────────────────────────────────────────
+	// --write: persist results to data/<lang>.json (sanitized) + private.
+	// Runs AFTER all measurement so partial-write risk is limited.
+	// ──────────────────────────────────────────────────────────────────────
+	if !*write {
+		return
+	}
+	fmt.Println()
+	fmt.Println(strings.Repeat("=", 100))
+	fmt.Println("WRITE  (--write was specified)")
+	fmt.Println(strings.Repeat("=", 100))
+
+	totalMismatches := 0
+	for _, key := range langKeys {
+		lang := langByKey(key)
+		if lang == nil {
+			continue
+		}
+		// Collect results in problem-number order for stable file diffs
+		var results []*perIterResult
+		for _, p := range problems {
+			if r, ok := grid[key][p]; ok {
+				results = append(results, r)
+			}
+		}
+		mismatches, err := writeBenchResults(lang, baseDir, results)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "  %s: WRITE FAILED: %v\n", key, err)
+			continue
+		}
+		fmt.Printf("  %s: wrote data/%s.json + data/private/%s.json  (%d measured, %d mismatches)\n",
+			key, key, key, len(results), mismatches)
+		totalMismatches += mismatches
+	}
+	if totalMismatches > 0 {
+		fmt.Println()
+		fmt.Printf("⚠  %d answer mismatches across all langs — see data files' `error` fields for details.\n",
+			totalMismatches)
+		os.Exit(1)
 	}
 }
