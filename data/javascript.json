@@ -2,8 +2,19 @@
   "language": "javascript",
   "platform": "arm64",
   "compiler": "node v24.16.0",
-  "timestamp": "2026-05-23T03:32:41Z",
+  "timestamp": "2026-05-23T03:35:15Z",
   "problems": {
+    "170": {
+      "time_ns": 5046708,
+      "compile_time_ns": 0,
+      "cold_start_ns": 7569667,
+      "iterations": 100,
+      "status": "pass",
+      "peak_rss_bytes": 54067200,
+      "source_lines": 187,
+      "source_bytes": 7737,
+      "error": "no output"
+    },
     "196": {
       "time_ns": 264972958,
       "compile_time_ns": 0,
@@ -1822,13 +1833,6 @@
       "compile_time_ns": 0,
       "source_lines": 42,
       "source_bytes": 1124
-    },
-    "170": {
-      "time_ns": 0,
-      "cold_start_ns": 0,
-      "status": "fail",
-      "error": "no output",
-      "compile_time_ns": 0
     },
     "171": {
       "time_ns": 18031583,
