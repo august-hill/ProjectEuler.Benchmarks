@@ -15,6 +15,7 @@ the headline per-problem number, and we sum across the 10 problems for the total
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
+| Rank | Language | Total (10 problems) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
 | 1 | **C++** | 345.8 µs | 268 | 1.00× |
 | 2 | **C** | 2.28 ms | 391 | 6.60× |

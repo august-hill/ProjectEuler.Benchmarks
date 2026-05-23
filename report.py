@@ -341,6 +341,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
+    md.append("| Rank | Language | Total (10 problems) | Lines of code | vs Fastest |")
     md.append("|------|----------|--------------------:|--------------:|-----------:|")
     for i, (lang, total) in enumerate(ranked, 1):
         ratio = total / fastest_ns
