@@ -100,6 +100,20 @@ LANG_CONFIG = {
         # solve.o is a build artifact we also clean up
         "extra_cleanup": ["solve.o"],
     },
+    "rust": {
+        "repo_dir": BASE / "ProjectEuler.Rust",
+        "prob_dir": lambda p: BASE / "ProjectEuler.Rust" / f"problem_{p:03d}",
+        # Per ProjectEuler.Rust/CLAUDE.md: `cargo build --release`.  --quiet
+        # suppresses cargo's compiling/finished noise on stdout so the bench
+        # output isn't mixed in.
+        "build_cmd_base": ["cargo", "build", "--release", "--quiet"],
+        "build_extra_libs": [[]],
+        "src_files": {"src/main.rs", "Cargo.toml"},
+        # Binary lives in per-problem target/release/problem_NNN
+        "run_cmd": lambda p: [f"./target/release/problem_{p:03d}"],
+        # target/ is gitignored; no manual cleanup needed
+        "skip_binary_cleanup": True,
+    },
 }
 
 # Parse the bench-output format.  Both keys (time_ns, answer) appear
@@ -171,11 +185,13 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
         result.notes.append(f"build failed (all link combos): {last_err}")
         return result
 
-    # 2. Run (always clean up the binary, regardless of outcome)
+    # 2. Run (always clean up the binary, regardless of outcome).
+    # `run_cmd` may be a list (fixed) or callable(problem_int)→list (per-prob).
+    run_cmd = cfg["run_cmd"](problem) if callable(cfg["run_cmd"]) else cfg["run_cmd"]
     try:
         try:
             proc = subprocess.run(
-                cfg["run_cmd"],
+                run_cmd,
                 cwd=prob_dir,
                 capture_output=True,
                 text=True,
@@ -235,10 +251,13 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
                 f"(cold={result.cold_ns:,}ns warm={result.warm_ns:,}ns)"
             )
     finally:
-        # Always clean up the binary so the working tree stays untracked-free
-        binary = prob_dir / cfg["binary_name"]
-        if binary.exists():
-            binary.unlink()
+        # Always clean up the binary so the working tree stays untracked-free.
+        # Some langs (Rust) keep their binary in a gitignored target/ dir and
+        # don't need explicit cleanup — set `skip_binary_cleanup: True`.
+        if not cfg.get("skip_binary_cleanup", False):
+            binary = prob_dir / cfg["binary_name"]
+            if binary.exists():
+                binary.unlink()
         # Extra cleanup for multi-step builds (e.g. ARM64's solve.o)
         for extra in cfg.get("extra_cleanup", []):
             path = prob_dir / extra
