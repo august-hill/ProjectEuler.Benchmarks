@@ -1,0 +1,24 @@
+{
+  "_doc": "Tier model for the 10-language PE benchmark suite. Single source of truth for which langs are in scope for which problem ranges. Consumed by coverage_report.py, three_metric_report.py, compare_languages.py, final_analysis.py via scripts/tiers.py. See project_pe_tier_model_2026-05-22 in auto-memory for rationale.",
+  "tiers": {
+    "tier_1_foundation": {
+      "label": "Foundation",
+      "langs": ["c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig", "arm64"],
+      "problem_range": [1, 200],
+      "description": "All 10 languages; the apples-to-apples cross-language comparison surface."
+    },
+    "tier_2_deep_coverage": {
+      "label": "Deep Coverage",
+      "langs": ["cpp", "go", "zig", "python"],
+      "problem_range": [201, 300],
+      "description": "Languages we've intentionally pushed past 200; richer comparison among the deeper four."
+    },
+    "tier_3_frontier": {
+      "label": "Frontier",
+      "langs": ["cpp", "go"],
+      "problem_range": [301, null],
+      "description": "C++ and Go paired on unexplored problems. Go replaces Python as C++'s exploration partner (decided 2026-05-22 — Python's wall cost made it impractical above level 4)."
+    }
+  },
+  "_historical_exceptions_note": "Languages may have committed solutions beyond their highest tier's problem_range (e.g., Rust has 36 problems above 200). Those stay preserved per the historical-exception convention in project_200_cap_policy auto-memory, but do NOT count for tier-comparison stats. Reports show them only in the lang's own data, not in cross-tier rankings."
+}
