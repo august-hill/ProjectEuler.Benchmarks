@@ -56,6 +56,24 @@ fi
 
 LANG_COMMIT_SHA=$(cd "$LANG_REPO" && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
+# ---------------------------------------------------------------------------
+# Serialize against concurrent lang-repo hooks.
+# collect.sh (Step 4) rewrites $BENCHMARKS_REPO/data/*.json, and validate_answers.py
+# (Gate 1) reads them. Without this lock, two simultaneous lang-repo commits can
+# race and trip Gate 1 with a JSON decode error on a partial-write
+# (see feedback_pe_parallel_hook_race in auto-memory for the 2026-05-17 incident).
+# Blocking flock waits at the kernel level; 120s timeout protects against deadlock.
+# ---------------------------------------------------------------------------
+LOCKFILE="$BENCHMARKS_REPO/.pe-bench-hook.lock"
+exec 9>"$LOCKFILE"
+if ! command -v flock >/dev/null 2>&1; then
+    echo "[pe-bench] WARN: 'flock' not installed (brew install flock); proceeding without serialization." >&2
+elif ! flock -w 120 9; then
+    echo "[pe-bench] Timed out after 120s waiting for prior hook; another commit may have hung. Bailing." >&2
+    exit 1
+fi
+# Lock auto-releases when fd 9 closes on script exit.
+
 echo ""
 echo "[pe-bench] Post-commit for ProjectEuler.${LANG_NAME}: detected problems $PROBLEMS"
 
