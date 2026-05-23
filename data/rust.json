@@ -2,7 +2,7 @@
   "language": "rust",
   "platform": "arm64",
   "compiler": "rustc 1.95.0 (59807616e 2026-04-14)",
-  "timestamp": "2026-05-23T22:23:58Z",
+  "timestamp": "2026-05-23T22:36:22Z",
   "problems": {
     "001": {
       "time_ns": 41,
@@ -69,15 +69,15 @@
       "source_bytes": 277
     },
     "007": {
-      "time_ns": 373250,
-      "cold_start_ns": 390166,
-      "cold_min_ns": 372167,
-      "cold_max_ns": 934375,
+      "time_ns": 154916,
+      "cold_start_ns": 194125,
+      "cold_min_ns": 181958,
+      "cold_max_ns": 206333,
       "cold_samples": 10,
-      "subprocess_wall_ns": 389692083,
+      "subprocess_wall_ns": 166803000,
       "status": "pass",
-      "source_lines": 35,
-      "source_bytes": 1003
+      "source_lines": 17,
+      "source_bytes": 498
     },
     "008": {
       "time_ns": 3708,
@@ -102,15 +102,15 @@
       "source_bytes": 467
     },
     "010": {
-      "time_ns": 515792,
-      "cold_start_ns": 2106125,
-      "cold_min_ns": 2009500,
-      "cold_max_ns": 3087666,
+      "time_ns": 713958,
+      "cold_start_ns": 789500,
+      "cold_min_ns": 740291,
+      "cold_max_ns": 1222083,
       "cold_samples": 10,
-      "subprocess_wall_ns": 536574292,
+      "subprocess_wall_ns": 734145541,
       "status": "pass",
-      "source_lines": 39,
-      "source_bytes": 771
+      "source_lines": 18,
+      "source_bytes": 558
     },
     "011": {
       "time_ns": 0,

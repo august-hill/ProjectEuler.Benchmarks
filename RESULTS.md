@@ -17,16 +17,16 @@ the headline per-problem number, and we sum across the 10 problems for the total
 
 | Rank | Language | Total (10 problems) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 345.8 µs | 268 | 1.00× |
-| 2 | **C** | 2.28 ms | 391 | 6.60× |
-| 3 | **Rust** | 2.55 ms | 264 | 7.37× |
-| 4 | **Zig** | 2.78 ms | 363 | 8.04× |
-| 5 | **Go** | 4.36 ms | 366 | 12.61× |
-| 6 | **ARM64** | 5.07 ms | 717 | 14.67× |
-| 7 | **Java** | 10.20 ms | 356 | 29.50× |
-| 8 | **JavaScript** | 13.36 ms | 254 | 38.64× |
-| 9 | **C#** | 16.15 ms | 307 | 46.71× |
-| 10 | **Python** | 75.95 ms | 247 | 219.61× |
+| 1 | **C** | 317.2 µs | 357 | 1.00× |
+| 2 | **C++** | 345.8 µs | 268 | 1.09× |
+| 3 | **Rust** | 1.04 ms | 225 | 3.27× |
+| 4 | **Zig** | 2.78 ms | 363 | 8.77× |
+| 5 | **Go** | 4.36 ms | 366 | 13.75× |
+| 6 | **ARM64** | 5.07 ms | 717 | 15.99× |
+| 7 | **Java** | 10.20 ms | 356 | 32.16× |
+| 8 | **JavaScript** | 13.36 ms | 254 | 42.14× |
+| 9 | **C#** | 16.15 ms | 307 | 50.93× |
+| 10 | **Python** | 75.95 ms | 247 | 239.46× |
 
 ## Speed vs Code Size
 
@@ -60,9 +60,9 @@ are sorted by total (fastest language at top).
 
 | Language | p001 | p002 | p003 | p004 | p005 | p006 | p007 | p008 | p009 | p010 |
 |----------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
+| **C** | 42 ns | 42 ns | 667 ns | 3.4 µs | 375 ns | 42 ns | 26.7 µs | 1.8 µs | 250 ns | 283.8 µs |
 | **C++** | 42 ns | 125 ns | 28.0 µs | 26.0 µs | 333 ns | 42 ns | 24.5 µs | 3.1 µs | 292 ns | 263.4 µs |
-| **C** | 42 ns | 42 ns | 667 ns | 3.4 µs | 375 ns | 42 ns | 178.2 µs | 1.8 µs | 250 ns | 2.10 ms |
-| **Rust** | 42 ns | 84 ns | 28.3 µs | 14.2 µs | 416 ns | 42 ns | 390.2 µs | 10.5 µs | 250 ns | 2.11 ms |
+| **Rust** | 42 ns | 84 ns | 28.3 µs | 14.2 µs | 416 ns | 42 ns | 194.1 µs | 10.5 µs | 250 ns | 789.5 µs |
 | **Zig** | 41 ns | 42 ns | 625 ns | 4.0 µs | 500 ns | 42 ns | 556.4 µs | 2.1 µs | 333 ns | 2.22 ms |
 | **Go** | 1.8 µs | 2.1 µs | 2.5 µs | 5.6 µs | 2.2 µs | 2.0 µs | 356.3 µs | 5.4 µs | 2.1 µs | 3.98 ms |
 | **ARM64** | 2.0 µs | 0 ns | 1.0 µs | 3.0 µs | 1.0 µs | 0 ns | 282.0 µs | 4.0 µs | 1.0 µs | 4.78 ms |
@@ -106,6 +106,35 @@ measurements:
 Note: Java/JS/C# show a runtime startup penalty in the per-invocation cost
 because their JIT/runtime warm-up happens *every* fresh process.  This is
 the honest cost of the language model under a CLI-invocation workload.
+
+### Language idioms: stdlib vs ecosystem packages
+
+Every language has a package ecosystem (Boost / vcpkg for C++, cargo / crates.io
+for Rust, NuGet for C#, pip for Python, etc.), and *what a native developer would
+write* almost always includes the well-known libraries for that ecosystem.
+Forcing every language to stdlib-only would penalize languages whose ecosystems
+are central to how they're actually used in practice.
+
+Where a single library dominates the ecosystem for the problem domain, we use it:
+
+| Language | Ecosystem package used | Rationale |
+|----------|------------------------|-----------|
+| **C++** | `primesieve` (Kim Walisch) | Best-in-class C++ prime library; commonly linked alongside Boost/abseil in C++ projects doing prime work. |
+| **C** | `libprimesieve` (C bindings) | Same library, exposed via C API — `#include <primesieve.h>`, link `-lprimesieve`. |
+| **Rust** | `primal` (Huon Wilson) | The dominant prime crate on crates.io; what a Rust dev doing prime work reaches for. |
+| **Python** | `numpy` | The standard numerical-Python library; `primes[i*i::i] = False` slice assignment IS the Pythonic sieve. |
+| **Go** | stdlib only | Go culture is stdlib-first; no single prime package dominates the ecosystem. |
+| **Zig** | stdlib only | Zig's package ecosystem is young; stdlib-only is current idiom. |
+| **Java** | stdlib only | Apache Commons Math has primes, but Java culture is split between stdlib-only and Commons; we keep it stdlib for now. |
+| **C#** | stdlib only | `Open.Numeric.Primes` exists but isn't dominant; most C# devs roll their own sieve at this scale. |
+| **JavaScript** | stdlib (Node) only | `Uint8Array` typed-array sieve IS the perf-aware JS idiom; no npm package is dominant. |
+| **ARM64** | libc (`malloc`/`free`) | The "ecosystem" for asm IS the platform's libc; that's what we use. |
+
+**Implication for the chart**: C++'s ~340 µs total reflects both "C++ language
+speed" and "primesieve is a well-optimized library."  If we measured
+hand-rolled C++ against hand-rolled Rust/Go/Zig, the gap would shrink.  We
+report C++ at its ecosystem-aware best, because *that's how C++ devs actually
+write C++*.  Same principle applies symmetrically to every other lang.
 
 ### What's intentionally not measured
 

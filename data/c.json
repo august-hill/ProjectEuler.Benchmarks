@@ -2,7 +2,7 @@
   "language": "c",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
-  "timestamp": "2026-05-23T22:23:58Z",
+  "timestamp": "2026-05-23T22:36:22Z",
   "problems": {
     "001": {
       "time_ns": 0,
@@ -68,15 +68,15 @@
       "source_bytes": 424
     },
     "007": {
-      "time_ns": 155334,
-      "cold_start_ns": 178167,
-      "cold_min_ns": 162167,
-      "cold_max_ns": 369459,
+      "time_ns": 3417,
+      "cold_start_ns": 26709,
+      "cold_min_ns": 15875,
+      "cold_max_ns": 35042,
       "cold_samples": 10,
-      "subprocess_wall_ns": 167329959,
+      "subprocess_wall_ns": 10438500,
       "status": "pass",
-      "source_lines": 43,
-      "source_bytes": 924
+      "source_lines": 19,
+      "source_bytes": 441
     },
     "008": {
       "time_ns": 1084,
@@ -101,15 +101,15 @@
       "source_bytes": 725
     },
     "010": {
-      "time_ns": 1928083,
-      "cold_start_ns": 2097834,
-      "cold_min_ns": 1992542,
-      "cold_max_ns": 3220375,
+      "time_ns": 229917,
+      "cold_start_ns": 283833,
+      "cold_min_ns": 265958,
+      "cold_max_ns": 502750,
       "cold_samples": 10,
-      "subprocess_wall_ns": 208896584,
+      "subprocess_wall_ns": 241937625,
       "status": "pass",
-      "source_lines": 42,
-      "source_bytes": 831
+      "source_lines": 32,
+      "source_bytes": 758
     },
     "011": {
       "time_ns": 3041,
