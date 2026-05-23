@@ -86,6 +86,8 @@ func main() {
 		cmdStatus(os.Args[2:])
 	case "collect":
 		cmdCollect(os.Args[2:])
+	case "per-iter":
+		cmdPerIter(os.Args[2:])
 	case "help", "--help", "-h":
 		printUsage()
 	default:
