@@ -56,10 +56,17 @@ var languages = []Lang{
 		SrcFile: "main.c", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			cc := envOr("CC", "clang")
-			flags := strings.Fields(envOr("CFLAGS", "-O2 -Wall"))
-			args := append([]string{cc}, flags...)
-			args = append(args, "-o", "main_bench", "main.c", "-lm")
-			return [][]string{args}
+			flags := strings.Fields(envOr("CFLAGS",
+				"-O2 -Wall -I/opt/homebrew/include"))
+			ldflags := "-lm -L/opt/homebrew/lib"
+			base := append([]string{cc}, flags...)
+			base = append(base, "-o", "main_bench", "main.c")
+			set1 := append(append([]string{}, base...), strings.Fields(ldflags)...)
+			// Some C problems use libprimesieve via its C API.  Try plain
+			// first, then with -lprimesieve as a fallback — mirrors the
+			// C++ adapter's pattern.
+			set2 := append(append([]string{}, set1...), "-lprimesieve")
+			return [][]string{set1, set2}
 		},
 		RunArgs:     func(_, _ string) (string, []string) { return "./main_bench", nil },
 		CleanFiles:  []string{"main_bench"},
