@@ -70,6 +70,20 @@ LANG_CONFIG = {
         "run_cmd": ["./main_bench"],
         "binary_name": "main_bench",
     },
+    "c": {
+        "repo_dir": BASE / "ProjectEuler.C",
+        "prob_dir": lambda p: BASE / "ProjectEuler.C" / f"problem_{p:03d}",
+        # Per ProjectEuler.C/CLAUDE.md: gcc -O2 -std=c11 -I.. main.c -o main_bench -lm
+        "build_cmd_base": [
+            "gcc", "-O2", "-std=c11",
+            "-I..", "-I/opt/homebrew/include",
+            "main.c", "-o", "main_bench",
+            "-L/opt/homebrew/lib", "-lm",
+        ],
+        "build_extra_libs": [[], ["-lprimesieve"]],
+        "run_cmd": ["./main_bench"],
+        "binary_name": "main_bench",
+    },
 }
 
 # Parse the bench-output format.  Both keys (time_ns, answer) appear
@@ -104,9 +118,14 @@ def audit_problem(lang: str, problem: int) -> AuditResult:
     if not prob_dir.is_dir():
         result.notes.append(f"problem dir missing: {prob_dir}")
         return result
-    if not (prob_dir / "main.cpp").is_file() and lang == "cpp":
-        result.notes.append("no main.cpp")
-        return result
+    # Each lang's build_cmd_base names the source file as a positional arg —
+    # we look for it in prob_dir as a generic check.
+    src_files = {arg for arg in cfg["build_cmd_base"]
+                 if arg.endswith((".c", ".cpp", ".cs", ".go", ".java", ".js", ".py", ".rs", ".s", ".zig"))}
+    for src in src_files:
+        if not (prob_dir / src).is_file():
+            result.notes.append(f"no {src} in {prob_dir}")
+            return result
 
     # 1. Build.  Try the base command first; if it fails, retry with each
     # extra-lib combo (mirrors benchmark.sh's fallback chain for primesieve/fmt).
