@@ -8,6 +8,13 @@
 //   D1  bench_fail           benchmark_results.json status=fail (algo broken)
 //   D2  bench_missing_entry  source/dir exists but no entry in benchmark_results.json
 //   X1  cross_lang_disagree  multiple langs solve same problem with different answers
+//   C1  cache_pattern        warm time_ns << cold_start_ns (solve() likely caches answer)
+//                              — bench measures cache-return cost, not real algorithm.
+//                              Heuristic: cold_ns > 1ms AND time_ns < 100µs AND
+//                              (cold_ns/time_ns > 100 OR time_ns == 0).
+//                              Added 2026-05-22 after session 477aafc3 surfaced 168
+//                              suite-wide instances; see project_pe_cache_pattern_campaign
+//                              in author's auto-memory for the fix campaign.
 //
 // Exit: 0 (no errors), 2 (≥1 error finding), 1 (tool error).
 //
@@ -171,9 +178,11 @@ var langs = []LangConfig{
 // ---------- benchmark_results.json ----------
 
 type BenchEntry struct {
-	Status string          `json:"status"`
-	Answer json.RawMessage `json:"answer"`
-	Error  string          `json:"error,omitempty"`
+	Status      string          `json:"status"`
+	Answer      json.RawMessage `json:"answer"`
+	Error       string          `json:"error,omitempty"`
+	TimeNs      int64           `json:"time_ns,omitempty"`
+	ColdStartNs int64           `json:"cold_start_ns,omitempty"`
 }
 
 type BenchFile struct {
@@ -418,6 +427,25 @@ func scanContent(cfg LangConfig, n int, content []byte, bench *BenchFile) []Find
 		})
 	}
 
+	// C1: cache pattern — warm time_ns is sub-µs while cold_start_ns is ms+.
+	// Signals solve() is caching the answer (warm bench iterations measure cache-return).
+	// Threshold: cold > 1ms AND time < 100µs AND (cold/time > 100 OR time == 0).
+	// Only applies when status=pass (a failed bench's timings are meaningless).
+	if entry.Status == "pass" && entry.ColdStartNs > 1_000_000 && entry.TimeNs < 100_000 {
+		ratioMet := entry.TimeNs == 0 || (entry.ColdStartNs/entry.TimeNs) > 100
+		if ratioMet {
+			ratioStr := "∞ (time_ns=0)"
+			if entry.TimeNs > 0 {
+				ratioStr = fmt.Sprintf("%dx", entry.ColdStartNs/entry.TimeNs)
+			}
+			findings = append(findings, Finding{
+				Lang: cfg.Name, Problem: n, Category: "C1", Severity: sevError,
+				Details: fmt.Sprintf("cache pattern: time_ns=%d, cold_start_ns=%d (ratio %s) — solve() likely caches answer",
+					entry.TimeNs, entry.ColdStartNs, ratioStr),
+			})
+		}
+	}
+
 	// S3: comment vs bench mismatch (only if comment present and bench has answer)
 	if commentAnswer != "" && len(entry.Answer) > 0 {
 		benchAns := answerToString(entry.Answer)
@@ -595,6 +623,7 @@ func categoryName(c string) string {
 		"D1": "bench_status_fail",
 		"D2": "bench_missing_entry",
 		"X1": "cross_lang_answer_disagreement",
+		"C1": "cache_pattern (warm << cold; solve() caches)",
 	}[c]
 }
 
