@@ -510,3 +510,204 @@ For AOT-compiled languages (C, C++, Rust, Go), cold and warm times are essential
 The two-model strategy (Opus designs algorithms in C, Sonnet ports to other languages) ensures algorithmic consistency. The performance differences in the benchmark are genuine language-level differences, not algorithm-selection artifacts.
 
 This validates the benchmark's core claim: when the algorithm is held constant, language choice produces a 2-6x performance spread, while algorithm choice produces 1000x+ differences (one fix on a single problem yielded a 23,000x speedup across all 10 languages).
+
+## Episode: The Cache-Strip Campaign (24 hours, 2026-05-22 → 2026-05-23)
+
+A campaign meant to fix one chart-honesty issue turned into a much deeper
+discovery about what a benchmark is even trying to measure. We started by
+chasing a numerical anomaly. We ended by reverting 155 commits and writing a
+new principle into the operating rules.
+
+### The anomaly
+
+On 2026-05-22 evening, the headline Foundation-tier chart was ranking **C# at
+#1 over C++, ARM64, and Zig** — natively compiled languages losing to a JIT'd
+.NET runtime on integer-heavy algorithms. That's possible but suspicious. A
+per-problem audit showed many entries with `time_ns: 41` (or `0`) but
+`cold_start_ns: 59,000,000` (or higher) — *a 1.4-million-to-one ratio* between
+warm and cold. Something other than the algorithm was being measured warm.
+
+The pattern, found across the suite:
+
+```cpp
+static bool initialized = false;
+static long long answer_cache = 0;
+
+long long solve() {
+    if (initialized) return answer_cache;
+    initialized = true;
+    /* ... real algorithm ... */
+    answer_cache = result;
+    return answer_cache;
+}
+```
+
+A warm-iteration bench harness calls `solve()` hundreds of times in succession.
+With the static cache, every call after the first returns in ~40 nanoseconds —
+the cost of a flag check and a register load, not the cost of the algorithm.
+The bench's "Total Time" column had been mostly noise for cached problems.
+
+### The classifier (Stage 0)
+
+We built a Python script (`scripts/cache_classify.py`) that walked the bench
+data for all 10 languages, flagged any problem with the
+`cold > 1ms ∧ time < 100µs ∧ ratio > 100` signature, then read each source file
+to discriminate the *kind* of cache pattern present:
+
+| Pattern | Count | Meaning |
+|---|---:|---|
+| **A** — static answer cache | 154 | Strip target: real bench cheating |
+| **B** — Zig comptime fold | 6 | Leave: algorithm IS the fold, honest |
+| **D** — input data cache (array-typed) | 13 | Leave: warm measures algorithm, not I/O |
+| **E** — genuine fast algorithm (false positive of detector) | 56 | Leave: no cache exists, just legitimately fast |
+
+The discriminator that made D work cleanly was the cache variable's *type*: a
+scalar return value (`long long`, `i64`, etc.) meant Pattern A; an array type
+(`String[]`, `int[][]`) meant Pattern D — input loaded once, but the algorithm
+re-runs every warm call on the cached input.
+
+### The fan-out (Stage 1)
+
+Ten parallel agents launched as background tasks, one per language, each given
+its filtered Pattern A target list (43 for C++, 23 for Python, 17 for ARM64,
+down to 6 for Rust). Each agent had explicit per-language strip patterns and
+strict "edit only — no build, no bench, no commit" rules. All ten returned
+within 30 minutes. **155 source files modified across 10 repos**, working trees
+clean apart from the intended strips.
+
+Three worked examples to verify the strip's actual impact on `time_ns`:
+
+| Language | Problem | Warm before | Warm after | Change |
+|---|---|---|---|---|
+| C++ | 161 (Triominoes) | 41 ns | 29,177,167 ns (29 ms) | **712,000×** |
+| Python | 161 | 83 ns | 2,082,187,792 ns (2.08 s) | **25,000,000×** |
+| Zig | 161 | 0 ns | 26,658,167 ns (27 ms) | (literally ∞×) |
+
+Same algorithm, same answer, same scale — and now Python is **71× slower than
+C++** on the same problem. That spread is the actual compile-vs-interpret tax
+the cache had been concealing.
+
+### The reckoning (Stage 2)
+
+Sequential per-language re-bench and commit. Smallest-batch-first to surface
+harness issues early. Eight languages landed cleanly. Then the pattern broke
+down.
+
+**Discovery 1 — `p170` fails bench across 6 languages.** Pandigital
+concatenation search takes 34–62 seconds *cold* in every compiled language.
+With the cache, that cost happened once and warm iters returned in nanoseconds.
+Without the cache, the bench harness can't fit a single warm iteration within
+its 120-second per-problem timeout. p170 newly fails in Rust, C#, Go, Java,
+Zig, C, ARM64 — *because the cache had been hiding a genuinely slow algorithm
+that fits the timeout only once*. The "passing" status was the cache; the
+algorithm was always borderline.
+
+**Discovery 2 — ARM64 `p087` and `p136` return 0 after strip.** The bench
+script's Gate 1 caught it: answers were wrong. Investigation showed the
+algorithms used static BSS arrays as "have I marked / counted this n" trackers
+*and* as the per-call accumulators. The cache hid the bug because only the
+first call ran the algorithm; subsequent calls returned the cached correct
+answer. Without the cache, the second call saw arrays still full of 1s from the
+first, the "already seen" check short-circuited every increment, and the count
+stayed at 0. Same root cause in `p179` (divcount sieve uses `++`, accumulates
+without re-zero). Three real algorithm bugs the cache had been silently
+masking. Fixed by adding `bl _memset` of the affected BSS arrays at the top of
+`_solve`.
+
+**Discovery 3 — Python's `p122` algorithm is fundamentally intractable
+per-call.** A standalone test of each stripped Python problem with a 15-second
+timeout revealed that **15 of 23** never produced a single line of output
+within 15 seconds. The "cache" we'd stripped wasn't just hiding the warm
+benchmark number — it was the only thing making problems like `p122`
+(addition-chains brute DFS), `p155` (capacitor combinations), `p365`
+(Lucas-CRT multinomial coefficients) viable in Python at all. With the cache,
+each problem ran *once* per process and the answer was returned forever.
+Without it, every warm call ran the full algorithm — and in Python that's
+seconds-to-minutes per call. The compile-vs-interpret tax in its most extreme
+form: not "Python is slower per call," but "Python cannot run this algorithm
+per-call within any reasonable budget."
+
+**Discovery 4 — The 631-minute stall.** The Python `git commit` triggered the
+post-commit hook, which re-runs `benchmark.sh` for all 23 problems with a
+600-second per-problem timeout. Worst case: 23 × 600 s = 230 minutes. Run
+overnight, the operator wakes up to find the task showing **631 minutes
+elapsed and counting**, with the output file containing exactly 121 bytes —
+only the wrapper's first echo. Investigation revealed the bash wrapper had
+piped `benchmark.sh ... | tail -35`. With pipe-to-`tail`, **nothing flushes
+until the producer closes stdout**. The producer was hung (Python's slow
+algorithms each consuming their 600-second timeout); `tail` waited
+indefinitely; the entire pipeline blocked invisibly. Direct cause: a shell
+anti-pattern in the wrapper. Indirect cause: the campaign's mass-strip
+approach was creating a problem class — pathologically slow Python algorithms
+— that the operating procedure wasn't designed to handle.
+
+### The deeper principle
+
+Through the agents' reports and the discoveries, a clearer framing of the
+real invariant emerged. The user's framing (verbatim):
+
+> "I'm not opposed to caching of state in an algorithm, but if that state
+> leaks into the next iteration of the algorithm I care more and need an
+> explanation."
+
+This is sharper than "strip caches." The real test is **invocation
+isolation**: every call to `solve()` must produce its answer independently of
+previous calls. Internal memoization (DP tables, sub-problem caches) is fine
+*as long as it doesn't survive across calls*. Three failure modes are unified
+under this principle:
+
+| Failure mode | Example | Right response |
+|---|---|---|
+| Intentional answer-leak | `static long long answer_cache;` | Strip — the warm number is a lie |
+| Intentional in-algorithm memo-leak | `_best = None; if _best is not None: return _best` | Move the memo to function-local, OR accept the algorithm is intractable in this language |
+| Unintentional state-leak | ARM64 `_p087_seen[]` not re-zeroed | Fix by resetting state at top of `solve()` — bug was always there, cache was hiding it |
+
+The campaign had treated all three the same way — strip the cache and move on.
+What was really needed was three different responses, and an audit invariant
+that catches all three at commit time without conflating them.
+
+### The reset
+
+We reverted everything. Hard-reset across all 11 repos to pre-campaign commits;
+discarded the 44 uncommitted C++ strips; cleaned `__pycache__`. Pre-revert SHAs
+preserved in `/tmp/pre-revert-shas.txt` for reflog recovery if needed. The
+classifier itself (`scripts/cache_classify.py`) and the classification artifact
+(`scripts/cache_classification.json`) were both reverted as well — they were
+inputs to the failed mechanical approach and would have biased the careful
+restart.
+
+The replacement plan: **scope back to problems 1–10 across all 10 languages =
+100 measurements**, build an invocation-isolation gate that runs in the
+post-commit hook, then carefully audit each of the 100 problems with attention
+to state-leakage as *an algorithm design choice*, not a regex-detected pattern.
+Once 100 problems pass with the gate active and the public reports show only
+that 100, we extend forward in honest increments.
+
+### Operating rules baked from the 24 hours
+
+Three rules entered the working operating procedure as a result of this
+episode:
+
+1. **`cmd | tail -N` is forbidden for any long-running `cmd`.** Pipe-to-tail
+   buffers until EOF; if the producer hangs, the consumer never produces
+   output. Use `cmd > /tmp/log 2>&1 &` then `tail -f`, or use Python with
+   `Popen(stdout=PIPE, bufsize=1)` and per-line reads. (Codified in
+   `~/ccdev/CLAUDE.md` and `feedback_python_over_shell_orchestration.md`.)
+
+2. **One-shot orchestration scripts default to Python, not bash/zsh.** Shell
+   fragility — pipe buffering, zsh `declare -A` portability, zsh
+   word-splitting on `$var` iteration — caused real time loss in this session.
+   Bash is fine for < 5-line one-liners with no loops, no pipes, no JSON. Go
+   remains the default for *durable* tools; Python is the right default for
+   *throwaway* orchestration. (Same files as above.)
+
+3. **Invocation isolation is an algorithm design concern.** A `solve()` whose
+   second call depends on state from the first is broken, even if the user
+   never notices because the cached answer is correct. Algorithms should be
+   written with state-leakage in mind from the start, not patched after a
+   regex-based audit catches them.
+
+The mechanical strip campaign produced 155 commits and discovered ~3
+real algorithm bugs, then was reverted entirely. The principle it surfaced —
+and the operating rules that fell out of the failure mode it produced — were
+worth more than the strips themselves would have been.
