@@ -2,7 +2,7 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go version go1.26.3 darwin/arm64",
-  "timestamp": "2026-05-24T03:48:17Z",
+  "timestamp": "2026-05-24T05:23:40Z",
   "problems": {
     "001": {
       "time_ns": 1458,
@@ -115,14 +115,14 @@
       "source_bytes": 2829
     },
     "012": {
-      "time_ns": 38664416,
-      "time_min_ns": 37663709,
-      "time_max_ns": 40163875,
+      "time_ns": 677000,
+      "time_min_ns": 628250,
+      "time_max_ns": 821292,
       "samples": 10,
-      "subprocess_wall_ns": 45724958,
+      "subprocess_wall_ns": 7188209,
       "status": "pass",
-      "source_lines": 40,
-      "source_bytes": 630
+      "source_lines": 62,
+      "source_bytes": 1010
     },
     "013": {
       "time_ns": 68125,
@@ -135,14 +135,14 @@
       "source_bytes": 6013
     },
     "014": {
-      "time_ns": 165805208,
-      "time_min_ns": 164794958,
-      "time_max_ns": 180533958,
+      "time_ns": 205861666,
+      "time_min_ns": 203339916,
+      "time_max_ns": 211763417,
       "samples": 10,
-      "subprocess_wall_ns": 171633958,
+      "subprocess_wall_ns": 213118750,
       "status": "pass",
-      "source_lines": 38,
-      "source_bytes": 621
+      "source_lines": 42,
+      "source_bytes": 716
     },
     "015": {
       "time_ns": 1542,
@@ -285,14 +285,14 @@
       "source_bytes": 499
     },
     "029": {
-      "time_ns": 7710208,
-      "time_min_ns": 6036417,
-      "time_max_ns": 8628500,
+      "time_ns": 6302959,
+      "time_min_ns": 5670833,
+      "time_max_ns": 8448709,
       "samples": 10,
-      "subprocess_wall_ns": 15473875,
+      "subprocess_wall_ns": 14337667,
       "status": "pass",
-      "source_lines": 36,
-      "source_bytes": 670
+      "source_lines": 26,
+      "source_bytes": 539
     },
     "030": {
       "time_ns": 2151375,
@@ -385,14 +385,14 @@
       "source_bytes": 883
     },
     "039": {
-      "time_ns": 118708,
-      "time_min_ns": 115125,
-      "time_max_ns": 188916,
+      "time_ns": 9709,
+      "time_min_ns": 8583,
+      "time_max_ns": 48625,
       "samples": 10,
-      "subprocess_wall_ns": 7638166,
+      "subprocess_wall_ns": 9470375,
       "status": "pass",
-      "source_lines": 44,
-      "source_bytes": 754
+      "source_lines": 56,
+      "source_bytes": 1105
     },
     "040": {
       "time_ns": 4285958,

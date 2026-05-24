@@ -2,7 +2,7 @@
   "language": "csharp",
   "platform": "arm64",
   "compiler": "10.0.101",
-  "timestamp": "2026-05-24T03:48:18Z",
+  "timestamp": "2026-05-24T05:23:40Z",
   "problems": {
     "001": {
       "time_ns": 54834,
@@ -115,14 +115,14 @@
       "source_bytes": 3801
     },
     "012": {
-      "time_ns": 110224667,
-      "time_min_ns": 110006125,
-      "time_max_ns": 117592166,
+      "time_ns": 3380416,
+      "time_min_ns": 3212250,
+      "time_max_ns": 4403125,
       "samples": 10,
-      "subprocess_wall_ns": 150415959,
+      "subprocess_wall_ns": 42762167,
       "status": "pass",
-      "source_lines": 38,
-      "source_bytes": 756
+      "source_lines": 47,
+      "source_bytes": 1173
     },
     "013": {
       "time_ns": 466125,
@@ -135,14 +135,14 @@
       "source_bytes": 6857
     },
     "014": {
-      "time_ns": 552017792,
-      "time_min_ns": 549003667,
-      "time_max_ns": 554953083,
+      "time_ns": 58523084,
+      "time_min_ns": 57040375,
+      "time_max_ns": 65007167,
       "samples": 10,
-      "subprocess_wall_ns": 591187750,
+      "subprocess_wall_ns": 98799250,
       "status": "pass",
-      "source_lines": 32,
-      "source_bytes": 599
+      "source_lines": 67,
+      "source_bytes": 1798
     },
     "015": {
       "time_ns": 58250,
@@ -285,14 +285,14 @@
       "source_bytes": 2465
     },
     "029": {
-      "time_ns": 23678750,
-      "time_min_ns": 23020250,
-      "time_max_ns": 24243292,
+      "time_ns": 22003041,
+      "time_min_ns": 21363292,
+      "time_max_ns": 27578667,
       "samples": 10,
-      "subprocess_wall_ns": 64912083,
+      "subprocess_wall_ns": 61928750,
       "status": "pass",
       "source_lines": 26,
-      "source_bytes": 588
+      "source_bytes": 584
     },
     "030": {
       "time_ns": 3187500,
@@ -385,11 +385,11 @@
       "source_bytes": 1032
     },
     "039": {
-      "time_ns": 708750,
-      "time_min_ns": 643500,
-      "time_max_ns": 882917,
+      "time_ns": 683250,
+      "time_min_ns": 626875,
+      "time_max_ns": 826500,
       "samples": 10,
-      "subprocess_wall_ns": 41366208,
+      "subprocess_wall_ns": 38373458,
       "status": "pass",
       "source_lines": 40,
       "source_bytes": 886
