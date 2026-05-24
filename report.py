@@ -633,23 +633,46 @@ def render_results_md(agg: dict) -> str:
     md.append(f"language.  No red or black cells: the audit gate is holding.")
     md.append("")
 
-    # Per-problem detail grid (langs as rows, problems as columns, sorted by total)
+    # Per-problem detail — transposed + banded.
+    #
+    # Previously this was a single wide table with one row per language and one
+    # column per problem.  At 100 problems that's already 101 columns, which
+    # forces a horizontal scrollbar in GitHub's markdown viewer; at the project's
+    # 1000-problem target GitHub's GFM table renderer falls over entirely.
+    #
+    # We follow the same fix the coverage heatmap got (commit 03413fb): split
+    # along BAND_SIZE so the on-page width is bounded.  Here we also transpose —
+    # one row per problem, one column per language — for two reasons:
+    #   1. With 10 langs we get a fixed 11-column table regardless of scope, so
+    #      every band renders cleanly no matter how far we extend.
+    #   2. The natural lookup ("which lang is fastest on p347?") is a row scan,
+    #      which reads more naturally than scanning across a 100-cell-wide row.
+    #
+    # Column order is LANG_DISPLAY_ORDER (native → managed → interpreted), not
+    # ranked order, for the same reason the heatmap fixed its row order: we
+    # don't want the column layout to shuffle between snapshots as totals drift.
     md.append("## Per-Problem Detail")
     md.append("")
-    md.append("Median wall time per fresh-process invocation, for each (language, problem).  Rows")
-    md.append("are sorted by total (fastest language at top).")
+    md.append("Median wall time per fresh-process invocation, for each (language, problem).")
+    md.append(f"Problems are chunked into bands of {BAND_SIZE} (matching the heatmap above) so")
+    md.append("each table stays narrow enough for GitHub's markdown renderer.  Columns are in")
+    md.append("fixed tier order (native → managed → interpreted).")
     md.append("")
-    header = "| Language | " + " | ".join(f"p{p}" for p in SCOPE_PROBLEMS) + " |"
-    sep    = "|----------|" + "|".join(["----:"] * len(SCOPE_PROBLEMS)) + "|"
-    md.append(header)
-    md.append(sep)
-    for lang, _ in ranked:
-        cells = []
-        for p in SCOPE_PROBLEMS:
-            ns = agg[lang]["per_problem_ns"][p]
-            cells.append(fmt_time(ns) if ns is not None else "—")
-        md.append(f"| **{DISPLAY[lang]}** | " + " | ".join(cells) + " |")
-    md.append("")
+    display_langs = LANG_DISPLAY_ORDER
+    header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
+    sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
+    for band_probs in _bands(SCOPE_PROBLEMS, BAND_SIZE):
+        md.append(f"### Problems {band_probs[0]}–{band_probs[-1]}")
+        md.append("")
+        md.append(header)
+        md.append(sep)
+        for p in band_probs:
+            cells = []
+            for lang in display_langs:
+                ns = agg[lang]["per_problem_ns"][p]
+                cells.append(fmt_time(ns) if ns is not None else "—")
+            md.append(f"| **p{p}** | " + " | ".join(cells) + " |")
+        md.append("")
 
     md.append("## Method")
     md.append("")
