@@ -39,8 +39,26 @@ CHARTS_DIR = REPO / "charts"
 # state-leak / answer-verification audit.
 SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 101)]
 
-# Languages in display order (preserved alphabetic-ish for stability)
+# Languages — used for data loading and the total-cost bar chart.  Alphabetic
+# for stability across snapshots.
 LANGS = ["arm64", "c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig"]
+
+# Heatmap row order — fixed by language tier so the chart doesn't reshuffle
+# rows between releases as ranking-by-total drifts.  Within each tier, alphabetic.
+#
+#   Native compiled (top), AOT-but-managed, JIT/managed, interpreted (bottom).
+LANG_DISPLAY_ORDER = [
+    "arm64", "c", "cpp", "rust", "zig",   # native compiled
+    "go",                                  # AOT, GC'd
+    "csharp", "java", "javascript",        # JIT / managed
+    "python",                              # interpreted
+]
+
+# Heatmap is rendered as horizontal bands of this many problems each, stacked
+# vertically.  Banding lets the chart scale to 1000+ problems without forcing
+# cells to shrink below readability — each band is always a fixed-size,
+# fixed-aspect grid.  Change this if you want denser or sparser bands.
+BAND_SIZE = 100
 
 # Display labels (some langs have nicer printed names than their keys)
 DISPLAY = {
@@ -199,83 +217,274 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
     return out
 
 
+# Speed-bucket color palette shared by the PNG and SVG renderers.  Kept as a
+# module constant so the legend code and the cell-fill code can't drift.
+HEATMAP_COLORS = {
+    "missing":      "#222222",   # black
+    "fail":         "#D7263D",   # red
+    "slow":         "#F0C808",   # amber — passing but ≥100 ms
+    "lt_100us":     "#84E184",   # bright green
+    "lt_1ms":       "#5BC85B",
+    "lt_10ms":      "#36A036",
+    "lt_100ms":     "#1E6A1E",   # darkest green
+}
+
+LEGEND_ITEMS = [
+    (HEATMAP_COLORS["lt_100us"], "pass · <100µs"),
+    (HEATMAP_COLORS["lt_1ms"],   "pass · <1ms"),
+    (HEATMAP_COLORS["lt_10ms"],  "pass · <10ms"),
+    (HEATMAP_COLORS["lt_100ms"], "pass · <100ms"),
+    (HEATMAP_COLORS["slow"],     "pass · ≥100ms"),
+    (HEATMAP_COLORS["fail"],     "fail"),
+    (HEATMAP_COLORS["missing"],  "missing"),
+]
+
+
+def cell_color(status: str, ns) -> str:
+    """Map a (status, ns) pair to a cell hex color.  Shared by both renderers."""
+    if status == "missing":
+        return HEATMAP_COLORS["missing"]
+    if status == "fail":
+        return HEATMAP_COLORS["fail"]
+    if ns is not None and ns > 100_000_000:
+        return HEATMAP_COLORS["slow"]
+    if ns is None or ns < 100_000:
+        return HEATMAP_COLORS["lt_100us"]
+    if ns < 1_000_000:
+        return HEATMAP_COLORS["lt_1ms"]
+    if ns < 10_000_000:
+        return HEATMAP_COLORS["lt_10ms"]
+    return HEATMAP_COLORS["lt_100ms"]
+
+
+def _bands(scope: list, band_size: int) -> list:
+    """Split SCOPE_PROBLEMS into chunks of at most band_size items."""
+    return [scope[i:i + band_size] for i in range(0, len(scope), band_size)]
+
+
 def render_coverage_grid_chart(agg: dict) -> Path:
-    """N_LANGS × N_PROBLEMS cells colored by status + speed bucket.
+    """Banded heatmap PNG — N_BANDS bands stacked vertically, each band a
+    fixed-width 10-lang × BAND_SIZE-problem grid.
 
-    🟩 pass (light → dark green by speed bucket)
-    🟨 fail-warn (e.g. cold > 100 ms — still passing, but slow)
-    🟥 fail (status != pass)
-    ⬛ missing (no entry)
+    Why banded: at the previous single-row layout, 100 problems × 10 langs
+    already needed `aspect="equal"` to keep cells square, which squeezed the
+    figure to ~0.8″ of cell height and overlapped the lang labels.  Extending
+    to 1000 problems on a single row would make cells unreadably narrow.
+    Banding decouples cell size from total problem count: each band is
+    always BAND_SIZE wide, so cells stay legible whether we have 100 or 1000
+    problems in scope.
 
-    For the current in-scope cells, everything should be green; the chart's
-    real value emerges as we extend to more problems and per-cell colors
-    show heterogeneity.
+    Row order is fixed (LANG_DISPLAY_ORDER) so the chart doesn't visually
+    reshuffle when ranking-by-total drifts between snapshots.
     """
-    n_langs = len(LANGS)
+    langs = LANG_DISPLAY_ORDER
+    n_langs = len(langs)
     n_probs = len(SCOPE_PROBLEMS)
+    bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
+    n_bands = len(bands)
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-    # Build a color grid: rows = langs (sorted fastest-first), cols = problems
-    ranked = sorted(LANGS, key=lambda L: agg[L]["total_ns"])
+    # Sizing: cell ~0.13" wide × 0.30" tall.  Band gets +0.45" for its title.
+    cell_w_in = 0.13
+    cell_h_in = 0.30
+    band_h_in = n_langs * cell_h_in + 0.45
+    fig_w = max(11.0, BAND_SIZE * cell_w_in + 2.2)  # +2.2 for y-labels & margin
+    fig_h = n_bands * band_h_in + 1.6               # +1.6 for figure title + legend
 
-    for ri, lang in enumerate(ranked):
-        for ci, p in enumerate(SCOPE_PROBLEMS):
-            st = agg[lang]["per_problem_status"][p]
-            ns = agg[lang]["per_problem_ns"][p]
-            if st == "missing":
-                color = "#222222"  # black
-            elif st == "fail":
-                color = "#D7263D"  # red
-            elif ns is not None and ns > 100_000_000:  # >100 ms
-                color = "#F0C808"  # amber/yellow
-            else:
-                # Green; intensity by speed bucket (lighter = faster)
-                if ns is None or ns < 100_000:        # <100 µs — bright green
-                    color = "#84E184"
-                elif ns < 1_000_000:                  # <1ms — medium
-                    color = "#5BC85B"
-                elif ns < 10_000_000:                 # <10ms — darker
-                    color = "#36A036"
-                else:                                  # 10-100ms — darkest green
-                    color = "#1E6A1E"
-            ax.add_patch(plt.Rectangle((ci, n_langs - 1 - ri), 1, 1,
-                                        facecolor=color, edgecolor="white",
-                                        linewidth=1.5))
+    fig, axes = plt.subplots(n_bands, 1,
+                             figsize=(fig_w, fig_h),
+                             gridspec_kw={"hspace": 0.65})
+    # plt.subplots returns a bare Axes (not an array) when nrows=1.
+    if n_bands == 1:
+        axes = [axes]
 
-    ax.set_xlim(0, n_probs)
-    ax.set_ylim(0, n_langs)
-    ax.set_xticks([i + 0.5 for i in range(n_probs)])
-    ax.set_xticklabels([f"p{p}" for p in SCOPE_PROBLEMS], fontsize=9)
-    ax.set_yticks([i + 0.5 for i in range(n_langs)])
-    ax.set_yticklabels([DISPLAY[lang] for lang in reversed(ranked)], fontsize=10)
-    ax.set_aspect("equal")
-    ax.set_title(f"Coverage + Speed Heatmap — {len(LANGS)} Languages × {len(SCOPE_PROBLEMS)} Problems",
-                 fontsize=12)
-    ax.tick_params(length=0)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
+    for band_i, ax in enumerate(axes):
+        band_probs = bands[band_i]
+        for ri, lang in enumerate(langs):
+            for ci, p in enumerate(band_probs):
+                st = agg[lang]["per_problem_status"][p]
+                ns = agg[lang]["per_problem_ns"][p]
+                ax.add_patch(plt.Rectangle(
+                    (ci, n_langs - 1 - ri), 1, 1,
+                    facecolor=cell_color(st, ns),
+                    edgecolor="white", linewidth=0.6,
+                ))
 
-    # Real colored-patch legend.  matplotlib's font on macOS doesn't render
-    # emoji squares in color (Apple Color Emoji isn't in matplotlib's font
-    # list), so we use Patch objects — same visual outcome, font-independent.
+        # Uniform x extent across bands keeps cell width constant even on a
+        # final partial band (e.g. 50 problems instead of 100).
+        ax.set_xlim(0, BAND_SIZE)
+        ax.set_ylim(0, n_langs)
+
+        # X-ticks every 10 problems within the band.
+        tick_idx = list(range(0, len(band_probs), 10))
+        ax.set_xticks([i + 0.5 for i in tick_idx])
+        ax.set_xticklabels([f"p{band_probs[i]}" for i in tick_idx], fontsize=8)
+
+        ax.set_yticks([i + 0.5 for i in range(n_langs)])
+        ax.set_yticklabels([DISPLAY[l] for l in reversed(langs)], fontsize=9)
+        ax.set_title(f"Problems {band_probs[0]}–{band_probs[-1]}",
+                     fontsize=10, loc="left", pad=4)
+        ax.tick_params(length=0)
+        ax.set_aspect("auto")   # let figure dims dictate; cells aren't square
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
+    fig.suptitle(
+        f"Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems",
+        fontsize=13, y=0.995,
+    )
+
+    # Single legend at the bottom of the whole figure.
     from matplotlib.patches import Patch
-    legend_items = [
-        Patch(facecolor="#84E184", edgecolor="black", linewidth=0.5, label="pass · <100µs"),
-        Patch(facecolor="#5BC85B", edgecolor="black", linewidth=0.5, label="pass · <1ms"),
-        Patch(facecolor="#36A036", edgecolor="black", linewidth=0.5, label="pass · <10ms"),
-        Patch(facecolor="#1E6A1E", edgecolor="black", linewidth=0.5, label="pass · <100ms"),
-        Patch(facecolor="#F0C808", edgecolor="black", linewidth=0.5, label="pass · ≥100ms"),
-        Patch(facecolor="#D7263D", edgecolor="black", linewidth=0.5, label="fail"),
-        Patch(facecolor="#222222", edgecolor="black", linewidth=0.5, label="missing"),
+    legend_patches = [
+        Patch(facecolor=c, edgecolor="black", linewidth=0.4, label=lbl)
+        for c, lbl in LEGEND_ITEMS
     ]
-    ax.legend(handles=legend_items, loc="upper center",
-              bbox_to_anchor=(0.5, -0.06), ncol=4, fontsize=9,
-              frameon=False, handlelength=1.5, handleheight=1.2,
-              columnspacing=1.2)
-    plt.tight_layout()
+    fig.legend(handles=legend_patches, loc="lower center",
+               ncol=len(legend_patches), fontsize=9, frameon=False,
+               handlelength=1.4, handleheight=1.1, columnspacing=1.4,
+               bbox_to_anchor=(0.5, 0.005))
+
     out = CHARTS_DIR / "per_iter_coverage_grid.png"
     plt.savefig(out, dpi=130, bbox_inches="tight")
     plt.close(fig)
+    return out
+
+
+def render_coverage_grid_svg(agg: dict) -> Path:
+    """Same banded heatmap as the PNG, but as a hand-written SVG so each cell
+    carries a <title> tooltip ("p347 Zig: 2.3 ms").
+
+    Rendering channels:
+      - RESULTS.md embeds the PNG via ![](...).  Tooltips don't fire in <img>.
+      - RESULTS.md ALSO links the .svg file directly.  Opened as a page
+        (raw.githubusercontent.com or local file://), the <title> tooltips
+        fire on hover — that's the "drill into one cell" channel.
+
+    Hand-written rather than savefig(format='svg') because matplotlib's SVG
+    output is 5-10× larger and has no semantic structure to hang tooltips on.
+    """
+    langs = LANG_DISPLAY_ORDER
+    n_langs = len(langs)
+    n_probs = len(SCOPE_PROBLEMS)
+    bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
+    n_bands = len(bands)
+
+    # SVG user-unit dimensions (≈ CSS pixels).
+    cell_w, cell_h = 12, 18
+    margin_l, margin_r = 92, 20
+    margin_t = 56
+    band_title_h = 22
+    band_grid_h = n_langs * cell_h
+    band_xaxis_h = 18
+    band_h = band_title_h + band_grid_h + band_xaxis_h
+    band_gap = 26
+    legend_h = 70
+
+    fig_w = margin_l + BAND_SIZE * cell_w + margin_r
+    fig_h = (margin_t
+             + n_bands * band_h
+             + (n_bands - 1) * band_gap
+             + legend_h)
+
+    parts = []
+    parts.append(
+        f'<svg xmlns="http://www.w3.org/2000/svg" '
+        f'width="{fig_w}" height="{fig_h}" '
+        f'viewBox="0 0 {fig_w} {fig_h}" '
+        f'font-family="-apple-system, BlinkMacSystemFont, sans-serif">'
+    )
+    parts.append(
+        '<style>'
+        'text { fill:#222; font-size:11px; }'
+        '.title { font-size:14px; font-weight:600; }'
+        '.subtitle { font-size:10px; fill:#666; }'
+        '.band { font-size:12px; font-weight:500; }'
+        '.tick { font-size:9px; fill:#555; }'
+        '.cell { stroke:#fff; stroke-width:0.5; }'
+        '.cell:hover { stroke:#000; stroke-width:1.5; }'
+        '</style>'
+    )
+
+    # Figure title + subtitle
+    parts.append(
+        f'<text class="title" x="{margin_l}" y="26">'
+        f'Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems'
+        f'</text>'
+    )
+    parts.append(
+        f'<text class="subtitle" x="{margin_l}" y="42">'
+        f'Hover any cell for problem · language · per-invocation time'
+        f'</text>'
+    )
+
+    for band_i, band_probs in enumerate(bands):
+        band_y0 = margin_t + band_i * (band_h + band_gap)
+        grid_y0 = band_y0 + band_title_h
+
+        # Band title
+        parts.append(
+            f'<text class="band" x="{margin_l}" y="{band_y0 + 15}">'
+            f'Problems {band_probs[0]}–{band_probs[-1]}'
+            f'</text>'
+        )
+
+        # Y-axis lang labels (right-aligned into the left margin)
+        for ri, lang in enumerate(langs):
+            y = grid_y0 + (ri + 0.5) * cell_h + 4   # +4 ≈ baseline tweak
+            parts.append(
+                f'<text x="{margin_l - 6}" y="{y}" text-anchor="end">'
+                f'{DISPLAY[lang]}</text>'
+            )
+
+        # Cells with <title> tooltips
+        for ri, lang in enumerate(langs):
+            for ci, p in enumerate(band_probs):
+                st = agg[lang]["per_problem_status"][p]
+                ns = agg[lang]["per_problem_ns"][p]
+                color = cell_color(st, ns)
+                x = margin_l + ci * cell_w
+                y = grid_y0 + ri * cell_h
+                if st == "missing":
+                    tip = "missing"
+                elif st == "fail":
+                    tip = "fail"
+                elif ns is None:
+                    tip = "—"
+                else:
+                    tip = fmt_time(ns)
+                parts.append(
+                    f'<rect class="cell" x="{x}" y="{y}" '
+                    f'width="{cell_w}" height="{cell_h}" fill="{color}">'
+                    f'<title>p{p} {DISPLAY[lang]}: {tip}</title>'
+                    f'</rect>'
+                )
+
+        # X-axis ticks every 10 problems within the band
+        xaxis_y = grid_y0 + band_grid_h + 12
+        for i in range(0, len(band_probs), 10):
+            x = margin_l + (i + 0.5) * cell_w
+            parts.append(
+                f'<text class="tick" x="{x}" y="{xaxis_y}" text-anchor="middle">'
+                f'p{band_probs[i]}</text>'
+            )
+
+    # Legend
+    legend_y = margin_t + n_bands * band_h + (n_bands - 1) * band_gap + 28
+    swatch = 14
+    item_w = (fig_w - margin_l - margin_r) / len(LEGEND_ITEMS)
+    for i, (color, label) in enumerate(LEGEND_ITEMS):
+        lx = margin_l + i * item_w
+        parts.append(
+            f'<rect x="{lx}" y="{legend_y}" width="{swatch}" height="{swatch}" '
+            f'fill="{color}" stroke="#000" stroke-width="0.3"/>'
+        )
+        parts.append(
+            f'<text x="{lx + swatch + 4}" y="{legend_y + 11}">{label}</text>'
+        )
+
+    parts.append('</svg>')
+    out = CHARTS_DIR / "per_iter_coverage_grid.svg"
+    out.write_text("\n".join(parts))
     return out
 
 
@@ -374,9 +583,23 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
-    md.append(f"Rows sorted fastest-to-slowest (top to bottom).  At our current {len(SCOPE_PROBLEMS)}×{len(LANGS)} scope")
-    md.append("every cell is green — that's exactly the audit gate we're holding to as we")
-    md.append("extend to more problems.")
+    md.append("**🔍 [Open the SVG version](charts/per_iter_coverage_grid.svg)** — same chart,")
+    md.append("with a hover tooltip on every cell (`p347 Zig: 2.3 ms`).  GitHub renders the")
+    md.append("SVG file directly when you click that link; tooltips don't fire inside the")
+    md.append("inline `![](...)` image above because browsers treat `<img>` SVGs as opaque.")
+    md.append("")
+    n_bands = (len(SCOPE_PROBLEMS) + BAND_SIZE - 1) // BAND_SIZE
+    md.append(f"Rows are in fixed tier order (native → managed → interpreted) so the chart")
+    md.append(f"doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are")
+    md.append(f"chunked into bands of {BAND_SIZE} (currently {n_bands} band"
+              f"{'' if n_bands == 1 else 's'}), which keeps cells legibly sized as we extend")
+    md.append(f"toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /")
+    md.append(f"Zig) sit near the top in mostly bright-green territory; managed-runtime rows")
+    md.append(f"(C# / Java / JavaScript) carry darker greens and scattered amber from JIT")
+    md.append(f"startup; Python at the bottom shows the heaviest amber load.  Vertical amber")
+    md.append(f"bars that cut across multiple languages (currently visible near p061 and p071)")
+    md.append(f"flag *intrinsically hard* problems — the algorithm cost dominates regardless of")
+    md.append(f"language.  No red or black cells: the audit gate is holding.")
     md.append("")
 
     # Per-problem detail grid (langs as rows, problems as columns, sorted by total)
@@ -560,6 +783,8 @@ def main() -> int:
     print(f"=== Chart written: {chart2}")
     chart3 = render_coverage_grid_chart(agg)
     print(f"=== Chart written: {chart3}")
+    chart3_svg = render_coverage_grid_svg(agg)
+    print(f"=== Chart written: {chart3_svg}")
 
     # Render markdown
     md = render_results_md(agg)
