@@ -56,7 +56,7 @@
 <rect class="cell" x="572" y="78" width="12" height="18" fill="#36A036"><title>p041 ARM64: 8.49 ms</title></rect>
 <rect class="cell" x="584" y="78" width="12" height="18" fill="#84E184"><title>p042 ARM64: 27.0 µs</title></rect>
 <rect class="cell" x="596" y="78" width="12" height="18" fill="#1E6A1E"><title>p043 ARM64: 15.84 ms</title></rect>
-<rect class="cell" x="608" y="78" width="12" height="18" fill="#1E6A1E"><title>p044 ARM64: 84.68 ms</title></rect>
+<rect class="cell" x="608" y="78" width="12" height="18" fill="#36A036"><title>p044 ARM64: 2.97 ms</title></rect>
 <rect class="cell" x="620" y="78" width="12" height="18" fill="#84E184"><title>p045 ARM64: 77.0 µs</title></rect>
 <rect class="cell" x="632" y="78" width="12" height="18" fill="#36A036"><title>p046 ARM64: 4.84 ms</title></rect>
 <rect class="cell" x="644" y="78" width="12" height="18" fill="#36A036"><title>p047 ARM64: 7.82 ms</title></rect>
