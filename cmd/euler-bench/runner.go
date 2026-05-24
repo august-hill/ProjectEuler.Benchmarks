@@ -30,54 +30,40 @@ type ProblemResult struct {
 	// and string answers like fractions ("199740353/29386561536000") or
 	// formatted decimals ("0.7311720251") for problems where the canonical
 	// answer isn't a plain integer.
-	Answer            interface{} `json:"answer,omitempty"`
-	TimeNs            int64       `json:"time_ns"`
-	ColdStartNs       int64       `json:"cold_start_ns"`
-	SubprocessWallNs  int64       `json:"subprocess_wall_ns,omitempty"`
-	Iterations        int         `json:"iterations,omitempty"`
-	Status            string      `json:"status"`
-	Error             string      `json:"error,omitempty"`
-	PeakRSS           int64       `json:"peak_rss_bytes,omitempty"`
-	CompileTimeNs     int64       `json:"compile_time_ns"`
-	SourceLines       int         `json:"source_lines,omitempty"`
-	SourceBytes       int         `json:"source_bytes,omitempty"`
+	Answer           interface{} `json:"answer,omitempty"`
+	TimeNs           int64       `json:"time_ns"` // the one timing per process (from RESULT line)
+	SubprocessWallNs int64       `json:"subprocess_wall_ns,omitempty"`
+	Status           string      `json:"status"`
+	Error            string      `json:"error,omitempty"`
+	PeakRSS          int64       `json:"peak_rss_bytes,omitempty"`
+	CompileTimeNs    int64       `json:"compile_time_ns"`
+	SourceLines      int         `json:"source_lines,omitempty"`
+	SourceBytes      int         `json:"source_bytes,omitempty"`
 }
 
-var benchRe = regexp.MustCompile(`^BENCHMARK\|problem=(\d+)\|answer=([^|]+)\|time_ns=(\d+)\|iterations=(\d+)`)
-var coldRe = regexp.MustCompile(`^COLDSTART\|time_ns=(\d+)`)
+// RESULT line: time_ns and answer both required.  Single canonical sentinel
+// across all 10 languages — see JOURNEY.md "Single-Call Harness" chapter.
+var resultLineRe = regexp.MustCompile(`^RESULT\|time_ns=(\d+)\|answer=(.+)$`)
 
 type benchLine struct {
-	Problem     string
-	Answer      string
-	TimeNs      int64
-	ColdStartNs int64
-	Iterations  int
+	Problem string
+	Answer  string
+	TimeNs  int64
 }
 
 func parseBenchmarkLine(stdout []byte) *benchLine {
-	var result *benchLine
 	scanner := bufio.NewScanner(bytes.NewReader(stdout))
 	for scanner.Scan() {
 		line := scanner.Text()
-		if m := benchRe.FindStringSubmatch(line); m != nil {
-			timeNs, _ := strconv.ParseInt(m[3], 10, 64)
-			iters, _ := strconv.Atoi(m[4])
-			if result == nil {
-				result = &benchLine{}
+		if m := resultLineRe.FindStringSubmatch(line); m != nil {
+			timeNs, _ := strconv.ParseInt(m[1], 10, 64)
+			return &benchLine{
+				Answer: strings.TrimSpace(m[2]),
+				TimeNs: timeNs,
 			}
-			result.Problem = m[1]
-			result.Answer = m[2]
-			result.TimeNs = timeNs
-			result.Iterations = iters
-		} else if m := coldRe.FindStringSubmatch(line); m != nil {
-			coldNs, _ := strconv.ParseInt(m[1], 10, 64)
-			if result == nil {
-				result = &benchLine{}
-			}
-			result.ColdStartNs = coldNs
 		}
 	}
-	return result
+	return nil
 }
 
 func parseRSS(stderr []byte) int64 {
@@ -278,9 +264,7 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	return ProblemResult{
 		Answer:           answer,
 		TimeNs:           bl.TimeNs,
-		ColdStartNs:      bl.ColdStartNs,
 		SubprocessWallNs: subprocessWallNs,
-		Iterations:       bl.Iterations,
 		Status:           "pass",
 		PeakRSS:          rss,
 		CompileTimeNs:    compileTimeNs,

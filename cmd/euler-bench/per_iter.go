@@ -7,24 +7,15 @@
 //	for i in $(seq 1 N); do time ./main_bench; done
 //
 // Each invocation is independent: OS-enforced process boundaries clear all
-// in-process state.  No language-internal caches (primesieve, Rust
-// OnceLock, Python @lru_cache) carry over.  No harness warmup amortizes
-// startup.  This is the honest cross-language metric for the "CLI utility"
-// or "REST endpoint without warm cache" use case.
-//
-// Compared against the existing in-process warm metric (the BENCHMARK
-// line's time_ns), which represents steady-state cost within one
-// long-running process — relevant for daemon/server scenarios but
-// systematically under-reports per-invocation cost when language idioms
-// (lazy statics, lib-internal caches) are at play.
+// in-process state.  Each binary internally times its single solve() call
+// using the language's native clock and prints `RESULT|time_ns=N|answer=A`.
 //
 // Per (lang, problem):
 //  1. Build the binary using existing Lang.BuildArgs adapters.
 //  2. Run N times.  For each invocation:
-//     - measure wall via Go's monotonic clock (time.Now → time.Since),
-//     - parse COLDSTART line from stdout (binary's self-reported first-call cost),
-//     - parse BENCHMARK line (binary's self-reported steady-state warm cost).
-//  3. Aggregate cold + wall: median, min, max across the N samples.
+//     - parse RESULT|time_ns=N|answer=A from stdout (internal timing),
+//     - record wall via Go's monotonic clock as a sanity check.
+//  3. Aggregate time_ns: median, min, max across the N samples.
 //  4. Report.
 //
 // Usage:
@@ -48,39 +39,24 @@ import (
 	"time"
 )
 
-// COLDSTART line: time_ns required; answer optional (only langs whose
-// harness is patched to emit it will have it).
-var coldStartRe = regexp.MustCompile(`(?m)^COLDSTART\|time_ns=(\d+)(\|answer=(.+))?$`)
-
-// BENCHMARK line: existing format, answer and time_ns both required.
-var benchmarkRe = regexp.MustCompile(`(?m)^BENCHMARK\|problem=\d+\|answer=([^|]+)\|time_ns=(\d+)`)
+// RESULT line: time_ns and answer both required.  Single canonical sentinel
+// across all 10 languages — see JOURNEY.md "Single-Call Harness" chapter.
+var resultRe = regexp.MustCompile(`(?m)^RESULT\|time_ns=(\d+)\|answer=(.+)$`)
 
 type perIterResult struct {
 	Lang          string
 	Problem       string
 	Answer        string
-	InProcWarmNs  int64
-	ColdSamplesNs []int64
-	WallSamplesNs []int64
+	TimeSamplesNs []int64 // internal time_ns from RESULT line
+	WallSamplesNs []int64 // Go-perceived wall (process spawn → exit), sanity-check secondary
 	BuildErr      string
 	RunErr        string
 }
 
-func (r *perIterResult) coldMedianNs() int64 { return medianI64(r.ColdSamplesNs) }
-func (r *perIterResult) coldMinNs() int64    { return minI64(r.ColdSamplesNs) }
-func (r *perIterResult) coldMaxNs() int64    { return maxI64(r.ColdSamplesNs) }
+func (r *perIterResult) timeMedianNs() int64 { return medianI64(r.TimeSamplesNs) }
+func (r *perIterResult) timeMinNs() int64    { return minI64(r.TimeSamplesNs) }
+func (r *perIterResult) timeMaxNs() int64    { return maxI64(r.TimeSamplesNs) }
 func (r *perIterResult) wallMedianNs() int64 { return medianI64(r.WallSamplesNs) }
-
-// divergence: cold-median / in-process-warm.  >1 means the warm metric
-// under-reports per-invocation cost.  Used to surface language-internal
-// caches that survive across in-process warm iterations but not across
-// processes.
-func (r *perIterResult) divergence() float64 {
-	if r.InProcWarmNs <= 0 {
-		return 0
-	}
-	return float64(r.coldMedianNs()) / float64(r.InProcWarmNs)
-}
 
 func medianI64(s []int64) int64 {
 	if len(s) == 0 {
@@ -154,7 +130,6 @@ func parseProblemSpec(spec string) []string {
 }
 
 // runPerIterOne builds (lang, problem) and runs the binary `iters` times.
-// Returns aggregate timing data and any error encountered.
 func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResult {
 	r := &perIterResult{Lang: lang.Key, Problem: problem}
 
@@ -172,7 +147,6 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		// Python — flat structure, work from repoDir
 		probDir = filepath.Join(repoDir, "problem_"+problem)
 		workDir = repoDir
-		// For Python the "src file" is at repoDir/problem_NNN.py
 		srcFile := filepath.Join(repoDir, "problem_"+problem+".py")
 		if _, err := os.Stat(srcFile); err != nil {
 			r.BuildErr = "no problem_NNN.py"
@@ -188,11 +162,7 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		}
 	}
 
-	// Build.  Three pathways depending on lang's adapter:
-	//   - BatchBuild (C# only): one `dotnet build` per problem; called here
-	//     for the single problem at hand
-	//   - SequentialBuild + BuildArgs (ARM64): run each arg-set in order
-	//   - BuildArgs (most langs): try arg-sets as fallback chain
+	// Build.
 	if lang.BuildArgs != nil {
 		argSets := lang.BuildArgs(repoDir, probDir)
 		if lang.SequentialBuild {
@@ -213,21 +183,17 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 			}
 		}
 	} else if lang.BatchBuild != nil {
-		// BatchBuild's signature accepts a list of problems; call it with
-		// just our one so the per-iter path stays single-problem-scoped.
 		if failed := lang.BatchBuild(repoDir, []string{problem}); len(failed) > 0 {
 			r.BuildErr = fmt.Sprintf("BatchBuild reported failures: %v", failed)
 			return r
 		}
 	}
 
-	// Cleanup is run on return regardless of outcome.
 	defer cleanup(lang, probDir)
 
-	// Get the run command
 	runBin, runArgs := lang.RunArgs(repoDir, probDir)
 
-	// Run N times
+	// Run N times in fresh processes.
 	for i := 0; i < iters; i++ {
 		fullArgs := append([]string{runBin}, runArgs...)
 		cmd := exec.Command(fullArgs[0], fullArgs[1:]...)
@@ -245,26 +211,15 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 			continue
 		}
 
-		// Parse the BENCHMARK line (always required — that's the source of truth
-		// for the answer + warm time)
-		bm := benchmarkRe.FindSubmatch(stdout.Bytes())
-		if bm == nil {
-			r.RunErr = fmt.Sprintf("iter %d: no BENCHMARK line", i+1)
+		// Parse RESULT line — the single source for time_ns + answer.
+		rm := resultRe.FindSubmatch(stdout.Bytes())
+		if rm == nil {
+			r.RunErr = fmt.Sprintf("iter %d: no RESULT line", i+1)
 			continue
 		}
-		warmNs, _ := strconv.ParseInt(string(bm[2]), 10, 64)
-		r.InProcWarmNs = warmNs
-		r.Answer = strings.TrimSpace(string(bm[1]))
-
-		// Parse COLDSTART (optional — only patched harnesses emit answer;
-		// time_ns is always there).  Record the time even if answer is absent.
-		cs := coldStartRe.FindSubmatch(stdout.Bytes())
-		if cs == nil {
-			r.RunErr = fmt.Sprintf("iter %d: no COLDSTART line", i+1)
-			continue
-		}
-		coldNs, _ := strconv.ParseInt(string(cs[1]), 10, 64)
-		r.ColdSamplesNs = append(r.ColdSamplesNs, coldNs)
+		timeNs, _ := strconv.ParseInt(string(rm[1]), 10, 64)
+		r.Answer = strings.TrimSpace(string(rm[2]))
+		r.TimeSamplesNs = append(r.TimeSamplesNs, timeNs)
 		r.WallSamplesNs = append(r.WallSamplesNs, wall)
 	}
 
@@ -282,11 +237,11 @@ func truncate(s string, n int) string {
 // cmdPerIter is the entry point for the `per-iter` subcommand.
 func cmdPerIter(args []string) {
 	fs := flag.NewFlagSet("per-iter", flag.ExitOnError)
-	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all') — default: all configured")
+	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all')")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
 	iters := fs.Int("iters", 10, "fresh-process invocations per problem")
 	write := fs.Bool("write", false,
-		"write results to data/<lang>.json (sanitized: no answer field for problems > 100) "+
+		"write results to data/<lang>.json (sanitized: no answer field) "+
 			"AND data/private/<lang>.json (full, gitignored). "+
 			"Existing entries for unmeasured problems are preserved.")
 	if err := fs.Parse(args); err != nil {
@@ -324,12 +279,11 @@ func cmdPerIter(args []string) {
 			switch {
 			case r.BuildErr != "":
 				fmt.Printf("    p%s  BUILD FAIL: %s\n", p, r.BuildErr)
-			case len(r.ColdSamplesNs) == 0:
+			case len(r.TimeSamplesNs) == 0:
 				fmt.Printf("    p%s  NO DATA: %s\n", p, r.RunErr)
 			default:
-				fmt.Printf("    p%s  warm=%7s  cold-med=%7s  wall-med=%7s  div=%6.1fx  (n=%d)\n",
-					p, fmtNs(r.InProcWarmNs), fmtNs(r.coldMedianNs()),
-					fmtNs(r.wallMedianNs()), r.divergence(), len(r.ColdSamplesNs))
+				fmt.Printf("    p%s  time-med=%8s  wall-med=%8s  (n=%d)\n",
+					p, fmtNs(r.timeMedianNs()), fmtNs(r.wallMedianNs()), len(r.TimeSamplesNs))
 			}
 		}
 	}
@@ -339,24 +293,20 @@ func cmdPerIter(args []string) {
 	fmt.Println(strings.Repeat("=", 100))
 	fmt.Println("CROSS-LANG SUMMARY")
 	fmt.Println(strings.Repeat("=", 100))
-	fmt.Println("  warm:      in-process steady state (BENCHMARK line time_ns)")
-	fmt.Println("  cold-med:  median COLDSTART across N fresh-process invocations")
-	fmt.Println("  wall-med:  median Go-perceived wall (process spawn → exit)")
-	fmt.Println("  div:       cold-med / warm — divergence between metrics")
+	fmt.Println("  time-med:  median time_ns across N fresh-process invocations (internal clock)")
+	fmt.Println("  wall-med:  median Go-perceived wall (process spawn → exit), sanity-check secondary")
 	fmt.Println()
 
 	for _, p := range problems {
 		fmt.Printf("\n  p%s:\n", p)
-		fmt.Printf("    %-8s  %10s  %10s  %10s  %7s\n",
-			"lang", "warm", "cold-med", "wall-med", "div")
-		fmt.Printf("    %-8s  %10s  %10s  %10s  %7s\n",
-			"--------", "----------", "----------", "----------", "-------")
+		fmt.Printf("    %-8s  %10s  %10s\n", "lang", "time-med", "wall-med")
+		fmt.Printf("    %-8s  %10s  %10s\n", "--------", "----------", "----------")
 		for _, k := range langKeys {
 			r := grid[k][p]
 			if r == nil {
 				continue
 			}
-			if r.BuildErr != "" || len(r.ColdSamplesNs) == 0 {
+			if r.BuildErr != "" || len(r.TimeSamplesNs) == 0 {
 				note := r.BuildErr
 				if note == "" {
 					note = r.RunErr
@@ -364,41 +314,12 @@ func cmdPerIter(args []string) {
 				fmt.Printf("    %-8s  %s\n", k, truncate(note, 70))
 				continue
 			}
-			fmt.Printf("    %-8s  %10s  %10s  %10s  %6.1fx\n",
-				k, fmtNs(r.InProcWarmNs), fmtNs(r.coldMedianNs()),
-				fmtNs(r.wallMedianNs()), r.divergence())
+			fmt.Printf("    %-8s  %10s  %10s\n",
+				k, fmtNs(r.timeMedianNs()), fmtNs(r.wallMedianNs()))
 		}
 	}
 
-	// Highlight notable divergences
-	fmt.Println()
-	fmt.Println(strings.Repeat("=", 100))
-	fmt.Println("NOTABLE DIVERGENCES (cold-median / in-process warm > 3×)")
-	fmt.Println(strings.Repeat("=", 100))
-	notable := false
-	for _, k := range langKeys {
-		for _, p := range problems {
-			r := grid[k][p]
-			if r == nil || len(r.ColdSamplesNs) == 0 || r.InProcWarmNs <= 0 {
-				continue
-			}
-			if r.divergence() > 3.0 {
-				notable = true
-				hidden := r.coldMedianNs() - r.InProcWarmNs
-				fmt.Printf("  %-8s p%s  warm=%-9s cold-med=%-9s  div=%4.1fx  hides %s of real cost\n",
-					k, p, fmtNs(r.InProcWarmNs), fmtNs(r.coldMedianNs()),
-					r.divergence(), fmtNs(hidden))
-			}
-		}
-	}
-	if !notable {
-		fmt.Println("  (none)")
-	}
-
-	// ──────────────────────────────────────────────────────────────────────
-	// --write: persist results to data/<lang>.json (sanitized) + private.
-	// Runs AFTER all measurement so partial-write risk is limited.
-	// ──────────────────────────────────────────────────────────────────────
+	// --write: persist results.
 	if !*write {
 		return
 	}
@@ -413,7 +334,6 @@ func cmdPerIter(args []string) {
 		if lang == nil {
 			continue
 		}
-		// Collect results in problem-number order for stable file diffs
 		var results []*perIterResult
 		for _, p := range problems {
 			if r, ok := grid[key][p]; ok {
@@ -431,8 +351,7 @@ func cmdPerIter(args []string) {
 	}
 	if totalMismatches > 0 {
 		fmt.Println()
-		fmt.Printf("⚠  %d answer mismatches across all langs — see data files' `error` fields for details.\n",
-			totalMismatches)
+		fmt.Printf("⚠  %d answer mismatches across all langs — see data files' `error` fields.\n", totalMismatches)
 		os.Exit(1)
 	}
 }

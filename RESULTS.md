@@ -17,16 +17,16 @@ the headline per-problem number, and we sum across the 10 problems for the total
 
 | Rank | Language | Total (10 problems) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C** | 318.0 µs | 349 | 1.00× |
-| 2 | **C++** | 346.0 µs | 256 | 1.09× |
-| 3 | **Rust** | 1.08 ms | 219 | 3.40× |
-| 4 | **Zig** | 2.30 ms | 372 | 7.23× |
-| 5 | **Go** | 4.15 ms | 340 | 13.05× |
-| 6 | **ARM64** | 4.34 ms | 721 | 13.65× |
-| 7 | **Java** | 10.20 ms | 356 | 32.08× |
-| 8 | **JavaScript** | 13.36 ms | 254 | 42.03× |
-| 9 | **C#** | 16.15 ms | 307 | 50.80× |
-| 10 | **Python** | 73.17 ms | 244 | 230.13× |
+| 1 | **C** | 392.7 µs | 349 | 1.00× |
+| 2 | **C++** | 471.3 µs | 256 | 1.20× |
+| 3 | **Rust** | 1.45 ms | 219 | 3.70× |
+| 4 | **Zig** | 2.99 ms | 372 | 7.62× |
+| 5 | **Go** | 5.22 ms | 340 | 13.28× |
+| 6 | **ARM64** | 5.77 ms | 721 | 14.69× |
+| 7 | **Java** | 10.18 ms | 336 | 25.91× |
+| 8 | **JavaScript** | 13.14 ms | 254 | 33.47× |
+| 9 | **C#** | 13.18 ms | 307 | 33.57× |
+| 10 | **Python** | 73.09 ms | 244 | 186.13× |
 
 ## Speed vs Code Size
 
@@ -60,16 +60,16 @@ are sorted by total (fastest language at top).
 
 | Language | p001 | p002 | p003 | p004 | p005 | p006 | p007 | p008 | p009 | p010 |
 |----------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
-| **C** | 42 ns | 42 ns | 667 ns | 3.4 µs | 375 ns | 42 ns | 26.7 µs | 2.6 µs | 250 ns | 283.8 µs |
-| **C++** | 42 ns | 125 ns | 28.0 µs | 26.0 µs | 458 ns | 42 ns | 24.5 µs | 3.1 µs | 292 ns | 263.4 µs |
-| **Rust** | 42 ns | 84 ns | 72.8 µs | 13.5 µs | 584 ns | 42 ns | 194.1 µs | 10.5 µs | 250 ns | 789.5 µs |
-| **Zig** | 41 ns | 42 ns | 625 ns | 4.0 µs | 500 ns | 42 ns | 181.6 µs | 2.1 µs | 333 ns | 2.11 ms |
-| **Go** | 1.8 µs | 2.1 µs | 2.5 µs | 5.6 µs | 2.2 µs | 2.0 µs | 356.3 µs | 5.0 µs | 2.1 µs | 3.77 ms |
-| **ARM64** | 0 ns | 0 ns | 1.0 µs | 3.0 µs | 1.0 µs | 0 ns | 239.0 µs | 4.0 µs | 1.0 µs | 4.09 ms |
-| **Java** | 2.6 µs | 3.4 µs | 8.9 µs | 317.3 µs | 5.2 µs | 2.2 µs | 1.58 ms | 54.5 µs | 6.5 µs | 8.22 ms |
-| **JavaScript** | 20.7 µs | 12.7 µs | 53.2 µs | 98.6 µs | 31.1 µs | 8.0 µs | 2.73 ms | 96.3 µs | 28.7 µs | 10.28 ms |
-| **C#** | 300.1 µs | 283.7 µs | 320.0 µs | 440.7 µs | 2.02 ms | 276.9 µs | 1.02 ms | 491.9 µs | 704.2 µs | 10.29 ms |
-| **Python** | 1.7 µs | 3.3 µs | 5.58 ms | 55.37 ms | 4.7 µs | 917 ns | 1.36 ms | 891.6 µs | 4.64 ms | 5.32 ms |
+| **C** | 41 ns | 41 ns | 583 ns | 3.2 µs | 416 ns | 42 ns | 29.9 µs | 2.7 µs | 250 ns | 355.6 µs |
+| **C++** | 166 ns | 167 ns | 34.7 µs | 32.0 µs | 542 ns | 42 ns | 24.4 µs | 3.0 µs | 334 ns | 375.9 µs |
+| **Rust** | 42 ns | 83 ns | 94.8 µs | 17.8 µs | 583 ns | 42 ns | 245.7 µs | 10.6 µs | 291 ns | 1.08 ms |
+| **Zig** | 42 ns | 42 ns | 708 ns | 3.8 µs | 417 ns | 42 ns | 219.1 µs | 1.6 µs | 250 ns | 2.77 ms |
+| **Go** | 1.5 µs | 1.4 µs | 2.1 µs | 4.8 µs | 1.8 µs | 1.8 µs | 477.5 µs | 5.7 µs | 1.8 µs | 4.72 ms |
+| **ARM64** | 0 ns | 0 ns | 1.0 µs | 3.0 µs | 1.0 µs | 0 ns | 306.0 µs | 4.0 µs | 1.0 µs | 5.45 ms |
+| **Java** | 2.5 µs | 2.8 µs | 8.0 µs | 307.3 µs | 5.5 µs | 1.9 µs | 1.62 ms | 55.0 µs | 6.0 µs | 8.17 ms |
+| **JavaScript** | 19.0 µs | 12.1 µs | 49.2 µs | 96.8 µs | 29.0 µs | 7.1 µs | 2.69 ms | 99.4 µs | 27.0 µs | 10.11 ms |
+| **C#** | 54.8 µs | 64.0 µs | 80.6 µs | 136.5 µs | 1.70 ms | 27.1 µs | 696.7 µs | 179.2 µs | 521.2 µs | 9.73 ms |
+| **Python** | 1.6 µs | 3.0 µs | 5.59 ms | 55.36 ms | 4.5 µs | 916 ns | 1.38 ms | 852.1 µs | 4.64 ms | 5.27 ms |
 
 ## Method
 
@@ -77,9 +77,9 @@ For each (language, problem):
 
 1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).
 2. Run the binary 10 times, each in a fresh OS process.  No warmup; no shared state.
-3. Each invocation prints `BENCHMARK|problem=NNN|answer=X|time_ns=Y`.  The answer
-   is compared against the canonical (each source file's `// Answer:` header
-   comment); the benchmark aborts on mismatch.
+3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,
+   captured by the bench tool.  The answer is compared against the canonical
+   (each source file's `// Answer:` header comment); the bench aborts on mismatch.
 4. We report the **median** wall time across the 10 invocations.
 
 That's the entire metric.  No "hot" vs "cold" — just per-invocation cost, which
@@ -122,22 +122,6 @@ the honest cost of the language model under a CLI-invocation workload.
 > ARM64) also fold trivial closed-form cases; Zig is just particularly aggressive
 > about it.  We flag it here for transparency rather than as a knock on Zig — the
 > timings are real measurements of what `-O ReleaseFast` produces.
-
-### Note on C# timings (JIT-warmup artifact)
-
-> The CLR JIT-compiles each `solve()` body (and any LINQ lambda chains inside it)
-> on the **first** call in a fresh process.  The double-call invocation-isolation
-> audit surfaced this on `p005`: cold ≈ 1.5 ms vs warm < 2 µs (~750× ratio),
-> despite the source containing no cache — it is a vanilla
-> `Enumerable.Range(2,19).Aggregate(...)`.
->
-> The warm timing therefore understates per-call algorithmic cost for any C# cell
-> whose `solve()` body invokes uncompiled LINQ.  Within the per-invocation framing
-> of this report (every binary runs in a fresh process, so warmup *is* part of the
-> honest cost), the cold portion of the median already captures this.  The
-> structural fix (a panel-wide JIT pre-warm step in `Bench.cs`) is queued
-> separately; we flag the artifact here so the C# column is read with the same
-> transparency as the Zig column above.
 
 ### Language idioms: stdlib vs ecosystem packages
 

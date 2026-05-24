@@ -848,3 +848,73 @@ languages using known-good timing primitives — Go's monotonic clock,
 cross-validated against `/usr/bin/time -l` for max-fidelity wall +
 RSS data.  The current Python audit was the prototype; the production
 tool lives in Go.
+
+## Episode: Single-Call Harness (2026-05-23 evening)
+
+After the process-per-iteration architecture (previous chapter), an
+attempted expansion to problems 11-50 surfaced a follow-on question:
+if the OS process boundary is the isolation guarantee, why do the
+per-language harness files still contain warmup + calibration + iter
+loops?
+
+### The mismatch
+
+The harnesses had stayed in pre-process-per-iter shape: each one
+called `solve()` ~1004 times per process (1 cold + 2 warmup + 1
+calibration + N=3/10/100/1000 timed iterations), reported the median
+as `BENCHMARK|...`, and the first call as `COLDSTART|...`.  Only the
+COLDSTART line ever fed the chart; the rest was dead work.
+
+Worse, the in-process iteration was an attractive nuisance: a
+double-call audit got built to detect "warm-vs-cold" cache patterns,
+and a 50-cell expansion campaign started "fixing" them (drop OnceLock
+from Rust, strip static caches from C++/Java/CSharp).  Per JOURNEY
+rule 3 ("Each language stays idiomatic — no reshaping code to satisfy
+the harness"), every one of those was the exact wrong direction.  All
+reverted before any commit.
+
+### The simplification
+
+Two architectures considered:
+
+- **A** — harness internally times `solve()` once using the language's
+  native clock, prints `RESULT|time_ns=N|answer=A`, exits.  ~5 lines
+  per harness.
+- **B** (`time foo` model) — harness becomes literally
+  `print(solve())`; the Go tool times wall from outside.  Process spawn
+  floor (~6-10 ms on macOS) crushes all sub-millisecond algorithms
+  into indistinguishable noise.
+
+**Decision: A.**  The internal-timing approach preserves sub-µs
+algorithm visibility (C `p001` = 42 ns is real and worth keeping in
+the chart), which B would lose to the process spawn floor.
+
+### What changed
+
+- All 10 per-language harnesses simplified to: one cold call to
+  `solve()`, print `RESULT|time_ns=N|answer=A`, exit.  No warmup, no
+  calibration, no iter loop, no separate COLDSTART/BENCHMARK lines.
+- Sentinel renamed: `COLDSTART|` (warm/cold-era word) → `RESULT|`.
+  With one call per process, "cold" and "warm" no longer mean anything.
+- Data-file field renamed: `cold_start_ns` → `time_ns`.  The old
+  `time_ns: 0` (warm) field dropped.  Backward compatibility
+  deliberately skipped — data files get overwritten by the re-bench
+  anyway.
+- Dead scripts deleted: `scripts/double_call_audit.py`,
+  `scripts/process_per_iter_audit.py`, `cmd/three-mode-report/`
+  (3-metric era), `scripts/check_timing_delta` (warm-regression
+  detector, now meaningless).
+
+### Operating rules added from this episode
+
+4. **The harness does one call, period.**  Multi-call inside a
+   process is dead work (the chart only uses one call) and an
+   attractive nuisance (invites "warm anomaly" audits that
+   re-violate rule 3).  Any future change that adds calibration
+   loops, warmup phases, or iteration-median logic to a harness is
+   the wrong direction.
+
+5. **`RESULT|time_ns=N|answer=A` is the canonical bench-output
+   sentinel.**  One line per process, one format across all 10
+   languages.  No `BENCHMARK|`, no `COLDSTART|`, no per-language
+   variants.

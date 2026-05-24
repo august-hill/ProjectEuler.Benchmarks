@@ -2,111 +2,101 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "0.15.2",
-  "timestamp": "2026-05-23T23:48:22Z",
+  "timestamp": "2026-05-24T03:27:01Z",
   "problems": {
     "001": {
-      "time_ns": 0,
-      "cold_start_ns": 41,
-      "cold_max_ns": 84,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 7811084,
+      "time_ns": 42,
+      "time_max_ns": 83,
+      "samples": 10,
+      "subprocess_wall_ns": 4952708,
       "status": "pass",
       "source_lines": 20,
       "source_bytes": 508
     },
     "002": {
-      "time_ns": 0,
-      "cold_start_ns": 42,
-      "cold_max_ns": 167,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 9957583,
+      "time_ns": 42,
+      "time_max_ns": 83,
+      "samples": 10,
+      "subprocess_wall_ns": 4731750,
       "status": "pass",
       "source_lines": 23,
       "source_bytes": 499
     },
     "003": {
-      "time_ns": 375,
-      "cold_start_ns": 625,
-      "cold_min_ns": 541,
-      "cold_max_ns": 750,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 10429083,
+      "time_ns": 708,
+      "time_min_ns": 542,
+      "time_max_ns": 1000,
+      "samples": 10,
+      "subprocess_wall_ns": 4684583,
       "status": "pass",
       "source_lines": 46,
       "source_bytes": 1002
     },
     "004": {
-      "time_ns": 41,
-      "cold_start_ns": 4041,
-      "cold_min_ns": 3292,
-      "cold_max_ns": 5333,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 6242250,
+      "time_ns": 3834,
+      "time_min_ns": 3208,
+      "time_max_ns": 5625,
+      "samples": 10,
+      "subprocess_wall_ns": 5418833,
       "status": "pass",
       "source_lines": 38,
       "source_bytes": 1075
     },
     "005": {
-      "time_ns": 166,
-      "cold_start_ns": 500,
-      "cold_min_ns": 375,
-      "cold_max_ns": 666,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 6761375,
+      "time_ns": 417,
+      "time_min_ns": 333,
+      "time_max_ns": 583,
+      "samples": 10,
+      "subprocess_wall_ns": 5073542,
       "status": "pass",
       "source_lines": 33,
       "source_bytes": 623
     },
     "006": {
-      "time_ns": 0,
-      "cold_start_ns": 42,
-      "cold_max_ns": 125,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 10020875,
+      "time_ns": 42,
+      "time_max_ns": 84,
+      "samples": 10,
+      "subprocess_wall_ns": 5071333,
       "status": "pass",
       "source_lines": 16,
       "source_bytes": 402
     },
     "007": {
-      "time_ns": 171000,
-      "cold_start_ns": 181583,
-      "cold_min_ns": 169708,
-      "cold_max_ns": 243958,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 184075375,
+      "time_ns": 219125,
+      "time_min_ns": 208083,
+      "time_max_ns": 412333,
+      "samples": 10,
+      "subprocess_wall_ns": 5713209,
       "status": "pass",
       "source_lines": 47,
       "source_bytes": 1121
     },
     "008": {
-      "time_ns": 1166,
-      "cold_start_ns": 2083,
-      "cold_min_ns": 1416,
-      "cold_max_ns": 2625,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 7978208,
+      "time_ns": 1583,
+      "time_min_ns": 1416,
+      "time_max_ns": 1792,
+      "samples": 10,
+      "subprocess_wall_ns": 4618958,
       "status": "pass",
       "source_lines": 80,
       "source_bytes": 2734
     },
     "009": {
-      "time_ns": 167,
-      "cold_start_ns": 333,
-      "cold_min_ns": 250,
-      "cold_max_ns": 500,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 7005542,
+      "time_ns": 250,
+      "time_min_ns": 167,
+      "time_max_ns": 3167,
+      "samples": 10,
+      "subprocess_wall_ns": 4982375,
       "status": "pass",
       "source_lines": 27,
       "source_bytes": 746
     },
     "010": {
-      "time_ns": 2165709,
-      "cold_start_ns": 2110250,
-      "cold_min_ns": 1998875,
-      "cold_max_ns": 2190958,
-      "cold_samples": 10,
-      "subprocess_wall_ns": 226728042,
+      "time_ns": 2765250,
+      "time_min_ns": 2408916,
+      "time_max_ns": 3364250,
+      "samples": 10,
+      "subprocess_wall_ns": 9171833,
       "status": "pass",
       "source_lines": 42,
       "source_bytes": 950
@@ -114,8 +104,6 @@
     "011": {
       "time_ns": 0,
       "compile_time_ns": 357809000,
-      "cold_start_ns": 3000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 65,
@@ -124,8 +112,6 @@
     "012": {
       "time_ns": 36812000,
       "compile_time_ns": 411158000,
-      "cold_start_ns": 75564000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 38,
@@ -134,8 +120,6 @@
     "013": {
       "time_ns": 0,
       "compile_time_ns": 352406000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 133,
@@ -144,8 +128,6 @@
     "014": {
       "time_ns": 135298000,
       "compile_time_ns": 377601000,
-      "cold_start_ns": 162771000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 40,
@@ -154,8 +136,6 @@
     "015": {
       "time_ns": 0,
       "compile_time_ns": 377879000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 20,
@@ -164,8 +144,6 @@
     "016": {
       "time_ns": 359000,
       "compile_time_ns": 397392000,
-      "cold_start_ns": 1128000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 36,
@@ -174,8 +152,6 @@
     "017": {
       "time_ns": 5000,
       "compile_time_ns": 375088000,
-      "cold_start_ns": 6000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 55,
@@ -184,8 +160,6 @@
     "018": {
       "time_ns": 0,
       "compile_time_ns": 378418000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 48,
@@ -194,8 +168,6 @@
     "019": {
       "time_ns": 0,
       "compile_time_ns": 364932000,
-      "cold_start_ns": 6000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 45,
@@ -204,8 +176,6 @@
     "020": {
       "time_ns": 39000,
       "compile_time_ns": 412829000,
-      "cold_start_ns": 34000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 39,
@@ -214,8 +184,6 @@
     "021": {
       "time_ns": 1134000,
       "compile_time_ns": 404248000,
-      "cold_start_ns": 6121000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 39,
@@ -224,8 +192,6 @@
     "022": {
       "time_ns": 541000,
       "compile_time_ns": 535703000,
-      "cold_start_ns": 1027000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1654784,
       "source_lines": 91,
@@ -234,8 +200,6 @@
     "023": {
       "time_ns": 7166000,
       "compile_time_ns": 6239970000,
-      "cold_start_ns": 23969000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1753088,
       "source_lines": 67,
@@ -244,8 +208,6 @@
     "024": {
       "time_ns": 0,
       "compile_time_ns": 399587000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 43,
@@ -254,8 +216,6 @@
     "025": {
       "time_ns": 5671000,
       "compile_time_ns": 384279000,
-      "cold_start_ns": 14319000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 54,
@@ -264,8 +224,6 @@
     "026": {
       "time_ns": 633000,
       "compile_time_ns": 361942000,
-      "cold_start_ns": 897000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 46,
@@ -274,8 +232,6 @@
     "027": {
       "time_ns": 3889000,
       "compile_time_ns": 409456000,
-      "cold_start_ns": 10193000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2392064,
       "source_lines": 72,
@@ -284,8 +240,6 @@
     "028": {
       "time_ns": 0,
       "compile_time_ns": 354987000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 23,
@@ -294,8 +248,6 @@
     "029": {
       "time_ns": 67431000,
       "compile_time_ns": 556959000,
-      "cold_start_ns": 104250000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 4014080,
       "source_lines": 83,
@@ -304,8 +256,6 @@
     "030": {
       "time_ns": 1074000,
       "compile_time_ns": 359889000,
-      "cold_start_ns": 6918000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 35,
@@ -314,8 +264,6 @@
     "031": {
       "time_ns": 0,
       "compile_time_ns": 366189000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 26,
@@ -324,8 +272,6 @@
     "032": {
       "time_ns": 0,
       "compile_time_ns": 378243000,
-      "cold_start_ns": 1039000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 72,
@@ -334,8 +280,6 @@
     "033": {
       "time_ns": 0,
       "compile_time_ns": 392525000,
-      "cold_start_ns": 3000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 49,
@@ -344,8 +288,6 @@
     "034": {
       "time_ns": 9042000,
       "compile_time_ns": 407295000,
-      "cold_start_ns": 30736000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 32,
@@ -354,8 +296,6 @@
     "035": {
       "time_ns": 1680000,
       "compile_time_ns": 12023723000,
-      "cold_start_ns": 7159000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2392064,
       "source_lines": 79,
@@ -364,8 +304,6 @@
     "036": {
       "time_ns": 3790000,
       "compile_time_ns": 381050000,
-      "cold_start_ns": 9511000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 30,
@@ -374,8 +312,6 @@
     "037": {
       "time_ns": 1281000,
       "compile_time_ns": 12177928000,
-      "cold_start_ns": 4050000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2146304,
       "source_lines": 75,
@@ -384,8 +320,6 @@
     "038": {
       "time_ns": 135000,
       "compile_time_ns": 436244000,
-      "cold_start_ns": 402000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 66,
@@ -394,8 +328,6 @@
     "039": {
       "time_ns": 97000,
       "compile_time_ns": 395234000,
-      "cold_start_ns": 512000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 42,
@@ -404,8 +336,6 @@
     "040": {
       "time_ns": 0,
       "compile_time_ns": 390632000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 45,
@@ -414,8 +344,6 @@
     "041": {
       "time_ns": 6158000,
       "compile_time_ns": 944600000,
-      "cold_start_ns": 24704000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 16695296,
       "source_lines": 55,
@@ -424,8 +352,6 @@
     "042": {
       "time_ns": 21000,
       "compile_time_ns": 386369000,
-      "cold_start_ns": 3774000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1458176,
       "source_lines": 91,
@@ -434,8 +360,6 @@
     "043": {
       "time_ns": 0,
       "compile_time_ns": 370294000,
-      "cold_start_ns": 32406000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 89,
@@ -444,8 +368,6 @@
     "044": {
       "time_ns": 37538000,
       "compile_time_ns": 394309000,
-      "cold_start_ns": 52011000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 50,
@@ -454,8 +376,6 @@
     "045": {
       "time_ns": 37000,
       "compile_time_ns": 363871000,
-      "cold_start_ns": 38000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 40,
@@ -464,8 +384,6 @@
     "046": {
       "time_ns": 3003000,
       "compile_time_ns": 386613000,
-      "cold_start_ns": 3242000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 48,
@@ -474,8 +392,6 @@
     "047": {
       "time_ns": 0,
       "compile_time_ns": 436876000,
-      "cold_start_ns": 6732000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1605632,
       "source_lines": 72,
@@ -484,8 +400,6 @@
     "048": {
       "time_ns": 98000,
       "compile_time_ns": 399852000,
-      "cold_start_ns": 97000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 34,
@@ -494,8 +408,6 @@
     "049": {
       "time_ns": 0,
       "compile_time_ns": 378240000,
-      "cold_start_ns": 1710000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 80,
@@ -504,8 +416,6 @@
     "050": {
       "time_ns": 2332000,
       "compile_time_ns": 469826000,
-      "cold_start_ns": 7765000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 4046848,
       "source_lines": 54,
@@ -514,8 +424,6 @@
     "051": {
       "time_ns": 89000,
       "compile_time_ns": 365386000,
-      "cold_start_ns": 2289000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 2392064,
       "source_lines": 94,
@@ -524,8 +432,6 @@
     "052": {
       "time_ns": 0,
       "compile_time_ns": 360400000,
-      "cold_start_ns": 5798000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 35,
@@ -534,8 +440,6 @@
     "053": {
       "time_ns": 12000,
       "compile_time_ns": 392608000,
-      "cold_start_ns": 13000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 37,
@@ -544,8 +448,6 @@
     "054": {
       "time_ns": 143000,
       "compile_time_ns": 410122000,
-      "cold_start_ns": 1761000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 272,
@@ -554,8 +456,6 @@
     "055": {
       "time_ns": 0,
       "compile_time_ns": 362687000,
-      "cold_start_ns": 2995000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 86,
@@ -564,8 +464,6 @@
     "056": {
       "time_ns": 1911000,
       "compile_time_ns": 432895000,
-      "cold_start_ns": 1907000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 59,
@@ -574,8 +472,6 @@
     "057": {
       "time_ns": 0,
       "compile_time_ns": 368543000,
-      "cold_start_ns": 976000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 79,
@@ -584,8 +480,6 @@
     "058": {
       "time_ns": 26401000,
       "compile_time_ns": 419045000,
-      "cold_start_ns": 61644000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 49,
@@ -594,8 +488,6 @@
     "059": {
       "time_ns": 1898000,
       "compile_time_ns": 374920000,
-      "cold_start_ns": 5395000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 83,
@@ -604,8 +496,6 @@
     "060": {
       "time_ns": 57947000,
       "compile_time_ns": 432501000,
-      "cold_start_ns": 383433000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 13893632,
       "source_lines": 152,
@@ -614,8 +504,6 @@
     "061": {
       "time_ns": 34000,
       "compile_time_ns": 403499000,
-      "cold_start_ns": 82000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 98,
@@ -624,8 +512,6 @@
     "062": {
       "time_ns": 966000,
       "compile_time_ns": 363662000,
-      "cold_start_ns": 1790000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1998848,
       "source_lines": 117,
@@ -634,8 +520,6 @@
     "063": {
       "time_ns": 0,
       "compile_time_ns": 376723000,
-      "cold_start_ns": 2000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 46,
@@ -644,8 +528,6 @@
     "064": {
       "time_ns": 1912000,
       "compile_time_ns": 367494000,
-      "cold_start_ns": 4070000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 37,
@@ -654,8 +536,6 @@
     "065": {
       "time_ns": 0,
       "compile_time_ns": 386560000,
-      "cold_start_ns": 58000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 80,
@@ -664,8 +544,6 @@
     "066": {
       "time_ns": 0,
       "compile_time_ns": 402445000,
-      "cold_start_ns": 79858000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 134,
@@ -674,8 +552,6 @@
     "067": {
       "time_ns": 2000,
       "compile_time_ns": 419794000,
-      "cold_start_ns": 450000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 64,
@@ -684,8 +560,6 @@
     "068": {
       "time_ns": 0,
       "compile_time_ns": 400308000,
-      "cold_start_ns": 26643000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 99,
@@ -694,8 +568,6 @@
     "069": {
       "time_ns": 0,
       "compile_time_ns": 365376000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 22,
@@ -704,8 +576,6 @@
     "070": {
       "time_ns": 232837000,
       "compile_time_ns": 380880000,
-      "cold_start_ns": 255881000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 41385984,
       "source_lines": 65,
@@ -714,8 +584,6 @@
     "071": {
       "time_ns": 1875000,
       "compile_time_ns": 363288000,
-      "cold_start_ns": 1873000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 27,
@@ -724,8 +592,6 @@
     "072": {
       "time_ns": 3244000,
       "compile_time_ns": 383516000,
-      "cold_start_ns": 3464000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 5390336,
       "source_lines": 34,
@@ -734,8 +600,6 @@
     "073": {
       "time_ns": 0,
       "compile_time_ns": 365825000,
-      "cold_start_ns": 17089000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1638400,
       "source_lines": 22,
@@ -744,8 +608,6 @@
     "074": {
       "time_ns": 4844000,
       "compile_time_ns": 410982000,
-      "cold_start_ns": 5091000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 3588096,
       "source_lines": 92,
@@ -754,8 +616,6 @@
     "075": {
       "time_ns": 5325000,
       "compile_time_ns": 421507000,
-      "cold_start_ns": 5122000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2883584,
       "source_lines": 56,
@@ -764,8 +624,6 @@
     "076": {
       "time_ns": 3000,
       "compile_time_ns": 420235000,
-      "cold_start_ns": 3000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 25,
@@ -774,8 +632,6 @@
     "077": {
       "time_ns": 0,
       "compile_time_ns": 397511000,
-      "cold_start_ns": 26000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 56,
@@ -784,8 +640,6 @@
     "078": {
       "time_ns": 59295000,
       "compile_time_ns": 393918000,
-      "cold_start_ns": 88374000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2162688,
       "source_lines": 47,
@@ -794,8 +648,6 @@
     "079": {
       "time_ns": 0,
       "compile_time_ns": 471059000,
-      "cold_start_ns": 349000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 91,
@@ -804,8 +656,6 @@
     "080": {
       "time_ns": 3831000,
       "compile_time_ns": 437319000,
-      "cold_start_ns": 12469000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 180,
@@ -814,8 +664,6 @@
     "081": {
       "time_ns": 10000,
       "compile_time_ns": 402903000,
-      "cold_start_ns": 3798000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1490944,
       "source_lines": 62,
@@ -824,8 +672,6 @@
     "082": {
       "time_ns": 19000,
       "compile_time_ns": 430940000,
-      "cold_start_ns": 416000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 78,
@@ -834,8 +680,6 @@
     "083": {
       "time_ns": 2150000,
       "compile_time_ns": 431463000,
-      "cold_start_ns": 6372000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1507328,
       "source_lines": 104,
@@ -844,8 +688,6 @@
     "084": {
       "time_ns": 103000,
       "compile_time_ns": 393672000,
-      "cold_start_ns": 105000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 101,
@@ -854,8 +696,6 @@
     "085": {
       "time_ns": 22000,
       "compile_time_ns": 418277000,
-      "cold_start_ns": 77000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 32,
@@ -864,8 +704,6 @@
     "086": {
       "time_ns": 2195000,
       "compile_time_ns": 423660000,
-      "cold_start_ns": 2196000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 35,
@@ -874,8 +712,6 @@
     "087": {
       "time_ns": 5039000,
       "compile_time_ns": 1577826000,
-      "cold_start_ns": 8892000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 51445760,
       "source_lines": 70,
@@ -884,8 +720,6 @@
     "088": {
       "time_ns": 1007000,
       "compile_time_ns": 5240966000,
-      "cold_start_ns": 1142000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1687552,
       "source_lines": 56,
@@ -894,8 +728,6 @@
     "089": {
       "time_ns": 64000,
       "compile_time_ns": 385990000,
-      "cold_start_ns": 605000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 85,
@@ -904,8 +736,6 @@
     "090": {
       "time_ns": 82000,
       "compile_time_ns": 582573000,
-      "cold_start_ns": 196000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 76,
@@ -914,8 +744,6 @@
     "091": {
       "time_ns": 4603000,
       "compile_time_ns": 384282000,
-      "cold_start_ns": 10691000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 43,
@@ -924,8 +752,6 @@
     "092": {
       "time_ns": 50956000,
       "compile_time_ns": 385320000,
-      "cold_start_ns": 84028000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 62,
@@ -934,8 +760,6 @@
     "093": {
       "time_ns": 0,
       "compile_time_ns": 487532000,
-      "cold_start_ns": 4597000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 125,
@@ -944,8 +768,6 @@
     "094": {
       "time_ns": 0,
       "compile_time_ns": 366290000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 47,
@@ -954,8 +776,6 @@
     "095": {
       "time_ns": 54188000,
       "compile_time_ns": 364403000,
-      "cold_start_ns": 105518000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 7389184,
       "source_lines": 89,
@@ -964,8 +784,6 @@
     "096": {
       "time_ns": 1176000,
       "compile_time_ns": 400962000,
-      "cold_start_ns": 4357000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 121,
@@ -974,8 +792,6 @@
     "097": {
       "time_ns": 1000,
       "compile_time_ns": 348334000,
-      "cold_start_ns": 2000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 34,
@@ -984,8 +800,6 @@
     "098": {
       "time_ns": 3111000,
       "compile_time_ns": 380418000,
-      "cold_start_ns": 12438000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1490944,
       "source_lines": 152,
@@ -994,8 +808,6 @@
     "099": {
       "time_ns": 49000,
       "compile_time_ns": 377086000,
-      "cold_start_ns": 608000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 63,
@@ -1004,8 +816,6 @@
     "100": {
       "time_ns": 0,
       "compile_time_ns": 350213000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 24,
@@ -1014,8 +824,6 @@
     "101": {
       "time_ns": 0,
       "compile_time_ns": 413457000,
-      "cold_start_ns": 2000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 58,
@@ -1024,8 +832,6 @@
     "102": {
       "time_ns": 82000,
       "compile_time_ns": 430199000,
-      "cold_start_ns": 986000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 66,
@@ -1034,8 +840,6 @@
     "103": {
       "time_ns": 0,
       "compile_time_ns": 421619000,
-      "cold_start_ns": 55532000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 107,
@@ -1044,8 +848,6 @@
     "104": {
       "time_ns": 4951000,
       "compile_time_ns": 395001000,
-      "cold_start_ns": 12505000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 49,
@@ -1054,8 +856,6 @@
     "105": {
       "time_ns": 19672000,
       "compile_time_ns": 425642000,
-      "cold_start_ns": 48728000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 101,
@@ -1064,8 +864,6 @@
     "106": {
       "time_ns": 0,
       "compile_time_ns": 429175000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 38,
@@ -1074,8 +872,6 @@
     "107": {
       "time_ns": 76000,
       "compile_time_ns": 433076000,
-      "cold_start_ns": 773000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 114,
@@ -1084,8 +880,6 @@
     "108": {
       "time_ns": 8000,
       "compile_time_ns": 357357000,
-      "cold_start_ns": 12000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 42,
@@ -1094,8 +888,6 @@
     "109": {
       "time_ns": 0,
       "compile_time_ns": 400742000,
-      "cold_start_ns": 34000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 71,
@@ -1104,8 +896,6 @@
     "110": {
       "time_ns": 69192000,
       "compile_time_ns": 379312000,
-      "cold_start_ns": 95726000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 66,
@@ -1114,8 +904,6 @@
     "111": {
       "time_ns": 1127000,
       "compile_time_ns": 418163000,
-      "cold_start_ns": 4684000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 135,
@@ -1124,8 +912,6 @@
     "112": {
       "time_ns": 4875000,
       "compile_time_ns": 379121000,
-      "cold_start_ns": 22784000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 35,
@@ -1134,8 +920,6 @@
     "113": {
       "time_ns": 0,
       "compile_time_ns": 360571000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 29,
@@ -1144,8 +928,6 @@
     "114": {
       "time_ns": 3000,
       "compile_time_ns": 368859000,
-      "cold_start_ns": 4000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 33,
@@ -1154,8 +936,6 @@
     "115": {
       "time_ns": 167000,
       "compile_time_ns": 406821000,
-      "cold_start_ns": 535000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 41,
@@ -1164,8 +944,6 @@
     "116": {
       "time_ns": 0,
       "compile_time_ns": 346352000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 26,
@@ -1174,8 +952,6 @@
     "117": {
       "time_ns": 0,
       "compile_time_ns": 378158000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 22,
@@ -1184,8 +960,6 @@
     "118": {
       "time_ns": 598379000,
       "compile_time_ns": 399897000,
-      "cold_start_ns": 634023000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 136,
@@ -1194,8 +968,6 @@
     "119": {
       "time_ns": 28000,
       "compile_time_ns": 426642000,
-      "cold_start_ns": 40000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 50,
@@ -1204,8 +976,6 @@
     "120": {
       "time_ns": 575000,
       "compile_time_ns": 382350000,
-      "cold_start_ns": 3517000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 26,
@@ -1214,8 +984,6 @@
     "121": {
       "time_ns": 0,
       "compile_time_ns": 343460000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 39,
@@ -1224,8 +992,6 @@
     "122": {
       "time_ns": 0,
       "compile_time_ns": 358755000,
-      "cold_start_ns": 1196948000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 60,
@@ -1234,8 +1000,6 @@
     "123": {
       "time_ns": 16000,
       "compile_time_ns": 384118000,
-      "cold_start_ns": 1931000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 3014656,
       "source_lines": 56,
@@ -1244,8 +1008,6 @@
     "124": {
       "time_ns": 5136000,
       "compile_time_ns": 439515000,
-      "cold_start_ns": 12587000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2572288,
       "source_lines": 46,
@@ -1254,8 +1016,6 @@
     "125": {
       "time_ns": 2408000,
       "compile_time_ns": 422842000,
-      "cold_start_ns": 8775000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2555904,
       "source_lines": 61,
@@ -1264,8 +1024,6 @@
     "126": {
       "time_ns": 2265000,
       "compile_time_ns": 576608000,
-      "cold_start_ns": 7101000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1458176,
       "source_lines": 47,
@@ -1274,8 +1032,6 @@
     "127": {
       "time_ns": 28854000,
       "compile_time_ns": 435571000,
-      "cold_start_ns": 60697000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2326528,
       "source_lines": 75,
@@ -1284,8 +1040,6 @@
     "128": {
       "time_ns": 0,
       "compile_time_ns": 368430000,
-      "cold_start_ns": 28055000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 45,
@@ -1294,8 +1048,6 @@
     "129": {
       "time_ns": 11585000,
       "compile_time_ns": 369789000,
-      "cold_start_ns": 29623000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 27,
@@ -1304,8 +1056,6 @@
     "130": {
       "time_ns": 37685000,
       "compile_time_ns": 379346000,
-      "cold_start_ns": 63744000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 45,
@@ -1314,8 +1064,6 @@
     "131": {
       "time_ns": 45000,
       "compile_time_ns": 358559000,
-      "cold_start_ns": 231000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 30,
@@ -1324,8 +1072,6 @@
     "132": {
       "time_ns": 3282000,
       "compile_time_ns": 382898000,
-      "cold_start_ns": 14232000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 46,
@@ -1334,8 +1080,6 @@
     "133": {
       "time_ns": 2013000,
       "compile_time_ns": 25620794000,
-      "cold_start_ns": 8744000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2572288,
       "source_lines": 62,
@@ -1344,8 +1088,6 @@
     "134": {
       "time_ns": 6000000,
       "compile_time_ns": 369070000,
-      "cold_start_ns": 20814000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2506752,
       "source_lines": 75,
@@ -1354,8 +1096,6 @@
     "135": {
       "time_ns": 2483000,
       "compile_time_ns": 13344573000,
-      "cold_start_ns": 18719000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 5373952,
       "source_lines": 37,
@@ -1364,8 +1104,6 @@
     "136": {
       "time_ns": 460284000,
       "compile_time_ns": 362134000,
-      "cold_start_ns": 476174000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 51396608,
       "source_lines": 43,
@@ -1374,8 +1112,6 @@
     "137": {
       "time_ns": 0,
       "compile_time_ns": 389752000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 19,
@@ -1384,8 +1120,6 @@
     "138": {
       "time_ns": 0,
       "compile_time_ns": 398562000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 22,
@@ -1394,8 +1128,6 @@
     "139": {
       "time_ns": 299806000,
       "compile_time_ns": 411750000,
-      "cold_start_ns": 336607000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 46,
@@ -1404,8 +1136,6 @@
     "140": {
       "time_ns": 1000,
       "compile_time_ns": 458933000,
-      "cold_start_ns": 4000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 65,
@@ -1414,8 +1144,6 @@
     "141": {
       "time_ns": 1939538000,
       "compile_time_ns": 406051000,
-      "cold_start_ns": 1951271000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 46,
@@ -1424,8 +1152,6 @@
     "142": {
       "time_ns": 0,
       "compile_time_ns": 369893000,
-      "cold_start_ns": 11890000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 55,
@@ -1434,8 +1160,6 @@
     "143": {
       "time_ns": 8778000,
       "compile_time_ns": 35073732000,
-      "cold_start_ns": 30351000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 45596672,
       "source_lines": 166,
@@ -1444,8 +1168,6 @@
     "144": {
       "time_ns": 24000,
       "compile_time_ns": 363199000,
-      "cold_start_ns": 33000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 51,
@@ -1454,8 +1176,6 @@
     "145": {
       "time_ns": 45234000,
       "compile_time_ns": 405808000,
-      "cold_start_ns": 87674000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 41,
@@ -1464,8 +1184,6 @@
     "146": {
       "time_ns": 2751302000,
       "compile_time_ns": 397372000,
-      "cold_start_ns": 2779691000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 103,
@@ -1474,8 +1192,6 @@
     "147": {
       "time_ns": 2023000,
       "compile_time_ns": 401509000,
-      "cold_start_ns": 7194000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 46,
@@ -1484,8 +1200,6 @@
     "148": {
       "time_ns": 0,
       "compile_time_ns": 341030000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 39,
@@ -1494,8 +1208,6 @@
     "149": {
       "time_ns": 37069000,
       "compile_time_ns": 409982000,
-      "cold_start_ns": 83856000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 65388544,
       "source_lines": 109,
@@ -1504,8 +1216,6 @@
     "150": {
       "time_ns": 118443000,
       "compile_time_ns": 392780000,
-      "cold_start_ns": 164096000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 9388032,
       "source_lines": 51,
@@ -1514,8 +1224,6 @@
     "151": {
       "time_ns": 3000,
       "compile_time_ns": 366907000,
-      "cold_start_ns": 5000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 47,
@@ -1524,8 +1232,6 @@
     "152": {
       "time_ns": 703517000,
       "compile_time_ns": 439603000,
-      "cold_start_ns": 731300000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 49,
@@ -1534,8 +1240,6 @@
     "153": {
       "time_ns": 2993400000,
       "compile_time_ns": 381173000,
-      "cold_start_ns": 3099111000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 53,
@@ -1544,8 +1248,6 @@
     "154": {
       "time_ns": 3011853000,
       "compile_time_ns": 352853000,
-      "cold_start_ns": 3002002000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 4571136,
       "source_lines": 70,
@@ -1554,8 +1256,6 @@
     "155": {
       "time_ns": 539136000,
       "compile_time_ns": 376028000,
-      "cold_start_ns": 606660000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 217841664,
       "source_lines": 126,
@@ -1564,8 +1264,6 @@
     "156": {
       "time_ns": 75834000,
       "compile_time_ns": 359876000,
-      "cold_start_ns": 117193000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 70,
@@ -1574,8 +1272,6 @@
     "157": {
       "time_ns": 0,
       "compile_time_ns": 387470000,
-      "cold_start_ns": 25051000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 78,
@@ -1584,8 +1280,6 @@
     "158": {
       "time_ns": 0,
       "compile_time_ns": 378298000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 24,
@@ -1594,8 +1288,6 @@
     "159": {
       "time_ns": 65000,
       "compile_time_ns": 416433000,
-      "cold_start_ns": 30188000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 5390336,
       "source_lines": 50,
@@ -1604,8 +1296,6 @@
     "160": {
       "time_ns": 0,
       "compile_time_ns": 375502000,
-      "cold_start_ns": 567000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 79,
@@ -1614,8 +1304,6 @@
     "161": {
       "time_ns": 0,
       "compile_time_ns": 404477000,
-      "cold_start_ns": 61406000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 9764864,
       "source_lines": 102,
@@ -1624,8 +1312,6 @@
     "162": {
       "time_ns": 0,
       "compile_time_ns": 366959000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 35,
@@ -1634,8 +1320,6 @@
     "163": {
       "time_ns": 139301000,
       "compile_time_ns": 497979000,
-      "cold_start_ns": 178337000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 182,
@@ -1644,8 +1328,6 @@
     "164": {
       "time_ns": 0,
       "compile_time_ns": 393700000,
-      "cold_start_ns": 14000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 49,
@@ -1654,8 +1336,6 @@
     "165": {
       "time_ns": 0,
       "compile_time_ns": 528674000,
-      "cold_start_ns": 621193000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 132988928,
       "source_lines": 137,
@@ -1664,8 +1344,6 @@
     "166": {
       "time_ns": 0,
       "compile_time_ns": 407444000,
-      "cold_start_ns": 46130000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 70,
@@ -1674,8 +1352,6 @@
     "167": {
       "time_ns": 133735000,
       "compile_time_ns": 666594000,
-      "cold_start_ns": 168617000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 79282176,
       "source_lines": 255,
@@ -1684,8 +1360,6 @@
     "168": {
       "time_ns": 0,
       "compile_time_ns": 358046000,
-      "cold_start_ns": 75000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 69,
@@ -1694,8 +1368,6 @@
     "169": {
       "time_ns": 0,
       "compile_time_ns": 386351000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 62,
@@ -1704,8 +1376,6 @@
     "170": {
       "time_ns": 0,
       "compile_time_ns": 412767000,
-      "cold_start_ns": 37437472000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 249,
@@ -1714,8 +1384,6 @@
     "171": {
       "time_ns": 0,
       "compile_time_ns": 385191000,
-      "cold_start_ns": 8682000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 69,
@@ -1724,8 +1392,6 @@
     "172": {
       "time_ns": 0,
       "compile_time_ns": 423347000,
-      "cold_start_ns": 7000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 71,
@@ -1734,8 +1400,6 @@
     "173": {
       "time_ns": 754000,
       "compile_time_ns": 386726000,
-      "cold_start_ns": 4226000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 40,
@@ -1744,8 +1408,6 @@
     "174": {
       "time_ns": 161000,
       "compile_time_ns": 384774000,
-      "cold_start_ns": 9068000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 5373952,
       "source_lines": 46,
@@ -1754,8 +1416,6 @@
     "175": {
       "time_ns": 0,
       "compile_time_ns": 376376000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 58,
@@ -1764,8 +1424,6 @@
     "176": {
       "time_ns": 71000,
       "compile_time_ns": 464208000,
-      "cold_start_ns": 147000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 117,
@@ -1774,8 +1432,6 @@
     "177": {
       "time_ns": 4715794000,
       "compile_time_ns": 448842000,
-      "cold_start_ns": 4774260000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 95,
@@ -1784,8 +1440,6 @@
     "178": {
       "time_ns": 0,
       "compile_time_ns": 380591000,
-      "cold_start_ns": 1676000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1540096,
       "source_lines": 45,
@@ -1794,8 +1448,6 @@
     "179": {
       "time_ns": 271919000,
       "compile_time_ns": 427972000,
-      "cold_start_ns": 316220000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 41402368,
       "source_lines": 36,
@@ -1804,8 +1456,6 @@
     "180": {
       "time_ns": 20170000,
       "compile_time_ns": 505626000,
-      "cold_start_ns": 49923000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 26558464,
       "source_lines": 241,
@@ -1814,8 +1464,6 @@
     "181": {
       "time_ns": 6864000,
       "compile_time_ns": 394566000,
-      "cold_start_ns": 23944000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 42,
@@ -1824,8 +1472,6 @@
     "182": {
       "time_ns": 270176000,
       "compile_time_ns": 360433000,
-      "cold_start_ns": 310462000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 36,
@@ -1834,8 +1480,6 @@
     "183": {
       "time_ns": 877000,
       "compile_time_ns": 375552000,
-      "cold_start_ns": 2026000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 58,
@@ -1844,8 +1488,6 @@
     "184": {
       "time_ns": 1819000,
       "compile_time_ns": 483567000,
-      "cold_start_ns": 5316000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1671168,
       "source_lines": 77,
@@ -1854,8 +1496,6 @@
     "185": {
       "time_ns": 47024000,
       "compile_time_ns": 395145000,
-      "cold_start_ns": 82444000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 110,
@@ -1864,8 +1504,6 @@
     "186": {
       "time_ns": 0,
       "compile_time_ns": 355984000,
-      "cold_start_ns": 77088000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 9371648,
       "source_lines": 112,
@@ -1874,8 +1512,6 @@
     "187": {
       "time_ns": 54000,
       "compile_time_ns": 375218000,
-      "cold_start_ns": 726474000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 124452864,
       "source_lines": 70,
@@ -1884,8 +1520,6 @@
     "188": {
       "time_ns": 0,
       "compile_time_ns": 372900000,
-      "cold_start_ns": 19000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 49,
@@ -1894,8 +1528,6 @@
     "189": {
       "time_ns": 164517000,
       "compile_time_ns": 436455000,
-      "cold_start_ns": 206561000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1490944,
       "source_lines": 88,
@@ -1904,8 +1536,6 @@
     "190": {
       "time_ns": 3000,
       "compile_time_ns": 375511000,
-      "cold_start_ns": 6000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 26,
@@ -1914,8 +1544,6 @@
     "191": {
       "time_ns": 0,
       "compile_time_ns": 390278000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 40,
@@ -1924,8 +1552,6 @@
     "192": {
       "time_ns": 0,
       "compile_time_ns": 412133000,
-      "cold_start_ns": 66999000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 121,
@@ -1934,8 +1560,6 @@
     "193": {
       "time_ns": 34260000,
       "compile_time_ns": 352994000,
-      "cold_start_ns": 280905000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 177422336,
       "source_lines": 76,
@@ -1944,8 +1568,6 @@
     "194": {
       "time_ns": 8000,
       "compile_time_ns": 382765000,
-      "cold_start_ns": 14000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 92,
@@ -1954,8 +1576,6 @@
     "195": {
       "time_ns": 0,
       "compile_time_ns": 373889000,
-      "cold_start_ns": 338771000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 56,
@@ -1964,8 +1584,6 @@
     "196": {
       "time_ns": 0,
       "compile_time_ns": 438924000,
-      "cold_start_ns": 179279000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 38961152,
       "source_lines": 177,
@@ -1974,8 +1592,6 @@
     "197": {
       "time_ns": 68000,
       "compile_time_ns": 366122000,
-      "cold_start_ns": 123000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 26,
@@ -1984,8 +1600,6 @@
     "198": {
       "time_ns": 0,
       "compile_time_ns": 377950000,
-      "cold_start_ns": 443517000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1540096,
       "source_lines": 60,
@@ -1994,8 +1608,6 @@
     "199": {
       "time_ns": 646000,
       "compile_time_ns": 352262000,
-      "cold_start_ns": 2581000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 46,
@@ -2004,8 +1616,6 @@
     "200": {
       "time_ns": 7938000,
       "compile_time_ns": 443165000,
-      "cold_start_ns": 24510000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2703360,
       "source_lines": 189,
@@ -2013,10 +1623,8 @@
     },
     "201": {
       "time_ns": 511291000,
-      "compile_time_ns": 3930083000,
-      "cold_start_ns": 558054000,
       "subprocess_wall_ns": 8106507709,
-      "iterations": 10,
+      "compile_time_ns": 3930083000,
       "status": "pass",
       "peak_rss_bytes": 17383424,
       "source_lines": 88,
@@ -2024,10 +1632,8 @@
     },
     "202": {
       "time_ns": 15000,
-      "compile_time_ns": 363785000,
-      "cold_start_ns": 22000,
       "subprocess_wall_ns": 401939125,
-      "iterations": 1000,
+      "compile_time_ns": 363785000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 75,
@@ -2035,10 +1641,8 @@
     },
     "203": {
       "time_ns": 55000,
-      "compile_time_ns": 448960000,
-      "cold_start_ns": 178000,
       "subprocess_wall_ns": 293862250,
-      "iterations": 1000,
+      "compile_time_ns": 448960000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 58,
@@ -2046,10 +1650,8 @@
     },
     "204": {
       "time_ns": 13727000,
-      "compile_time_ns": 373874000,
-      "cold_start_ns": 35204000,
       "subprocess_wall_ns": 1756945291,
-      "iterations": 100,
+      "compile_time_ns": 373874000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 47,
@@ -2057,10 +1659,8 @@
     },
     "205": {
       "time_ns": 0,
-      "compile_time_ns": 387707000,
-      "cold_start_ns": 4000,
       "subprocess_wall_ns": 249108125,
-      "iterations": 1000,
+      "compile_time_ns": 387707000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 64,
@@ -2068,10 +1668,8 @@
     },
     "206": {
       "time_ns": 40154000,
-      "compile_time_ns": 393042000,
-      "cold_start_ns": 80184000,
       "subprocess_wall_ns": 4717187417,
-      "iterations": 100,
+      "compile_time_ns": 393042000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 29,
@@ -2079,10 +1677,8 @@
     },
     "207": {
       "time_ns": 318000,
-      "compile_time_ns": 352058000,
-      "cold_start_ns": 447000,
       "subprocess_wall_ns": 580399625,
-      "iterations": 1000,
+      "compile_time_ns": 352058000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 24,
@@ -2091,8 +1687,6 @@
     "208": {
       "time_ns": 11384000,
       "compile_time_ns": 2465522000,
-      "cold_start_ns": 17579000,
-      "iterations": 100,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 5488640,
@@ -2101,10 +1695,8 @@
     },
     "209": {
       "time_ns": 1000,
-      "compile_time_ns": 353254000,
-      "cold_start_ns": 1000,
       "subprocess_wall_ns": 232881416,
-      "iterations": 1000,
+      "compile_time_ns": 353254000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 56,
@@ -2112,10 +1704,8 @@
     },
     "210": {
       "time_ns": 352917000,
-      "compile_time_ns": 376237000,
-      "cold_start_ns": 388932000,
       "subprocess_wall_ns": 6083361208,
-      "iterations": 10,
+      "compile_time_ns": 376237000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 45,
@@ -2124,8 +1714,6 @@
     "211": {
       "time_ns": 3758531000,
       "compile_time_ns": 2459979000,
-      "cold_start_ns": 3824188000,
-      "iterations": 3,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 513425408,
@@ -2134,10 +1722,8 @@
     },
     "212": {
       "time_ns": 5384971000,
-      "compile_time_ns": 649022000,
-      "cold_start_ns": 5383860000,
       "subprocess_wall_ns": 39128762583,
-      "iterations": 3,
+      "compile_time_ns": 649022000,
       "status": "pass",
       "peak_rss_bytes": 5636096,
       "source_lines": 252,
@@ -2146,8 +1732,6 @@
     "213": {
       "time_ns": 176778000,
       "compile_time_ns": 3801409000,
-      "cold_start_ns": 210978000,
-      "iterations": 10,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 1753088,
@@ -2157,8 +1741,6 @@
     "214": {
       "time_ns": 498852000,
       "compile_time_ns": 2511511000,
-      "cold_start_ns": 531646000,
-      "iterations": 10,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 321421312,
@@ -2168,8 +1750,6 @@
     "215": {
       "time_ns": 5002000,
       "compile_time_ns": 3757428000,
-      "cold_start_ns": 15149000,
-      "iterations": 100,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 46006272,
@@ -2179,8 +1759,6 @@
     "216": {
       "time_ns": 1684254000,
       "compile_time_ns": 392021000,
-      "cold_start_ns": 1726615000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 122372096,
       "source_lines": 164,
@@ -2189,8 +1767,6 @@
     "217": {
       "time_ns": 0,
       "compile_time_ns": 378673000,
-      "cold_start_ns": 1583000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 198,
@@ -2199,8 +1775,6 @@
     "218": {
       "time_ns": 0,
       "compile_time_ns": 361596000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 25,
@@ -2209,8 +1783,6 @@
     "219": {
       "time_ns": 3000,
       "compile_time_ns": 382451000,
-      "cold_start_ns": 3000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 71,
@@ -2219,8 +1791,6 @@
     "220": {
       "time_ns": 3000,
       "compile_time_ns": 395417000,
-      "cold_start_ns": 5000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1458176,
       "source_lines": 300,
@@ -2229,8 +1799,6 @@
     "221": {
       "time_ns": 13563000,
       "compile_time_ns": 493290000,
-      "cold_start_ns": 37488000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 9338880,
       "source_lines": 158,
@@ -2239,8 +1807,6 @@
     "222": {
       "time_ns": 1755402000,
       "compile_time_ns": 378986000,
-      "cold_start_ns": 1841440000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 353714176,
       "source_lines": 101,
@@ -2249,8 +1815,6 @@
     "223": {
       "time_ns": 6796987000,
       "compile_time_ns": 457263000,
-      "cold_start_ns": 6935884000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 34717696,
       "source_lines": 135,
@@ -2259,8 +1823,6 @@
     "224": {
       "time_ns": 2086670000,
       "compile_time_ns": 512098000,
-      "cold_start_ns": 2114596000,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 546324480,
@@ -2270,8 +1832,6 @@
     "225": {
       "time_ns": 15463000,
       "compile_time_ns": 395094000,
-      "cold_start_ns": 27763000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 48,
@@ -2280,8 +1840,6 @@
     "226": {
       "time_ns": 0,
       "compile_time_ns": 350487000,
-      "cold_start_ns": 91705000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 127,
@@ -2290,8 +1848,6 @@
     "227": {
       "time_ns": 0,
       "compile_time_ns": 346935000,
-      "cold_start_ns": 34000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 210,
@@ -2300,8 +1856,6 @@
     "228": {
       "time_ns": 16000,
       "compile_time_ns": 394322000,
-      "cold_start_ns": 36000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 69,
@@ -2310,8 +1864,6 @@
     "229": {
       "time_ns": 13008967000,
       "compile_time_ns": 376444000,
-      "cold_start_ns": 12919013000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 51380224,
       "source_lines": 66,
@@ -2320,8 +1872,6 @@
     "230": {
       "time_ns": 0,
       "compile_time_ns": 392027000,
-      "cold_start_ns": 8000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 91,
@@ -2330,8 +1880,6 @@
     "231": {
       "time_ns": 44558000,
       "compile_time_ns": 363652000,
-      "cold_start_ns": 85952000,
-      "iterations": 100,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 21397504,
@@ -2341,8 +1889,6 @@
     "232": {
       "time_ns": 1349666,
       "compile_time_ns": 376773000,
-      "cold_start_ns": 2941875,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1523712,
       "source_lines": 102,
@@ -2351,8 +1897,6 @@
     "233": {
       "time_ns": 18193500,
       "compile_time_ns": 511325000,
-      "cold_start_ns": 18266375,
-      "iterations": 100,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 10141696,
@@ -2362,8 +1906,6 @@
     "234": {
       "time_ns": 1838000,
       "compile_time_ns": 396157000,
-      "cold_start_ns": 5746000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2703360,
       "source_lines": 92,
@@ -2372,8 +1914,6 @@
     "235": {
       "time_ns": 18000,
       "compile_time_ns": 381909000,
-      "cold_start_ns": 19000,
-      "iterations": 1000,
       "status": "pass",
       "error": "compile error",
       "peak_rss_bytes": 1441792,
@@ -2383,8 +1923,6 @@
     "237": {
       "time_ns": 0,
       "compile_time_ns": 512215000,
-      "cold_start_ns": 27000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 172,
@@ -2393,8 +1931,6 @@
     "239": {
       "time_ns": 0,
       "compile_time_ns": 357524000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 74,
@@ -2403,8 +1939,6 @@
     "240": {
       "time_ns": 44000,
       "compile_time_ns": 397562000,
-      "cold_start_ns": 138000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 110,
@@ -2413,8 +1947,6 @@
     "241": {
       "time_ns": 0,
       "compile_time_ns": 354467000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 47,
@@ -2423,8 +1955,6 @@
     "242": {
       "time_ns": 0,
       "compile_time_ns": 368215000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 62,
@@ -2433,8 +1963,6 @@
     "243": {
       "time_ns": 41000,
       "compile_time_ns": 379896000,
-      "cold_start_ns": 221000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 72,
@@ -2443,8 +1971,6 @@
     "244": {
       "time_ns": 13920000,
       "compile_time_ns": 385999000,
-      "cold_start_ns": 76440000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 776290304,
       "source_lines": 165,
@@ -2453,8 +1979,6 @@
     "245": {
       "time_ns": 1244063000,
       "compile_time_ns": 655463000,
-      "cold_start_ns": 1255884000,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 2162688,
@@ -2464,8 +1988,6 @@
     "246": {
       "time_ns": 0,
       "compile_time_ns": 609351000,
-      "cold_start_ns": 3379000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 119,
@@ -2474,8 +1996,6 @@
     "247": {
       "time_ns": 17339000,
       "compile_time_ns": 456414000,
-      "cold_start_ns": 17216000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 137,
@@ -2484,8 +2004,6 @@
     "248": {
       "time_ns": 760039000,
       "compile_time_ns": 609674000,
-      "cold_start_ns": 756677000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 2883584,
       "source_lines": 178,
@@ -2494,8 +2012,6 @@
     "249": {
       "time_ns": 221465000,
       "compile_time_ns": 1580360000,
-      "cold_start_ns": 236887000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 15368192,
       "source_lines": 89,
@@ -2504,8 +2020,6 @@
     "250": {
       "time_ns": 105921000,
       "compile_time_ns": 538989000,
-      "cold_start_ns": 106763000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 54,
@@ -2514,8 +2028,6 @@
     "251": {
       "time_ns": 0,
       "compile_time_ns": 431522000,
-      "cold_start_ns": 3434054000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 96,
@@ -2524,8 +2036,6 @@
     "252": {
       "time_ns": 246312000,
       "compile_time_ns": 588906000,
-      "cold_start_ns": 247581000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 5685248,
       "source_lines": 166,
@@ -2534,8 +2044,6 @@
     "253": {
       "time_ns": 0,
       "compile_time_ns": 416744000,
-      "cold_start_ns": 25000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 84,
@@ -2544,8 +2052,6 @@
     "254": {
       "time_ns": 441064000,
       "compile_time_ns": 439657000,
-      "cold_start_ns": 440307000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 6094848,
       "source_lines": 150,
@@ -2554,8 +2060,6 @@
     "255": {
       "time_ns": 0,
       "compile_time_ns": 456037000,
-      "cold_start_ns": 648803000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 60,
@@ -2564,8 +2068,6 @@
     "256": {
       "time_ns": 998639000,
       "compile_time_ns": 448536000,
-      "cold_start_ns": 1012601000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 201392128,
       "source_lines": 50,
@@ -2574,8 +2076,6 @@
     "257": {
       "time_ns": 0,
       "compile_time_ns": 576491000,
-      "cold_start_ns": 372736000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 162,
@@ -2584,8 +2084,6 @@
     "258": {
       "time_ns": 204096000,
       "compile_time_ns": 450814000,
-      "cold_start_ns": 204408000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1458176,
       "source_lines": 86,
@@ -2594,8 +2092,6 @@
     "259": {
       "time_ns": 14217556000,
       "compile_time_ns": 515209000,
-      "cold_start_ns": 14816468000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 144064512,
       "source_lines": 154,
@@ -2604,8 +2100,6 @@
     "260": {
       "time_ns": 1053311000,
       "compile_time_ns": 594261000,
-      "cold_start_ns": 1071731000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 8404992,
       "source_lines": 89,
@@ -2614,8 +2108,6 @@
     "261": {
       "time_ns": 15504000,
       "compile_time_ns": 548086000,
-      "cold_start_ns": 15956000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 3178496,
       "source_lines": 118,
@@ -2624,8 +2116,6 @@
     "263": {
       "time_ns": 1810867000,
       "compile_time_ns": 445671000,
-      "cold_start_ns": 1854612000,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 1998848,
@@ -2635,8 +2125,6 @@
     "264": {
       "time_ns": 265954000,
       "compile_time_ns": 4378707000,
-      "cold_start_ns": 260074000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1507328,
       "source_lines": 170,
@@ -2645,8 +2133,6 @@
     "265": {
       "time_ns": 470000,
       "compile_time_ns": 540012000,
-      "cold_start_ns": 541000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 72,
@@ -2655,8 +2141,6 @@
     "266": {
       "time_ns": 1279096000,
       "compile_time_ns": 472269000,
-      "cold_start_ns": 1541903000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 68517888,
       "source_lines": 144,
@@ -2665,8 +2149,6 @@
     "267": {
       "time_ns": 12000,
       "compile_time_ns": 444017000,
-      "cold_start_ns": 13000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 56,
@@ -2675,8 +2157,6 @@
     "268": {
       "time_ns": 24040000,
       "compile_time_ns": 430116000,
-      "cold_start_ns": 24333000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 60,
@@ -2685,8 +2165,6 @@
     "269": {
       "time_ns": 29714000,
       "compile_time_ns": 594501000,
-      "cold_start_ns": 30290000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 24625152,
       "source_lines": 196,
@@ -2695,8 +2173,6 @@
     "270": {
       "time_ns": 0,
       "compile_time_ns": 59969406000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 141,
@@ -2705,8 +2181,6 @@
     "271": {
       "time_ns": 0,
       "compile_time_ns": 542471000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 96,
@@ -2715,8 +2189,6 @@
     "272": {
       "time_ns": 6668257000,
       "compile_time_ns": 424592000,
-      "cold_start_ns": 6622492000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 5881856,
       "source_lines": 136,
@@ -2725,8 +2197,6 @@
     "273": {
       "time_ns": 1837570000,
       "compile_time_ns": 744346000,
-      "cold_start_ns": 1822103000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 4521984,
       "source_lines": 124,
@@ -2735,8 +2205,6 @@
     "274": {
       "time_ns": 227083000,
       "compile_time_ns": 758068000,
-      "cold_start_ns": 233591000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 11403264,
       "source_lines": 56,
@@ -2745,8 +2213,6 @@
     "276": {
       "time_ns": 67163000,
       "compile_time_ns": 442342000,
-      "cold_start_ns": 64282000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 106725376,
       "source_lines": 103,
@@ -2755,8 +2221,6 @@
     "277": {
       "time_ns": 12000,
       "compile_time_ns": 584051000,
-      "cold_start_ns": 10000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 103,
@@ -2765,8 +2229,6 @@
     "278": {
       "time_ns": 64597000,
       "compile_time_ns": 568478000,
-      "cold_start_ns": 106035000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 69,
@@ -2775,8 +2237,6 @@
     "279": {
       "time_ns": 0,
       "compile_time_ns": 689273000,
-      "cold_start_ns": 901525000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 90,
@@ -2785,8 +2245,6 @@
     "280": {
       "time_ns": 1115000,
       "compile_time_ns": 446877000,
-      "cold_start_ns": 1204000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1802240,
       "source_lines": 193,
@@ -2795,8 +2253,6 @@
     "281": {
       "time_ns": 0,
       "compile_time_ns": 414279000,
-      "cold_start_ns": 31000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 109,
@@ -2805,8 +2261,6 @@
     "282": {
       "time_ns": 15000,
       "compile_time_ns": 412117000,
-      "cold_start_ns": 17000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 119,
@@ -2815,8 +2269,6 @@
     "283": {
       "time_ns": 1464867000,
       "compile_time_ns": 561520000,
-      "cold_start_ns": 1478003000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 81444864,
       "source_lines": 141,
@@ -2825,8 +2277,6 @@
     "284": {
       "time_ns": 268213000,
       "compile_time_ns": 569184000,
-      "cold_start_ns": 267111000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1687552,
       "source_lines": 138,
@@ -2835,8 +2285,6 @@
     "285": {
       "time_ns": 3193000,
       "compile_time_ns": 459382000,
-      "cold_start_ns": 4018000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 76,
@@ -2845,8 +2293,6 @@
     "286": {
       "time_ns": 0,
       "compile_time_ns": 467159000,
-      "cold_start_ns": 122000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 57,
@@ -2855,8 +2301,6 @@
     "287": {
       "time_ns": 0,
       "compile_time_ns": 368394000,
-      "cold_start_ns": 481542000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 64,
@@ -2865,8 +2309,6 @@
     "288": {
       "time_ns": 131489000,
       "compile_time_ns": 480212000,
-      "cold_start_ns": 129808000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 68,
@@ -2875,8 +2317,6 @@
     "290": {
       "time_ns": 6424000,
       "compile_time_ns": 404950000,
-      "cold_start_ns": 7941000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 9306112,
       "source_lines": 102,
@@ -2885,8 +2325,6 @@
     "291": {
       "time_ns": 2684219000,
       "compile_time_ns": 423920000,
-      "cold_start_ns": 2681192000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 97058816,
       "source_lines": 182,
@@ -2895,8 +2333,6 @@
     "292": {
       "time_ns": 448779000,
       "compile_time_ns": 559742000,
-      "cold_start_ns": 446994000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 8601600,
       "source_lines": 190,
@@ -2905,8 +2341,6 @@
     "293": {
       "time_ns": 43372000,
       "compile_time_ns": 420636000,
-      "cold_start_ns": 43112000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1507328,
       "source_lines": 75,
@@ -2915,8 +2349,6 @@
     "294": {
       "time_ns": 4994221000,
       "compile_time_ns": 467257000,
-      "cold_start_ns": 4966706000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 8699904,
       "source_lines": 94,
@@ -2925,8 +2357,6 @@
     "295": {
       "time_ns": 258701000,
       "compile_time_ns": 1045924000,
-      "cold_start_ns": 264230000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 307576832,
       "source_lines": 234,
@@ -2935,8 +2365,6 @@
     "296": {
       "time_ns": 17756774000,
       "compile_time_ns": 401729000,
-      "cold_start_ns": 17702750000,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 1441792,
@@ -2946,8 +2374,6 @@
     "297": {
       "time_ns": 1000,
       "compile_time_ns": 599214000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 57,
@@ -2956,8 +2382,6 @@
     "299": {
       "time_ns": 265431000,
       "compile_time_ns": 441905000,
-      "cold_start_ns": 271929000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 51396608,
       "source_lines": 87,
@@ -2966,8 +2390,6 @@
     "301": {
       "time_ns": 0,
       "compile_time_ns": 397394000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 41,
@@ -2975,15 +2397,12 @@
     },
     "302": {
       "time_ns": 0,
-      "cold_start_ns": 0,
       "status": "fail",
       "error": "no output"
     },
     "303": {
       "time_ns": 93354000,
       "compile_time_ns": 615096000,
-      "cold_start_ns": 93736000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1474560,
       "source_lines": 113,
@@ -2992,8 +2411,6 @@
     "304": {
       "time_ns": 59250000,
       "compile_time_ns": 635325000,
-      "cold_start_ns": 62460000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 18530304,
       "source_lines": 137,
@@ -3002,8 +2419,6 @@
     "306": {
       "time_ns": 0,
       "compile_time_ns": 719987000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 77,
@@ -3012,8 +2427,6 @@
     "307": {
       "time_ns": 0,
       "compile_time_ns": 430574000,
-      "cold_start_ns": 205000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 81,
@@ -3022,8 +2435,6 @@
     "308": {
       "time_ns": 0,
       "compile_time_ns": 409335000,
-      "cold_start_ns": 2366089000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1818624,
       "source_lines": 84,
@@ -3032,8 +2443,6 @@
     "309": {
       "time_ns": 2670727000,
       "compile_time_ns": 560848000,
-      "cold_start_ns": 2645582000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 44990464,
       "source_lines": 102,
@@ -3042,8 +2451,6 @@
     "310": {
       "time_ns": 27716000,
       "compile_time_ns": 611679000,
-      "cold_start_ns": 27694000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1490944,
       "source_lines": 102,
@@ -3052,8 +2459,6 @@
     "311": {
       "time_ns": 4672340000,
       "compile_time_ns": 448054000,
-      "cold_start_ns": 4628477000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 81395712,
       "source_lines": 114,
@@ -3062,8 +2467,6 @@
     "312": {
       "time_ns": 0,
       "compile_time_ns": 596512000,
-      "cold_start_ns": 5000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 84,
@@ -3072,8 +2475,6 @@
     "313": {
       "time_ns": 2440000,
       "compile_time_ns": 521479000,
-      "cold_start_ns": 2445000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2752512,
       "source_lines": 74,
@@ -3082,8 +2483,6 @@
     "314": {
       "time_ns": 5107333000,
       "compile_time_ns": 439811000,
-      "cold_start_ns": 5109451000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 2375680,
       "source_lines": 225,
@@ -3092,8 +2491,6 @@
     "315": {
       "time_ns": 43394000,
       "compile_time_ns": 638783000,
-      "cold_start_ns": 41890000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 11403264,
       "source_lines": 149,
@@ -3102,8 +2499,6 @@
     "317": {
       "time_ns": 0,
       "compile_time_ns": 462591000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 40,
@@ -3112,8 +2507,6 @@
     "318": {
       "time_ns": 0,
       "compile_time_ns": 823752000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 54,
@@ -3122,8 +2515,6 @@
     "319": {
       "time_ns": 281141000,
       "compile_time_ns": 521911000,
-      "cold_start_ns": 280238000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 32948224,
       "source_lines": 160,
@@ -3132,8 +2523,6 @@
     "321": {
       "time_ns": 0,
       "compile_time_ns": 412147000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 88,
@@ -3142,8 +2531,6 @@
     "322": {
       "time_ns": 217922000,
       "compile_time_ns": 451011000,
-      "cold_start_ns": 218274000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 5636096,
       "source_lines": 206,
@@ -3152,8 +2539,6 @@
     "323": {
       "time_ns": 0,
       "compile_time_ns": 398251000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 49,
@@ -3162,8 +2547,6 @@
     "325": {
       "time_ns": 0,
       "compile_time_ns": 416132000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 195,
@@ -3172,8 +2555,6 @@
     "326": {
       "time_ns": 19753000,
       "compile_time_ns": 403841000,
-      "cold_start_ns": 27141000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 17399808,
       "source_lines": 105,
@@ -3182,8 +2563,6 @@
     "327": {
       "time_ns": 0,
       "compile_time_ns": 410560000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 54,
@@ -3192,8 +2571,6 @@
     "328": {
       "time_ns": 0,
       "compile_time_ns": 411561000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 35,
@@ -3202,8 +2579,6 @@
     "330": {
       "time_ns": 0,
       "compile_time_ns": 1019105000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 117,
@@ -3212,8 +2587,6 @@
     "332": {
       "time_ns": 1490768000,
       "compile_time_ns": 474204000,
-      "cold_start_ns": 1376686000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 3506176,
       "source_lines": 123,
@@ -3222,8 +2595,6 @@
     "333": {
       "time_ns": 81467000,
       "compile_time_ns": 719800000,
-      "cold_start_ns": 138546000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 62423040,
       "source_lines": 114,
@@ -3232,8 +2603,6 @@
     "334": {
       "time_ns": 0,
       "compile_time_ns": 382511000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 94,
@@ -3242,8 +2611,6 @@
     "335": {
       "time_ns": 0,
       "compile_time_ns": 398398000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 85,
@@ -3252,8 +2619,6 @@
     "337": {
       "time_ns": 1182947000,
       "compile_time_ns": 433778000,
-      "cold_start_ns": 1234281000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 321404928,
       "source_lines": 137,
@@ -3262,8 +2627,6 @@
     "340": {
       "time_ns": 0,
       "compile_time_ns": 333810000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 70,
@@ -3272,8 +2635,6 @@
     "341": {
       "time_ns": 111641000,
       "compile_time_ns": 386506000,
-      "cold_start_ns": 158582000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 241385472,
       "source_lines": 127,
@@ -3282,8 +2643,6 @@
     "342": {
       "time_ns": 2814000,
       "compile_time_ns": 452700000,
-      "cold_start_ns": 9646000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 9355264,
       "source_lines": 286,
@@ -3292,8 +2651,6 @@
     "343": {
       "time_ns": 49136000,
       "compile_time_ns": 450910000,
-      "cold_start_ns": 88325000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 34013184,
       "source_lines": 173,
@@ -3302,8 +2659,6 @@
     "345": {
       "time_ns": 0,
       "compile_time_ns": 47948653000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 64,
@@ -3312,8 +2667,6 @@
     "346": {
       "time_ns": 19243000,
       "compile_time_ns": 441736000,
-      "cold_start_ns": 37807000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 39141376,
       "source_lines": 54,
@@ -3322,8 +2675,6 @@
     "347": {
       "time_ns": 14592000,
       "compile_time_ns": 381493000,
-      "cold_start_ns": 39216000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 9207808,
       "source_lines": 79,
@@ -3332,8 +2683,6 @@
     "348": {
       "time_ns": 181057000,
       "compile_time_ns": 831579000,
-      "cold_start_ns": 223384000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 3112960,
       "source_lines": 74,
@@ -3342,8 +2691,6 @@
     "349": {
       "time_ns": 3057000,
       "compile_time_ns": 436992000,
-      "cold_start_ns": 8054000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 2883584,
       "source_lines": 107,
@@ -3352,8 +2699,6 @@
     "350": {
       "time_ns": 12957000,
       "compile_time_ns": 373019000,
-      "cold_start_ns": 42989000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 21757952,
       "source_lines": 135,
@@ -3362,8 +2707,6 @@
     "357": {
       "time_ns": 1162989000,
       "compile_time_ns": 407947000,
-      "cold_start_ns": 1186883000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 89014272,
       "source_lines": 132,
@@ -3372,8 +2715,6 @@
     "381": {
       "time_ns": 528465000,
       "compile_time_ns": 387509000,
-      "cold_start_ns": 545454000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 101400576,
       "source_lines": 57,
@@ -3382,8 +2723,6 @@
     "387": {
       "time_ns": 1455000,
       "compile_time_ns": 412242000,
-      "cold_start_ns": 4129000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1867776,
       "source_lines": 122,
@@ -3392,8 +2731,6 @@
     "401": {
       "time_ns": 890483000,
       "compile_time_ns": 344122000,
-      "cold_start_ns": 922529000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 69,
@@ -3402,8 +2739,6 @@
     "411": {
       "time_ns": 7720111000,
       "compile_time_ns": 604856000,
-      "cold_start_ns": 7848724000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 561807360,
       "source_lines": 88,
@@ -3412,8 +2747,6 @@
     "412": {
       "time_ns": 1567482000,
       "compile_time_ns": 377791000,
-      "cold_start_ns": 1580025000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1605632,
       "source_lines": 107,
@@ -3422,8 +2755,6 @@
     "413": {
       "time_ns": 10003116875,
       "compile_time_ns": 4365890000,
-      "cold_start_ns": 10044120083,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 1729576960,
@@ -3433,8 +2764,6 @@
     "414": {
       "time_ns": 2333276000,
       "compile_time_ns": 649434000,
-      "cold_start_ns": 2416406000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 14434304,
       "source_lines": 158,
@@ -3443,8 +2772,6 @@
     "416": {
       "time_ns": 14039122000,
       "compile_time_ns": 412637000,
-      "cold_start_ns": 14100354000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 8552448,
       "source_lines": 190,
@@ -3453,8 +2780,6 @@
     "420": {
       "time_ns": 140051000,
       "compile_time_ns": 388592000,
-      "cold_start_ns": 181896000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 5390336,
       "source_lines": 89,
@@ -3463,8 +2788,6 @@
     "421": {
       "time_ns": 2224836000,
       "compile_time_ns": 404745000,
-      "cold_start_ns": 2252387000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 7634944,
       "source_lines": 188,
@@ -3473,8 +2796,6 @@
     "422": {
       "time_ns": 0,
       "compile_time_ns": 413545000,
-      "cold_start_ns": 21000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 113,
@@ -3483,8 +2804,6 @@
     "423": {
       "time_ns": 1212885000,
       "compile_time_ns": 404659000,
-      "cold_start_ns": 1358909000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 251396096,
       "source_lines": 124,
@@ -3493,8 +2812,6 @@
     "424": {
       "time_ns": 1968009000,
       "compile_time_ns": 467346000,
-      "cold_start_ns": 1993646000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 606,
@@ -3503,8 +2820,6 @@
     "425": {
       "time_ns": 132804000,
       "compile_time_ns": 389755000,
-      "cold_start_ns": 183124000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 51412992,
       "source_lines": 138,
@@ -3513,8 +2828,6 @@
     "426": {
       "time_ns": 83665000,
       "compile_time_ns": 399063000,
-      "cold_start_ns": 114746000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 101,
@@ -3523,8 +2836,6 @@
     "427": {
       "time_ns": 2925849000,
       "compile_time_ns": 372310000,
-      "cold_start_ns": 2977234000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 121438208,
       "source_lines": 135,
@@ -3533,8 +2844,6 @@
     "428": {
       "time_ns": 0,
       "compile_time_ns": 429665000,
-      "cold_start_ns": 11827851000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 15001452544,
       "source_lines": 164,
@@ -3543,8 +2852,6 @@
     "429": {
       "time_ns": 674585000,
       "compile_time_ns": 366340000,
-      "cold_start_ns": 701263000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 13877248,
       "source_lines": 74,
@@ -3553,8 +2860,6 @@
     "430": {
       "time_ns": 721649000,
       "compile_time_ns": 365042000,
-      "cold_start_ns": 794342000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 61,
@@ -3563,8 +2868,6 @@
     "431": {
       "time_ns": 346267000,
       "compile_time_ns": 397017000,
-      "cold_start_ns": 378483000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 111,
@@ -3573,8 +2876,6 @@
     "435": {
       "time_ns": 0,
       "compile_time_ns": 377335000,
-      "cold_start_ns": 1380000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 82,
@@ -3583,8 +2884,6 @@
     "437": {
       "time_ns": 7603656000,
       "compile_time_ns": 421919000,
-      "cold_start_ns": 7637523000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 13910016,
       "source_lines": 161,
@@ -3593,8 +2892,6 @@
     "440": {
       "time_ns": 1591972000,
       "compile_time_ns": 414493000,
-      "cold_start_ns": 1628913000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 171,
@@ -3603,8 +2900,6 @@
     "441": {
       "time_ns": 101644000,
       "compile_time_ns": 426505000,
-      "cold_start_ns": 138495000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 171409408,
       "source_lines": 138,
@@ -3613,8 +2908,6 @@
     "443": {
       "time_ns": 11360000,
       "compile_time_ns": 542026000,
-      "cold_start_ns": 28365000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 163,
@@ -3623,8 +2916,6 @@
     "449": {
       "time_ns": 0,
       "compile_time_ns": 357052000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 46,
@@ -3633,8 +2924,6 @@
     "451": {
       "time_ns": 4535931000,
       "compile_time_ns": 400682000,
-      "cold_start_ns": 4549899000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 81379328,
       "source_lines": 176,
@@ -3643,8 +2932,6 @@
     "452": {
       "time_ns": 1827641000,
       "compile_time_ns": 493520000,
-      "cold_start_ns": 1850006000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 17334272,
       "source_lines": 167,
@@ -3653,8 +2940,6 @@
     "455": {
       "time_ns": 0,
       "compile_time_ns": 414793000,
-      "cold_start_ns": 2624077000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 73,
@@ -3663,8 +2948,6 @@
     "457": {
       "time_ns": 575897000,
       "compile_time_ns": 463593000,
-      "cold_start_ns": 598119000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 11403264,
       "source_lines": 147,
@@ -3673,8 +2956,6 @@
     "458": {
       "time_ns": 0,
       "compile_time_ns": 457430000,
-      "cold_start_ns": 28374000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 150,
@@ -3683,8 +2964,6 @@
     "459": {
       "time_ns": 2276532000,
       "compile_time_ns": 478305000,
-      "cold_start_ns": 2359088000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 17776640,
       "source_lines": 215,
@@ -3693,8 +2972,6 @@
     "460": {
       "time_ns": 2974735875,
       "compile_time_ns": 413678000,
-      "cold_start_ns": 2958916417,
-      "iterations": 3,
       "status": "pass",
       "error": "no output",
       "peak_rss_bytes": 5537792,
@@ -3704,8 +2981,6 @@
     "461": {
       "time_ns": 10800410000,
       "compile_time_ns": 547345000,
-      "cold_start_ns": 11030780000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1659797504,
       "source_lines": 134,
@@ -3714,8 +2989,6 @@
     "463": {
       "time_ns": 0,
       "compile_time_ns": 411038000,
-      "cold_start_ns": 1000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 58,
@@ -3724,8 +2997,6 @@
     "467": {
       "time_ns": 135110000,
       "compile_time_ns": 443061000,
-      "cold_start_ns": 169164000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 201490432,
       "source_lines": 151,
@@ -3734,8 +3005,6 @@
     "469": {
       "time_ns": 0,
       "compile_time_ns": 361440000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 44,
@@ -3744,8 +3013,6 @@
     "473": {
       "time_ns": 2571000,
       "compile_time_ns": 368039000,
-      "cold_start_ns": 8097000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 125,
@@ -3754,8 +3021,6 @@
     "475": {
       "time_ns": 288106000,
       "compile_time_ns": 461477000,
-      "cold_start_ns": 301788000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 14843904,
       "source_lines": 127,
@@ -3764,8 +3029,6 @@
     "479": {
       "time_ns": 636401000,
       "compile_time_ns": 371963000,
-      "cold_start_ns": 660014000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 59,
@@ -3774,8 +3037,6 @@
     "485": {
       "time_ns": 654627000,
       "compile_time_ns": 379960000,
-      "cold_start_ns": 3018127000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 201424896,
       "source_lines": 84,
@@ -3784,8 +3045,6 @@
     "487": {
       "time_ns": 0,
       "compile_time_ns": 390540000,
-      "cold_start_ns": 230801000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1769472,
       "source_lines": 152,
@@ -3794,8 +3053,6 @@
     "491": {
       "time_ns": 0,
       "compile_time_ns": 4973719000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 63,
@@ -3804,8 +3061,6 @@
     "493": {
       "time_ns": 0,
       "compile_time_ns": 388852000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 43,
@@ -3814,8 +3069,6 @@
     "496": {
       "time_ns": 14988625000,
       "compile_time_ns": 421499000,
-      "cold_start_ns": 14982075000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 58,
@@ -3824,8 +3077,6 @@
     "498": {
       "time_ns": 18069000,
       "compile_time_ns": 380725000,
-      "cold_start_ns": 33896000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 12599296,
       "source_lines": 78,
@@ -3834,8 +3085,6 @@
     "500": {
       "time_ns": 38983000,
       "compile_time_ns": 421054000,
-      "cold_start_ns": 80208000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 19841024,
       "source_lines": 76,
@@ -3844,8 +3093,6 @@
     "504": {
       "time_ns": 35798000,
       "compile_time_ns": 357020000,
-      "cold_start_ns": 71438000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 81,
@@ -3854,8 +3101,6 @@
     "512": {
       "time_ns": 17955000,
       "compile_time_ns": 446645000,
-      "cold_start_ns": 46014000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 44072960,
       "source_lines": 118,
@@ -3864,8 +3109,6 @@
     "518": {
       "time_ns": 3223844000,
       "compile_time_ns": 378053000,
-      "cold_start_ns": 3133351000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 13877248,
       "source_lines": 83,
@@ -3874,8 +3117,6 @@
     "577": {
       "time_ns": 0,
       "compile_time_ns": 377347000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 39,
@@ -3884,8 +3125,6 @@
     "600": {
       "time_ns": 217964000,
       "compile_time_ns": 388920000,
-      "cold_start_ns": 263692000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 62,
@@ -3894,8 +3133,6 @@
     "601": {
       "time_ns": 0,
       "compile_time_ns": 349129000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 49,
@@ -3904,8 +3141,6 @@
     "613": {
       "time_ns": 9073000,
       "compile_time_ns": 348046000,
-      "cold_start_ns": 24414000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 63,
@@ -3914,8 +3149,6 @@
     "622": {
       "time_ns": 0,
       "compile_time_ns": 359445000,
-      "cold_start_ns": 2181000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 78,
@@ -3924,8 +3157,6 @@
     "684": {
       "time_ns": 0,
       "compile_time_ns": 399654000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 69,
@@ -3934,8 +3165,6 @@
     "692": {
       "time_ns": 0,
       "compile_time_ns": 463778000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 75,
@@ -3944,8 +3173,6 @@
     "700": {
       "time_ns": 0,
       "compile_time_ns": 357799000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 72,
@@ -3954,8 +3181,6 @@
     "719": {
       "time_ns": 1682091000,
       "compile_time_ns": 393744000,
-      "cold_start_ns": 1713374000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 81,
@@ -3964,8 +3189,6 @@
     "751": {
       "time_ns": 142791,
       "compile_time_ns": 500944000,
-      "cold_start_ns": 151875,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 140,
@@ -3974,8 +3197,6 @@
     "755": {
       "time_ns": 0,
       "compile_time_ns": 357465000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 78,
@@ -3984,8 +3205,6 @@
     "757": {
       "time_ns": 3280585000,
       "compile_time_ns": 468424000,
-      "cold_start_ns": 3376978000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 607649792,
       "source_lines": 66,
@@ -3994,8 +3213,6 @@
     "788": {
       "time_ns": 0,
       "compile_time_ns": 368999000,
-      "cold_start_ns": 2831000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 75,
@@ -4004,8 +3221,6 @@
     "800": {
       "time_ns": 57744000,
       "compile_time_ns": 393604000,
-      "cold_start_ns": 90571000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 23150592,
       "source_lines": 90,
@@ -4014,8 +3229,6 @@
     "808": {
       "time_ns": 15910000,
       "compile_time_ns": 371858000,
-      "cold_start_ns": 27290000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 130,
@@ -4024,8 +3237,6 @@
     "820": {
       "time_ns": 894218000,
       "compile_time_ns": 372092000,
-      "cold_start_ns": 931140000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 44,
@@ -4034,8 +3245,6 @@
     "845": {
       "time_ns": 428000,
       "compile_time_ns": 379691000,
-      "cold_start_ns": 790000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 101,
@@ -4044,8 +3253,6 @@
     "862": {
       "time_ns": 0,
       "compile_time_ns": 2909349000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 105,
@@ -4054,8 +3261,6 @@
     "872": {
       "time_ns": 0,
       "compile_time_ns": 389651000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 52,
@@ -4064,8 +3269,6 @@
     "885": {
       "time_ns": 187231000,
       "compile_time_ns": 384603000,
-      "cold_start_ns": 225335000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 111,
@@ -4074,8 +3277,6 @@
     "918": {
       "time_ns": 0,
       "compile_time_ns": 356267000,
-      "cold_start_ns": 0,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 64,
@@ -4084,8 +3285,6 @@
     "932": {
       "time_ns": 31930000,
       "compile_time_ns": 351372000,
-      "cold_start_ns": 50132000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 113,
@@ -4094,8 +3293,6 @@
     "944": {
       "time_ns": 3390724000,
       "compile_time_ns": 372918000,
-      "cold_start_ns": 3380072000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 60,
@@ -4104,8 +3301,6 @@
     "956": {
       "time_ns": 0,
       "compile_time_ns": 405690000,
-      "cold_start_ns": 145967000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 160,
@@ -4114,8 +3309,6 @@
     "959": {
       "time_ns": 634000,
       "compile_time_ns": 395411000,
-      "cold_start_ns": 1752000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 68,
@@ -4124,8 +3317,6 @@
     "961": {
       "time_ns": 5815000,
       "compile_time_ns": 380353000,
-      "cold_start_ns": 20445000,
-      "iterations": 100,
       "status": "pass",
       "peak_rss_bytes": 1638400,
       "source_lines": 78,
@@ -4134,8 +3325,6 @@
     "965": {
       "time_ns": 240254000,
       "compile_time_ns": 378567000,
-      "cold_start_ns": 274148000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1425408,
       "source_lines": 73,
@@ -4144,8 +3333,6 @@
     "967": {
       "time_ns": 352188000,
       "compile_time_ns": 462026000,
-      "cold_start_ns": 393884000,
-      "iterations": 10,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 105,
@@ -4154,8 +3341,6 @@
     "969": {
       "time_ns": 0,
       "compile_time_ns": 415054000,
-      "cold_start_ns": 1338000,
-      "iterations": 1000,
       "status": "pass",
       "peak_rss_bytes": 1441792,
       "source_lines": 189,
@@ -4164,8 +3349,6 @@
     "971": {
       "time_ns": 3316264000,
       "compile_time_ns": 434732000,
-      "cold_start_ns": 3325998000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 101400576,
       "source_lines": 131,
@@ -4174,8 +3357,6 @@
     "972": {
       "time_ns": 8783724000,
       "compile_time_ns": 621419000,
-      "cold_start_ns": 8937307000,
-      "iterations": 3,
       "status": "pass",
       "peak_rss_bytes": 2065367040,
       "source_lines": 276,

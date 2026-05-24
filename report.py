@@ -84,17 +84,21 @@ def load_lang_data(lang: str) -> dict:
     return obj.get("problems", {})
 
 
-def cold_ns(entry: dict):
+def time_ns(entry: dict):
     """Headline metric for one problem.
 
+    Reads `time_ns` — the single timing from the harness's one `solve()` call
+    per process (RESULT|time_ns=N|answer=A).  See JOURNEY.md "Single-Call
+    Harness" chapter.
+
     Returns:
-        int (≥ 0)   — measured cold-median in nanoseconds (0 is legitimate:
+        int (≥ 0)   — measured time in nanoseconds (0 is legitimate:
                        trivial closed-form algos can clock at sub-nanosecond)
         None        — problem absent or did not pass (no measurement)
     """
     if not entry or entry.get("status") != "pass":
         return None
-    return int(entry.get("cold_start_ns", 0) or 0)
+    return int(entry.get("time_ns", 0) or 0)
 
 
 def source_lines(entry: dict) -> int:
@@ -139,7 +143,7 @@ def aggregate() -> dict:
     out = {}
     for lang in LANGS:
         probs = load_lang_data(lang)
-        per_prob_ns = {p: cold_ns(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        per_prob_ns = {p: time_ns(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_lines = {p: source_lines(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_status = {p: status_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         total_ns = sum(v for v in per_prob_ns.values() if v is not None)
@@ -398,9 +402,9 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).")
     md.append("2. Run the binary 10 times, each in a fresh OS process.  No warmup; no shared state.")
-    md.append("3. Each invocation prints `BENCHMARK|problem=NNN|answer=X|time_ns=Y`.  The answer")
-    md.append("   is compared against the canonical (each source file's `// Answer:` header")
-    md.append("   comment); the benchmark aborts on mismatch.")
+    md.append("3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,")
+    md.append("   captured by the bench tool.  The answer is compared against the canonical")
+    md.append("   (each source file's `// Answer:` header comment); the bench aborts on mismatch.")
     md.append("4. We report the **median** wall time across the 10 invocations.")
     md.append("")
     md.append("That's the entire metric.  No \"hot\" vs \"cold\" — just per-invocation cost, which")
@@ -443,22 +447,6 @@ def render_results_md(agg: dict) -> str:
     md.append("> ARM64) also fold trivial closed-form cases; Zig is just particularly aggressive")
     md.append("> about it.  We flag it here for transparency rather than as a knock on Zig — the")
     md.append("> timings are real measurements of what `-O ReleaseFast` produces.")
-    md.append("")
-    md.append("### Note on C# timings (JIT-warmup artifact)")
-    md.append("")
-    md.append("> The CLR JIT-compiles each `solve()` body (and any LINQ lambda chains inside it)")
-    md.append("> on the **first** call in a fresh process.  The double-call invocation-isolation")
-    md.append("> audit surfaced this on `p005`: cold ≈ 1.5 ms vs warm < 2 µs (~750× ratio),")
-    md.append("> despite the source containing no cache — it is a vanilla")
-    md.append("> `Enumerable.Range(2,19).Aggregate(...)`.")
-    md.append(">")
-    md.append("> The warm timing therefore understates per-call algorithmic cost for any C# cell")
-    md.append("> whose `solve()` body invokes uncompiled LINQ.  Within the per-invocation framing")
-    md.append("> of this report (every binary runs in a fresh process, so warmup *is* part of the")
-    md.append("> honest cost), the cold portion of the median already captures this.  The")
-    md.append("> structural fix (a panel-wide JIT pre-warm step in `Bench.cs`) is queued")
-    md.append("> separately; we flag the artifact here so the C# column is read with the same")
-    md.append("> transparency as the Zig column above.")
     md.append("")
     md.append("### Language idioms: stdlib vs ecosystem packages")
     md.append("")
