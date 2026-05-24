@@ -20,8 +20,8 @@
 //
 // Usage:
 //
-//	euler-bench per-iter --lang cpp --problems 1-10 --iters 10
-//	euler-bench per-iter --lang all --problems 1-10
+//	euler-bench per-iter --lang cpp --problems 1-100 --iters 10
+//	euler-bench per-iter --lang all --problems 1-100
 //	euler-bench per-iter --lang cpp,c,arm64,rust --problems 7,10 --iters 30
 package main
 
