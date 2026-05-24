@@ -110,7 +110,7 @@
 <rect class="cell" x="1220" y="78" width="12" height="18" fill="#1E6A1E"><title>p095 ARM64: 78.46 ms</title></rect>
 <rect class="cell" x="1232" y="78" width="12" height="18" fill="#36A036"><title>p096 ARM64: 4.28 ms</title></rect>
 <rect class="cell" x="1244" y="78" width="12" height="18" fill="#84E184"><title>p097 ARM64: 1.0 µs</title></rect>
-<rect class="cell" x="1256" y="78" width="12" height="18" fill="#1E6A1E"><title>p098 ARM64: 23.79 ms</title></rect>
+<rect class="cell" x="1256" y="78" width="12" height="18" fill="#36A036"><title>p098 ARM64: 1.78 ms</title></rect>
 <rect class="cell" x="1268" y="78" width="12" height="18" fill="#5BC85B"><title>p099 ARM64: 147.0 µs</title></rect>
 <rect class="cell" x="1280" y="78" width="12" height="18" fill="#84E184"><title>p100 ARM64: 0 ns</title></rect>
 <rect class="cell" x="92" y="96" width="12" height="18" fill="#84E184"><title>p001 C: 41 ns</title></rect>
