@@ -37,7 +37,7 @@ CHARTS_DIR = REPO / "charts"
 
 # Scope: extend this list only after each new problem clears the
 # state-leak / answer-verification audit.
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 11)]
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 51)]
 
 # Languages in display order (preserved alphabetic-ish for stability)
 LANGS = ["arm64", "c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig"]
@@ -200,14 +200,14 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
 
 
 def render_coverage_grid_chart(agg: dict) -> Path:
-    """10×10 cells colored by status + speed bucket.
+    """N_LANGS × N_PROBLEMS cells colored by status + speed bucket.
 
     🟩 pass (light → dark green by speed bucket)
     🟨 fail-warn (e.g. cold > 100 ms — still passing, but slow)
     🟥 fail (status != pass)
     ⬛ missing (no entry)
 
-    For our current 10×10 scope, everything should be green; the chart's
+    For the current in-scope cells, everything should be green; the chart's
     real value emerges as we extend to more problems and per-cell colors
     show heterogeneity.
     """
@@ -297,7 +297,7 @@ def render_total_chart(agg: dict) -> Path:
     ax.set_xscale("log")
     ax.set_xlabel("Total per-invocation cost across problems 1–10 (ms, log scale)")
     ax.set_title("Per-Invocation Cost — 10 Languages, Problems 1–10\n"
-                 f"Each binary run {10} times in a fresh process; median wall time summed across the 10 problems")
+                 f"Each binary run 10 times in a fresh process; median wall time summed across the {len(SCOPE_PROBLEMS)} problems")
     # Value labels at the end of each bar
     for i, (bar, ms) in enumerate(zip(bars, values_ms)):
         if ms >= 100:
@@ -336,16 +336,16 @@ def render_results_md(agg: dict) -> str:
     md.append("> measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how")
     md.append("> we got here, including the reset from 200+ problems back to a verified 10×10 core.")
     md.append("")
-    md.append("## Per-Invocation Cost (Total, Problems 1–10)")
+    md.append(f"## Per-Invocation Cost (Total, Problems 1–{len(SCOPE_PROBLEMS)})")
     md.append("")
     md.append("We run each program 10 times in fresh OS processes (no warmup, no shared state).")
     md.append("Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /")
     md.append("shell-loop user actually pays.  The median wall time across the 10 invocations is")
-    md.append("the headline per-problem number, and we sum across the 10 problems for the total.")
+    md.append(f"the headline per-problem number, and we sum across the {len(SCOPE_PROBLEMS)} problems for the total.")
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
-    md.append("| Rank | Language | Total (10 problems) | Lines of code | vs Fastest |")
+    md.append(f"| Rank | Language | Total ({len(SCOPE_PROBLEMS)} problems) | Lines of code | vs Fastest |")
     md.append("|------|----------|--------------------:|--------------:|-----------:|")
     for i, (lang, total) in enumerate(ranked, 1):
         ratio = total / fastest_ns
@@ -354,7 +354,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("## Speed vs Code Size")
     md.append("")
-    md.append("How much code does each language need to solve these 10 problems, and how")
+    md.append(f"How much code does each language need to solve these {len(SCOPE_PROBLEMS)} problems, and how")
     md.append("fast does that code run?  Bottom-left = fast and concise; top-right = slow")
     md.append("and verbose.  ARM64's outlier position (most lines) is expected — assembly")
     md.append("trades verbosity for direct hardware control.")
@@ -373,7 +373,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
-    md.append("Rows sorted fastest-to-slowest (top to bottom).  At our current 10×10 scope")
+    md.append(f"Rows sorted fastest-to-slowest (top to bottom).  At our current {len(SCOPE_PROBLEMS)}×{len(LANGS)} scope")
     md.append("every cell is green — that's exactly the audit gate we're holding to as we")
     md.append("extend to more problems.")
     md.append("")
