@@ -4,7 +4,8 @@
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
-> we got here, including the reset from 200+ problems back to a verified 10×10 core.
+> we got here, including the reset from 200+ problems back to a verified 10×10
+> core, then the disciplined expansion to today's 100×10 scope.
 
 ## Per-Invocation Cost (Total, Problems 1–100)
 
