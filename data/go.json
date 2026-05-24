@@ -2,7 +2,7 @@
   "language": "go",
   "platform": "arm64",
   "compiler": "go version go1.26.3 darwin/arm64",
-  "timestamp": "2026-05-24T05:23:40Z",
+  "timestamp": "2026-05-24T05:28:20Z",
   "problems": {
     "001": {
       "time_ns": 1458,
@@ -135,14 +135,14 @@
       "source_bytes": 6013
     },
     "014": {
-      "time_ns": 205861666,
-      "time_min_ns": 203339916,
-      "time_max_ns": 211763417,
+      "time_ns": 10571250,
+      "time_min_ns": 9494125,
+      "time_max_ns": 14188583,
       "samples": 10,
-      "subprocess_wall_ns": 213118750,
+      "subprocess_wall_ns": 19975250,
       "status": "pass",
-      "source_lines": 42,
-      "source_bytes": 716
+      "source_lines": 68,
+      "source_bytes": 1390
     },
     "015": {
       "time_ns": 1542,
