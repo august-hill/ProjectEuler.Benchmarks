@@ -17,8 +17,8 @@ Outputs:
   charts/per_iter_per_problem.png  — per-problem heatmap (small-multiples)
 
 Scope:
-  Currently fixed at problems 1-10, all 10 languages.  When we extend (more
-  problems audited), the SCOPE_PROBLEMS list is the single place to change.
+  Currently 100 problems × 10 languages.  When we extend (more problems
+  audited), the SCOPE_PROBLEMS list is the single place to change.
 """
 
 import json
@@ -186,7 +186,7 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
 
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel("Total source lines across problems 1–10 (log scale)")
+    ax.set_xlabel(f"Total source lines across problems 1–{len(SCOPE_PROBLEMS)} (log scale)")
     ax.set_ylabel("Total per-invocation cost — ms (log scale)")
     ax.set_title("Speed vs Code Size — 10 Languages, Problems 1–10\n"
                  "Bottom-left corner = fast + concise; top-right = slow + verbose")
@@ -295,7 +295,7 @@ def render_total_chart(agg: dict) -> Path:
     ax.set_yticklabels(labels)
     ax.invert_yaxis()  # fastest on top
     ax.set_xscale("log")
-    ax.set_xlabel("Total per-invocation cost across problems 1–10 (ms, log scale)")
+    ax.set_xlabel(f"Total per-invocation cost across problems 1–{len(SCOPE_PROBLEMS)} (ms, log scale)")
     ax.set_title("Per-Invocation Cost — 10 Languages, Problems 1–10\n"
                  f"Each binary run 10 times in a fresh process; median wall time summed across the {len(SCOPE_PROBLEMS)} problems")
     # Value labels at the end of each bar
@@ -517,7 +517,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("```bash")
     md.append("cd ProjectEuler.Benchmarks")
-    md.append("cmd/euler-bench/euler-bench per-iter --lang all --problems 1-10 --iters 10 --write")
+    md.append(f"cmd/euler-bench/euler-bench per-iter --lang all --problems 1-{len(SCOPE_PROBLEMS)} --iters 10 --write")
     md.append("python3 report.py")
     md.append("```")
     md.append("")
@@ -545,7 +545,7 @@ def main() -> int:
     agg = aggregate()
 
     # Diagnostic — surface any langs missing problems in scope
-    print("=== Per-lang coverage in scope (problems 1-10):")
+    print(f"=== Per-lang coverage in scope (problems 1-{len(SCOPE_PROBLEMS)}):")
     for lang in LANGS:
         d = agg[lang]
         missing_str = f", missing {d['missing']}" if d["missing"] else ""

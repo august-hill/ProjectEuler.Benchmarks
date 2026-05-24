@@ -4,17 +4,17 @@
 
 Solutions written by [Claude](https://claude.ai) (Opus + Sonnet) across C, C++,
 Rust, Go, Zig, Java, C#, JavaScript, Python, and ARM64 Assembly.  Benchmarked on
-Apple Silicon.  See [JOURNEY.md](JOURNEY.md) for the full story of how this
-project came together — and how it recently reset.
+Apple Silicon.  See [JOURNEY.md](JOURNEY.md) for the full story — including the
+reset from 200+ problems back to a verified 10×10 core and the disciplined
+expansion since.
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
-## Current scope: 10 problems × 10 languages = 100 measurements
+## Current scope: 100 problems × 10 languages = 1000 measurements
 
-We're rebuilding from a verified core.  Every (language, problem) in scope has
-passed an audit for state-leak safety, answer correctness, and methodology fit.
-We'll extend the scope carefully — each new addition gets the same audit before
-it appears in these numbers.
+Every (language, problem) in scope has passed an audit for state-leak safety,
+answer correctness, and methodology fit.  We extend carefully — each new
+problem gets the same audit before it appears in these numbers.
 
 **See [RESULTS.md](RESULTS.md)** for the rankings, the per-problem detail grid,
 and the full methodology.
@@ -52,7 +52,7 @@ per-invocation cost.
 
 ```bash
 cd ProjectEuler.Benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-10 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-100 --iters 10 --write
 python3 report.py
 ```
 
