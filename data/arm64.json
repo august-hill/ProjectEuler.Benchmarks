@@ -2,7 +2,7 @@
   "language": "arm64",
   "platform": "arm64",
   "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
-  "timestamp": "2026-05-24T05:59:30Z",
+  "timestamp": "2026-05-24T07:01:55Z",
   "problems": {
     "001": {
       "time_ns": 0,
@@ -107,14 +107,14 @@
       "source_bytes": 5722
     },
     "012": {
-      "time_ns": 63706000,
-      "time_min_ns": 63299000,
-      "time_max_ns": 83177000,
+      "time_ns": 1412000,
+      "time_min_ns": 1105000,
+      "time_max_ns": 1745000,
       "samples": 10,
-      "subprocess_wall_ns": 69195959,
+      "subprocess_wall_ns": 7049292,
       "status": "pass",
-      "source_lines": 68,
-      "source_bytes": 1576
+      "source_lines": 137,
+      "source_bytes": 3757
     },
     "013": {
       "time_ns": 2000,
@@ -274,14 +274,14 @@
       "source_bytes": 762
     },
     "029": {
-      "time_ns": 55313000,
-      "time_min_ns": 54969000,
-      "time_max_ns": 72419000,
+      "time_ns": 30000,
+      "time_min_ns": 29000,
+      "time_max_ns": 37000,
       "samples": 10,
-      "subprocess_wall_ns": 60906458,
+      "subprocess_wall_ns": 5144083,
       "status": "pass",
-      "source_lines": 203,
-      "source_bytes": 5509
+      "source_lines": 136,
+      "source_bytes": 3907
     },
     "030": {
       "time_ns": 1811000,
@@ -374,14 +374,14 @@
       "source_bytes": 3924
     },
     "039": {
-      "time_ns": 2597000,
-      "time_min_ns": 2342000,
-      "time_max_ns": 2986000,
+      "time_ns": 5000,
+      "time_min_ns": 5000,
+      "time_max_ns": 7000,
       "samples": 10,
-      "subprocess_wall_ns": 8430875,
+      "subprocess_wall_ns": 5565958,
       "status": "pass",
-      "source_lines": 95,
-      "source_bytes": 2252
+      "source_lines": 148,
+      "source_bytes": 4347
     },
     "040": {
       "time_ns": 1330000,
@@ -823,14 +823,14 @@
       "source_bytes": 50591
     },
     "084": {
-      "time_ns": 271000,
-      "time_min_ns": 264000,
-      "time_max_ns": 502000,
+      "time_ns": 147000,
+      "time_min_ns": 142000,
+      "time_max_ns": 177000,
       "samples": 10,
-      "subprocess_wall_ns": 6953250,
+      "subprocess_wall_ns": 5963333,
       "status": "pass",
-      "source_lines": 441,
-      "source_bytes": 9874
+      "source_lines": 462,
+      "source_bytes": 12732
     },
     "085": {
       "time_ns": 16000,
