@@ -583,10 +583,17 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
-    md.append("**🔍 [Open the SVG version](charts/per_iter_coverage_grid.svg)** — same chart,")
-    md.append("with a hover tooltip on every cell (`p347 Zig: 2.3 ms`).  GitHub renders the")
-    md.append("SVG file directly when you click that link; tooltips don't fire inside the")
-    md.append("inline `![](...)` image above because browsers treat `<img>` SVGs as opaque.")
+    # Link goes direct to raw.githubusercontent.com — GitHub's /blob/ viewer no
+    # longer renders inline SVG previews (shows "Invalid image source" since
+    # their security hardening), but the raw CDN serves it as image/svg+xml so
+    # the browser renders it natively and <title> hover tooltips fire.
+    svg_raw_url = ("https://raw.githubusercontent.com/august-hill/"
+                   "ProjectEuler.Benchmarks/main/charts/per_iter_coverage_grid.svg")
+    md.append(f"**🔍 [Open the SVG version]({svg_raw_url})** — same chart, with a")
+    md.append("hover tooltip on every cell (`p347 Zig: 2.3 ms`).  The link goes direct to")
+    md.append("`raw.githubusercontent.com` because GitHub's `/blob/` viewer no longer renders")
+    md.append("inline SVG previews; tooltips also don't fire inside the inline `![](...)`")
+    md.append("image above because browsers treat `<img>` SVGs as opaque.")
     md.append("")
     n_bands = (len(SCOPE_PROBLEMS) + BAND_SIZE - 1) // BAND_SIZE
     md.append(f"Rows are in fixed tier order (native → managed → interpreted) so the chart")
