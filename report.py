@@ -188,7 +188,7 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
     ax.set_yscale("log")
     ax.set_xlabel(f"Total source lines across problems 1–{len(SCOPE_PROBLEMS)} (log scale)")
     ax.set_ylabel("Total per-invocation cost — ms (log scale)")
-    ax.set_title("Speed vs Code Size — 10 Languages, Problems 1–10\n"
+    ax.set_title(f"Speed vs Code Size — {len(LANGS)} Languages, Problems 1–{len(SCOPE_PROBLEMS)}\n"
                  "Bottom-left corner = fast + concise; top-right = slow + verbose")
     ax.grid(which="major", alpha=0.3)
     ax.grid(which="minor", alpha=0.12)
@@ -249,7 +249,7 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     ax.set_yticks([i + 0.5 for i in range(n_langs)])
     ax.set_yticklabels([DISPLAY[lang] for lang in reversed(ranked)], fontsize=10)
     ax.set_aspect("equal")
-    ax.set_title("Coverage + Speed Heatmap — 10 Languages × 10 Problems",
+    ax.set_title(f"Coverage + Speed Heatmap — {len(LANGS)} Languages × {len(SCOPE_PROBLEMS)} Problems",
                  fontsize=12)
     ax.tick_params(length=0)
     for spine in ax.spines.values():
@@ -296,7 +296,7 @@ def render_total_chart(agg: dict) -> Path:
     ax.invert_yaxis()  # fastest on top
     ax.set_xscale("log")
     ax.set_xlabel(f"Total per-invocation cost across problems 1–{len(SCOPE_PROBLEMS)} (ms, log scale)")
-    ax.set_title("Per-Invocation Cost — 10 Languages, Problems 1–10\n"
+    ax.set_title(f"Per-Invocation Cost — {len(LANGS)} Languages, Problems 1–{len(SCOPE_PROBLEMS)}\n"
                  f"Each binary run 10 times in a fresh process; median wall time summed across the {len(SCOPE_PROBLEMS)} problems")
     # Value labels at the end of each bar
     for i, (bar, ms) in enumerate(zip(bars, values_ms)):
