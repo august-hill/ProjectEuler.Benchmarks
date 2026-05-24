@@ -46,18 +46,18 @@ import (
 // surface, no per-problem branching.)
 
 // publicEntry is the JSON shape of a problem result in data/<lang>.json.
-// Order matters for human-readable diffs — fields are listed in the same
-// order existing data/*.json files use.
+// Schema after the 2026-05-23 "Single-Call Harness" cleanup: ONE timing
+// per problem (median over N fresh-process invocations of the harness's
+// single solve() call).  The legacy warm-vs-cold dichotomy is gone —
+// fields are named directly for what they measure.
 type publicEntry struct {
-	Answer           any    `json:"answer,omitempty"`
-	TimeNs           int64  `json:"time_ns"`
+	Answer           any    `json:"answer,omitempty"`              // PUBLIC: never present (sanitization)
+	TimeNs           int64  `json:"time_ns"`                       // median time_ns from RESULT line across N samples
+	TimeMinNs        int64  `json:"time_min_ns,omitempty"`         // min across samples
+	TimeMaxNs        int64  `json:"time_max_ns,omitempty"`         // max across samples
+	Samples          int    `json:"samples,omitempty"`             // N (fresh-process invocations)
+	SubprocessWallNs int64  `json:"subprocess_wall_ns,omitempty"`  // median Go-perceived wall, sanity-check secondary
 	CompileTimeNs    int64  `json:"compile_time_ns,omitempty"`
-	ColdStartNs      int64  `json:"cold_start_ns"`
-	ColdMinNs        int64  `json:"cold_min_ns,omitempty"`
-	ColdMaxNs        int64  `json:"cold_max_ns,omitempty"`
-	ColdSamples      int    `json:"cold_samples,omitempty"`
-	SubprocessWallNs int64  `json:"subprocess_wall_ns,omitempty"`
-	Iterations       int    `json:"iterations,omitempty"`
 	Status           string `json:"status"`
 	Error            string `json:"error,omitempty"`
 	PeakRSSBytes     int64  `json:"peak_rss_bytes,omitempty"`
@@ -152,11 +152,10 @@ func countSourceMetrics(lang *Lang, baseDir, problem string) (lines, bytes int) 
 // reveals the value.
 func writePublicEntry(r *perIterResult, canonical string, problemNum int) publicEntry {
 	entry := publicEntry{
-		TimeNs:           r.InProcWarmNs,
-		ColdStartNs:      r.coldMedianNs(),
-		ColdMinNs:        r.coldMinNs(),
-		ColdMaxNs:        r.coldMaxNs(),
-		ColdSamples:      len(r.ColdSamplesNs),
+		TimeNs:           r.timeMedianNs(),
+		TimeMinNs:        r.timeMinNs(),
+		TimeMaxNs:        r.timeMaxNs(),
+		Samples:          len(r.TimeSamplesNs),
 		SubprocessWallNs: r.wallMedianNs(),
 		Status:           "pass",
 	}
@@ -165,7 +164,7 @@ func writePublicEntry(r *perIterResult, canonical string, problemNum int) public
 		entry.Error = r.BuildErr
 		return entry
 	}
-	if len(r.ColdSamplesNs) == 0 {
+	if len(r.TimeSamplesNs) == 0 {
 		entry.Status = "fail"
 		if r.RunErr != "" {
 			entry.Error = r.RunErr
@@ -188,11 +187,10 @@ func writePublicEntry(r *perIterResult, canonical string, problemNum int) public
 // of problem number.  Lives in data/private/ (gitignored).
 func writePrivateEntry(r *perIterResult, canonical string) publicEntry {
 	entry := publicEntry{
-		TimeNs:           r.InProcWarmNs,
-		ColdStartNs:      r.coldMedianNs(),
-		ColdMinNs:        r.coldMinNs(),
-		ColdMaxNs:        r.coldMaxNs(),
-		ColdSamples:      len(r.ColdSamplesNs),
+		TimeNs:           r.timeMedianNs(),
+		TimeMinNs:        r.timeMinNs(),
+		TimeMaxNs:        r.timeMaxNs(),
+		Samples:          len(r.TimeSamplesNs),
 		SubprocessWallNs: r.wallMedianNs(),
 		Status:           "pass",
 	}
@@ -201,7 +199,7 @@ func writePrivateEntry(r *perIterResult, canonical string) publicEntry {
 		entry.Error = r.BuildErr
 		return entry
 	}
-	if len(r.ColdSamplesNs) == 0 {
+	if len(r.TimeSamplesNs) == 0 {
 		entry.Status = "fail"
 		entry.Error = r.RunErr
 		return entry

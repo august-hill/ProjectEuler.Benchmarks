@@ -133,11 +133,13 @@ def report_tier(tier_key, tiers):
             1 for p in data[lang]["problems"]
             if lo <= int(p) <= hi_eff and is_verified_pass(lang, p)
         )
+        # Post 2026-05-23 single-call harness: time_ns is the only timing.
+        # `cold` column kept for column-layout stability — same number as `hot`.
         hot, cold, comp, rss, src = [], [], [], [], []
         for p in common:
             v = data[lang]["problems"].get(p, {})
             hot.append(v.get("time_ns") or 0)
-            cold.append(v.get("cold_start_ns") or 0)
+            cold.append(v.get("time_ns") or 0)
             comp.append(v.get("compile_time_ns") or 0)
             rss.append(v.get("peak_rss_bytes") or 0)
             src.append(v.get("source_bytes") or 0)
