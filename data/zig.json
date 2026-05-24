@@ -2,7 +2,7 @@
   "language": "zig",
   "platform": "arm64",
   "compiler": "0.15.2",
-  "timestamp": "2026-05-24T05:45:40Z",
+  "timestamp": "2026-05-24T05:59:30Z",
   "problems": {
     "001": {
       "time_ns": 42,
@@ -131,11 +131,11 @@
       "source_bytes": 6671
     },
     "014": {
-      "time_ns": 8936625,
-      "time_min_ns": 7301708,
-      "time_max_ns": 12358000,
+      "time_ns": 8960041,
+      "time_min_ns": 7504250,
+      "time_max_ns": 10400083,
       "samples": 10,
-      "subprocess_wall_ns": 14668042,
+      "subprocess_wall_ns": 16011625,
       "status": "pass",
       "source_lines": 47,
       "source_bytes": 1222
@@ -529,11 +529,11 @@
       "source_bytes": 770
     },
     "054": {
-      "time_ns": 379083,
-      "time_min_ns": 320333,
-      "time_max_ns": 440500,
+      "time_ns": 370292,
+      "time_min_ns": 355625,
+      "time_max_ns": 544917,
       "samples": 10,
-      "subprocess_wall_ns": 6161041,
+      "subprocess_wall_ns": 6479166,
       "status": "pass",
       "source_lines": 272,
       "source_bytes": 7192
@@ -589,11 +589,11 @@
       "source_bytes": 2277
     },
     "060": {
-      "time_ns": 365516667,
-      "time_min_ns": 363425542,
-      "time_max_ns": 374798750,
+      "time_ns": 356465416,
+      "time_min_ns": 354434917,
+      "time_max_ns": 371204417,
       "samples": 10,
-      "subprocess_wall_ns": 373394042,
+      "subprocess_wall_ns": 361998417,
       "status": "pass",
       "source_lines": 152,
       "source_bytes": 4112
@@ -609,11 +609,11 @@
       "source_bytes": 2689
     },
     "062": {
-      "time_ns": 1156125,
-      "time_min_ns": 998500,
-      "time_max_ns": 1281417,
+      "time_ns": 1273500,
+      "time_min_ns": 1167792,
+      "time_max_ns": 1527000,
       "samples": 10,
-      "subprocess_wall_ns": 7050208,
+      "subprocess_wall_ns": 6908500,
       "status": "pass",
       "source_lines": 117,
       "source_bytes": 3012
@@ -758,11 +758,11 @@
       "source_bytes": 576
     },
     "077": {
-      "time_ns": 33292,
-      "time_min_ns": 31667,
-      "time_max_ns": 44791,
+      "time_ns": 32083,
+      "time_min_ns": 31375,
+      "time_max_ns": 73583,
       "samples": 10,
-      "subprocess_wall_ns": 6438542,
+      "subprocess_wall_ns": 5404625,
       "status": "pass",
       "source_lines": 56,
       "source_bytes": 1353
@@ -798,11 +798,11 @@
       "source_bytes": 4688
     },
     "081": {
-      "time_ns": 194083,
-      "time_min_ns": 172125,
-      "time_max_ns": 332625,
+      "time_ns": 214084,
+      "time_min_ns": 173625,
+      "time_max_ns": 580834,
       "samples": 10,
-      "subprocess_wall_ns": 6245084,
+      "subprocess_wall_ns": 5938333,
       "status": "pass",
       "source_lines": 62,
       "source_bytes": 1573
@@ -818,21 +818,21 @@
       "source_bytes": 1976
     },
     "083": {
-      "time_ns": 3017750,
-      "time_min_ns": 2623625,
-      "time_max_ns": 3508791,
+      "time_ns": 508625,
+      "time_min_ns": 422125,
+      "time_max_ns": 763291,
       "samples": 10,
-      "subprocess_wall_ns": 12550708,
+      "subprocess_wall_ns": 5356416,
       "status": "pass",
-      "source_lines": 104,
-      "source_bytes": 2981
+      "source_lines": 97,
+      "source_bytes": 2716
     },
     "084": {
-      "time_ns": 118083,
-      "time_min_ns": 102334,
-      "time_max_ns": 166083,
+      "time_ns": 134500,
+      "time_min_ns": 122083,
+      "time_max_ns": 314041,
       "samples": 10,
-      "subprocess_wall_ns": 6564833,
+      "subprocess_wall_ns": 6652125,
       "status": "pass",
       "source_lines": 101,
       "source_bytes": 2824
@@ -878,11 +878,11 @@
       "source_bytes": 1345
     },
     "089": {
-      "time_ns": 198417,
-      "time_min_ns": 142500,
-      "time_max_ns": 267458,
+      "time_ns": 177291,
+      "time_min_ns": 143167,
+      "time_max_ns": 252875,
       "samples": 10,
-      "subprocess_wall_ns": 5485083,
+      "subprocess_wall_ns": 5346000,
       "status": "pass",
       "source_lines": 85,
       "source_bytes": 1982
@@ -918,14 +918,14 @@
       "source_bytes": 1502
     },
     "093": {
-      "time_ns": 3106458,
-      "time_min_ns": 2524792,
-      "time_max_ns": 3480583,
+      "time_ns": 8973709,
+      "time_min_ns": 7496542,
+      "time_max_ns": 12232916,
       "samples": 10,
-      "subprocess_wall_ns": 10052125,
+      "subprocess_wall_ns": 14313333,
       "status": "pass",
-      "source_lines": 125,
-      "source_bytes": 4492
+      "source_lines": 183,
+      "source_bytes": 6102
     },
     "094": {
       "time_ns": 84,
@@ -938,14 +938,14 @@
       "source_bytes": 1258
     },
     "095": {
-      "time_ns": 72772208,
-      "time_min_ns": 69793916,
-      "time_max_ns": 89885333,
+      "time_ns": 71501875,
+      "time_min_ns": 70040541,
+      "time_max_ns": 95735209,
       "samples": 10,
-      "subprocess_wall_ns": 79093041,
+      "subprocess_wall_ns": 78404291,
       "status": "pass",
-      "source_lines": 89,
-      "source_bytes": 2322
+      "source_lines": 97,
+      "source_bytes": 2626
     },
     "096": {
       "time_ns": 1695667,
