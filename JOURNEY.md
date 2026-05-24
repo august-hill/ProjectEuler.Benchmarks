@@ -918,3 +918,96 @@ the chart), which B would lose to the process spawn floor.
    sentinel.**  One line per process, one format across all 10
    languages.  No `BENCHMARK|`, no `COLDSTART|`, no per-language
    variants.
+
+## Episode: Expansion to 100×10 + cross-lang idiom landmines (2026-05-23 late evening)
+
+After the single-call harness cleanup (previous chapter) and the 50×10 publish,
+expansion to 100×10 followed the established playbook: inventory check, bench
+problems 51-100, regen chart, ship.  In parallel with the (sequential, ~30 min)
+bench, 10 idiom-review agents ran with the corrected JOURNEY-rule-3 framing —
+algorithm + idiom only, no cache-pattern chasing.  This chapter records what
+those agents found.
+
+### Cross-lang batch-refactor candidates
+
+The most leverageable findings are cells where multiple languages independently
+made the same algorithmic mistake.  In 51-100, three stand out:
+
+- **PE 77 (Prime-pair sums)** — 7/10 languages rebuild the partition-DP from
+  scratch for every target instead of streaming a single growing DP.  Same fix
+  shape in each: one allocation, scan incrementally.  Equivalent in spirit to
+  the Big-4 cross-lang refactors from earlier tonight (PE 14, PE 12, PE 29,
+  PE 39).
+- **PE 93 (Arithmetic expressions)** — 6/10 languages use float arithmetic with
+  `1e-9` epsilon to test "is this expression value an integer?"  Fragile for
+  chained `(1+1/3)*3 - 4`-style cases.  Same fix everywhere: exact rationals
+  (a/b pair with gcd reduction).
+- **PE 55 (Lychrel)** — 4/10 use BigInteger/BigInt for what fits in 64-bit
+  after 50 iterations.  Library overuse where a `long` plus digit-array reverse
+  works.
+
+### Real correctness landmines (not idiom)
+
+Several cells have latent bugs that pass current tests by luck of the input but
+would break under perturbation.  Worth fixing carefully (not as bulk refactors):
+
+- **Rust p90** — 6/9 expansion creates duplicate cube entries; same arrangement
+  counted multiple times.  Coincidentally correct on the given input.
+- **Rust p54** — `CountingAllocator` wraps `solve()`, adding atomic-RMW ops on
+  every allocation.  Quietly distorts every Rust p54 timing measurement.
+- **Rust p62, p84** — `n > 100000` hardcoded cap (silent wrong answer if
+  needed bigger); Markov chain that double-counts doubles (converges to wrong
+  model, right answer empirically).
+- **Java p081** — `MATRIX_DATA` is a fake/truncated string used as fallback if
+  the file is missing.  Silent wrong answer rather than clean failure.
+- **Java p060** — `mulMod` calls `BigInteger.longValueExact()` on the
+  *unreduced* product; throws `ArithmeticException` for any `a*b > 2^63`.
+  Works today only because inputs happen to be small.
+- **C p089** — fopen fallback to a hardcoded absolute path
+  `/Users/augusthill/ccdev/claude-vs-euler/...` — non-portable, personal path
+  shipped.
+- **ARM64 p054** — `x18` (Apple-reserved platform register) abuse inside
+  `.Leval54`.  Same anti-pattern that bit p189 historically; safe today only
+  because `.Leval54` makes no libc calls — future change breaks silently.
+- **Zig p095** — three 10⁶ stack arrays totalling ~6 MB on the call stack;
+  borderline against the default 8 MB ulimit.
+- **Zig p083** — Dijkstra implemented with linear-scan pop instead of a real
+  heap.  O(N²) where O(N log N) is canonical; ~250M comparisons on the 80×80
+  grid.
+
+### Per-lang cleanliness rankings (51-100 panel)
+
+| Lang | A-rate | Notable observation |
+|---|---:|---|
+| JavaScript | 96% (48/50) | Cleanest by ratio.  BigInt discipline strong; p14 dense-memo lesson held |
+| ARM64 | 90% (45/50) | Audit-clean trust held; one real bug (p54 x18 abuse) |
+| Python | 88% (44/50) | Genuinely hand-written Python (not C-port aesthetic); p98 inlines word data |
+| C | 86% (43/50) | Sized integer discipline tight (`int64_t`/`__int128_t`); no overflow bugs |
+| C# | 80% (40/50) | Sharp improvement vs 1-50 panel (which had multiple wrong-algorithm cells) |
+| Go | 80% (40/50) | `//go:embed` inconsistency across 4 file-loading cells |
+| Java | 70% (35/50) | Two real bugs (p60, p81); stray `LongSupplier` import × 50 files |
+| C++ | 60% (30/50) | `long` vs `long long` discipline loose; hand-bigint where `boost::cpp_int` would shrink |
+| Rust | 60% (30/50) | Most real correctness landmines this round; two code generations again |
+| Zig | 36% (18/50) | Lowest ratio, but mostly "module-level fixed array" idiom not real bugs; no GPA discipline outside p007/p010 |
+
+### Operating rules added from this episode
+
+6. **Cross-lang batch refactors require N≥5 langs flagging the same fix.**
+   Below that threshold, the per-cell variance in agent perspective is too high
+   to commit to a uniform fix.  The PE 14 / 12 / 29 / 39 round (Big-4) hit 8-10
+   langs each.  PE 77 hits 7, PE 93 hits 6, PE 55 hits 4.  PE 77 and PE 93 are
+   candidates; PE 55 is borderline.
+
+7. **Correctness landmines get per-cell scrutiny, not batch treatment.**
+   Several cells flagged tonight have lucky-input correctness (Rust p90, Rust
+   p84, Java p060/p081, Rust p62).  These need individual reading and reasoning
+   before any "fix" — applying a uniform patch could cement the wrong
+   correctness if multiple langs share the same lucky shape.
+
+8. **File-loading robustness as a cross-cutting concern.**  Three langs
+   independently flagged file-loading anti-patterns in 51-100 (Java p081 fake
+   fallback, C p089 absolute path, multiple Go cells using runtime
+   `os.ReadFile` instead of `//go:embed`).  Worth a focused round to standardize
+   on "fail loudly if data file missing" across all 10 langs' file-loading
+   problems (p022, p042, p054, p059, p067, p079, p081, p082, p083, p089, p096,
+   p098, p099).
