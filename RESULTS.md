@@ -50,10 +50,11 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 
-**🔍 [Open the SVG version](charts/per_iter_coverage_grid.svg)** — same chart,
-with a hover tooltip on every cell (`p347 Zig: 2.3 ms`).  GitHub renders the
-SVG file directly when you click that link; tooltips don't fire inside the
-inline `![](...)` image above because browsers treat `<img>` SVGs as opaque.
+**🔍 [Open the SVG version](https://raw.githubusercontent.com/august-hill/ProjectEuler.Benchmarks/main/charts/per_iter_coverage_grid.svg)** — same chart, with a
+hover tooltip on every cell (`p347 Zig: 2.3 ms`).  The link goes direct to
+`raw.githubusercontent.com` because GitHub's `/blob/` viewer no longer renders
+inline SVG previews; tooltips also don't fire inside the inline `![](...)`
+image above because browsers treat `<img>` SVGs as opaque.
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
