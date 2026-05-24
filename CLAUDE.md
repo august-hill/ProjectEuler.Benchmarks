@@ -11,7 +11,7 @@ PE's publishing rule (projecteuler.net/about#publish) restricts public solution 
 ### Allowed in this repo
 - **Problem numbers** (`p221`, `problem_435`, etc.) — bare references are fine
 - **Timing data** (ns, ms, ratios) — pure numbers reveal no algorithm
-- **Methodology** — benchmark harness, warmup strategy, three-metric schema
+- **Methodology** — benchmark harness, single-call (per-invocation) cost metric
 - **Aggregate analysis** — language-vs-language ratios, fastest-on-average, etc.
 - **Project narrative** — JOURNEY.md, README.md, story content
 - **Narrative discussion of ≤100 answers / techniques / code** — PE permits this; MDs and narrative content may reference these freely
@@ -48,7 +48,7 @@ Before any `git push origin main` that updates **RESULTS.md** or **charts/*.png*
 - Algorithm-choice diversity — same problem benchmarked with different algorithms across langs.
 - Stale entries from old harness versions.
 
-**The check:** run `python3 final_analysis.py 2>&1 | grep -A 20 'Foundation ranking'` after regen. If a managed lang is in the top 3, OR a compiled lang is below #6, **investigate before pushing.** Add a caveat to RESULTS.md if the issue can't be resolved in-session; do not push the ranking as authoritative.
+**The check:** after running `python3 report.py` (the regen entrypoint per README:56), inspect the "Per-lang coverage in scope" block it prints to stdout — also reproduced as the rank table at the top of RESULTS.md. If a managed lang is in the top 3, OR a compiled lang is ranked below #6, **investigate before pushing.** Add a caveat to RESULTS.md if the issue can't be resolved in-session; do not push the ranking as authoritative.
 
 **Reference incident:** 2026-05-22 session 477aafc3 pushed a chart with C# at #1 over ARM64/Zig/C++. User caught it on review; investigation surfaced two structural bugs. Caveated chart now in place; multi-session cache-strip campaign queued.
 
