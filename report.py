@@ -37,7 +37,7 @@ CHARTS_DIR = REPO / "charts"
 
 # Scope: extend this list only after each new problem clears the
 # state-leak / answer-verification audit.
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 51)]
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 101)]
 
 # Languages in display order (preserved alphabetic-ish for stability)
 LANGS = ["arm64", "c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig"]
@@ -434,12 +434,14 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("### Note on Zig timings (comptime-fold bias)")
     md.append("")
-    md.append("> Of the 10 problems benchmarked, **5 (p001, p002, p005, p006, p009)** are fully")
+    md.append(f"> Of the {len(SCOPE_PROBLEMS)} problems benchmarked, **roughly 20-25% of cells** are fully")
     md.append("> constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time")
     md.append("> literals and the arithmetic is pure, so the optimizer reduces `solve()` to a")
-    md.append("> constant return.  Those 5 cells in the Zig column measure \"the cost of returning")
-    md.append("> an immediate,\" not algorithm execution.  The remaining 5 (p003, p004, p007,")
-    md.append("> p008, p010) do nontrivial runtime work and are honest timings.")
+    md.append("> constant return.  Known fold-candidates include p001, p002, p005, p006, p009,")
+    md.append("> p013, p017, p018, p019, p024, p028, p031, p033, p040, p045, p063, p069, p094,")
+    md.append("> p097, p100.  Those cells in the Zig column measure \"the cost of returning an")
+    md.append("> immediate,\" not algorithm execution.  The remaining ~75% do nontrivial runtime")
+    md.append("> work and are honest timings.")
     md.append(">")
     md.append("> This is a systematic methodological bias that pulls Zig's aggregate ranking")
     md.append("> downward relative to languages whose optimizers don't fold as aggressively at")
