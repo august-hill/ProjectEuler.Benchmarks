@@ -192,7 +192,7 @@ around p007+.
 
 ```bash
 cd ProjectEuler.Benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-10 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-100 --iters 10 --write
 python3 report.py
 ```
 
