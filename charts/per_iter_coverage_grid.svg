@@ -37,7 +37,7 @@
 <rect class="cell" x="344" y="78" width="12" height="18" fill="#36A036"><title>p022 ARM64: 1.33 ms</title></rect>
 <rect class="cell" x="356" y="78" width="12" height="18" fill="#1E6A1E"><title>p023 ARM64: 11.22 ms</title></rect>
 <rect class="cell" x="368" y="78" width="12" height="18" fill="#84E184"><title>p024 ARM64: 0 ns</title></rect>
-<rect class="cell" x="380" y="78" width="12" height="18" fill="#36A036"><title>p025 ARM64: 7.45 ms</title></rect>
+<rect class="cell" x="380" y="78" width="12" height="18" fill="#5BC85B"><title>p025 ARM64: 858.0 µs</title></rect>
 <rect class="cell" x="392" y="78" width="12" height="18" fill="#36A036"><title>p026 ARM64: 1.04 ms</title></rect>
 <rect class="cell" x="404" y="78" width="12" height="18" fill="#36A036"><title>p027 ARM64: 8.46 ms</title></rect>
 <rect class="cell" x="416" y="78" width="12" height="18" fill="#84E184"><title>p028 ARM64: 1.0 µs</title></rect>
@@ -78,7 +78,7 @@
 <rect class="cell" x="836" y="78" width="12" height="18" fill="#84E184"><title>p063 ARM64: 3.0 µs</title></rect>
 <rect class="cell" x="848" y="78" width="12" height="18" fill="#36A036"><title>p064 ARM64: 3.07 ms</title></rect>
 <rect class="cell" x="860" y="78" width="12" height="18" fill="#84E184"><title>p065 ARM64: 30.0 µs</title></rect>
-<rect class="cell" x="872" y="78" width="12" height="18" fill="#1E6A1E"><title>p066 ARM64: 63.41 ms</title></rect>
+<rect class="cell" x="872" y="78" width="12" height="18" fill="#5BC85B"><title>p066 ARM64: 165.0 µs</title></rect>
 <rect class="cell" x="884" y="78" width="12" height="18" fill="#84E184"><title>p067 ARM64: 35.0 µs</title></rect>
 <rect class="cell" x="896" y="78" width="12" height="18" fill="#1E6A1E"><title>p068 ARM64: 15.64 ms</title></rect>
 <rect class="cell" x="908" y="78" width="12" height="18" fill="#84E184"><title>p069 ARM64: 0 ns</title></rect>
