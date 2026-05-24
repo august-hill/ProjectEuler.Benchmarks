@@ -21,6 +21,7 @@ Scope:
   audited), the SCOPE_PROBLEMS list is the single place to change.
 """
 
+import html
 import json
 import sys
 from pathlib import Path
@@ -362,7 +363,16 @@ def render_coverage_grid_svg(agg: dict) -> Path:
 
     Hand-written rather than savefig(format='svg') because matplotlib's SVG
     output is 5-10× larger and has no semantic structure to hang tooltips on.
+
+    Every text interpolation runs through html.escape() — otherwise legend
+    labels like "<100µs" would break XML parsing (the parser reads "<1" as
+    a malformed start-tag).  This bit me on first deploy; do not remove.
     """
+    # Module-local helper: XML-escape any user-text going into element content
+    # or attribute values.  quote=True covers " (attr values) too.
+    def esc(s) -> str:
+        return html.escape(str(s), quote=True)
+
     langs = LANG_DISPLAY_ORDER
     n_langs = len(langs)
     n_probs = len(SCOPE_PROBLEMS)
@@ -408,12 +418,12 @@ def render_coverage_grid_svg(agg: dict) -> Path:
     # Figure title + subtitle
     parts.append(
         f'<text class="title" x="{margin_l}" y="26">'
-        f'Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems'
+        f'{esc(f"Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems")}'
         f'</text>'
     )
     parts.append(
         f'<text class="subtitle" x="{margin_l}" y="42">'
-        f'Hover any cell for problem · language · per-invocation time'
+        f'{esc("Hover any cell for problem · language · per-invocation time")}'
         f'</text>'
     )
 
@@ -424,7 +434,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
         # Band title
         parts.append(
             f'<text class="band" x="{margin_l}" y="{band_y0 + 15}">'
-            f'Problems {band_probs[0]}–{band_probs[-1]}'
+            f'{esc(f"Problems {band_probs[0]}–{band_probs[-1]}")}'
             f'</text>'
         )
 
@@ -433,7 +443,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
             y = grid_y0 + (ri + 0.5) * cell_h + 4   # +4 ≈ baseline tweak
             parts.append(
                 f'<text x="{margin_l - 6}" y="{y}" text-anchor="end">'
-                f'{DISPLAY[lang]}</text>'
+                f'{esc(DISPLAY[lang])}</text>'   # "C++" has no <>& but esc is cheap
             )
 
         # Cells with <title> tooltips
@@ -455,7 +465,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
                 parts.append(
                     f'<rect class="cell" x="{x}" y="{y}" '
                     f'width="{cell_w}" height="{cell_h}" fill="{color}">'
-                    f'<title>p{p} {DISPLAY[lang]}: {tip}</title>'
+                    f'<title>{esc(f"p{p} {DISPLAY[lang]}: {tip}")}</title>'
                     f'</rect>'
                 )
 
@@ -465,10 +475,11 @@ def render_coverage_grid_svg(agg: dict) -> Path:
             x = margin_l + (i + 0.5) * cell_w
             parts.append(
                 f'<text class="tick" x="{x}" y="{xaxis_y}" text-anchor="middle">'
-                f'p{band_probs[i]}</text>'
+                f'{esc(f"p{band_probs[i]}")}</text>'
             )
 
-    # Legend
+    # Legend.  Labels here contain "<100µs", "<1ms", etc. — the literal "<"
+    # is what broke the SVG on first deploy.  esc() turns it into "&lt;".
     legend_y = margin_t + n_bands * band_h + (n_bands - 1) * band_gap + 28
     swatch = 14
     item_w = (fig_w - margin_l - margin_r) / len(LEGEND_ITEMS)
@@ -479,12 +490,25 @@ def render_coverage_grid_svg(agg: dict) -> Path:
             f'fill="{color}" stroke="#000" stroke-width="0.3"/>'
         )
         parts.append(
-            f'<text x="{lx + swatch + 4}" y="{legend_y + 11}">{label}</text>'
+            f'<text x="{lx + swatch + 4}" y="{legend_y + 11}">{esc(label)}</text>'
         )
 
     parts.append('</svg>')
     out = CHARTS_DIR / "per_iter_coverage_grid.svg"
     out.write_text("\n".join(parts))
+
+    # Self-check: parse the file we just wrote as XML.  If a future change
+    # forgets esc() somewhere and emits a stray "<" into text content, this
+    # raises here instead of silently shipping a broken SVG to GitHub.
+    import xml.etree.ElementTree as _ET
+    try:
+        _ET.parse(out)
+    except _ET.ParseError as e:
+        raise RuntimeError(
+            f"Generated SVG is not valid XML — likely an unescaped <, >, or & "
+            f"in a text interpolation.  Run html.escape() on any new text "
+            f"added to render_coverage_grid_svg().  Parser error: {e}"
+        )
     return out
 
 
