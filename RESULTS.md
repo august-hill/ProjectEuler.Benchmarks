@@ -50,9 +50,21 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 
-Rows sorted fastest-to-slowest (top to bottom).  At our current 100×10 scope
-every cell is green — that's exactly the audit gate we're holding to as we
-extend to more problems.
+**🔍 [Open the SVG version](charts/per_iter_coverage_grid.svg)** — same chart,
+with a hover tooltip on every cell (`p347 Zig: 2.3 ms`).  GitHub renders the
+SVG file directly when you click that link; tooltips don't fire inside the
+inline `![](...)` image above because browsers treat `<img>` SVGs as opaque.
+
+Rows are in fixed tier order (native → managed → interpreted) so the chart
+doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
+chunked into bands of 100 (currently 1 band), which keeps cells legibly sized as we extend
+toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
+Zig) sit near the top in mostly bright-green territory; managed-runtime rows
+(C# / Java / JavaScript) carry darker greens and scattered amber from JIT
+startup; Python at the bottom shows the heaviest amber load.  Vertical amber
+bars that cut across multiple languages (currently visible near p061 and p071)
+flag *intrinsically hard* problems — the algorithm cost dominates regardless of
+language.  No red or black cells: the audit gate is holding.
 
 ## Per-Problem Detail
 
