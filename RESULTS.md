@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2304 measured (96.0% coverage).**
+> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2332 measured (97.2% coverage).**
 > The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -8,15 +8,18 @@
 > we got here, including the reset from 200+ problems back to a verified 10×10
 > core, then the disciplined expansion to today's 300-problem scope.
 
-## Per-Invocation Cost — Foundation (Common Set, 199 of 200 problems)
+## Foundation — Tier 1 (10 languages, problems 1-200)
+
+All 10 languages benchmarked across the first 200 problems — the apples-to-apples comparison surface that anchors the suite's headline rankings.
+
+### Per-Invocation Cost (Common Set, 199 of 200 problems)
 
 We run each program 10 times in fresh OS processes (no warmup, no shared state).
 Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /
 shell-loop user actually pays.  The median wall time across the 10 invocations is
 the headline per-problem number, and the table sums over the 199-problem
 common set so partial-coverage languages aren't artificially "faster" than fully-
-covered ones.  Per-language individual coverage (which may be ≥ the common set) is
-shown in the coverage block further down.
+covered ones.
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
@@ -33,36 +36,34 @@ shown in the coverage block further down.
 | 9 | **JavaScript** | 68.46 s | 9,123 | 3.05× |
 | 10 | **Python** | 669.59 s | 8,459 | 29.80× |
 
-## Per-Invocation Cost — Deep Coverage (Tier 2, problems 201-300, 4 languages)
+### Speed vs Code Size
+
+How much code does each language need to solve these 200 Foundation problems, and how fast does that code run?  Bottom-left = fast and concise; top-right = slow and verbose.  ARM64's outlier position (most lines) is expected — assembly trades verbosity for direct hardware control.
+
+![Speed vs Code Size](charts/per_iter_speed_vs_size.png)
+
+## Deep Coverage — Tier 2 (4 languages, problems 201-300)
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Zig, Python) that intentionally pushed past problem 200. The other 6 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-_Common set computed over the **3 active** tier-2 langs_ _(C++, Go, Zig);_ _awaiting: Python. Common set will tighten once awaited langs land tier-2 data._
+### Per-Invocation Cost (Common Set, 50 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Total (92-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (50-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 91.54 s | 11,794 | 1.00× |
-| 2 | **Go** | 94.80 s | 9,419 | 1.04× |
-| 3 | **Zig** | 109.43 s | 10,264 | 1.20× |
+| 1 | **Go** | 797.38 ms | 4,492 | 1.00× |
+| 2 | **C++** | 934.63 ms | 6,791 | 1.17× |
+| 3 | **Zig** | 2.89 s | 4,962 | 3.63× |
+| 4 | **Python** | 29.57 s | 2,956 | 37.08× |
 
-### Speed vs Code Size — Tier 2
+### Speed vs Code Size
 
 Same scatter as the Foundation chart, restricted to the tier-2 active languages over problems 201–300.
 
 ![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)
 
-## Speed vs Code Size
-
-How much code does each language need to solve these 200 Foundation problems, and how
-fast does that code run?  Bottom-left = fast and concise; top-right = slow
-and verbose.  ARM64's outlier position (most lines) is expected — assembly
-trades verbosity for direct hardware control.
-
-![Speed vs Code Size](charts/per_iter_speed_vs_size.png)
-
-## Coverage + Speed Heatmap
+## Coverage Heatmap
 
 One cell per (language, problem).  Color shows whether the cell passes the
 invocation-isolation + answer-correctness audit and how fast it runs:
@@ -118,6 +119,15 @@ For each (language, problem):
 
 That's the entire metric.  No "hot" vs "cold" — just per-invocation cost, which
 is what every CLI / cron / shell-loop user actually pays.
+
+### Sub-millisecond floor
+
+On Apple Silicon, process spawn (`fork` + `exec`) costs ~5–10 ms.  Problems where
+the algorithm takes < 1 ms (currently p001–p006 in most languages) are effectively
+measuring spawn cost, not algorithmic merit.  That **is** what a CLI user pays, so
+the number is still meaningful — but the cross-language signal on these problems
+mostly reflects runtime startup cost.  The interesting algorithmic signal starts
+around p007+.
 
 ### How each language is built
 
@@ -212,15 +222,6 @@ The process boundary makes that work fairly: when each invocation is a fresh OS
 process, *every* in-process cache starts empty.  No language gets an unfair
 amortization advantage.  No source-code refactoring is required to maintain cross-
 language honesty — the OS enforces it for free.
-
-## Sub-Millisecond Floor
-
-On Apple Silicon, process spawn (`fork` + `exec`) costs ~5–10 ms.  Problems where
-the algorithm takes < 1 ms (currently p001–p006 in most languages) are effectively
-measuring spawn cost, not algorithmic merit.  That **is** what a CLI user pays, so
-the number is still meaningful — but the cross-language signal on these problems
-mostly reflects runtime startup cost.  The interesting algorithmic signal starts
-around p007+.
 
 ## Reproducibility
 
