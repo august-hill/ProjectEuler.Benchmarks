@@ -182,12 +182,26 @@ def fmt_time(ns: int) -> str:
 def aggregate() -> dict:
     """For each lang, compute totals + per-problem maps.
 
-    per_problem_ns:    int(≥0) for measured, None for missing
-    per_problem_lines: int(≥0) lines for that file (0 if no source-lines field)
-    per_problem_status: 'pass' / 'fail' / 'missing'
-    total_ns:   sum of measured ns
-    total_lines: sum of source lines across the in-scope problems
-    missing:    count of None per_problem_ns entries
+    Per-lang fields:
+      per_problem_ns:     int(≥0) for measured, None for missing
+      per_problem_lines:  int(≥0) lines for that file (0 if no source-lines field)
+      per_problem_status: 'pass' / 'fail' / 'missing'
+      total_ns:           sum of measured ns across THIS lang's measured cells
+      total_lines:        sum of source lines across the in-scope problems
+      missing:            count of None per_problem_ns entries
+
+    Plus, attached to a special "_common" key (not a lang):
+      problems:           list of problem keys where ALL 10 langs have status='pass'
+                          (the apples-to-apples comparison surface)
+      per_lang_total_ns:  {lang: sum of time_ns over the common set} — the metric
+                          the totals/scatter charts use to avoid misleading
+                          partial-coverage rankings.
+
+    The common-set approach is a stop-gap until report.py becomes tier-aware
+    (see spawn_task "Make report.py tier-aware"). For now, if any lang is
+    intentionally stopped, that's what the existing tier model + a future
+    report.py refactor would handle. Today (all 10 langs converging on tier 1)
+    the common set is the right honest metric.
     """
     out = {}
     for lang in LANGS:
@@ -206,6 +220,26 @@ def aggregate() -> dict:
             "total_lines": total_lines,
             "missing": missing,
         }
+
+    # Common-set computation: problems where every lang has status='pass'.
+    # Any lang missing OR with status!='pass' for a given problem disqualifies
+    # that problem from the common set.
+    common_problems = [
+        p for p in SCOPE_PROBLEMS
+        if all(out[lang]["per_problem_status"].get(p) == "pass" for lang in LANGS)
+    ]
+    out["_common"] = {
+        "problems": common_problems,
+        "per_lang_total_ns": {
+            lang: sum(out[lang]["per_problem_ns"][p] for p in common_problems
+                      if out[lang]["per_problem_ns"][p] is not None)
+            for lang in LANGS
+        },
+        "per_lang_total_lines": {
+            lang: sum(out[lang]["per_problem_lines"][p] for p in common_problems)
+            for lang in LANGS
+        },
+    }
     return out
 
 
@@ -219,10 +253,15 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
     Both axes log-scale — language differences span 2-3 orders of magnitude
     in time and ~3× in lines.
     """
+    # Use the common-set totals (apples-to-apples regardless of partial coverage)
+    # — see aggregate()'s "_common" key. The total_lines stays per-lang's full
+    # scope because LoC is a structural property of source code, not a runtime
+    # measurement; mixing scopes there has different semantics.
+    common = agg["_common"]
     fig, ax = plt.subplots(figsize=(10, 6))
     for lang in LANGS:
-        x = agg[lang]["total_lines"]
-        y_ms = agg[lang]["total_ns"] / 1_000_000
+        x = common["per_lang_total_lines"][lang]
+        y_ms = common["per_lang_total_ns"][lang] / 1_000_000
         if x == 0 or y_ms == 0:
             continue
         ax.scatter(x, y_ms, s=200, c=COLOR[lang], edgecolors="black",
@@ -543,8 +582,18 @@ def render_coverage_grid_svg(agg: dict) -> Path:
 
 
 def render_total_chart(agg: dict) -> Path:
-    """Horizontal bar: total cost per language, sorted fastest first, log scale X."""
-    rows = [(lang, agg[lang]["total_ns"]) for lang in LANGS if agg[lang]["total_ns"] > 0]
+    """Horizontal bar: total cost per language over the COMMON SET (problems
+    where all 10 langs have status='pass'), sorted fastest first, log scale X.
+
+    Using common-set totals keeps the chart apples-to-apples under partial
+    coverage. A lang at 100/200 with low total isn't visually misleading vs a
+    lang at 200/200 with high total — both are measured over the same problem
+    set in this chart.
+    """
+    common = agg["_common"]
+    n_common = len(common["problems"])
+    rows = [(lang, common["per_lang_total_ns"][lang])
+            for lang in LANGS if common["per_lang_total_ns"][lang] > 0]
     rows.sort(key=lambda r: r[1])  # ascending (fastest first; chart will flip for top-at-top)
 
     labels = [DISPLAY[lang] for lang, _ in rows]
@@ -558,9 +607,11 @@ def render_total_chart(agg: dict) -> Path:
     ax.set_yticklabels(labels)
     ax.invert_yaxis()  # fastest on top
     ax.set_xscale("log")
-    ax.set_xlabel(f"Total per-invocation cost across problems 1–{len(SCOPE_PROBLEMS)} (ms, log scale)")
-    ax.set_title(f"Per-Invocation Cost — {len(LANGS)} Languages, Problems 1–{len(SCOPE_PROBLEMS)}\n"
-                 f"Each binary run 10 times in a fresh process; median wall time summed across the {len(SCOPE_PROBLEMS)} problems")
+    ax.set_xlabel(f"Total per-invocation cost across the {n_common}-problem common set (ms, log scale)")
+    ax.set_title(f"Per-Invocation Cost — {len(LANGS)} Languages, "
+                 f"Common Set ({n_common} of {len(SCOPE_PROBLEMS)} in-scope problems)\n"
+                 f"Each binary run 10 times in a fresh process; median wall time summed "
+                 f"across the {n_common} problems all langs pass")
     # Value labels at the end of each bar
     for i, (bar, ms) in enumerate(zip(bars, values_ms)):
         if ms >= 100:
@@ -581,39 +632,60 @@ def render_total_chart(agg: dict) -> Path:
 
 def render_results_md(agg: dict) -> str:
     """Generate the new RESULTS.md content."""
-    # Ranking rows, sorted by total
+    # Ranking rows use the COMMON SET (problems where all 10 langs have
+    # status='pass') so partial-coverage langs aren't artificially "faster"
+    # than fully-covered langs. Per-lang's own coverage is shown separately
+    # in the per-lang section.
+    common = agg["_common"]
     ranked = sorted(
-        [(lang, agg[lang]["total_ns"]) for lang in LANGS if agg[lang]["total_ns"] > 0],
+        [(lang, common["per_lang_total_ns"][lang])
+         for lang in LANGS if common["per_lang_total_ns"][lang] > 0],
         key=lambda r: r[1],
     )
     fastest_ns = ranked[0][1] if ranked else 1
+
+    # Coverage statistics — used in narrative to honestly describe partial state
+    n_common = len(common["problems"])
+    total_cells = len(SCOPE_PROBLEMS) * len(LANGS)
+    measured_cells = sum(
+        sum(1 for v in agg[lang]["per_problem_ns"].values() if v is not None)
+        for lang in LANGS
+    )
 
     # Build markdown
     md = []
     md.append("# Project Euler — Cross-Language Benchmarks")
     md.append("")
-    md.append(f"> **Currently: {len(SCOPE_PROBLEMS)} problems × {len(LANGS)} languages "
-              f"= {len(SCOPE_PROBLEMS) * len(LANGS)} measurements.**")
+    md.append(f"> **Scope: {len(SCOPE_PROBLEMS)} problems × {len(LANGS)} languages "
+              f"= {total_cells} cells, {measured_cells} measured "
+              f"({100*measured_cells/total_cells:.1f}% coverage).**")
+    md.append(f"> The cross-language ranking below is computed over the **{n_common}-problem "
+              f"common set** (problems where every language has a passing measurement) — the "
+              f"apples-to-apples comparison surface.  Per-language coverage detail appears below "
+              f"the ranking.")
     md.append("> Growing carefully — each new problem and language is audited for state-leak")
     md.append("> safety, verified for answer correctness, and added only when it cleanly fits the")
     md.append("> measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how")
-    md.append(f"> we got here, including the reset from 200+ problems back to a verified 10×10")
-    md.append(f"> core, then the disciplined expansion to today's {len(SCOPE_PROBLEMS)}×{len(LANGS)} scope.")
+    md.append("> we got here, including the reset from 200+ problems back to a verified 10×10")
+    md.append(f"> core, then the disciplined expansion to today's {len(SCOPE_PROBLEMS)}-problem scope.")
     md.append("")
-    md.append(f"## Per-Invocation Cost (Total, Problems 1–{len(SCOPE_PROBLEMS)})")
+    md.append(f"## Per-Invocation Cost (Common Set, {n_common} of {len(SCOPE_PROBLEMS)} problems)")
     md.append("")
     md.append("We run each program 10 times in fresh OS processes (no warmup, no shared state).")
     md.append("Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /")
     md.append("shell-loop user actually pays.  The median wall time across the 10 invocations is")
-    md.append(f"the headline per-problem number, and we sum across the {len(SCOPE_PROBLEMS)} problems for the total.")
+    md.append(f"the headline per-problem number, and the table sums over the {n_common}-problem")
+    md.append("common set so partial-coverage languages aren't artificially \"faster\" than fully-")
+    md.append("covered ones.  Per-language individual coverage (which may be ≥ the common set) is")
+    md.append("shown in the coverage block further down.")
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
-    md.append(f"| Rank | Language | Total ({len(SCOPE_PROBLEMS)} problems) | Lines of code | vs Fastest |")
+    md.append(f"| Rank | Language | Total ({n_common}-problem common set) | Lines of code | vs Fastest |")
     md.append("|------|----------|--------------------:|--------------:|-----------:|")
     for i, (lang, total) in enumerate(ranked, 1):
         ratio = total / fastest_ns
-        lines = agg[lang]["total_lines"]
+        lines = common["per_lang_total_lines"][lang]
         md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
     md.append("")
     md.append("## Speed vs Code Size")
