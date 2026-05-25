@@ -164,6 +164,22 @@ def status_of(entry: dict) -> str:
     return entry.get("status", "missing") or "missing"
 
 
+def samples_of(entry: dict):
+    """Iteration count behind this measurement.
+
+    Suite-standard is `iters=10`; any cell with samples<10 is a partial
+    measurement (median is still meaningful for >1s problems, but variance
+    estimate is degraded). Cells with samples<10 are marked with `*` in
+    the per-problem detail table.
+
+    Returns int or None (missing).
+    """
+    if not entry or entry.get("status") != "pass":
+        return None
+    s = entry.get("samples")
+    return int(s) if s is not None else None
+
+
 def fmt_time(ns: int) -> str:
     """Human-readable nanoseconds.
 
@@ -209,6 +225,7 @@ def aggregate() -> dict:
         per_prob_ns = {p: time_ns(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_lines = {p: source_lines(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_status = {p: status_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        per_prob_samples = {p: samples_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         total_ns = sum(v for v in per_prob_ns.values() if v is not None)
         total_lines = sum(per_prob_lines.values())
         missing = sum(1 for p in SCOPE_PROBLEMS if per_prob_ns[p] is None)
@@ -216,6 +233,7 @@ def aggregate() -> dict:
             "per_problem_ns": per_prob_ns,
             "per_problem_lines": per_prob_lines,
             "per_problem_status": per_prob_status,
+            "per_problem_samples": per_prob_samples,
             "total_ns": total_ns,
             "total_lines": total_lines,
             "missing": missing,
@@ -763,6 +781,9 @@ def render_results_md(agg: dict) -> str:
     display_langs = LANG_DISPLAY_ORDER
     header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
     sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
+    # Track whether any partial-measurement cells exist so we only emit the
+    # footnote when the marker actually appears in the tables.
+    any_partial = False
     for band_probs in _bands(SCOPE_PROBLEMS, BAND_SIZE):
         md.append(f"### Problems {band_probs[0]}–{band_probs[-1]}")
         md.append("")
@@ -772,8 +793,38 @@ def render_results_md(agg: dict) -> str:
             cells = []
             for lang in display_langs:
                 ns = agg[lang]["per_problem_ns"][p]
-                cells.append(fmt_time(ns) if ns is not None else "—")
+                if ns is None:
+                    cells.append("—")
+                else:
+                    s = agg[lang]["per_problem_samples"][p]
+                    # Suite-standard iters=10; mark partial measurements so a
+                    # reader can tell at-a-glance which cells haven't been
+                    # bench'd to full sample count.
+                    suffix = "*" if (s is not None and s < 10) else ""
+                    cells.append(fmt_time(ns) + suffix)
             md.append(f"| **p{p}** | " + " | ".join(cells) + " |")
+        md.append("")
+
+        # Detect any partial cell in this band for the footnote gate.
+        if not any_partial:
+            for p in band_probs:
+                for lang in display_langs:
+                    s = agg[lang]["per_problem_samples"][p]
+                    if s is not None and s < 10:
+                        any_partial = True
+                        break
+                if any_partial:
+                    break
+
+    if any_partial:
+        md.append(
+            "> \\* — *partial measurement*: cell was bench'd with fewer than the "
+            "suite-standard 10 iterations (typically 1 or 3, for heavy problems "
+            "where iters=10 would exceed the per-chunk wall budget). The median "
+            "is still meaningful for >1s problems, but the variance estimate is "
+            "degraded. These cells are queued for a future uniform-iters=10 "
+            "re-bench pass."
+        )
         md.append("")
 
     md.append("## Method")
