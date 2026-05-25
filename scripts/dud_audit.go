@@ -4,9 +4,9 @@
 //   E1  empty_dir            problem dir exists but no source file (or file empty)
 //   S1  stub_solve           solve body is just `return <literal>` with no algorithm
 //   S2  missing_answer       source present but no `Answer:` comment at top
-//   S3  comment_mismatch     `// Answer:` differs from data/private/<lang>.json answer
-//   D1  bench_fail           data/private/<lang>.json status=fail (algo broken)
-//   D2  bench_missing_entry  source/dir exists but no entry in data/private/<lang>.json
+//   S3  comment_mismatch     `// Answer:` differs from SQLite SSOT (runs.answer)
+//   D1  bench_fail           SQLite SSOT runs.status=fail (algo broken)
+//   D2  bench_missing_entry  source/dir exists but no row in SQLite SSOT (runs table)
 //   X1  cross_lang_disagree  multiple langs solve same problem with different answers
 //   C1  cache_pattern        warm time_ns << cold_start_ns (solve() likely caches answer)
 //                              — bench measures cache-return cost, not real algorithm.
@@ -27,6 +27,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -37,12 +38,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	_ "modernc.org/sqlite"
 )
 
 // ---------- per-language config ----------
 
 type LangConfig struct {
-	Name    string // canonical short name; doubles as the data/private/<name>.json filename
+	Name    string // canonical short name; matches `runs.lang` column in the SQLite SSOT
 	RepoDir string // repo root, absolute (still used by relPath for display)
 	// For each problem N (zero-padded 3-digit), where is the source-of-truth file?
 	// Returns absolute path. nil means "not applicable" (problem not in this lang's scheme).
@@ -57,13 +60,14 @@ type LangConfig struct {
 	StubRe *regexp.Regexp
 }
 
-// benchPath returns the absolute path to the (gitignored) full bench data for
-// `name` — written by `euler-bench per-iter --write` to data/private/<name>.json.
-// Migrated 2026-05-24: previously read each lang repo's `benchmark_results.json`
-// from the now-deleted per-repo `benchmark.sh` harness.
-// Re-rooted 2026-05-25 from ProjectEuler.X/ → pe/<x>/ structure.
-func benchPath(name string) string {
-	return peDir + "/benchmarks/data/private/" + name + ".json"
+// dbPath returns the absolute path to the SQLite SSOT.
+// Migration history:
+//
+//	2026-05-24: read each lang repo's `benchmark_results.json` (deleted with `benchmark.sh`)
+//	2026-05-25 (rebase): switched to `pe/benchmarks/data/private/<lang>.json`
+//	2026-05-25 (SQLite migration): consolidated to single `pe/benchmarks/data/bench-private.db`
+func dbPath() string {
+	return peDir + "/benchmarks/data/bench-private.db"
 }
 
 const ccdev = "/Users/augusthill/ccdev"
@@ -174,45 +178,64 @@ var langs = []LangConfig{
 	},
 }
 
-// ---------- bench data (data/private/<lang>.json) ----------
+// ---------- bench data (data/bench-private.db, SQLite SSOT) ----------
 
 type BenchEntry struct {
-	Status      string          `json:"status"`
-	Answer      json.RawMessage `json:"answer"`
-	Error       string          `json:"error,omitempty"`
-	TimeNs      int64           `json:"time_ns,omitempty"`
-	ColdStartNs int64           `json:"cold_start_ns,omitempty"`
+	Status string
+	Answer string // bare value (no JSON wrapping); empty string = NULL in DB
+	Error  string
+	TimeNs int64
 }
 
 type BenchFile struct {
-	Problems map[string]BenchEntry `json:"problems"`
+	Problems map[string]BenchEntry
 }
 
-func loadBench(path string) (*BenchFile, error) {
-	data, err := os.ReadFile(path)
+// loadBench loads all rows for `lang` from the SQLite SSOT.
+// Returns an empty BenchFile (not an error) if the DB file is absent — a
+// pre-rebench state, valid for a clean clone before any bench has run.
+//
+// Migrated 2026-05-25 from per-lang JSON. Schema lives in
+// `pe/benchmarks/cmd/euler-bench/db.go`; this reader maps the columns it
+// cares about (status, answer, error, time_ns) into BenchEntry.
+func loadBench(lang string) (*BenchFile, error) {
+	path := dbPath()
+	if _, err := os.Stat(path); err != nil {
+		return &BenchFile{Problems: map[string]BenchEntry{}}, nil
+	}
+	// Read-only URI form prevents accidental writes from the audit tool.
+	db, err := sql.Open("sqlite", "file:"+path+"?mode=ro")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("open db: %w", err)
 	}
-	var bf BenchFile
-	if err := json.Unmarshal(data, &bf); err != nil {
-		return nil, err
+	defer db.Close()
+
+	rows, err := db.Query(
+		`SELECT problem, status, COALESCE(answer,''), COALESCE(error,''), COALESCE(time_ns, 0)
+		 FROM runs WHERE lang = ?`, lang)
+	if err != nil {
+		return nil, fmt.Errorf("query runs for %s: %w", lang, err)
 	}
-	return &bf, nil
+	defer rows.Close()
+
+	bf := &BenchFile{Problems: map[string]BenchEntry{}}
+	for rows.Next() {
+		var p string
+		var e BenchEntry
+		if err := rows.Scan(&p, &e.Status, &e.Answer, &e.Error, &e.TimeNs); err != nil {
+			return nil, fmt.Errorf("scan: %w", err)
+		}
+		bf.Problems[p] = e
+	}
+	return bf, rows.Err()
 }
 
-// answerToString returns the canonical string form of a bench answer.
-// Uses json.RawMessage to preserve full precision (avoids float64 truncation
-// of large integers > 2^53). Strips JSON quotes if the answer is a string.
-func answerToString(a json.RawMessage) string {
-	if len(a) == 0 || string(a) == "null" {
-		return ""
-	}
-	s := strings.TrimSpace(string(a))
-	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
-		// String answer: strip JSON quotes (don't worry about embedded escapes — PE answers don't have them).
-		return s[1 : len(s)-1]
-	}
-	return s
+// answerToString returns the canonical comparison form of a bench answer.
+// Post-SQLite migration this is a pass-through (the DB stores bare TEXT —
+// no JSON wrapping to strip). Kept as a function so call sites don't have
+// to change.
+func answerToString(a string) string {
+	return strings.TrimSpace(a)
 }
 
 // markerCommentRe matches "Answer:" comments that are clearly placeholders, not real answers.
@@ -307,7 +330,7 @@ const (
 func scanLang(cfg LangConfig, parked map[int]bool) []Finding {
 	var findings []Finding
 
-	bench, _ := loadBench(benchPath(cfg.Name))
+	bench, _ := loadBench(cfg.Name)
 	if bench == nil {
 		bench = &BenchFile{Problems: map[string]BenchEntry{}}
 	}
@@ -364,7 +387,7 @@ func scanLang(cfg LangConfig, parked map[int]bool) []Finding {
 		_ = entry
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D2", Severity: sevWarning,
-			Details: "data/private/<lang>.json has entry but no matching source dir/file",
+			Details: "SQLite SSOT has runs row but no matching source dir/file",
 		})
 	}
 
@@ -413,7 +436,7 @@ func scanContent(cfg LangConfig, n int, content []byte, bench *BenchFile) []Find
 	if !ok {
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D2", Severity: sevInfo,
-			Details: "source exists but no entry in data/private/<lang>.json",
+			Details: "source exists but no row in SQLite SSOT runs table",
 		})
 		return findings
 	}
@@ -422,28 +445,17 @@ func scanContent(cfg LangConfig, n int, content []byte, bench *BenchFile) []Find
 	if entry.Status == "fail" {
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D1", Severity: sevError,
-			Details: fmt.Sprintf("data/private/<lang>.json status=fail (error: %q)", entry.Error),
+			Details: fmt.Sprintf("SQLite SSOT runs.status=fail (error: %q)", entry.Error),
 		})
 	}
 
-	// C1: cache pattern — warm time_ns is sub-µs while cold_start_ns is ms+.
-	// Signals solve() is caching the answer (warm bench iterations measure cache-return).
-	// Threshold: cold > 1ms AND time < 100µs AND (cold/time > 100 OR time == 0).
-	// Only applies when status=pass (a failed bench's timings are meaningless).
-	if entry.Status == "pass" && entry.ColdStartNs > 1_000_000 && entry.TimeNs < 100_000 {
-		ratioMet := entry.TimeNs == 0 || (entry.ColdStartNs/entry.TimeNs) > 100
-		if ratioMet {
-			ratioStr := "∞ (time_ns=0)"
-			if entry.TimeNs > 0 {
-				ratioStr = fmt.Sprintf("%dx", entry.ColdStartNs/entry.TimeNs)
-			}
-			findings = append(findings, Finding{
-				Lang: cfg.Name, Problem: n, Category: "C1", Severity: sevError,
-				Details: fmt.Sprintf("cache pattern: time_ns=%d, cold_start_ns=%d (ratio %s) — solve() likely caches answer",
-					entry.TimeNs, entry.ColdStartNs, ratioStr),
-			})
-		}
-	}
+	// C1 (cache_pattern) check retired 2026-05-25: the heuristic compared
+	// warm time_ns vs cold_start_ns to spot solve() caching, but the
+	// fresh-process bench model (every iteration is its own OS process)
+	// eliminates the warm/cold distinction — every measurement is a cold
+	// start. Cache-pattern detection is now a source-level concern, not
+	// a bench-data signal. See project_pe_cache_pattern_campaign for the
+	// source-grep approach.
 
 	// S3: comment vs bench mismatch (only if comment present and bench has answer)
 	if commentAnswer != "" && len(entry.Answer) > 0 {
@@ -466,7 +478,7 @@ func scanCrossLang(parked map[int]bool) []Finding {
 	answers := map[int]map[string]string{}
 
 	for _, cfg := range langs {
-		bench, _ := loadBench(benchPath(cfg.Name))
+		bench, _ := loadBench(cfg.Name)
 		if bench == nil {
 			continue
 		}

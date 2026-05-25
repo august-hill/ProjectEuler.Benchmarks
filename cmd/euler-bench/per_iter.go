@@ -266,9 +266,9 @@ func cmdPerIter(args []string) {
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
 	iters := fs.Int("iters", 10, "fresh-process invocations per problem (minimum 1; for stable timings 10+)")
 	write := fs.Bool("write", false,
-		"write results to data/<lang>.json (sanitized: no answer field) "+
-			"AND data/private/<lang>.json (full, gitignored). "+
-			"Existing entries for unmeasured problems are preserved.")
+		"upsert results into data/bench-private.db (the SQLite SSOT, gitignored). "+
+			"Two tables: runs (latest per lang+problem) + run_history (append-only). "+
+			"Existing rows for unmeasured problems are preserved.")
 	if err := fs.Parse(args); err != nil {
 		os.Exit(2)
 	}
@@ -375,8 +375,8 @@ func cmdPerIter(args []string) {
 			fmt.Fprintf(os.Stderr, "  %s: WRITE FAILED: %v\n", key, err)
 			continue
 		}
-		fmt.Printf("  %s: wrote data/%s.json + data/private/%s.json  (%d measured, %d mismatches)\n",
-			key, key, key, len(results), mismatches)
+		fmt.Printf("  %s: wrote %d rows to data/bench-private.db  (%d mismatches)\n",
+			key, len(results), mismatches)
 		totalMismatches += mismatches
 	}
 	if totalMismatches > 0 {

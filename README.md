@@ -63,17 +63,17 @@ See JOURNEY.md for the data-architecture refactor story.
 
 ## Trust + safety
 
-This repo is **public**; the lang repos are **private**.  Per the project's
-[PE compliance rules](CLAUDE.md), `data/<lang>.json` files NEVER contain an
-`answer` field, for any problem.  Full data with answers lives in `data/private/`
-(gitignored, local-only) for verification + debugging.  Triple-layer defense:
+This repo is **public**; the lang repos are **private**. Per the project's
+[PE compliance rules](CLAUDE.md), **the public repo carries no raw bench data
+at all** — only rendered narrative (RESULTS.md, JOURNEY.md, this README) and
+charts. All measurements (including answer values) live in the gitignored
+SQLite SSOT `data/bench-private.db`.
 
-1. The `euler-bench per-iter --write` writer has no code path that emits answers
-   to public files.
-2. A post-write readback assertion fails loudly if any answer key reaches a
-   public file.
-3. A pre-commit hook ([`scripts/sanitization_gate.py`](scripts/sanitization_gate.py))
-   runs the same check independently.
+This is a structural invariant, not a field-stripping discipline: leak
+prevention is enforced at the file-system boundary by `.gitignore` plus a
+pre-commit hook ([`scripts/sanitization_gate.py`](scripts/sanitization_gate.py))
+that rejects any staged file under `data/` not on the small config allowlist
+(`tiers.json`, `parked.json`, `difficulty.json`, `levels.json`).
 
 ## Repo layout
 
@@ -81,11 +81,11 @@ This repo is **public**; the lang repos are **private**.  Per the project's
 |------|------|
 | `RESULTS.md` | The numbers — rankings, per-problem grid, methodology |
 | `JOURNEY.md` | The story — how we got here, what we learned, what we tried that didn't work |
-| `cmd/euler-bench/` | The Go benchmark + write tool (`run`, `failures`, `status`, `collect`, `per-iter`) |
-| `report.py` | Markdown + chart generator (reads `data/`, writes `RESULTS.md` + `charts/`) |
-| `data/<lang>.json` | Public bench data (sanitized) |
-| `data/private/` | Full bench data (gitignored) |
-| `scripts/sanitization_gate.py` | Pre-commit hook: enforce no-answer-in-public-data |
+| `cmd/euler-bench/` | The Go bench + write tool (`run`, `failures`, `status`, `per-iter`) — single SSOT writer |
+| `report.py` | Markdown + chart generator (reads SQLite SSOT, writes `RESULTS.md` + `charts/`) |
+| `data/bench-private.db` | SQLite SSOT (gitignored) — `runs` + `run_history` tables |
+| `data/{tiers,parked,difficulty,levels}.json` | Config files (versioned) — tier model, parked-problem list, PE-site metadata |
+| `scripts/sanitization_gate.py` | Pre-commit hook: rejects any raw bench data file (`*.json`/`*.db`) outside the config allowlist |
 | `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era + per-tier coverage) — historical reference only |
 
 ## License + contact

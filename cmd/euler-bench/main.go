@@ -6,7 +6,7 @@
 //	euler-bench run [--lang c,rust] [--problems 001,002] [--parallel]
 //	euler-bench failures [--skip-parked] [--dry-run] [--parallel]
 //	euler-bench status [--lang c,rust]
-//	euler-bench collect [--output-dir PATH]
+//	euler-bench per-iter --lang <X> --problems N --iters 10 --write
 package main
 
 import (
@@ -86,8 +86,6 @@ func main() {
 		cmdFailures(os.Args[2:])
 	case "status":
 		cmdStatus(os.Args[2:])
-	case "collect":
-		cmdCollect(os.Args[2:])
 	case "per-iter":
 		cmdPerIter(os.Args[2:])
 	case "help", "--help", "-h":
@@ -106,7 +104,7 @@ Commands:
   run        Build and benchmark solutions
   failures   Re-run failed benchmarks
   status     Show pass/fail counts per language
-  collect    Copy results to Benchmarks/data/ for aggregation
+  per-iter   Per-iteration fresh-process bench → writes SQLite SSOT (data/bench-private.db)
 
 Run "euler-bench <command> --help" for command-specific flags.`)
 }
@@ -350,41 +348,3 @@ func cmdStatus(args []string) {
 	}
 }
 
-func cmdCollect(args []string) {
-	fs := flag.NewFlagSet("collect", flag.ExitOnError)
-	outputDir := fs.String("output-dir", "", "output directory (default: benchmarks/data/)")
-	fs.Parse(args)
-
-	baseDir := findBaseDir()
-	dataDir := *outputDir
-	if dataDir == "" {
-		dataDir = filepath.Join(baseDir, "benchmarks", "data")
-	}
-
-	os.MkdirAll(dataDir, 0755)
-
-	for _, lang := range languages {
-		src := filepath.Join(baseDir, lang.Repo, "benchmark_results.json")
-		dst := filepath.Join(dataDir, lang.Key+".json")
-
-		data, err := os.ReadFile(src)
-		if err != nil {
-			fmt.Printf("  %-12s skipped (no results)\n", lang.Key)
-			continue
-		}
-
-		// Validate JSON
-		var js json.RawMessage
-		if json.Unmarshal(data, &js) != nil {
-			fmt.Printf("  %-12s skipped (invalid JSON)\n", lang.Key)
-			continue
-		}
-
-		if err := os.WriteFile(dst, data, 0644); err != nil {
-			fmt.Fprintf(os.Stderr, "  %-12s failed: %v\n", lang.Key, err)
-			continue
-		}
-		fmt.Printf("  %-12s -> %s\n", lang.Key, dst)
-	}
-	fmt.Println("Done.")
-}
