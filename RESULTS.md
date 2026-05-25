@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2063 measured (86.0% coverage).**
+> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2111 measured (88.0% coverage).**
 > The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -53,8 +53,10 @@ trades verbosity for direct hardware control.
 One cell per (language, problem).  Color shows whether the cell passes the
 invocation-isolation + answer-correctness audit and how fast it runs:
 
-- 🟢 **Green** — pass; lighter green = faster, darker green = slower
-- 🟡 **Yellow** — pass but > 100 ms (slow algorithm or heavy startup)
+- 🟢 **Green** — pass <100 ms; 4 levels (lighter = faster)
+- 🟡 **Amber** — pass 100 ms – 1 s (noticeably slow)
+- 🟠 **Orange** — pass 1 s – 10 s (feels broken interactive)
+- 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)
 - 🔴 **Red** — fail (wrong answer, build error, timeout)
 - ⚫ **Black** — missing entry (no measurement)
 - **`*`** — *partial measurement* (samples<10, suite-standard is 10); the cell median is still meaningful for >1s problems but the variance estimate is degraded

@@ -371,7 +371,11 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
 HEATMAP_COLORS = {
     "missing":      "#222222",   # black
     "fail":         "#D7263D",   # red
-    "slow":         "#F0C808",   # amber — passing but ≥100 ms
+    # 3-tier amber ladder (geometric, matches green's 10× spacing).
+    # Highlights heavy problems instead of lumping 100ms and 60s into one color.
+    "slow_lt_1s":   "#F0C808",   # golden amber — 100ms-1s ("noticeably slow")
+    "slow_lt_10s":  "#E07315",   # orange — 1s-10s ("feels broken")
+    "slow_ge_10s":  "#A03A18",   # burnt orange — ≥10s ("serious algorithm")
     "lt_100us":     "#84E184",   # bright green
     "lt_1ms":       "#5BC85B",
     "lt_10ms":      "#36A036",
@@ -379,31 +383,43 @@ HEATMAP_COLORS = {
 }
 
 LEGEND_ITEMS = [
-    (HEATMAP_COLORS["lt_100us"], "pass · <100µs"),
-    (HEATMAP_COLORS["lt_1ms"],   "pass · <1ms"),
-    (HEATMAP_COLORS["lt_10ms"],  "pass · <10ms"),
-    (HEATMAP_COLORS["lt_100ms"], "pass · <100ms"),
-    (HEATMAP_COLORS["slow"],     "pass · ≥100ms"),
-    (HEATMAP_COLORS["fail"],     "fail"),
-    (HEATMAP_COLORS["missing"],  "missing"),
+    (HEATMAP_COLORS["lt_100us"],    "pass · <100µs"),
+    (HEATMAP_COLORS["lt_1ms"],      "pass · <1ms"),
+    (HEATMAP_COLORS["lt_10ms"],     "pass · <10ms"),
+    (HEATMAP_COLORS["lt_100ms"],    "pass · <100ms"),
+    (HEATMAP_COLORS["slow_lt_1s"],  "pass · <1s"),
+    (HEATMAP_COLORS["slow_lt_10s"], "pass · <10s"),
+    (HEATMAP_COLORS["slow_ge_10s"], "pass · ≥10s"),
+    (HEATMAP_COLORS["fail"],        "fail"),
+    (HEATMAP_COLORS["missing"],     "missing"),
 ]
 
 
 def cell_color(status: str, ns) -> str:
-    """Map a (status, ns) pair to a cell hex color.  Shared by both renderers."""
+    """Map a (status, ns) pair to a cell hex color.  Shared by both renderers.
+
+    Speed buckets are geometric (10× per step), matching the green-bucket
+    spacing: <100µs / <1ms / <10ms / <100ms (greens) then <1s / <10s / ≥10s
+    (ambers). Splitting the amber ladder distinguishes 'noticeably slow' from
+    'feels-broken' from 'serious-algorithm' problems.
+    """
     if status == "missing":
         return HEATMAP_COLORS["missing"]
     if status == "fail":
         return HEATMAP_COLORS["fail"]
-    if ns is not None and ns > 100_000_000:
-        return HEATMAP_COLORS["slow"]
     if ns is None or ns < 100_000:
         return HEATMAP_COLORS["lt_100us"]
     if ns < 1_000_000:
         return HEATMAP_COLORS["lt_1ms"]
     if ns < 10_000_000:
         return HEATMAP_COLORS["lt_10ms"]
-    return HEATMAP_COLORS["lt_100ms"]
+    if ns < 100_000_000:
+        return HEATMAP_COLORS["lt_100ms"]
+    if ns < 1_000_000_000:
+        return HEATMAP_COLORS["slow_lt_1s"]
+    if ns < 10_000_000_000:
+        return HEATMAP_COLORS["slow_lt_10s"]
+    return HEATMAP_COLORS["slow_ge_10s"]
 
 
 def _bands(scope: list, band_size: int) -> list:
@@ -984,8 +1000,10 @@ def render_results_md(agg: dict) -> str:
     md.append("One cell per (language, problem).  Color shows whether the cell passes the")
     md.append("invocation-isolation + answer-correctness audit and how fast it runs:")
     md.append("")
-    md.append("- 🟢 **Green** — pass; lighter green = faster, darker green = slower")
-    md.append("- 🟡 **Yellow** — pass but > 100 ms (slow algorithm or heavy startup)")
+    md.append("- 🟢 **Green** — pass <100 ms; 4 levels (lighter = faster)")
+    md.append("- 🟡 **Amber** — pass 100 ms – 1 s (noticeably slow)")
+    md.append("- 🟠 **Orange** — pass 1 s – 10 s (feels broken interactive)")
+    md.append("- 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)")
     md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
     md.append("- ⚫ **Black** — missing entry (no measurement)")
     md.append("- **`*`** — *partial measurement* (samples<10, suite-standard is 10); "
