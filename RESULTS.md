@@ -57,6 +57,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 - 🟡 **Yellow** — pass but > 100 ms (slow algorithm or heavy startup)
 - 🔴 **Red** — fail (wrong answer, build error, timeout)
 - ⚫ **Black** — missing entry (no measurement)
+- **`*`** — *partial measurement* (samples<10, suite-standard is 10); the cell median is still meaningful for >1s problems but the variance estimate is degraded
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 

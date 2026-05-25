@@ -492,11 +492,22 @@ def render_coverage_grid_chart(agg: dict) -> Path:
             for ci, p in enumerate(band_probs):
                 st = agg[lang]["per_problem_status"][p]
                 ns = agg[lang]["per_problem_ns"][p]
+                s = agg[lang]["per_problem_samples"][p]
                 ax.add_patch(plt.Rectangle(
                     (ci, n_band_langs - 1 - ri), 1, 1,
                     facecolor=cell_color(st, ns),
                     edgecolor="white", linewidth=0.6,
                 ))
+                # Partial-measurement marker: small black '*' overlaid on cells
+                # bench'd at samples<10 (suite-standard is 10). Matches the
+                # asterisk in per-problem detail tables; the legend below
+                # explains it.
+                if s is not None and s < 10:
+                    ax.text(
+                        ci + 0.5, n_band_langs - 1 - ri + 0.55, "*",
+                        fontsize=8, ha="center", va="center",
+                        color="black", fontweight="bold",
+                    )
 
         # Uniform x extent across bands keeps cell width constant even on a
         # final partial band (e.g. 50 problems instead of 100).
@@ -520,8 +531,9 @@ def render_coverage_grid_chart(agg: dict) -> Path:
             spine.set_visible(False)
 
     fig.suptitle(
-        f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)",
-        fontsize=13, y=0.995,
+        f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)  ·  "
+        f"* = partial measurement (samples<10)",
+        fontsize=12, y=0.995,
     )
 
     # Single legend at the bottom of the whole figure.
@@ -618,7 +630,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
     )
     parts.append(
         f'<text class="subtitle" x="{margin_l}" y="42">'
-        f'{esc("Hover any cell for problem · language · per-invocation time")}'
+        f'{esc("Hover any cell for problem · language · per-invocation time  ·  * = partial measurement (samples<10)")}'
         f'</text>'
     )
 
@@ -657,6 +669,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
             for ci, p in enumerate(band_probs):
                 st = agg[lang]["per_problem_status"][p]
                 ns = agg[lang]["per_problem_ns"][p]
+                s = agg[lang]["per_problem_samples"][p]
                 color = cell_color(st, ns)
                 x = margin_l + ci * cell_w
                 y = grid_y0 + ri * cell_h
@@ -668,12 +681,23 @@ def render_coverage_grid_svg(agg: dict) -> Path:
                     tip = "—"
                 else:
                     tip = fmt_time(ns)
+                    if s is not None and s < 10:
+                        tip += f" (samples={s}, partial)"
                 parts.append(
                     f'<rect class="cell" x="{x}" y="{y}" '
                     f'width="{cell_w}" height="{cell_h}" fill="{color}">'
                     f'<title>{esc(f"p{p} {DISPLAY[lang]}: {tip}")}</title>'
                     f'</rect>'
                 )
+                # Partial-measurement marker overlay — same as PNG version
+                if s is not None and s < 10:
+                    cx = x + cell_w / 2
+                    cy = y + cell_h / 2 + 3  # +3 ≈ baseline tweak so '*' sits centered
+                    parts.append(
+                        f'<text class="partial" x="{cx}" y="{cy}" '
+                        f'text-anchor="middle" font-size="11" font-weight="bold" '
+                        f'fill="black" pointer-events="none">*</text>'
+                    )
 
         # X-axis ticks every 10 problems within the band
         xaxis_y = grid_y0 + band_grid_h + 12
@@ -964,6 +988,8 @@ def render_results_md(agg: dict) -> str:
     md.append("- 🟡 **Yellow** — pass but > 100 ms (slow algorithm or heavy startup)")
     md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
     md.append("- ⚫ **Black** — missing entry (no measurement)")
+    md.append("- **`*`** — *partial measurement* (samples<10, suite-standard is 10); "
+              "the cell median is still meaningful for >1s problems but the variance estimate is degraded")
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
