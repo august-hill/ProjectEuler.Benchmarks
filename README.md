@@ -51,7 +51,7 @@ per-invocation cost.
 ## Reproducibility
 
 ```bash
-cd ProjectEuler.Benchmarks
+cd benchmarks
 cmd/euler-bench/euler-bench per-iter --lang all --problems 1-100 --iters 10 --write
 python3 report.py
 ```

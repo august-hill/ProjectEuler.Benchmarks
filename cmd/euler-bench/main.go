@@ -24,7 +24,7 @@ var parkedProblems map[string]bool
 
 func loadParkedProblems(baseDir string) {
 	parkedProblems = make(map[string]bool)
-	path := filepath.Join(baseDir, "ProjectEuler.Benchmarks", "data", "parked.json")
+	path := filepath.Join(baseDir, "benchmarks", "data", "parked.json")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		// Fallback if file not found
@@ -42,14 +42,16 @@ func loadParkedProblems(baseDir string) {
 }
 
 func findBaseDir() string {
-	// Walk up from cwd until we find ProjectEuler.C
+	// Walk up from cwd until we find the suite root, marked by the
+	// unambiguous benchmarks/data/tiers.json file. tiers.json is the SSOT
+	// for the tier model and exists only in the suite root — a stable
+	// marker that survives any future per-lang dir renames.
 	cwd, _ := os.Getwd()
 	for d := cwd; d != "/"; d = filepath.Dir(d) {
-		if _, err := os.Stat(filepath.Join(d, "ProjectEuler.C")); err == nil {
+		if _, err := os.Stat(filepath.Join(d, "benchmarks", "data", "tiers.json")); err == nil {
 			return d
 		}
 	}
-	// Try parent of parent (if run from cmd/euler-bench/)
 	return cwd
 }
 
@@ -350,13 +352,13 @@ func cmdStatus(args []string) {
 
 func cmdCollect(args []string) {
 	fs := flag.NewFlagSet("collect", flag.ExitOnError)
-	outputDir := fs.String("output-dir", "", "output directory (default: ProjectEuler.Benchmarks/data/)")
+	outputDir := fs.String("output-dir", "", "output directory (default: benchmarks/data/)")
 	fs.Parse(args)
 
 	baseDir := findBaseDir()
 	dataDir := *outputDir
 	if dataDir == "" {
-		dataDir = filepath.Join(baseDir, "ProjectEuler.Benchmarks", "data")
+		dataDir = filepath.Join(baseDir, "benchmarks", "data")
 	}
 
 	os.MkdirAll(dataDir, 0755)

@@ -24,7 +24,7 @@ if [ -z "$LANG" ]; then
     exit 1
 fi
 
-BENCHMARKS_REPO="${PE_BENCH_BENCHMARKS_REPO:-/Users/augusthill/ccdev/ProjectEuler.Benchmarks}"
+BENCHMARKS_REPO="${PE_BENCH_BENCHMARKS_REPO:-/Users/augusthill/ccdev/pe/benchmarks}"
 DUD_AUDIT="$BENCHMARKS_REPO/scripts/dud_audit"
 SRC="$BENCHMARKS_REPO/scripts/dud_audit.go"
 BASELINE="$BENCHMARKS_REPO/scripts/dud_audit_baseline.json"

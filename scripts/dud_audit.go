@@ -4,9 +4,9 @@
 //   E1  empty_dir            problem dir exists but no source file (or file empty)
 //   S1  stub_solve           solve body is just `return <literal>` with no algorithm
 //   S2  missing_answer       source present but no `Answer:` comment at top
-//   S3  comment_mismatch     `// Answer:` differs from benchmark_results.json answer
-//   D1  bench_fail           benchmark_results.json status=fail (algo broken)
-//   D2  bench_missing_entry  source/dir exists but no entry in benchmark_results.json
+//   S3  comment_mismatch     `// Answer:` differs from data/private/<lang>.json answer
+//   D1  bench_fail           data/private/<lang>.json status=fail (algo broken)
+//   D2  bench_missing_entry  source/dir exists but no entry in data/private/<lang>.json
 //   X1  cross_lang_disagree  multiple langs solve same problem with different answers
 //   C1  cache_pattern        warm time_ns << cold_start_ns (solve() likely caches answer)
 //                              — bench measures cache-return cost, not real algorithm.
@@ -42,9 +42,8 @@ import (
 // ---------- per-language config ----------
 
 type LangConfig struct {
-	Name      string // canonical short name matching benchmark_results.json schema
-	RepoDir   string // repo root, absolute
-	BenchFile string // relative to RepoDir
+	Name    string // canonical short name; doubles as the data/private/<name>.json filename
+	RepoDir string // repo root, absolute (still used by relPath for display)
 	// For each problem N (zero-padded 3-digit), where is the source-of-truth file?
 	// Returns absolute path. nil means "not applicable" (problem not in this lang's scheme).
 	SourcePath func(n int) string
@@ -58,7 +57,17 @@ type LangConfig struct {
 	StubRe *regexp.Regexp
 }
 
+// benchPath returns the absolute path to the (gitignored) full bench data for
+// `name` — written by `euler-bench per-iter --write` to data/private/<name>.json.
+// Migrated 2026-05-24: previously read each lang repo's `benchmark_results.json`
+// from the now-deleted per-repo `benchmark.sh` harness.
+// Re-rooted 2026-05-25 from ProjectEuler.X/ → pe/<x>/ structure.
+func benchPath(name string) string {
+	return peDir + "/benchmarks/data/private/" + name + ".json"
+}
+
 const ccdev = "/Users/augusthill/ccdev"
+const peDir = ccdev + "/pe"
 
 // "Answer: X" comment regex variants for // and # comment styles.
 // Captures EITHER a parens-wrapped marker (e.g. "(not solved)") OR the first
@@ -104,78 +113,68 @@ func numFromPyFile(name string) (int, bool) {
 
 var langs = []LangConfig{
 	{
-		Name: "cpp", RepoDir: ccdev + "/ProjectEuler.CPlusPlus",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.CPlusPlus/problem_" + zeroPad(n) + "/main.cpp" },
-		ProblemGlob:  ccdev + "/ProjectEuler.CPlusPlus/problem_*",
+		Name: "cpp", RepoDir: peDir + "/cpp",
+		SourcePath:   func(n int) string { return peDir + "/cpp/problem_" + zeroPad(n) + "/main.cpp" },
+		ProblemGlob:  peDir + "/cpp/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "python", RepoDir: ccdev + "/ProjectEuler.Python",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.Python/problem_" + zeroPad(n) + ".py" },
-		ProblemGlob:  ccdev + "/ProjectEuler.Python/problem_*.py",
+		Name: "python", RepoDir: peDir + "/python",
+		SourcePath:   func(n int) string { return peDir + "/python/problem_" + zeroPad(n) + ".py" },
+		ProblemGlob:  peDir + "/python/problem_*.py",
 		ParseProblem: numFromPyFile, AnswerRe: answerHashRe, StubRe: stubPyRe,
 	},
 	{
-		Name: "rust", RepoDir: ccdev + "/ProjectEuler.Rust",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.Rust/problem_" + zeroPad(n) + "/src/main.rs" },
-		ProblemGlob:  ccdev + "/ProjectEuler.Rust/problem_*",
+		Name: "rust", RepoDir: peDir + "/rust",
+		SourcePath:   func(n int) string { return peDir + "/rust/problem_" + zeroPad(n) + "/src/main.rs" },
+		ProblemGlob:  peDir + "/rust/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "go", RepoDir: ccdev + "/ProjectEuler.Go",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.Go/problem_" + zeroPad(n) + "/main.go" },
-		ProblemGlob:  ccdev + "/ProjectEuler.Go/problem_*",
+		Name: "go", RepoDir: peDir + "/go",
+		SourcePath:   func(n int) string { return peDir + "/go/problem_" + zeroPad(n) + "/main.go" },
+		ProblemGlob:  peDir + "/go/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "java", RepoDir: ccdev + "/ProjectEuler.Java",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.Java/problem_" + zeroPad(n) + "/Main.java" },
-		ProblemGlob:  ccdev + "/ProjectEuler.Java/problem_*",
+		Name: "java", RepoDir: peDir + "/java",
+		SourcePath:   func(n int) string { return peDir + "/java/problem_" + zeroPad(n) + "/Main.java" },
+		ProblemGlob:  peDir + "/java/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "javascript", RepoDir: ccdev + "/ProjectEuler.JavaScript",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.JavaScript/problem_" + zeroPad(n) + "/main.js" },
-		ProblemGlob:  ccdev + "/ProjectEuler.JavaScript/problem_*",
+		Name: "javascript", RepoDir: peDir + "/javascript",
+		SourcePath:   func(n int) string { return peDir + "/javaScript/problem_" + zeroPad(n) + "/main.js" },
+		ProblemGlob:  peDir + "/javaScript/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "csharp", RepoDir: ccdev + "/ProjectEuler.CSharp",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.CSharp/problem_" + zeroPad(n) + "/Program.cs" },
-		ProblemGlob:  ccdev + "/ProjectEuler.CSharp/problem_*",
+		Name: "csharp", RepoDir: peDir + "/csharp",
+		SourcePath:   func(n int) string { return peDir + "/csharp/problem_" + zeroPad(n) + "/Program.cs" },
+		ProblemGlob:  peDir + "/csharp/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "zig", RepoDir: ccdev + "/ProjectEuler.Zig",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.Zig/problem_" + zeroPad(n) + "/main.zig" },
-		ProblemGlob:  ccdev + "/ProjectEuler.Zig/problem_*",
+		Name: "zig", RepoDir: peDir + "/zig",
+		SourcePath:   func(n int) string { return peDir + "/zig/problem_" + zeroPad(n) + "/main.zig" },
+		ProblemGlob:  peDir + "/zig/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "c", RepoDir: ccdev + "/ProjectEuler.C",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.C/problem_" + zeroPad(n) + "/main.c" },
-		ProblemGlob:  ccdev + "/ProjectEuler.C/problem_*",
+		Name: "c", RepoDir: peDir + "/c",
+		SourcePath:   func(n int) string { return peDir + "/c/problem_" + zeroPad(n) + "/main.c" },
+		ProblemGlob:  peDir + "/c/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubBraceRe,
 	},
 	{
-		Name: "arm64", RepoDir: ccdev + "/ProjectEuler.ARM64",
-		BenchFile:    "benchmark_results.json",
-		SourcePath:   func(n int) string { return ccdev + "/ProjectEuler.ARM64/problem_" + zeroPad(n) + "/solve.s" },
-		ProblemGlob:  ccdev + "/ProjectEuler.ARM64/problem_*",
+		Name: "arm64", RepoDir: peDir + "/arm64",
+		SourcePath:   func(n int) string { return peDir + "/arm64/problem_" + zeroPad(n) + "/solve.s" },
+		ProblemGlob:  peDir + "/arm64/problem_*",
 		ParseProblem: numFromDir, AnswerRe: answerSlashRe, StubRe: stubAsmRe,
 	},
 }
 
-// ---------- benchmark_results.json ----------
+// ---------- bench data (data/private/<lang>.json) ----------
 
 type BenchEntry struct {
 	Status      string          `json:"status"`
@@ -270,7 +269,7 @@ func trimLeadingZeros(s string) string {
 // ---------- parked list ----------
 
 func loadParkedSet() map[int]bool {
-	data, err := os.ReadFile(ccdev + "/ProjectEuler.Benchmarks/data/parked.json")
+	data, err := os.ReadFile(peDir + "/benchmarks/data/parked.json")
 	parked := make(map[int]bool)
 	if err != nil {
 		return parked
@@ -308,7 +307,7 @@ const (
 func scanLang(cfg LangConfig, parked map[int]bool) []Finding {
 	var findings []Finding
 
-	bench, _ := loadBench(filepath.Join(cfg.RepoDir, cfg.BenchFile))
+	bench, _ := loadBench(benchPath(cfg.Name))
 	if bench == nil {
 		bench = &BenchFile{Problems: map[string]BenchEntry{}}
 	}
@@ -365,7 +364,7 @@ func scanLang(cfg LangConfig, parked map[int]bool) []Finding {
 		_ = entry
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D2", Severity: sevWarning,
-			Details: "benchmark_results.json has entry but no matching source dir/file",
+			Details: "data/private/<lang>.json has entry but no matching source dir/file",
 		})
 	}
 
@@ -414,7 +413,7 @@ func scanContent(cfg LangConfig, n int, content []byte, bench *BenchFile) []Find
 	if !ok {
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D2", Severity: sevInfo,
-			Details: "source exists but no entry in benchmark_results.json",
+			Details: "source exists but no entry in data/private/<lang>.json",
 		})
 		return findings
 	}
@@ -423,7 +422,7 @@ func scanContent(cfg LangConfig, n int, content []byte, bench *BenchFile) []Find
 	if entry.Status == "fail" {
 		findings = append(findings, Finding{
 			Lang: cfg.Name, Problem: n, Category: "D1", Severity: sevError,
-			Details: fmt.Sprintf("benchmark_results.json status=fail (error: %q)", entry.Error),
+			Details: fmt.Sprintf("data/private/<lang>.json status=fail (error: %q)", entry.Error),
 		})
 	}
 
@@ -467,7 +466,7 @@ func scanCrossLang(parked map[int]bool) []Finding {
 	answers := map[int]map[string]string{}
 
 	for _, cfg := range langs {
-		bench, _ := loadBench(filepath.Join(cfg.RepoDir, cfg.BenchFile))
+		bench, _ := loadBench(benchPath(cfg.Name))
 		if bench == nil {
 			continue
 		}

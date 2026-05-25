@@ -13,7 +13,7 @@ import (
 type Lang struct {
 	Key         string // "c", "cpp", etc.
 	Display     string // "C", "C++", etc.
-	Repo        string // "ProjectEuler.C", etc.
+	Repo        string // "c", "cpp", etc. — relative to the suite baseDir (~/ccdev/pe/)
 	SrcFile     string // "main.c" — relative to problem dir
 	SrcSubdir   bool   // true if source is in problem_NNN/<SrcFile>, false if flat (Python)
 	BuildArgs   func(repoDir, probDir string) [][]string // nil = no build. Returns list of arg sets to try in order.
@@ -52,7 +52,7 @@ func tryBuild(argSets [][]string, dir string) error {
 
 var languages = []Lang{
 	{
-		Key: "c", Display: "C", Repo: "ProjectEuler.C",
+		Key: "c", Display: "C", Repo: "c",
 		SrcFile: "main.c", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			cc := envOr("CC", "clang")
@@ -73,7 +73,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"clang", "--version"},
 	},
 	{
-		Key: "cpp", Display: "C++", Repo: "ProjectEuler.CPlusPlus",
+		Key: "cpp", Display: "C++", Repo: "cpp",
 		SrcFile: "main.cpp", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			cxx := envOr("CXX", "g++")
@@ -91,7 +91,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"g++", "--version"},
 	},
 	{
-		Key: "rust", Display: "Rust", Repo: "ProjectEuler.Rust",
+		Key: "rust", Display: "Rust", Repo: "rust",
 		SrcFile: "src/main.rs", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			return [][]string{{"cargo", "build", "--release", "-q"}}
@@ -118,7 +118,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"rustc", "--version"},
 	},
 	{
-		Key: "go", Display: "Go", Repo: "ProjectEuler.Go",
+		Key: "go", Display: "Go", Repo: "go",
 		SrcFile: "main.go", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			return [][]string{{"go", "build", "-o", "main_bench", "."}}
@@ -128,7 +128,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"go", "version"},
 	},
 	{
-		Key: "java", Display: "Java", Repo: "ProjectEuler.Java",
+		Key: "java", Display: "Java", Repo: "java",
 		SrcFile: "Main.java", SrcSubdir: true,
 		PreBuild: func(repoDir, probDir, _ string) error {
 			// Always copy latest Bench.java (ensures harness updates propagate)
@@ -146,7 +146,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"java", "-version"},
 	},
 	{
-		Key: "csharp", Display: "C#", Repo: "ProjectEuler.CSharp",
+		Key: "csharp", Display: "C#", Repo: "csharp",
 		SrcFile: "Program.cs", SrcSubdir: true,
 		BatchBuild: func(repoDir string, problems []string) (failed []string) {
 			for _, prob := range problems {
@@ -167,13 +167,13 @@ var languages = []Lang{
 		CompilerCmd: []string{"dotnet", "--version"},
 	},
 	{
-		Key: "javascript", Display: "JavaScript", Repo: "ProjectEuler.JavaScript",
+		Key: "javascript", Display: "JavaScript", Repo: "javascript",
 		SrcFile: "main.js", SrcSubdir: true,
 		RunArgs:     func(_, _ string) (string, []string) { return "node", []string{"main.js"} },
 		CompilerCmd: []string{"node", "--version"},
 	},
 	{
-		Key: "arm64", Display: "ARM64", Repo: "ProjectEuler.ARM64",
+		Key: "arm64", Display: "ARM64", Repo: "arm64",
 		SrcFile: "main.c", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			cc := envOr("CC", "clang")
@@ -200,7 +200,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"clang", "--version"},
 	},
 	{
-		Key: "python", Display: "Python", Repo: "ProjectEuler.Python",
+		Key: "python", Display: "Python", Repo: "python",
 		SrcFile: "", SrcSubdir: false, // flat structure, handled specially
 		RunArgs: func(repoDir, probDir string) (string, []string) {
 			// Note: probDir (repoDir/problem_NNN) doesn't exist as a directory for Python
@@ -210,7 +210,7 @@ var languages = []Lang{
 		CompilerCmd: []string{"python3", "--version"},
 	},
 	{
-		Key: "zig", Display: "Zig", Repo: "ProjectEuler.Zig",
+		Key: "zig", Display: "Zig", Repo: "zig",
 		SrcFile: "main.zig", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
 			// Zig module resolution requires absolute paths so the bench module

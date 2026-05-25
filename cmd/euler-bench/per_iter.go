@@ -33,9 +33,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -49,6 +51,8 @@ type perIterResult struct {
 	Answer        string
 	TimeSamplesNs []int64 // internal time_ns from RESULT line
 	WallSamplesNs []int64 // Go-perceived wall (process spawn → exit), sanity-check secondary
+	CompileTimeNs int64   // single measurement: wall time of the build phase
+	PeakRSSBytes  int64   // max RSS observed across iters (bytes on Darwin, KB on Linux — see captureRSS)
 	BuildErr      string
 	RunErr        string
 }
@@ -162,7 +166,10 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		}
 	}
 
-	// Build.
+	// Build. Wrap the whole phase with a wall-clock timer so we can report
+	// per-problem compile cost in the published data (was previously a
+	// per-repo benchmark.sh-only metric).
+	buildStart := time.Now()
 	if lang.BuildArgs != nil {
 		argSets := lang.BuildArgs(repoDir, probDir)
 		if lang.SequentialBuild {
@@ -188,6 +195,7 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 			return r
 		}
 	}
+	r.CompileTimeNs = time.Since(buildStart).Nanoseconds()
 
 	defer cleanup(lang, probDir)
 
@@ -205,6 +213,23 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		t0 := time.Now()
 		err := cmd.Run()
 		wall := time.Since(t0).Nanoseconds()
+
+		// Capture max RSS for this subprocess (cmd.ProcessState is non-nil
+		// after Run returns regardless of err). We track the max across iters
+		// because that's the worst-case footprint a user pays on any single
+		// invocation. Darwin reports Maxrss in bytes; Linux in KB — convert.
+		if cmd.ProcessState != nil {
+			if rusage, ok := cmd.ProcessState.SysUsage().(*syscall.Rusage); ok {
+				rss := int64(rusage.Maxrss)
+				// Linux: KB → bytes. Darwin already in bytes.
+				if runtime.GOOS == "linux" {
+					rss *= 1024
+				}
+				if rss > r.PeakRSSBytes {
+					r.PeakRSSBytes = rss
+				}
+			}
+		}
 
 		if err != nil {
 			r.RunErr = fmt.Sprintf("iter %d: %v (stderr: %s)", i+1, err, truncate(stderr.String(), 80))
@@ -239,13 +264,18 @@ func cmdPerIter(args []string) {
 	fs := flag.NewFlagSet("per-iter", flag.ExitOnError)
 	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all')")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
-	iters := fs.Int("iters", 10, "fresh-process invocations per problem")
+	iters := fs.Int("iters", 10, "fresh-process invocations per problem (minimum 1; for stable timings 10+)")
 	write := fs.Bool("write", false,
 		"write results to data/<lang>.json (sanitized: no answer field) "+
 			"AND data/private/<lang>.json (full, gitignored). "+
 			"Existing entries for unmeasured problems are preserved.")
 	if err := fs.Parse(args); err != nil {
 		os.Exit(2)
+	}
+
+	if *iters < 1 {
+		fmt.Fprintf(os.Stderr, "--iters must be >= 1 (got %d); bumping to 1\n", *iters)
+		*iters = 1
 	}
 
 	var langKeys []string
