@@ -1011,3 +1011,107 @@ would break under perturbation.  Worth fixing carefully (not as bulk refactors):
    on "fail loudly if data file missing" across all 10 langs' file-loading
    problems (p022, p042, p054, p059, p067, p079, p081, p082, p083, p089, p096,
    p098, p099).
+
+---
+
+## The 2026-05-25 SQLite Migration + Round-by-Round Rebench
+
+After tonight's structural moves (`ProjectEuler.X` → `pe/<x>/`, deletion of
+per-repo `benchmark.sh`, consolidation to a single `cmd/euler-bench` writer),
+the bench data layer was the next natural piece to clean up. The per-lang
+JSON files (`data/<lang>.json` public sanitized + `data/private/<lang>.json`
+full gitignored) had drifted to the point where the sanitization invariant
+was a runtime discipline rather than a structural property — a class of bug
+that bit hard on 2026-05-09 (the ~891-value answer leak).
+
+The migration: single SQLite SSOT at `data/bench-private.db` (gitignored).
+Two tables — `runs` (latest per lang+problem, PK) and `run_history`
+(append-only, enables drift audit + sample accumulation). Public repo now
+carries no raw data at all; only RESULTS.md + charts. The sanitization gate
+moved from "strip the answer field at write time" to "reject any data file
+under `data/` not on the small config allowlist." Leak prevention is now
+file-system structural, not field-stripping.
+
+Rather than re-bench all 2000 cells in one shot, we did it in four rounds
+(10 → 50 → 100 → 200), regenerating the site between each so a bug in the
+new pipeline would surface at 100-cell cost, not 2000-cell cost.
+
+### Round 1 — 10×10 baseline (scope=1-10)
+
+**Wall:** 90 seconds for 100 cells. **All priors pass:** C++ (354 µs) and C
+(379 µs) at the top; Python (74 ms) at the bottom. Java vs C# startup
+asymmetry: Java's p001 cold-process clocks at 2.6 µs while C#'s clocks at
+57 µs — a 20× spread between two JIT'd managed languages. **Fresh-process
+faithfully exposes the .NET startup tax that the prior warm-bench model
+hid.**
+
+The libprimesieve C-library advantage on prime-counting problems (p007:
+C/C++ at ~24 µs; Rust/ARM64/Zig at 178-258 µs) became visible as a real
+gap. Not a language-speed difference — a library-choice difference. Worth
+recording: the bench measures the system a user actually invokes, including
+external libraries linked in. That's the right thing to measure, but
+"language X is N× slower than Y" needs to be read with this asymmetry in
+mind.
+
+### Round 2 — scope=1-50
+
+**Wall:** 8.6 minutes for 400 new cells. **Cross-lang answer agreement: zero
+disagreements across 500 cells**, the strongest possible signal that 500
+independent implementations all converged on the same answers. No
+correctness regressions surfaced by the new measurement model.
+
+**The big surprise:** ARM64 jumped to #1 (103.9 ms total). It contributed
+only ~102 ms over the 40 new problems while C added 326 ms. The
+explanation, visible in the Round 1 per-problem data: 9 of 10 problems
+clocked at ≤4 ns for ARM64, essentially below clock resolution. Hand-rolled
+asm on closed-form arithmetic problems compiles to one or two instructions
+that finish faster than `clock_gettime` can measure. **The "ARM64 leads"
+result here is more accurately read as "ARM64 has very fast closed-form
+solutions to problems 1-50" — not a general statement of language speed.**
+
+### Round 3 — scope=1-100 (original public scope)
+
+**Wall:** 13.7 minutes for 500 new cells. **Still zero answer disagreements
+across 1000 cells, zero failures.** Original public scope reached under the
+new pipeline.
+
+**The reversal:** ARM64 dropped from #1 to #6. Problems 51-100 added 1.485 s
+to ARM64's total — *more* than they added to C (+0.97 s) or Zig (+0.955 s).
+The hand-tuned-asm advantage was concentrated in problems 1-50 (closed-form
+heavy). On more algorithmically complex problems, **LLVM's optimization of
+C/C++/Rust/Zig source matches or beats hand-written asm.** This is the
+finding worth pinning: assembly's edge is real but specific. It's not "asm
+is faster than C"; it's "asm is faster than C *on problems where the
+algorithm collapses to a few instructions*". For everything else, modern
+compilers are already finding the same optimizations.
+
+**Zig at #1 with 1.085 s** is the comptime story crystallizing. Many PE
+problems have fixed inputs (the canonical form), and Zig's `comptime`
+evaluates the answer at compile time. The runtime then just returns a
+literal. This validates the earlier `project_zig_comptime_bias_finding`
+observation — Zig's lead is real but it's measuring "what fraction of
+computation can move to compile time," which is a different axis than
+"language speed."
+
+**Python:C ratio = 30×** at scope=1-100, well within the 10-50× priors
+range. About 8% of Python's total is just process startup (~30 ms per
+invocation × 100 invocations); most of the slowness is algorithmic.
+
+**Per-problem wall time is creeping up across rounds.** R1 at 9 s/problem
+(includes one-time fixed costs); R2 at 13 s/problem; R3 at 16 s/problem.
+Later problems are mathematically harder; the cost curve scales with
+difficulty, not just count. Worth noting when planning future rounds.
+
+### Round 4 — scope=1-200 (publish target)
+
+*[Placeholder — will be filled when Round 4 completes.]*
+
+### Methodology meta-lesson
+
+**Run the regen between every chunk, not just at the end.** The
+10→50→100→200 cadence caught the `nullableInt64(0) → NULL` bug at Round 1
+(100 cells), let us fix it before Rounds 2-4 captured the same bad
+semantics on 1900 more cells. The cost of regenerating reports between
+rounds (~10 seconds + a 1-line scope override) is trivial compared to the
+cost of catching a measurement-semantic bug after a full 2000-cell
+investment.
