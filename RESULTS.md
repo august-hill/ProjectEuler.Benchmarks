@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2111 measured (88.0% coverage).**
+> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2232 measured (93.0% coverage).**
 > The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -37,7 +37,21 @@ shown in the coverage block further down.
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Zig, Python) that intentionally pushed past problem 200. The other 6 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-> _Tier 2 common-set is currently empty — no problem in 201-300 has passing measurements in all 4 deep-coverage languages yet. The ranking will populate as benching continues._
+_Common set computed over the **3 active** tier-2 langs_ _(C++, Go, Zig);_ _awaiting: Python. Common set will tighten once awaited langs land tier-2 data._
+
+![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
+
+| Rank | Language | Total (72-problem common set) | Lines of code | vs Fastest |
+|------|----------|--------------------:|--------------:|-----------:|
+| 1 | **C++** | 62.51 s | 9,208 | 1.00× |
+| 2 | **Go** | 71.32 s | 7,367 | 1.14× |
+| 3 | **Zig** | 77.59 s | 7,990 | 1.24× |
+
+### Speed vs Code Size — Tier 2
+
+Same scatter as the Foundation chart, restricted to the tier-2 active languages over problems 201–300.
+
+![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)
 
 ## Speed vs Code Size
 
