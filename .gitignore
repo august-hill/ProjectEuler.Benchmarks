@@ -22,11 +22,22 @@ scripts/check_timing_delta
 scripts/dud_audit
 scripts/dud_audit_baseline.json
 
-# Per-iter bench private data: full output WITH answer values for every problem
-# (including >100). Used locally for verification + debugging. NEVER committed —
-# the public data/*.json files are sanitized at write time by euler-bench
-# per-iter --write, which strips the answer field for any problem >100.
+# SQLite SSOT for bench data — single file containing the runs (latest per
+# lang+problem) + run_history (append-only) tables WITH answer column. NEVER
+# committed; public repo carries only RESULTS.md + charts. The sanitization
+# invariant is enforced at the file-system boundary (gitignore + sanitization_gate.py)
+# rather than via field-level stripping.
+# WAL mode creates two sidecar files which also stay gitignored.
+data/bench-private.db
+data/bench-private.db-wal
+data/bench-private.db-shm
+
+# Legacy: pre-2026-05-25 per-lang full-data JSON exports lived here. Directory
+# removed in the SQLite migration; entry kept for defense-in-depth in case
+# a future tool tries to write a path under this name.
 data/private/
+
+# Compiled Go binary for sanitization_gate's sibling dud_audit (also gitignored above)
 
 # Python bytecode cache (auto-generated; ignored everywhere)
 __pycache__/

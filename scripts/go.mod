@@ -1,4 +1,4 @@
-module euler-bench
+module dud-audit
 
 go 1.26.1
 

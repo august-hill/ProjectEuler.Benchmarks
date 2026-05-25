@@ -16,8 +16,10 @@ PE's publishing rule (projecteuler.net/about#publish) restricts public solution 
 - **Project narrative** — JOURNEY.md, README.md, story content
 - **Narrative discussion of ≤100 answers / techniques / code** — PE permits this; MDs and narrative content may reference these freely
 
-### NEVER allowed in `data/*.json` (the machine-readable bulk data)
-- **`answer` field for ANY problem** — regardless of number. Policy tightened 2026-05-23: the previous ≤100 carve-out offered zero functional value (bench data is about timings), so the rule is now uniformly "no `answer` key in public data, ever." Full data with answers lives in `data/private/<lang>.json` (gitignored, local-only) for verification and debugging.
+### NEVER allowed in the public repo: raw bench data files (post-2026-05-25 SQLite migration)
+- **No `data/*.json` bench files. No `*.db` files.** The public repo carries ONLY rendered narrative (RESULTS.md, JOURNEY.md, README.md) and charts/*.png|svg. All raw bench data lives in the **gitignored** `data/bench-private.db` (SQLite, with answer column).
+- The `sanitization_gate.py` pre-commit hook enforces this at the file-system boundary: any staged file under `data/` not on the small config-allowlist (`tiers.json`, `parked.json`, `difficulty.json`, `levels.json`) gets rejected. Leak prevention is now structural, not field-stripping.
+- Policy history: 2026-05-09 sanitization-regression leaked ~891 answer values via a per-field stripping bug. 2026-05-23 tightened "strip for >100" to "strip for all." 2026-05-25 moved SSOT to SQLite — no public raw data → no field-stripping bug class possible.
 
 ### NEVER allowed in this repo (for problems >100)
 - **Answer values in any form** — no answers in MDs, RESULTS, READMEs, scripts. (For ≤100 narrative use is OK per the rule above.)

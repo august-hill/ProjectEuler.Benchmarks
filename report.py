@@ -6,10 +6,12 @@ Replaces the previous final_analysis.py (which produced the 3-mode report).
 The new model is simpler: ONE metric, process-per-invocation cost.
 
 Inputs:
-  data/<lang>.json    — per-lang bench data, written by `euler-bench per-iter --write`
-                        For each problem, the headline number we read is
-                        `cold_start_ns` (median wall across N fresh-process
-                        invocations under the new schema).
+  data/bench-private.db  — SQLite SSOT, written by `euler-bench per-iter --write`.
+                            Two tables: runs (latest per lang+problem, PK on
+                            (lang, problem)) + run_history (append-only).
+                            We read `time_ns` from runs — the median across N
+                            fresh-process invocations.  Migrated 2026-05-25 from
+                            per-lang JSON files.
 
 Outputs:
   RESULTS.md          — the public results page
@@ -23,6 +25,7 @@ Scope:
 
 import html
 import json
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -91,16 +94,39 @@ COLOR = {
 }
 
 
+_DB_CONN = None  # cached SQLite read connection (one per process)
+
+
+def _db() -> sqlite3.Connection | None:
+    """Open (or return cached) read-only connection to the SQLite SSOT.
+
+    Returns None if data/bench-private.db doesn't exist yet — callers treat
+    that as an empty dataset.
+    """
+    global _DB_CONN
+    if _DB_CONN is None:
+        path = DATA_DIR / "bench-private.db"
+        if not path.exists():
+            return None
+        # Read-only URI form prevents accidental writes from report.py.
+        _DB_CONN = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+        _DB_CONN.row_factory = sqlite3.Row
+    return _DB_CONN
+
+
 def load_lang_data(lang: str) -> dict:
-    """Load data/<lang>.json. Returns {problem: entry_dict}."""
-    path = DATA_DIR / f"{lang}.json"
-    if not path.exists():
+    """Load all measurements for `lang` from the SQLite SSOT.
+
+    Returns {problem_NNN: entry_dict} in the same shape downstream consumers
+    expect — keys match the old JSON field names (status, time_ns,
+    source_lines, etc.); NULL columns become None which `.get(field, 0) or 0`
+    idioms handle correctly. Migrated 2026-05-25 from data/<lang>.json reads.
+    """
+    db = _db()
+    if db is None:
         return {}
-    try:
-        obj = json.loads(path.read_text())
-    except json.JSONDecodeError:
-        return {}
-    return obj.get("problems", {})
+    cur = db.execute("SELECT * FROM runs WHERE lang = ?", (lang,))
+    return {row["problem"]: dict(row) for row in cur}
 
 
 def time_ns(entry: dict):
@@ -794,14 +820,14 @@ def render_results_md(agg: dict) -> str:
     md.append("## Reproducibility")
     md.append("")
     md.append("```bash")
-    md.append("cd ProjectEuler.Benchmarks")
+    md.append("cd pe/benchmarks")
     md.append(f"cmd/euler-bench/euler-bench per-iter --lang all --problems 1-{len(SCOPE_PROBLEMS)} --iters 10 --write")
     md.append("python3 report.py")
     md.append("```")
     md.append("")
-    md.append("Sanitization invariant: `data/<lang>.json` files NEVER contain an `answer` field,")
-    md.append("regardless of problem number.  Full data including answers lives in `data/private/`")
-    md.append("(gitignored), used locally for verification.  See `scripts/sanitization_gate.py`.")
+    md.append("Sanitization invariant: the public repo carries no raw bench data files —")
+    md.append("only this rendered narrative and the charts.  All measurements live in the")
+    md.append("gitignored SQLite SSOT `data/bench-private.db`.  See `scripts/sanitization_gate.py`.")
     md.append("")
     md.append("## Methodology Story")
     md.append("")
