@@ -1104,7 +1104,41 @@ difficulty, not just count. Worth noting when planning future rounds.
 
 ### Round 4 — scope=1-200 (publish target)
 
-*[Placeholder — will be filled when Round 4 completes.]*
+Round 4 didn't complete in a single orchestrator run. The harness's
+background-task ceiling (~50-60 min wall) killed the orchestrator mid-run
+with **4 of 10 langs fully done** (arm64, c, go, zig at 200/200) and **6
+langs still at 100/200** (cpp, csharp, java, javascript, python, rust). cpp
+was 69/100 through problems 101-200 when killed; because `euler-bench
+per-iter --write` writes atomically at end-of-lang, none of those 69
+measurements landed in the DB. Clean partial state — no half-written rows,
+just lang-level granular completion.
+
+**The published Round-4 RESULTS.md is honest about this:** the per-lang
+headline shows `100/200 problems, missing 100` for the incomplete langs
+alongside `200/200` for the four complete ones. Partial coverage is a
+supported render mode — when a (lang, problem) cell is unmeasured, the
+grid renders it as "missing" and the ranking sums only what was measured.
+The 4-langs-at-200 vs 6-langs-at-100 asymmetry is itself a meaningful data
+point: **we don't have to insist on uniform coverage to publish meaningfully
+— different langs can be at different scopes, and the report renders that
+honestly.** Subsequent mini-rounds bring the incomplete langs up
+incrementally (101-125, 126-150, etc.) — each is a 20-30 min run instead of
+the 60+ min that ran into the harness ceiling.
+
+**Surfacing real source-header bugs:** Round 4 also revealed two genuine
+correctness regressions that the old warm-bench harness never noticed —
+C p151 and C p199. Both are scale-encoded decimal-answer problems where the
+`// Answer:` source header was written as the decimal form (`0.464399`)
+rather than the encoded integer form the code actually returns (`464399`).
+The new fresh-process bench's strict canonical comparison correctly rejects
+these with `status='fail'`. The other 5 incomplete langs likely have the
+same bug at the same problems — predictable cross-lang signature, fixable
+in one pass when their catch-up runs.
+
+**Cost-of-discovery:** had the orchestrator run all 2000 cells uninterrupted,
+we'd have discovered the C header bugs alongside everything else. Because it
+stopped at 1400 cells, we found them earlier with cleaner attribution and
+can pre-fix them before completing the remaining langs.
 
 ### Methodology meta-lesson
 
