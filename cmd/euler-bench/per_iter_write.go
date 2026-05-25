@@ -26,6 +26,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -63,6 +65,7 @@ type publicEntry struct {
 	PeakRSSBytes     int64  `json:"peak_rss_bytes,omitempty"`
 	SourceLines      int    `json:"source_lines,omitempty"`
 	SourceBytes      int    `json:"source_bytes,omitempty"`
+	SourceHash       string `json:"source_hash,omitempty"` // SHA-256 hex of algorithm sources, concatenated in sorted-by-filename order
 }
 
 type benchData struct {
@@ -80,7 +83,16 @@ type benchData struct {
 // Source-file selection is per-lang and mirrors the build adapter's source
 // expectations.  For ARM64, solve.s is preferred (algorithm-implementation
 // file); falls back to main.c if absent.
-var answerHeaderRe = regexp.MustCompile(`(?m)^(?://|#)\s*Answer:\s*(.+?)\s*$`)
+// Matches the canonical `// Answer: <value>` or `# Answer: <value>` header.
+// Capture group: EITHER a fully parens-wrapped marker (e.g. "(not solved)")
+// OR the first whitespace-delimited token (e.g. "464399" from
+// "464399 (represents 0.464399... * 1000000 rounded)"). This matches the
+// dud_audit parser's behavior so the two tools agree on canonical values.
+// Bug history: an earlier `(.+?)\s*$` pattern captured the trailing
+// parenthetical description as part of the canonical, producing false-positive
+// mismatches on every non-integer-encoded problem (caught 2026-05-24 during
+// the ARM64 full rebench: 6 spurious fails, all of shape "464399 (text)").
+var answerHeaderRe = regexp.MustCompile(`(?m)^(?://|#)\s*Answer:\s*(\([^)]*\)|\S+)`)
 
 func canonicalAnswerSourcePath(lang *Lang, baseDir, problem string) string {
 	repoDir := filepath.Join(baseDir, lang.Repo)
@@ -122,27 +134,85 @@ func readCanonicalAnswer(lang *Lang, baseDir, problem string) (string, error) {
 	return strings.TrimSpace(string(m[1])), nil
 }
 
-// countSourceMetrics returns (lines, bytes) for the canonical source file
-// (the one with the `// Answer:` header).  For ARM64 that's solve.s, the
-// algorithm-bearing file.  Returns (0, 0) on read error rather than
+// algorithmSourcePaths returns the file(s) that constitute the algorithm
+// solution for (lang, problem). Used by both source-metric counting and
+// source-hash computation. For ARM64 returns both the asm and its thin C
+// harness wrapper (both contribute to the solution surface). For Java we
+// hash only Main.java — Bench.java is shared per-problem harness boilerplate
+// that doesn't affect algorithm freshness. Other langs are single-file.
+//
+// Result is sorted by path to give a deterministic concat order for hashing.
+func algorithmSourcePaths(lang *Lang, baseDir, problem string) []string {
+	repoDir := filepath.Join(baseDir, lang.Repo)
+	probDir := filepath.Join(repoDir, "problem_"+problem)
+
+	var paths []string
+	switch lang.Key {
+	case "arm64":
+		// Both the asm solve and the thin C harness count — a change to
+		// either is a change to the solution surface.
+		for _, name := range []string{"main.c", "solve.s"} {
+			p := filepath.Join(probDir, name)
+			if _, err := os.Stat(p); err == nil {
+				paths = append(paths, p)
+			}
+		}
+	default:
+		// All others: a single canonical source file (the one with the
+		// `// Answer:` header).
+		paths = append(paths, canonicalAnswerSourcePath(lang, baseDir, problem))
+	}
+	sort.Strings(paths)
+	return paths
+}
+
+// countSourceMetrics returns (lines, bytes) summed across every file in the
+// algorithm source set. For single-file langs this is the obvious thing; for
+// ARM64 it sums asm + C harness. Returns (0, 0) on read error rather than
 // failing the bench — a missing source-line count is non-fatal.
 func countSourceMetrics(lang *Lang, baseDir, problem string) (lines, bytes int) {
-	path := canonicalAnswerSourcePath(lang, baseDir, problem)
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return 0, 0
-	}
-	bytes = len(data)
-	for _, b := range data {
-		if b == '\n' {
+	for _, path := range algorithmSourcePaths(lang, baseDir, problem) {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			continue
+		}
+		bytes += len(data)
+		for _, b := range data {
+			if b == '\n' {
+				lines++
+			}
+		}
+		// Count the final unterminated line if the file doesn't end with \n
+		if len(data) > 0 && data[len(data)-1] != '\n' {
 			lines++
 		}
 	}
-	// Count the final unterminated line if the file doesn't end with \n
-	if bytes > 0 && data[bytes-1] != '\n' {
-		lines++
-	}
 	return lines, bytes
+}
+
+// hashAlgorithmSources returns a SHA-256 hex string over the concatenated
+// bytes of every algorithm source file (in sorted-by-path order, so the
+// result is deterministic). Empty string on read error — non-fatal.
+//
+// This is the cryptographic-strength complement to (source_lines, source_bytes):
+// LOC+bytes catches the common case of any byte-count-changing edit; the
+// hash catches byte-preserving edits (single-char swaps, identifier renames
+// of the same length, etc.) that would otherwise slip past freshness checks.
+func hashAlgorithmSources(lang *Lang, baseDir, problem string) string {
+	h := sha256.New()
+	any := false
+	for _, path := range algorithmSourcePaths(lang, baseDir, problem) {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			continue
+		}
+		h.Write(data)
+		any = true
+	}
+	if !any {
+		return ""
+	}
+	return hex.EncodeToString(h.Sum(nil))
 }
 
 // writePublicEntry constructs the entry that lands in the public data file.
@@ -272,7 +342,7 @@ func atomicWriteJSON(path string, data any) error {
 // data/private/<lang>.json (full).  Existing entries for unmeasured
 // problems are preserved.  Returns the number of mismatch failures.
 func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mismatches int, err error) {
-	benchmarksDir := filepath.Join(baseDir, "ProjectEuler.Benchmarks")
+	benchmarksDir := filepath.Join(baseDir, "benchmarks")
 	publicPath := filepath.Join(benchmarksDir, "data", lang.Key+".json")
 	privatePath := filepath.Join(benchmarksDir, "data", "private", lang.Key+".json")
 
@@ -289,14 +359,21 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 		canonical, _ := readCanonicalAnswer(lang, baseDir, r.Problem)
 		problemNum, _ := strconv.Atoi(r.Problem)
 		srcLines, srcBytes := countSourceMetrics(lang, baseDir, r.Problem)
+		srcHash := hashAlgorithmSources(lang, baseDir, r.Problem)
 
 		pubEntry := writePublicEntry(r, canonical, problemNum)
 		pubEntry.SourceLines = srcLines
 		pubEntry.SourceBytes = srcBytes
+		pubEntry.SourceHash = srcHash
+		pubEntry.CompileTimeNs = r.CompileTimeNs
+		pubEntry.PeakRSSBytes = r.PeakRSSBytes
 
 		privEntry := writePrivateEntry(r, canonical)
 		privEntry.SourceLines = srcLines
 		privEntry.SourceBytes = srcBytes
+		privEntry.SourceHash = srcHash
+		privEntry.CompileTimeNs = r.CompileTimeNs
+		privEntry.PeakRSSBytes = r.PeakRSSBytes
 
 		if pubEntry.Status == "fail" && strings.Contains(pubEntry.Error, "mismatch") {
 			mismatches++
