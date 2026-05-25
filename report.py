@@ -289,10 +289,11 @@ def aggregate() -> dict:
 
     # `_common_per_tier` — explicit per-tier common-sets for tier-aware charts.
     # The "common-set" surface is computed over ACTIVE langs — tier-designated
-    # langs that have at least one passing cell in the tier's problem range.
-    # Excluding zero-data langs lets the tier-2 chart populate today (over
-    # cpp+go+zig) instead of waiting for python tier-2 data; when python tier-2
-    # cells land, python joins active and the common-set tightens accordingly.
+    # langs with COVERAGE ≥ this threshold in the tier's problem range. The
+    # threshold prevents a misleading-but-honest case where a lang with just
+    # 1 passing cell tightens the common-set to 1 problem (sample size too
+    # small for a meaningful rank).
+    ACTIVE_COVERAGE_THRESHOLD = 0.5  # 50% of in-scope tier problems
     out["_common_per_tier"] = {}
     for tier_key in TIER_ORDER:
         if tier_key not in _TIERS:
@@ -303,10 +304,15 @@ def aggregate() -> dict:
             if int(p) >= lo and (hi is None or int(p) <= hi)
         ]
         designated_langs = langs_in_tier(tier_key, _TIERS)
-        active_langs = [
-            lang for lang in designated_langs
-            if any(out[lang]["per_problem_status"].get(p) == "pass" for p in tier_probs)
-        ]
+        # Compute per-lang coverage ratio within this tier; active = ≥ threshold.
+        active_langs = []
+        for lang in designated_langs:
+            n_pass = sum(
+                1 for p in tier_probs
+                if out[lang]["per_problem_status"].get(p) == "pass"
+            )
+            if tier_probs and (n_pass / len(tier_probs)) >= ACTIVE_COVERAGE_THRESHOLD:
+                active_langs.append(lang)
         tier_common = [
             p for p in tier_probs
             if active_langs and all(
