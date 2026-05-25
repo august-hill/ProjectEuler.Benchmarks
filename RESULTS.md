@@ -37,14 +37,15 @@ shown in the coverage block further down.
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Zig, Python) that intentionally pushed past problem 200. The other 6 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
+_Common set computed over the **3 active** tier-2 langs_ _(C++, Go, Zig);_ _awaiting: Python. Common set will tighten once awaited langs land tier-2 data._
+
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Total (1-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (92-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 93.46 ms | 83 | 1.00× |
-| 2 | **Go** | 115.33 ms | 95 | 1.23× |
-| 3 | **Zig** | 189.24 ms | 66 | 2.02× |
-| 4 | **Python** | 4.48 s | 70 | 47.94× |
+| 1 | **C++** | 91.54 s | 11,794 | 1.00× |
+| 2 | **Go** | 94.80 s | 9,419 | 1.04× |
+| 3 | **Zig** | 109.43 s | 10,264 | 1.20× |
 
 ### Speed vs Code Size — Tier 2
 
