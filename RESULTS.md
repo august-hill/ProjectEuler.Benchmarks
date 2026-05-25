@@ -1,14 +1,14 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 200 problems × 10 languages = 2000 cells, 1999 measured (100.0% coverage).**
-> The cross-language ranking below is computed over the **199-problem common set** (problems where every language has a passing measurement) — the apples-to-apples comparison surface.  Per-language coverage detail appears below the ranking.
+> **Scope: 2400 in-scope cells across 300 problems × tiered languages — 2044 measured (85.2% coverage).**
+> The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 200-problem scope.
+> core, then the disciplined expansion to today's 300-problem scope.
 
-## Per-Invocation Cost (Common Set, 199 of 200 problems)
+## Per-Invocation Cost — Foundation (Common Set, 199 of 200 problems)
 
 We run each program 10 times in fresh OS processes (no warmup, no shared state).
 Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /
@@ -33,9 +33,15 @@ shown in the coverage block further down.
 | 9 | **JavaScript** | 68.46 s | 9,123 | 3.05× |
 | 10 | **Python** | 669.59 s | 8,459 | 29.80× |
 
+## Per-Invocation Cost — Deep Coverage (Tier 2, problems 201-300, 4 languages)
+
+Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Zig, Python) that intentionally pushed past problem 200. The other 6 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
+
+> _Tier 2 common-set is currently empty — no problem in 201-300 has passing measurements in all 4 deep-coverage languages yet. The ranking will populate as benching continues._
+
 ## Speed vs Code Size
 
-How much code does each language need to solve these 200 problems, and how
+How much code does each language need to solve these 200 Foundation problems, and how
 fast does that code run?  Bottom-left = fast and concise; top-right = slow
 and verbose.  ARM64's outlier position (most lines) is expected — assembly
 trades verbosity for direct hardware control.
@@ -62,7 +68,7 @@ image above because browsers treat `<img>` SVGs as opaque.
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 2 bands), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 3 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
@@ -78,7 +84,7 @@ Problems are chunked into bands of 100 (matching the heatmap above) so
 each table stays narrow enough for GitHub's markdown renderer.  Columns are in
 fixed tier order (native → managed → interpreted).
 
-### Problems 001–100
+### Problems 001–100 — Foundation (10 langs)
 
 | Problem | ARM64 | C | C++ | Rust | Zig | Go | C# | Java | JavaScript | Python |
 |---------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
@@ -183,7 +189,7 @@ fixed tier order (native → managed → interpreted).
 | **p099** | 110.0 µs | 153.1 µs | 203.7 µs | 113.7 µs | 129.0 µs | 176.8 µs | 16.99 ms | 11.24 ms | 380.2 µs | 439.0 µs |
 | **p100** | 0 ns | 42 ns | 125 ns | 42 ns | 125 ns | 1.9 µs | 68.0 µs | 2.2 µs | 13.7 µs | 3.7 µs |
 
-### Problems 101–200
+### Problems 101–200 — Foundation (10 langs)
 
 | Problem | ARM64 | C | C++ | Rust | Zig | Go | C# | Java | JavaScript | Python |
 |---------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
@@ -288,6 +294,111 @@ fixed tier order (native → managed → interpreted).
 | **p199** | 2.05 ms | 694.6 µs | 743.6 µs | 593.3 µs | 649.2 µs | 1.63 ms | 1.85 ms | 1.41 ms | 3.42 ms | 27.38 ms |
 | **p200** | 76.67 ms | 10.53 ms | 11.19 ms | 10.12 ms | 10.04 ms | 10.23 ms | 50.04 ms | 52.36 ms | 42.71 ms | 162.67 ms |
 
+### Problems 201–300 — Deep Coverage (4 langs)
+
+| Problem | C++ | Zig | Go | Python |
+|---------|----:|----:|----:|----:|
+| **p201** | 658.36 ms | — | — | — |
+| **p202** | 4.7 µs | — | — | — |
+| **p203** | 133.0 µs | — | — | — |
+| **p204** | 14.26 ms | — | — | — |
+| **p205** | 4.3 µs | — | — | — |
+| **p206** | 50.69 ms | — | — | — |
+| **p207** | 416.2 µs | — | — | — |
+| **p208** | 11.99 ms | — | — | — |
+| **p209** | 1.8 µs | — | — | — |
+| **p210** | 464.57 ms | — | — | — |
+| **p211** | 3.78 s | — | — | — |
+| **p212** | 6.03 s | — | — | — |
+| **p213** | — | — | — | — |
+| **p214** | 533.59 ms | — | — | — |
+| **p215** | 5.43 ms | — | — | — |
+| **p216** | 4.76 s | — | — | — |
+| **p217** | 1.32 ms | — | — | — |
+| **p218** | 616.52 ms | — | — | — |
+| **p219** | 2.6 µs | — | — | — |
+| **p220** | 1.6 µs | — | — | — |
+| **p221** | 20.94 ms | — | — | — |
+| **p222** | 20.0 µs | — | — | — |
+| **p223** | 5.53 s | — | — | — |
+| **p224** | 2.07 s | — | — | — |
+| **p225** | 15.87 ms | — | — | — |
+| **p226** | 497.15 ms | — | — | — |
+| **p227** | — | — | — | — |
+| **p228** | 13.2 µs | — | — | — |
+| **p229** | 4.62 s | — | — | — |
+| **p230** | 4.7 µs | — | — | — |
+| **p231** | 49.37 ms | — | — | — |
+| **p232** | 303.3 µs | — | — | — |
+| **p233** | 28.74 ms | — | — | — |
+| **p234** | 3.22 ms | — | — | — |
+| **p235** | 11.5 µs | — | — | — |
+| **p236** | — | — | — | — |
+| **p237** | 39.3 µs | — | — | — |
+| **p238** | — | — | — | — |
+| **p239** | 583 ns | — | — | — |
+| **p240** | 50.5 µs | — | — | — |
+| **p241** | — | — | — | — |
+| **p242** | 1.5 µs | — | — | — |
+| **p243** | 1.9 µs | — | — | — |
+| **p244** | 16.30 ms | — | — | — |
+| **p245** | 1.03 s | — | — | — |
+| **p246** | 1.80 s | — | — | — |
+| **p247** | 137.25 ms | — | — | — |
+| **p248** | 747.81 ms | — | — | — |
+| **p249** | 1.11 s | — | — | — |
+| **p250** | 105.56 ms | — | — | — |
+| **p251** | — | — | — | — |
+| **p252** | — | — | — | — |
+| **p253** | — | — | — | — |
+| **p254** | — | — | — | — |
+| **p255** | — | — | — | — |
+| **p256** | — | — | — | — |
+| **p257** | — | — | — | — |
+| **p258** | — | — | — | — |
+| **p259** | — | — | — | — |
+| **p260** | — | — | — | — |
+| **p261** | — | — | — | — |
+| **p262** | — | — | — | — |
+| **p263** | — | — | — | — |
+| **p264** | — | — | — | — |
+| **p265** | — | — | — | — |
+| **p266** | — | — | — | — |
+| **p267** | — | — | — | — |
+| **p268** | — | — | — | — |
+| **p269** | — | — | — | — |
+| **p270** | — | — | — | — |
+| **p271** | — | — | — | — |
+| **p272** | — | — | — | — |
+| **p273** | — | — | — | — |
+| **p274** | — | — | — | — |
+| **p275** | — | — | — | — |
+| **p276** | — | — | — | — |
+| **p277** | — | — | — | — |
+| **p278** | — | — | — | — |
+| **p279** | — | — | — | — |
+| **p280** | — | — | — | — |
+| **p281** | — | — | — | — |
+| **p282** | — | — | — | — |
+| **p283** | — | — | — | — |
+| **p284** | — | — | — | — |
+| **p285** | — | — | — | — |
+| **p286** | — | — | — | — |
+| **p287** | — | — | — | — |
+| **p288** | — | — | — | — |
+| **p289** | — | — | — | — |
+| **p290** | — | — | — | — |
+| **p291** | — | — | — | — |
+| **p292** | — | — | — | — |
+| **p293** | — | — | — | — |
+| **p294** | — | — | — | — |
+| **p295** | — | — | — | — |
+| **p296** | — | — | — | — |
+| **p297** | — | — | — | — |
+| **p298** | — | — | — | — |
+| **p299** | — | — | — | — |
+| **p300** | — | — | — | — |
+
 > \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
 ## Method
@@ -328,7 +439,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 200 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 300 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -411,7 +522,7 @@ around p007+.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-300 --iters 10 --write
 python3 report.py
 ```
 

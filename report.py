@@ -39,13 +39,24 @@ REPO = Path(__file__).resolve().parent
 DATA_DIR = REPO / "data"
 CHARTS_DIR = REPO / "charts"
 
-# Scope: extend this list only after each new problem clears the
-# state-leak / answer-verification audit.
+# Tier model — single source of truth at data/tiers.json, consumed via the
+# shared scripts/tiers.py helper. Tier 1 = Foundation (all 10 langs, 1-200);
+# Tier 2 = Deep Coverage (cpp/go/python/zig, 201-300); Tier 3 = Frontier
+# (cpp+go, 301+).  See project_pe_tier_model_2026-05-22 auto-memory for why.
+sys.path.insert(0, str(REPO / "scripts"))
+from tiers import (  # noqa: E402
+    load_tiers, langs_in_tier, in_scope as _in_scope,
+    tier_for_problem, tier_problem_range, tier_label, TIER_ORDER,
+)
+_TIERS = load_tiers()
+
+# Scope: extended to 1-300 to cover tier-1 Foundation + tier-2 Deep Coverage.
+# Per-tier rendering filters out langs that aren't in scope for a given band
+# (e.g., ARM64 doesn't appear in the 201-300 band — it's tier-1 only).
 # Partial-coverage is supported and intentional — when a (lang, problem) cell
-# is unmeasured, report.py renders it as "missing" in the grid and excludes
-# it from per-lang totals. The per-lang headline shows "<measured>/<scope>"
-# so partial coverage is honest in the rendering.
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 201)]
+# is unmeasured (AND the lang IS in scope per tier), report.py renders it as
+# "missing" in the grid and excludes it from per-lang totals.
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 301)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.
@@ -228,7 +239,13 @@ def aggregate() -> dict:
         per_prob_samples = {p: samples_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         total_ns = sum(v for v in per_prob_ns.values() if v is not None)
         total_lines = sum(per_prob_lines.values())
-        missing = sum(1 for p in SCOPE_PROBLEMS if per_prob_ns[p] is None)
+        # "missing" is computed over the lang's IN-SCOPE problems per the tier
+        # model — not the full SCOPE. E.g. ARM64 (tier-1 only) is missing 0 of
+        # its 200 in-scope problems, not 100 of 300. The per-lang headline reads
+        # "<measured>/<in_scope>" so partial coverage is honest per tier.
+        in_scope = in_scope_problems(lang)
+        in_scope_count = len(in_scope)
+        missing = sum(1 for p in in_scope if per_prob_ns[p] is None)
         out[lang] = {
             "per_problem_ns": per_prob_ns,
             "per_problem_lines": per_prob_lines,
@@ -237,11 +254,18 @@ def aggregate() -> dict:
             "total_ns": total_ns,
             "total_lines": total_lines,
             "missing": missing,
+            "in_scope_count": in_scope_count,
         }
 
     # Common-set computation: problems where every lang has status='pass'.
     # Any lang missing OR with status!='pass' for a given problem disqualifies
     # that problem from the common set.
+    #
+    # `_common` is the LEGACY tier-1 common-set — kept for backward compat with
+    # the existing chart code that drives the headline rank table. With SCOPE
+    # extended to 1-300, problems 201-300 are auto-excluded because the 6
+    # tier-1-only langs (arm64/c/csharp/java/javascript/rust) have status=missing
+    # there (no data), so the all-pass-across-all-10 filter rejects them.
     common_problems = [
         p for p in SCOPE_PROBLEMS
         if all(out[lang]["per_problem_status"].get(p) == "pass" for lang in LANGS)
@@ -258,6 +282,37 @@ def aggregate() -> dict:
             for lang in LANGS
         },
     }
+
+    # `_common_per_tier` — explicit per-tier common-sets for tier-aware charts.
+    # Each tier's common-set is computed over THAT tier's lang list + problem range.
+    # Used by the tier-2 speed-vs-size + total charts (and any future tier-3 view).
+    out["_common_per_tier"] = {}
+    for tier_key in TIER_ORDER:
+        if tier_key not in _TIERS:
+            continue
+        lo, hi = tier_problem_range(tier_key, _TIERS)
+        tier_probs = [
+            p for p in SCOPE_PROBLEMS
+            if int(p) >= lo and (hi is None or int(p) <= hi)
+        ]
+        tier_langs = langs_in_tier(tier_key, _TIERS)
+        tier_common = [
+            p for p in tier_probs
+            if all(out[lang]["per_problem_status"].get(p) == "pass" for lang in tier_langs)
+        ]
+        out["_common_per_tier"][tier_key] = {
+            "problems": tier_common,
+            "langs": tier_langs,
+            "per_lang_total_ns": {
+                lang: sum(out[lang]["per_problem_ns"][p] for p in tier_common
+                          if out[lang]["per_problem_ns"][p] is not None)
+                for lang in tier_langs
+            },
+            "per_lang_total_lines": {
+                lang: sum(out[lang]["per_problem_lines"][p] for p in tier_common)
+                for lang in tier_langs
+            },
+        }
     return out
 
 
@@ -292,9 +347,11 @@ def render_speed_vs_size_chart(agg: dict) -> Path:
 
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel(f"Total source lines across problems 1–{len(SCOPE_PROBLEMS)} (log scale)")
+    # Tier-1 chart uses the Foundation common-set (max problem = tier_1's hi).
+    _t1_hi = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
+    ax.set_xlabel(f"Total source lines across Foundation problems 1–{_t1_hi} (log scale)")
     ax.set_ylabel("Total per-invocation cost — ms (log scale)")
-    ax.set_title(f"Speed vs Code Size — {len(LANGS)} Languages, Problems 1–{len(SCOPE_PROBLEMS)}\n"
+    ax.set_title(f"Speed vs Code Size — Foundation ({len(LANGS)} languages, problems 1–{_t1_hi})\n"
                  "Bottom-left corner = fast + concise; top-right = slow + verbose")
     ax.grid(which="major", alpha=0.3)
     ax.grid(which="minor", alpha=0.12)
@@ -350,6 +407,34 @@ def _bands(scope: list, band_size: int) -> list:
     return [scope[i:i + band_size] for i in range(0, len(scope), band_size)]
 
 
+def langs_for_band(band_probs: list) -> list:
+    """Return langs in LANG_DISPLAY_ORDER that are in scope for this band's tier.
+
+    BAND_SIZE (100) aligns with tier ranges (also 100-wide), so a band sits
+    entirely in one tier. We check the band's first problem to identify the
+    tier, then return the tier's lang list filtered by display order.
+
+    Used by the coverage grid + per-problem detail table to render
+    variable-height bands instead of always showing all 10 langs (which would
+    leave tier-1-only langs with full black rows in the 201-300 band).
+    """
+    p1 = int(band_probs[0])
+    tier_key = tier_for_problem(p1, _TIERS)
+    if tier_key is None:
+        return list(LANG_DISPLAY_ORDER)
+    in_scope_set = set(langs_in_tier(tier_key, _TIERS))
+    return [l for l in LANG_DISPLAY_ORDER if l in in_scope_set]
+
+
+def in_scope_problems(lang: str) -> list:
+    """Subset of SCOPE_PROBLEMS that are in scope for `lang` per the tier model.
+
+    Used for per-lang "missing N of K" counts so a tier-1-only lang like ARM64
+    isn't credited as "missing 100 of 300" — its in-scope is 200, full stop.
+    """
+    return [p for p in SCOPE_PROBLEMS if _in_scope(lang, int(p), _TIERS)]
+
+
 def render_coverage_grid_chart(agg: dict) -> Path:
     """Banded heatmap PNG — N_BANDS bands stacked vertically, each band a
     fixed-width 10-lang × BAND_SIZE-problem grid.
@@ -365,34 +450,46 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     Row order is fixed (LANG_DISPLAY_ORDER) so the chart doesn't visually
     reshuffle when ranking-by-total drifts between snapshots.
     """
-    langs = LANG_DISPLAY_ORDER
-    n_langs = len(langs)
     n_probs = len(SCOPE_PROBLEMS)
     bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
     n_bands = len(bands)
 
-    # Sizing: cell ~0.13" wide × 0.30" tall.  Band gets +0.45" for its title.
+    # Tier-aware: each band's lang list may differ (e.g., 10 langs at 1-200,
+    # 4 langs at 201-300). Use the max for figure sizing so we have room for
+    # the tallest band; shorter bands just have empty space below.
+    bands_langs = [langs_for_band(bp) for bp in bands]
+    max_langs = max(len(bl) for bl in bands_langs)
+
+    # Sizing: cell ~0.13" wide × 0.30" tall.  Band gets +0.6" for title + tier label.
     cell_w_in = 0.13
     cell_h_in = 0.30
-    band_h_in = n_langs * cell_h_in + 0.45
+    # Each band is sized for its own lang count (variable-height bands).
+    band_heights = [len(bl) * cell_h_in + 0.6 for bl in bands_langs]
     fig_w = max(11.0, BAND_SIZE * cell_w_in + 2.2)  # +2.2 for y-labels & margin
-    fig_h = n_bands * band_h_in + 1.6               # +1.6 for figure title + legend
+    fig_h = sum(band_heights) + 1.6                  # +1.6 for figure title + legend
 
     fig, axes = plt.subplots(n_bands, 1,
                              figsize=(fig_w, fig_h),
-                             gridspec_kw={"hspace": 0.65})
+                             gridspec_kw={"hspace": 0.85,
+                                          "height_ratios": band_heights})
     # plt.subplots returns a bare Axes (not an array) when nrows=1.
     if n_bands == 1:
         axes = [axes]
 
     for band_i, ax in enumerate(axes):
         band_probs = bands[band_i]
-        for ri, lang in enumerate(langs):
+        band_langs = bands_langs[band_i]
+        n_band_langs = len(band_langs)
+        # Identify the tier so we can label the band with it.
+        tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
+        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
+
+        for ri, lang in enumerate(band_langs):
             for ci, p in enumerate(band_probs):
                 st = agg[lang]["per_problem_status"][p]
                 ns = agg[lang]["per_problem_ns"][p]
                 ax.add_patch(plt.Rectangle(
-                    (ci, n_langs - 1 - ri), 1, 1,
+                    (ci, n_band_langs - 1 - ri), 1, 1,
                     facecolor=cell_color(st, ns),
                     edgecolor="white", linewidth=0.6,
                 ))
@@ -400,24 +497,26 @@ def render_coverage_grid_chart(agg: dict) -> Path:
         # Uniform x extent across bands keeps cell width constant even on a
         # final partial band (e.g. 50 problems instead of 100).
         ax.set_xlim(0, BAND_SIZE)
-        ax.set_ylim(0, n_langs)
+        ax.set_ylim(0, n_band_langs)
 
         # X-ticks every 10 problems within the band.
         tick_idx = list(range(0, len(band_probs), 10))
         ax.set_xticks([i + 0.5 for i in tick_idx])
         ax.set_xticklabels([f"p{band_probs[i]}" for i in tick_idx], fontsize=8)
 
-        ax.set_yticks([i + 0.5 for i in range(n_langs)])
-        ax.set_yticklabels([DISPLAY[l] for l in reversed(langs)], fontsize=9)
-        ax.set_title(f"Problems {band_probs[0]}–{band_probs[-1]}",
-                     fontsize=10, loc="left", pad=4)
+        ax.set_yticks([i + 0.5 for i in range(n_band_langs)])
+        ax.set_yticklabels([DISPLAY[l] for l in reversed(band_langs)], fontsize=9)
+        title = f"Problems {band_probs[0]}–{band_probs[-1]}"
+        if tier_lbl:
+            title += f"  ({tier_lbl} — {n_band_langs} langs)"
+        ax.set_title(title, fontsize=10, loc="left", pad=4)
         ax.tick_params(length=0)
         ax.set_aspect("auto")   # let figure dims dictate; cells aren't square
         for spine in ax.spines.values():
             spine.set_visible(False)
 
     fig.suptitle(
-        f"Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems",
+        f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)",
         fontsize=13, y=0.995,
     )
 
@@ -460,26 +559,31 @@ def render_coverage_grid_svg(agg: dict) -> Path:
     def esc(s) -> str:
         return html.escape(str(s), quote=True)
 
-    langs = LANG_DISPLAY_ORDER
-    n_langs = len(langs)
     n_probs = len(SCOPE_PROBLEMS)
     bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
     n_bands = len(bands)
+
+    # Tier-aware: each band's lang list may differ. Compute band heights
+    # individually so band 1 (10 langs) and band 3 (4 langs) render at their
+    # natural sizes instead of padding short bands with blank rows.
+    bands_langs = [langs_for_band(bp) for bp in bands]
 
     # SVG user-unit dimensions (≈ CSS pixels).
     cell_w, cell_h = 12, 18
     margin_l, margin_r = 92, 20
     margin_t = 56
     band_title_h = 22
-    band_grid_h = n_langs * cell_h
     band_xaxis_h = 18
-    band_h = band_title_h + band_grid_h + band_xaxis_h
     band_gap = 26
     legend_h = 70
 
+    # Per-band heights for variable layouts.
+    band_grid_hs = [len(bl) * cell_h for bl in bands_langs]
+    band_hs = [band_title_h + g + band_xaxis_h for g in band_grid_hs]
+
     fig_w = margin_l + BAND_SIZE * cell_w + margin_r
     fig_h = (margin_t
-             + n_bands * band_h
+             + sum(band_hs)
              + (n_bands - 1) * band_gap
              + legend_h)
 
@@ -505,7 +609,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
     # Figure title + subtitle
     parts.append(
         f'<text class="title" x="{margin_l}" y="26">'
-        f'{esc(f"Coverage + Speed Heatmap — {n_langs} languages × {n_probs} problems")}'
+        f'{esc(f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)")}'
         f'</text>'
     )
     parts.append(
@@ -514,19 +618,30 @@ def render_coverage_grid_svg(agg: dict) -> Path:
         f'</text>'
     )
 
+    # Running y-cursor for variable-height bands.
+    cum_y = margin_t
     for band_i, band_probs in enumerate(bands):
-        band_y0 = margin_t + band_i * (band_h + band_gap)
+        band_langs = bands_langs[band_i]
+        n_band_langs = len(band_langs)
+        band_grid_h = band_grid_hs[band_i]
+        band_h = band_hs[band_i]
+        band_y0 = cum_y
         grid_y0 = band_y0 + band_title_h
 
-        # Band title
+        # Band title — include tier label
+        tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
+        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
+        band_title_text = f"Problems {band_probs[0]}–{band_probs[-1]}"
+        if tier_lbl:
+            band_title_text += f"  ({tier_lbl} — {n_band_langs} langs)"
         parts.append(
             f'<text class="band" x="{margin_l}" y="{band_y0 + 15}">'
-            f'{esc(f"Problems {band_probs[0]}–{band_probs[-1]}")}'
+            f'{esc(band_title_text)}'
             f'</text>'
         )
 
         # Y-axis lang labels (right-aligned into the left margin)
-        for ri, lang in enumerate(langs):
+        for ri, lang in enumerate(band_langs):
             y = grid_y0 + (ri + 0.5) * cell_h + 4   # +4 ≈ baseline tweak
             parts.append(
                 f'<text x="{margin_l - 6}" y="{y}" text-anchor="end">'
@@ -534,7 +649,7 @@ def render_coverage_grid_svg(agg: dict) -> Path:
             )
 
         # Cells with <title> tooltips
-        for ri, lang in enumerate(langs):
+        for ri, lang in enumerate(band_langs):
             for ci, p in enumerate(band_probs):
                 st = agg[lang]["per_problem_status"][p]
                 ns = agg[lang]["per_problem_ns"][p]
@@ -565,9 +680,12 @@ def render_coverage_grid_svg(agg: dict) -> Path:
                 f'{esc(f"p{band_probs[i]}")}</text>'
             )
 
+        # Advance cursor past this band + the inter-band gap.
+        cum_y += band_h + band_gap
+
     # Legend.  Labels here contain "<100µs", "<1ms", etc. — the literal "<"
     # is what broke the SVG on first deploy.  esc() turns it into "&lt;".
-    legend_y = margin_t + n_bands * band_h + (n_bands - 1) * band_gap + 28
+    legend_y = cum_y - band_gap + 28
     swatch = 14
     item_w = (fig_w - margin_l - margin_r) / len(LEGEND_ITEMS)
     for i, (color, label) in enumerate(LEGEND_ITEMS):
@@ -625,9 +743,11 @@ def render_total_chart(agg: dict) -> Path:
     ax.set_yticklabels(labels)
     ax.invert_yaxis()  # fastest on top
     ax.set_xscale("log")
+    # Tier-1 chart uses the Foundation common-set (max problem = tier_1's hi).
+    _t1_hi = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
     ax.set_xlabel(f"Total per-invocation cost across the {n_common}-problem common set (ms, log scale)")
-    ax.set_title(f"Per-Invocation Cost — {len(LANGS)} Languages, "
-                 f"Common Set ({n_common} of {len(SCOPE_PROBLEMS)} in-scope problems)\n"
+    ax.set_title(f"Per-Invocation Cost — Foundation ({len(LANGS)} languages, "
+                 f"common set: {n_common} of {_t1_hi} problems)\n"
                  f"Each binary run 10 times in a fresh process; median wall time summed "
                  f"across the {n_common} problems all langs pass")
     # Value labels at the end of each bar
@@ -662,32 +782,37 @@ def render_results_md(agg: dict) -> str:
     )
     fastest_ns = ranked[0][1] if ranked else 1
 
-    # Coverage statistics — used in narrative to honestly describe partial state
+    # Coverage statistics — used in narrative to honestly describe partial state.
+    # total_cells is now tier-aware: sum of in_scope per lang across all langs.
     n_common = len(common["problems"])
-    total_cells = len(SCOPE_PROBLEMS) * len(LANGS)
+    total_cells = sum(agg[lang]["in_scope_count"] for lang in LANGS)
     measured_cells = sum(
-        sum(1 for v in agg[lang]["per_problem_ns"].values() if v is not None)
-        for lang in LANGS
+        agg[lang]["in_scope_count"] - agg[lang]["missing"] for lang in LANGS
     )
+    # Tier-1's max common-set is 200 (the 6 tier-1-only langs can't have data
+    # above 200 by design); use that as the denominator in the common-set header
+    # instead of len(SCOPE_PROBLEMS) which would misleadingly be 300.
+    tier1_max = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
 
     # Build markdown
     md = []
     md.append("# Project Euler — Cross-Language Benchmarks")
     md.append("")
-    md.append(f"> **Scope: {len(SCOPE_PROBLEMS)} problems × {len(LANGS)} languages "
-              f"= {total_cells} cells, {measured_cells} measured "
+    md.append(f"> **Scope: {total_cells} in-scope cells across "
+              f"{len(SCOPE_PROBLEMS)} problems × tiered languages "
+              f"— {measured_cells} measured "
               f"({100*measured_cells/total_cells:.1f}% coverage).**")
     md.append(f"> The cross-language ranking below is computed over the **{n_common}-problem "
-              f"common set** (problems where every language has a passing measurement) — the "
-              f"apples-to-apples comparison surface.  Per-language coverage detail appears below "
-              f"the ranking.")
+              f"common set** (problems in 1-{tier1_max} where every language has a passing "
+              f"measurement) — the apples-to-apples Foundation comparison surface.  "
+              f"Per-tier rankings and coverage detail appear further below.")
     md.append("> Growing carefully — each new problem and language is audited for state-leak")
     md.append("> safety, verified for answer correctness, and added only when it cleanly fits the")
     md.append("> measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how")
     md.append("> we got here, including the reset from 200+ problems back to a verified 10×10")
     md.append(f"> core, then the disciplined expansion to today's {len(SCOPE_PROBLEMS)}-problem scope.")
     md.append("")
-    md.append(f"## Per-Invocation Cost (Common Set, {n_common} of {len(SCOPE_PROBLEMS)} problems)")
+    md.append(f"## Per-Invocation Cost — Foundation (Common Set, {n_common} of {tier1_max} problems)")
     md.append("")
     md.append("We run each program 10 times in fresh OS processes (no warmup, no shared state).")
     md.append("Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /")
@@ -706,9 +831,45 @@ def render_results_md(agg: dict) -> str:
         lines = common["per_lang_total_lines"][lang]
         md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
     md.append("")
+
+    # Tier 2: Deep Coverage ranking (4 langs at 201-300). Only render when
+    # the tier-2 common-set has at least one problem — early in the tier-2
+    # campaign this section will be empty/sparse.
+    t2 = agg["_common_per_tier"].get("tier_2_deep_coverage", {})
+    t2_common = t2.get("problems", [])
+    t2_langs = t2.get("langs", [])
+    t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
+    md.append(f"## Per-Invocation Cost — Deep Coverage "
+              f"(Tier 2, problems {t2_lo}-{t2_hi}, {len(t2_langs)} languages)")
+    md.append("")
+    md.append(f"Same per-invocation metric, restricted to the deeper subset of languages "
+              f"({', '.join(DISPLAY[l] for l in t2_langs)}) that intentionally pushed past "
+              f"problem {tier1_max}. The other {len(LANGS) - len(t2_langs)} Foundation languages "
+              f"are out of tier scope here — they're capped at {tier1_max} by the project's "
+              f"language-cap policy (see JOURNEY.md).")
+    md.append("")
+    if t2_common:
+        t2_ranked = sorted(
+            [(lang, t2["per_lang_total_ns"][lang]) for lang in t2_langs
+             if t2["per_lang_total_ns"][lang] > 0],
+            key=lambda r: r[1],
+        )
+        t2_fastest = t2_ranked[0][1] if t2_ranked else 1
+        md.append(f"| Rank | Language | Total ({len(t2_common)}-problem common set) | Lines of code | vs Fastest |")
+        md.append("|------|----------|--------------------:|--------------:|-----------:|")
+        for i, (lang, total) in enumerate(t2_ranked, 1):
+            ratio = total / t2_fastest
+            lines = t2["per_lang_total_lines"][lang]
+            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+    else:
+        md.append(f"> _Tier 2 common-set is currently empty — no problem in {t2_lo}-{t2_hi} "
+                  f"has passing measurements in all {len(t2_langs)} deep-coverage languages yet. "
+                  f"The ranking will populate as benching continues._")
+    md.append("")
+
     md.append("## Speed vs Code Size")
     md.append("")
-    md.append(f"How much code does each language need to solve these {len(SCOPE_PROBLEMS)} problems, and how")
+    md.append(f"How much code does each language need to solve these {tier1_max} Foundation problems, and how")
     md.append("fast does that code run?  Bottom-left = fast and concise; top-right = slow")
     md.append("and verbose.  ARM64's outlier position (most lines) is expected — assembly")
     md.append("trades verbosity for direct hardware control.")
@@ -778,15 +939,22 @@ def render_results_md(agg: dict) -> str:
     md.append("each table stays narrow enough for GitHub's markdown renderer.  Columns are in")
     md.append("fixed tier order (native → managed → interpreted).")
     md.append("")
-    display_langs = LANG_DISPLAY_ORDER
-    header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
-    sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
     # Track whether any partial-measurement cells exist so we only emit the
     # footnote when the marker actually appears in the tables.
     any_partial = False
+    # Each band has its own lang column set (tier-aware): 10 cols at 1-100/101-200,
+    # 4 cols at 201-300. We re-build the header per band for that reason.
     for band_probs in _bands(SCOPE_PROBLEMS, BAND_SIZE):
-        md.append(f"### Problems {band_probs[0]}–{band_probs[-1]}")
+        display_langs = langs_for_band(band_probs)
+        tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
+        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
+        band_heading = f"### Problems {band_probs[0]}–{band_probs[-1]}"
+        if tier_lbl:
+            band_heading += f" — {tier_lbl} ({len(display_langs)} langs)"
+        md.append(band_heading)
         md.append("")
+        header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
+        sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
         md.append(header)
         md.append(sep)
         for p in band_probs:
@@ -975,13 +1143,17 @@ def main() -> int:
 
     agg = aggregate()
 
-    # Diagnostic — surface any langs missing problems in scope
-    print(f"=== Per-lang coverage in scope (problems 1-{len(SCOPE_PROBLEMS)}):")
+    # Diagnostic — surface any langs missing problems in scope.
+    # Per-lang denominator is its IN-SCOPE problem count per the tier model
+    # (200 for tier-1-only langs, 296 for tier-2 langs after parked, etc.).
+    print(f"=== Per-lang coverage in scope (per-tier in-scope, parked-aware):")
     for lang in LANGS:
         d = agg[lang]
+        in_scope = d["in_scope_count"]
+        passing = in_scope - d["missing"]
         missing_str = f", missing {d['missing']}" if d["missing"] else ""
         print(f"  {DISPLAY[lang]:>12s}: total {fmt_time(d['total_ns']):>10s}"
-              f"  ({len(SCOPE_PROBLEMS) - d['missing']}/{len(SCOPE_PROBLEMS)} problems{missing_str})")
+              f"  ({passing}/{in_scope} problems{missing_str})")
 
     # Render charts
     chart1 = render_total_chart(agg)
