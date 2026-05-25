@@ -1149,3 +1149,44 @@ semantics on 1900 more cells. The cost of regenerating reports between
 rounds (~10 seconds + a 1-line scope override) is trivial compared to the
 cost of catching a measurement-semantic bug after a full 2000-cell
 investment.
+
+### Round 4a — mini-round (101-125 catch-up, 6 langs)
+
+Rather than re-run the entire Round 4 after the harness-ceiling kill, the catch-up
+went as a small mini-round: `--problems 101-125 --langs cpp,csharp,java,javascript,python,rust`.
+Landed in 20.9 min wall (python alone took 16.2 min — the rest were 30-70s each).
+The harness held this time — proof that staying well under 30 min wall is the
+operationally safe zone for a single bg-task run.
+
+**Cross-lang file-loading anti-pattern surfaced.** Java and Python both failed
+the SAME three problems — p102, p105, p107 — with the same shape (file not
+found / Traceback on a data-file load). These are PE's data-file problems
+(`p102_triangles.txt`, `p105_sets.txt`, `p107_network.txt`). The source code
+loads the file via cwd-relative path; the new bench runs from a different
+working directory than the old per-repo `benchmark.sh` did, so the load
+fails. This is the same anti-pattern flagged earlier in 51-100 (the Java
+p081 fake-fallback, the C p089 absolute-path note in "Scaling to 200
+Problems"). Fix is per-source: use absolute paths derived from `__file__`
+(Python) / `getClass().getResource()` (Java) — predictable cross-lang
+signature, fixable in a single coordinated pass.
+
+### Methodology refinement — common-set rendering
+
+The first regen at scope=1-200 with partial coverage exposed a chart bug:
+total-time bars summed only over each lang's measured cells. Partial-coverage
+langs (100/200) showed artificially low totals compared to fully-covered langs
+(200/200), and the ranking visually implied "C++ is 50× faster than ARM64"
+when really C++ just had half the problems counted.
+
+**The fix: common-set rendering.** The ranking table and bar chart now sum
+over the set of problems where ALL 10 langs have status='pass' — an
+apples-to-apples surface that's stable under partial coverage. Per-lang
+individual coverage is shown separately. This is a stop-gap; the
+architecturally correct answer is tier-aware rendering (the existing
+`data/tiers.json` model already encodes which langs are in scope for which
+problem range). Once a lang intentionally stops (e.g., ARM64 capping at
+tier 1 while CPP/Go extend to tier 2), common-set across all 10 collapses to
+the stopped lang's ceiling — wrong behavior. Tier-aware rendering would
+maintain meaningful comparisons within each tier independently. **Filed as
+a follow-up task; current common-set fix is good enough until we have a lang
+that intentionally stops.**
