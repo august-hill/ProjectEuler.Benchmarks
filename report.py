@@ -1052,15 +1052,19 @@ def render_results_md(agg: dict) -> str:
     md.append("> we got here, including the reset from 200+ problems back to a verified 10×10")
     md.append(f"> core, then the disciplined expansion to today's {len(SCOPE_PROBLEMS)}-problem scope.")
     md.append("")
-    md.append(f"## Per-Invocation Cost — Foundation (Common Set, {n_common} of {tier1_max} problems)")
+    md.append(f"## Foundation — Tier 1 ({len(LANGS)} languages, problems 1-{tier1_max})")
+    md.append("")
+    md.append(f"All {len(LANGS)} languages benchmarked across the first {tier1_max} problems — "
+              f"the apples-to-apples comparison surface that anchors the suite's headline rankings.")
+    md.append("")
+    md.append(f"### Per-Invocation Cost (Common Set, {n_common} of {tier1_max} problems)")
     md.append("")
     md.append("We run each program 10 times in fresh OS processes (no warmup, no shared state).")
     md.append("Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /")
     md.append("shell-loop user actually pays.  The median wall time across the 10 invocations is")
     md.append(f"the headline per-problem number, and the table sums over the {n_common}-problem")
     md.append("common set so partial-coverage languages aren't artificially \"faster\" than fully-")
-    md.append("covered ones.  Per-language individual coverage (which may be ≥ the common set) is")
-    md.append("shown in the coverage block further down.")
+    md.append("covered ones.")
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
@@ -1071,6 +1075,17 @@ def render_results_md(agg: dict) -> str:
         lines = common["per_lang_total_lines"][lang]
         md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
     md.append("")
+    # Foundation Speed-vs-Size is a CHILD of the Foundation parent (was a
+    # standalone ## sitting awkwardly between tier-2 and Coverage Heatmap).
+    md.append("### Speed vs Code Size")
+    md.append("")
+    md.append(f"How much code does each language need to solve these {tier1_max} Foundation problems, "
+              f"and how fast does that code run?  Bottom-left = fast and concise; top-right = slow "
+              f"and verbose.  ARM64's outlier position (most lines) is expected — assembly trades "
+              f"verbosity for direct hardware control.")
+    md.append("")
+    md.append("![Speed vs Code Size](charts/per_iter_speed_vs_size.png)")
+    md.append("")
 
     # Tier 2: Deep Coverage ranking (4 langs at 201-300). Only render when
     # the tier-2 common-set has at least one problem — early in the tier-2
@@ -1080,8 +1095,7 @@ def render_results_md(agg: dict) -> str:
     t2_langs = t2.get("langs", [])  # active (langs with ≥1 tier-2 cell)
     t2_designated = t2.get("designated_langs", [])
     t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
-    md.append(f"## Per-Invocation Cost — Deep Coverage "
-              f"(Tier 2, problems {t2_lo}-{t2_hi}, {len(t2_designated)} languages)")
+    md.append(f"## Deep Coverage — Tier 2 ({len(t2_designated)} languages, problems {t2_lo}-{t2_hi})")
     md.append("")
     md.append(f"Same per-invocation metric, restricted to the deeper subset of languages "
               f"({', '.join(DISPLAY[l] for l in t2_designated)}) that intentionally pushed past "
@@ -1089,16 +1103,20 @@ def render_results_md(agg: dict) -> str:
               f"languages are out of tier scope here — they're capped at {tier1_max} by the "
               f"project's language-cap policy (see JOURNEY.md).")
     md.append("")
-    # Note: t2_langs here is "active" tier-2 langs (those with ≥1 cell). The
-    # full designated set is `_common_per_tier[...]["designated_langs"]`.
+    # Note: t2_langs here is "active" tier-2 langs (those with ≥50% coverage).
+    # The full designated set is `_common_per_tier[...]["designated_langs"]`.
     designated_t2 = t2.get("designated_langs", [])
     inactive_t2 = [l for l in designated_t2 if l not in t2_langs]
+    tier2_size = t2_hi - t2_lo + 1
     if t2_common:
+        md.append(f"### Per-Invocation Cost (Common Set, {len(t2_common)} of {tier2_size} problems)")
+        md.append("")
         if inactive_t2:
             md.append(f"_Common set computed over the **{len(t2_langs)} active** tier-2 langs_ "
                       f"_({', '.join(DISPLAY[l] for l in t2_langs)});_ "
-                      f"_awaiting: {', '.join(DISPLAY[l] for l in inactive_t2)}. "
-                      f"Common set will tighten once awaited langs land tier-2 data._")
+                      f"_awaiting: {', '.join(DISPLAY[l] for l in inactive_t2)} "
+                      f"(below 50% coverage threshold). Common set will tighten once awaited langs "
+                      f"reach majority coverage in tier 2._")
             md.append("")
         # Tier-2 charts — only embed if the chart file was actually generated
         # (render_*_tier2 returns None when t2 has no data).
@@ -1119,7 +1137,7 @@ def render_results_md(agg: dict) -> str:
             md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
         md.append("")
         if (CHARTS_DIR / "per_iter_speed_vs_size_tier2.png").exists():
-            md.append("### Speed vs Code Size — Tier 2")
+            md.append("### Speed vs Code Size")
             md.append("")
             md.append(f"Same scatter as the Foundation chart, restricted to the "
                       f"tier-2 active languages over problems {t2_lo}–{t2_hi}.")
@@ -1127,21 +1145,12 @@ def render_results_md(agg: dict) -> str:
             md.append("![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)")
             md.append("")
     else:
-        md.append(f"> _Tier 2 common-set is currently empty — no problem in {t2_lo}-{t2_hi} "
-                  f"has passing measurements in any active deep-coverage language yet. "
-                  f"The ranking and charts will populate as benching continues._")
+        md.append(f"> _Tier 2 common-set is currently empty — no active language reaches 50% "
+                  f"coverage in problems {t2_lo}-{t2_hi} yet. The ranking and charts will "
+                  f"populate as benching continues._")
         md.append("")
 
-    md.append("## Speed vs Code Size")
-    md.append("")
-    md.append(f"How much code does each language need to solve these {tier1_max} Foundation problems, and how")
-    md.append("fast does that code run?  Bottom-left = fast and concise; top-right = slow")
-    md.append("and verbose.  ARM64's outlier position (most lines) is expected — assembly")
-    md.append("trades verbosity for direct hardware control.")
-    md.append("")
-    md.append("![Speed vs Code Size](charts/per_iter_speed_vs_size.png)")
-    md.append("")
-    md.append("## Coverage + Speed Heatmap")
+    md.append("## Coverage Heatmap")
     md.append("")
     md.append("One cell per (language, problem).  Color shows whether the cell passes the")
     md.append("invocation-isolation + answer-correctness audit and how fast it runs:")
@@ -1220,6 +1229,15 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("That's the entire metric.  No \"hot\" vs \"cold\" — just per-invocation cost, which")
     md.append("is what every CLI / cron / shell-loop user actually pays.")
+    md.append("")
+    md.append("### Sub-millisecond floor")
+    md.append("")
+    md.append("On Apple Silicon, process spawn (`fork` + `exec`) costs ~5–10 ms.  Problems where")
+    md.append("the algorithm takes < 1 ms (currently p001–p006 in most languages) are effectively")
+    md.append("measuring spawn cost, not algorithmic merit.  That **is** what a CLI user pays, so")
+    md.append("the number is still meaningful — but the cross-language signal on these problems")
+    md.append("mostly reflects runtime startup cost.  The interesting algorithmic signal starts")
+    md.append("around p007+.")
     md.append("")
     md.append("### How each language is built")
     md.append("")
@@ -1314,15 +1332,6 @@ def render_results_md(agg: dict) -> str:
     md.append("process, *every* in-process cache starts empty.  No language gets an unfair")
     md.append("amortization advantage.  No source-code refactoring is required to maintain cross-")
     md.append("language honesty — the OS enforces it for free.")
-    md.append("")
-    md.append("## Sub-Millisecond Floor")
-    md.append("")
-    md.append("On Apple Silicon, process spawn (`fork` + `exec`) costs ~5–10 ms.  Problems where")
-    md.append("the algorithm takes < 1 ms (currently p001–p006 in most languages) are effectively")
-    md.append("measuring spawn cost, not algorithmic merit.  That **is** what a CLI user pays, so")
-    md.append("the number is still meaningful — but the cross-language signal on these problems")
-    md.append("mostly reflects runtime startup cost.  The interesting algorithmic signal starts")
-    md.append("around p007+.")
     md.append("")
     md.append("## Reproducibility")
     md.append("")
