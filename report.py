@@ -288,8 +288,11 @@ def aggregate() -> dict:
     }
 
     # `_common_per_tier` — explicit per-tier common-sets for tier-aware charts.
-    # Each tier's common-set is computed over THAT tier's lang list + problem range.
-    # Used by the tier-2 speed-vs-size + total charts (and any future tier-3 view).
+    # The "common-set" surface is computed over ACTIVE langs — tier-designated
+    # langs that have at least one passing cell in the tier's problem range.
+    # Excluding zero-data langs lets the tier-2 chart populate today (over
+    # cpp+go+zig) instead of waiting for python tier-2 data; when python tier-2
+    # cells land, python joins active and the common-set tightens accordingly.
     out["_common_per_tier"] = {}
     for tier_key in TIER_ORDER:
         if tier_key not in _TIERS:
@@ -299,22 +302,29 @@ def aggregate() -> dict:
             p for p in SCOPE_PROBLEMS
             if int(p) >= lo and (hi is None or int(p) <= hi)
         ]
-        tier_langs = langs_in_tier(tier_key, _TIERS)
+        designated_langs = langs_in_tier(tier_key, _TIERS)
+        active_langs = [
+            lang for lang in designated_langs
+            if any(out[lang]["per_problem_status"].get(p) == "pass" for p in tier_probs)
+        ]
         tier_common = [
             p for p in tier_probs
-            if all(out[lang]["per_problem_status"].get(p) == "pass" for lang in tier_langs)
+            if active_langs and all(
+                out[lang]["per_problem_status"].get(p) == "pass" for lang in active_langs
+            )
         ]
         out["_common_per_tier"][tier_key] = {
             "problems": tier_common,
-            "langs": tier_langs,
+            "langs": active_langs,
+            "designated_langs": designated_langs,
             "per_lang_total_ns": {
                 lang: sum(out[lang]["per_problem_ns"][p] for p in tier_common
                           if out[lang]["per_problem_ns"][p] is not None)
-                for lang in tier_langs
+                for lang in active_langs
             },
             "per_lang_total_lines": {
                 lang: sum(out[lang]["per_problem_lines"][p] for p in tier_common)
-                for lang in tier_langs
+                for lang in active_langs
             },
         }
     return out
@@ -812,6 +822,111 @@ def render_total_chart(agg: dict) -> Path:
     return out
 
 
+def _tier2_meta(agg: dict):
+    """Pull tier-2 active langs + common-set. Returns (active, common, t2_dict)
+    or (None, None, None) if there's no tier-2 data yet."""
+    t2 = agg["_common_per_tier"].get("tier_2_deep_coverage", {})
+    common = t2.get("problems", [])
+    active = t2.get("langs", [])
+    if not active or not common:
+        return None, None, None
+    return active, common, t2
+
+
+def render_total_chart_tier2(agg: dict):
+    """Tier-2 analog of render_total_chart — common-set across ACTIVE tier-2
+    langs only (those with ≥1 cell in 201-300). Returns None if no data yet.
+
+    Today that's typically cpp+go+zig (python tier-2 has no data); when python
+    tier-2 lands, it joins active and the common-set tightens to whatever
+    python also passes.
+    """
+    active, common, t2 = _tier2_meta(agg)
+    if active is None:
+        return None
+    designated = t2["designated_langs"]
+    rows = [(lang, t2["per_lang_total_ns"][lang]) for lang in active
+            if t2["per_lang_total_ns"][lang] > 0]
+    rows.sort(key=lambda r: r[1])
+    labels = [DISPLAY[lang] for lang, _ in rows]
+    values_ms = [v / 1_000_000 for _, v in rows]
+    colors = [COLOR[lang] for lang, _ in rows]
+
+    t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
+    fig, ax = plt.subplots(figsize=(10, 3.5))
+    y_pos = range(len(labels))
+    bars = ax.barh(y_pos, values_ms, color=colors)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_xscale("log")
+    ax.set_xlabel(f"Total per-invocation cost across the {len(common)}-problem tier-2 common set (ms, log scale)")
+    inactive = [l for l in designated if l not in active]
+    inactive_note = (
+        f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
+        if inactive else ""
+    )
+    ax.set_title(
+        f"Per-Invocation Cost — Deep Coverage (Tier 2, problems {t2_lo}-{t2_hi}, "
+        f"{len(active)} active of {len(designated)} langs{inactive_note})\n"
+        f"Common set: {len(common)} problems passing in {', '.join(DISPLAY[l] for l in active)}"
+    )
+    for i, ms in enumerate(values_ms):
+        if ms >= 100:
+            label = f"{ms:.0f} ms"
+        elif ms >= 10:
+            label = f"{ms:.1f} ms"
+        else:
+            label = f"{ms:.2f} ms"
+        ax.text(ms * 1.02, i, label, va="center", fontsize=9)
+    ax.grid(axis="x", which="major", alpha=0.3)
+    ax.grid(axis="x", which="minor", alpha=0.15)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_total_tier2.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
+def render_speed_vs_size_chart_tier2(agg: dict):
+    """Tier-2 analog of render_speed_vs_size_chart. Returns None if no data."""
+    active, common, t2 = _tier2_meta(agg)
+    if active is None:
+        return None
+    designated = t2["designated_langs"]
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for lang in active:
+        x = t2["per_lang_total_lines"][lang]
+        y_ms = t2["per_lang_total_ns"][lang] / 1_000_000
+        if x == 0 or y_ms == 0:
+            continue
+        ax.scatter(x, y_ms, s=200, c=COLOR[lang], edgecolors="black",
+                   linewidths=0.6, alpha=0.85, zorder=3)
+        ax.annotate(DISPLAY[lang], xy=(x, y_ms), xytext=(8, 4),
+                    textcoords="offset points", fontsize=10,
+                    bbox=dict(boxstyle="round,pad=0.2", fc="white",
+                              ec="none", alpha=0.85))
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
+    ax.set_xlabel(f"Total source lines across tier-2 problems {t2_lo}–{t2_hi} (log scale)")
+    ax.set_ylabel("Total per-invocation cost — ms (log scale)")
+    inactive = [l for l in designated if l not in active]
+    inactive_note = f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}" if inactive else ""
+    ax.set_title(
+        f"Speed vs Code Size — Deep Coverage (Tier 2, problems {t2_lo}–{t2_hi}, "
+        f"{len(active)} active{inactive_note})\n"
+        f"Common set: {len(common)} problems"
+    )
+    ax.grid(which="major", alpha=0.3)
+    ax.grid(which="minor", alpha=0.12)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_speed_vs_size_tier2.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
 def render_per_problem_pages(agg: dict) -> list:
     """Write one per_problem_NNN-MMM.md file per band, return the list of paths.
 
@@ -956,18 +1071,34 @@ def render_results_md(agg: dict) -> str:
     # campaign this section will be empty/sparse.
     t2 = agg["_common_per_tier"].get("tier_2_deep_coverage", {})
     t2_common = t2.get("problems", [])
-    t2_langs = t2.get("langs", [])
+    t2_langs = t2.get("langs", [])  # active (langs with ≥1 tier-2 cell)
+    t2_designated = t2.get("designated_langs", [])
     t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
     md.append(f"## Per-Invocation Cost — Deep Coverage "
-              f"(Tier 2, problems {t2_lo}-{t2_hi}, {len(t2_langs)} languages)")
+              f"(Tier 2, problems {t2_lo}-{t2_hi}, {len(t2_designated)} languages)")
     md.append("")
     md.append(f"Same per-invocation metric, restricted to the deeper subset of languages "
-              f"({', '.join(DISPLAY[l] for l in t2_langs)}) that intentionally pushed past "
-              f"problem {tier1_max}. The other {len(LANGS) - len(t2_langs)} Foundation languages "
-              f"are out of tier scope here — they're capped at {tier1_max} by the project's "
-              f"language-cap policy (see JOURNEY.md).")
+              f"({', '.join(DISPLAY[l] for l in t2_designated)}) that intentionally pushed past "
+              f"problem {tier1_max}. The other {len(LANGS) - len(t2_designated)} Foundation "
+              f"languages are out of tier scope here — they're capped at {tier1_max} by the "
+              f"project's language-cap policy (see JOURNEY.md).")
     md.append("")
+    # Note: t2_langs here is "active" tier-2 langs (those with ≥1 cell). The
+    # full designated set is `_common_per_tier[...]["designated_langs"]`.
+    designated_t2 = t2.get("designated_langs", [])
+    inactive_t2 = [l for l in designated_t2 if l not in t2_langs]
     if t2_common:
+        if inactive_t2:
+            md.append(f"_Common set computed over the **{len(t2_langs)} active** tier-2 langs_ "
+                      f"_({', '.join(DISPLAY[l] for l in t2_langs)});_ "
+                      f"_awaiting: {', '.join(DISPLAY[l] for l in inactive_t2)}. "
+                      f"Common set will tighten once awaited langs land tier-2 data._")
+            md.append("")
+        # Tier-2 charts — only embed if the chart file was actually generated
+        # (render_*_tier2 returns None when t2 has no data).
+        if (CHARTS_DIR / "per_iter_total_tier2.png").exists():
+            md.append("![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)")
+            md.append("")
         t2_ranked = sorted(
             [(lang, t2["per_lang_total_ns"][lang]) for lang in t2_langs
              if t2["per_lang_total_ns"][lang] > 0],
@@ -980,11 +1111,20 @@ def render_results_md(agg: dict) -> str:
             ratio = total / t2_fastest
             lines = t2["per_lang_total_lines"][lang]
             md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+        md.append("")
+        if (CHARTS_DIR / "per_iter_speed_vs_size_tier2.png").exists():
+            md.append("### Speed vs Code Size — Tier 2")
+            md.append("")
+            md.append(f"Same scatter as the Foundation chart, restricted to the "
+                      f"tier-2 active languages over problems {t2_lo}–{t2_hi}.")
+            md.append("")
+            md.append("![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)")
+            md.append("")
     else:
         md.append(f"> _Tier 2 common-set is currently empty — no problem in {t2_lo}-{t2_hi} "
-                  f"has passing measurements in all {len(t2_langs)} deep-coverage languages yet. "
-                  f"The ranking will populate as benching continues._")
-    md.append("")
+                  f"has passing measurements in any active deep-coverage language yet. "
+                  f"The ranking and charts will populate as benching continues._")
+        md.append("")
 
     md.append("## Speed vs Code Size")
     md.append("")
@@ -1230,6 +1370,13 @@ def main() -> int:
     print(f"=== Chart written: {chart3}")
     chart3_svg = render_coverage_grid_svg(agg)
     print(f"=== Chart written: {chart3_svg}")
+    # Tier-2 charts — only rendered when at least one tier-2 lang has data.
+    t2_total = render_total_chart_tier2(agg)
+    if t2_total:
+        print(f"=== Chart written: {t2_total}")
+    t2_svs = render_speed_vs_size_chart_tier2(agg)
+    if t2_svs:
+        print(f"=== Chart written: {t2_svs}")
 
     # Render per-band per-problem detail pages (one .md per band).  Done
     # BEFORE render_results_md so the index table in RESULTS.md links to
