@@ -38,6 +38,10 @@ import matplotlib.pyplot as plt
 REPO = Path(__file__).resolve().parent
 DATA_DIR = REPO / "data"
 CHARTS_DIR = REPO / "charts"
+# Per-band per-problem detail pages live under this dir to keep RESULTS.md
+# scrollable.  Filename pattern: per_problem_NNN-MMM.md (lo-hi).
+PER_PROBLEM_DIR = REPO / "per_problem"
+_PER_PROBLEM_DIR = PER_PROBLEM_DIR.name  # for relative links from RESULTS.md
 
 # Tier model — single source of truth at data/tiers.json, consumed via the
 # shared scripts/tiers.py helper. Tier 1 = Foundation (all 10 langs, 1-200);
@@ -768,6 +772,81 @@ def render_total_chart(agg: dict) -> Path:
     return out
 
 
+def render_per_problem_pages(agg: dict) -> list:
+    """Write one per_problem_NNN-MMM.md file per band, return the list of paths.
+
+    Each page has: a title (band + tier), a back-link to RESULTS.md, the table,
+    and the partial-measurement footnote if any '*' cells appear in that band.
+    Splitting per-band keeps each file at ~100 rows × ≤10 cols (a single
+    medium-length scroll) instead of stacking 300 rows on the main page.
+    """
+    PER_PROBLEM_DIR.mkdir(exist_ok=True)
+    written = []
+    for band_probs in _bands(SCOPE_PROBLEMS, BAND_SIZE):
+        display_langs = langs_for_band(band_probs)
+        tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
+        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
+        band_lo, band_hi = band_probs[0], band_probs[-1]
+
+        lines = []
+        title = f"# Per-Problem Detail — Problems {band_lo}–{band_hi}"
+        if tier_lbl:
+            title += f" ({tier_lbl}, {len(display_langs)} langs)"
+        lines.append(title)
+        lines.append("")
+        lines.append("⬅ [Back to RESULTS](../RESULTS.md)")
+        lines.append("")
+        lines.append("Median wall time per fresh-process invocation, one row per problem, one")
+        lines.append("column per language in tier-1 display order (native → managed → interpreted).")
+        if tier_lbl == "Deep Coverage":
+            lines.append("")
+            lines.append("> _Only the 4 Deep Coverage languages are shown — the other 6 are tier-1-only_")
+            lines.append("> _(capped at problem 200 by the project's language-cap policy)._")
+        lines.append("")
+
+        header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
+        sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
+        lines.append(header)
+        lines.append(sep)
+
+        any_partial = False
+        for p in band_probs:
+            cells = []
+            for lang in display_langs:
+                ns = agg[lang]["per_problem_ns"][p]
+                if ns is None:
+                    cells.append("—")
+                else:
+                    s = agg[lang]["per_problem_samples"][p]
+                    # Suite-standard iters=10; flag <10-sample cells with '*'.
+                    if s is not None and s < 10:
+                        cells.append(fmt_time(ns) + "*")
+                        any_partial = True
+                    else:
+                        cells.append(fmt_time(ns))
+            lines.append(f"| **p{p}** | " + " | ".join(cells) + " |")
+        lines.append("")
+
+        if any_partial:
+            lines.append(
+                "> \\* — *partial measurement*: cell was bench'd with fewer than the "
+                "suite-standard 10 iterations (typically 1 or 3, for heavy problems "
+                "where iters=10 would exceed the per-chunk wall budget). The median "
+                "is still meaningful for >1s problems, but the variance estimate is "
+                "degraded. These cells are queued for a future uniform-iters=10 "
+                "re-bench pass."
+            )
+            lines.append("")
+        lines.append("⬅ [Back to RESULTS](../RESULTS.md)")
+        lines.append("")
+
+        fname = f"per_problem_{band_lo}-{band_hi}.md"
+        out = PER_PROBLEM_DIR / fname
+        out.write_text("\n".join(lines))
+        written.append(out)
+    return written
+
+
 def render_results_md(agg: dict) -> str:
     """Generate the new RESULTS.md content."""
     # Ranking rows use the COMMON SET (problems where all 10 langs have
@@ -914,86 +993,29 @@ def render_results_md(agg: dict) -> str:
     md.append(f"language.  No red or black cells: the audit gate is holding.")
     md.append("")
 
-    # Per-problem detail — transposed + banded.
-    #
-    # Previously this was a single wide table with one row per language and one
-    # column per problem.  At 100 problems that's already 101 columns, which
-    # forces a horizontal scrollbar in GitHub's markdown viewer; at the project's
-    # 1000-problem target GitHub's GFM table renderer falls over entirely.
-    #
-    # We follow the same fix the coverage heatmap got (commit 03413fb): split
-    # along BAND_SIZE so the on-page width is bounded.  Here we also transpose —
-    # one row per problem, one column per language — for two reasons:
-    #   1. With 10 langs we get a fixed 11-column table regardless of scope, so
-    #      every band renders cleanly no matter how far we extend.
-    #   2. The natural lookup ("which lang is fastest on p347?") is a row scan,
-    #      which reads more naturally than scanning across a 100-cell-wide row.
-    #
-    # Column order is LANG_DISPLAY_ORDER (native → managed → interpreted), not
-    # ranked order, for the same reason the heatmap fixed its row order: we
-    # don't want the column layout to shuffle between snapshots as totals drift.
+    # Per-problem detail — moved off the main page (300 problems × 10 cols was
+    # a scrolling nightmare).  Each 100-problem band lives in its own file
+    # under per_problem/; this section just indexes them.  See
+    # render_per_problem_pages() for the per-band content + the partial-
+    # measurement footnote that lives on each detail page.
     md.append("## Per-Problem Detail")
     md.append("")
     md.append("Median wall time per fresh-process invocation, for each (language, problem).")
-    md.append(f"Problems are chunked into bands of {BAND_SIZE} (matching the heatmap above) so")
-    md.append("each table stays narrow enough for GitHub's markdown renderer.  Columns are in")
-    md.append("fixed tier order (native → managed → interpreted).")
+    md.append(f"Split across {len(_bands(SCOPE_PROBLEMS, BAND_SIZE))} pages, one per "
+              f"{BAND_SIZE}-problem band, so this main page stays navigable.  Each band's "
+              f"table is tier-filtered (10 langs in Foundation bands, 4 in Deep Coverage).")
     md.append("")
-    # Track whether any partial-measurement cells exist so we only emit the
-    # footnote when the marker actually appears in the tables.
-    any_partial = False
-    # Each band has its own lang column set (tier-aware): 10 cols at 1-100/101-200,
-    # 4 cols at 201-300. We re-build the header per band for that reason.
+    md.append("| Band | Tier | Languages | Page |")
+    md.append("|------|------|-----------|------|")
     for band_probs in _bands(SCOPE_PROBLEMS, BAND_SIZE):
         display_langs = langs_for_band(band_probs)
         tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
-        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
-        band_heading = f"### Problems {band_probs[0]}–{band_probs[-1]}"
-        if tier_lbl:
-            band_heading += f" — {tier_lbl} ({len(display_langs)} langs)"
-        md.append(band_heading)
-        md.append("")
-        header = "| Problem | " + " | ".join(DISPLAY[l] for l in display_langs) + " |"
-        sep    = "|---------|" + "|".join(["----:"] * len(display_langs)) + "|"
-        md.append(header)
-        md.append(sep)
-        for p in band_probs:
-            cells = []
-            for lang in display_langs:
-                ns = agg[lang]["per_problem_ns"][p]
-                if ns is None:
-                    cells.append("—")
-                else:
-                    s = agg[lang]["per_problem_samples"][p]
-                    # Suite-standard iters=10; mark partial measurements so a
-                    # reader can tell at-a-glance which cells haven't been
-                    # bench'd to full sample count.
-                    suffix = "*" if (s is not None and s < 10) else ""
-                    cells.append(fmt_time(ns) + suffix)
-            md.append(f"| **p{p}** | " + " | ".join(cells) + " |")
-        md.append("")
-
-        # Detect any partial cell in this band for the footnote gate.
-        if not any_partial:
-            for p in band_probs:
-                for lang in display_langs:
-                    s = agg[lang]["per_problem_samples"][p]
-                    if s is not None and s < 10:
-                        any_partial = True
-                        break
-                if any_partial:
-                    break
-
-    if any_partial:
-        md.append(
-            "> \\* — *partial measurement*: cell was bench'd with fewer than the "
-            "suite-standard 10 iterations (typically 1 or 3, for heavy problems "
-            "where iters=10 would exceed the per-chunk wall budget). The median "
-            "is still meaningful for >1s problems, but the variance estimate is "
-            "degraded. These cells are queued for a future uniform-iters=10 "
-            "re-bench pass."
-        )
-        md.append("")
+        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else "—"
+        band_lo, band_hi = band_probs[0], band_probs[-1]
+        fname = f"per_problem_{band_lo}-{band_hi}.md"
+        md.append(f"| p{band_lo}–p{band_hi} | {tier_lbl} | {len(display_langs)} | "
+                  f"[Open]({_PER_PROBLEM_DIR}/{fname}) |")
+    md.append("")
 
     md.append("## Method")
     md.append("")
@@ -1164,6 +1186,14 @@ def main() -> int:
     print(f"=== Chart written: {chart3}")
     chart3_svg = render_coverage_grid_svg(agg)
     print(f"=== Chart written: {chart3_svg}")
+
+    # Render per-band per-problem detail pages (one .md per band).  Done
+    # BEFORE render_results_md so the index table in RESULTS.md links to
+    # files that actually exist.
+    per_problem_pages = render_per_problem_pages(agg)
+    print(f"=== Per-problem detail pages: {len(per_problem_pages)} files in {PER_PROBLEM_DIR.name}/")
+    for p in per_problem_pages:
+        print(f"   {p.name}")
 
     # Render markdown
     md = render_results_md(agg)
