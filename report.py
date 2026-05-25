@@ -41,7 +41,11 @@ CHARTS_DIR = REPO / "charts"
 
 # Scope: extend this list only after each new problem clears the
 # state-leak / answer-verification audit.
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 101)]
+# Partial-coverage is supported and intentional — when a (lang, problem) cell
+# is unmeasured, report.py renders it as "missing" in the grid and excludes
+# it from per-lang totals. The per-lang headline shows "<measured>/<scope>"
+# so partial coverage is honest in the rendering.
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 201)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.

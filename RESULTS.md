@@ -1,37 +1,37 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Currently: 100 problems × 10 languages = 1000 measurements.**
+> **Currently: 200 problems × 10 languages = 2000 measurements.**
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 100×10 scope.
+> core, then the disciplined expansion to today's 200×10 scope.
 
-## Per-Invocation Cost (Total, Problems 1–100)
+## Per-Invocation Cost (Total, Problems 1–200)
 
 We run each program 10 times in fresh OS processes (no warmup, no shared state).
 Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /
 shell-loop user actually pays.  The median wall time across the 10 invocations is
-the headline per-problem number, and we sum across the 100 problems for the total.
+the headline per-problem number, and we sum across the 200 problems for the total.
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
-| Rank | Language | Total (100 problems) | Lines of code | vs Fastest |
+| Rank | Language | Total (200 problems) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.08 s | 6,436 | 1.00× |
-| 2 | **C** | 1.30 s | 6,124 | 1.19× |
-| 3 | **C++** | 1.34 s | 4,679 | 1.23× |
-| 4 | **Rust** | 1.35 s | 5,534 | 1.25× |
-| 5 | **Go** | 1.54 s | 5,796 | 1.42× |
-| 6 | **ARM64** | 1.59 s | 19,625 | 1.47× |
-| 7 | **Java** | 2.27 s | 4,667 | 2.09× |
-| 8 | **JavaScript** | 2.61 s | 3,896 | 2.40× |
-| 9 | **C#** | 3.39 s | 4,728 | 3.13× |
-| 10 | **Python** | 38.67 s | 3,427 | 35.65× |
+| 1 | **C++** | 1.34 s | 4,679 | 1.00× |
+| 2 | **Rust** | 1.35 s | 5,534 | 1.01× |
+| 3 | **Java** | 2.27 s | 4,667 | 1.70× |
+| 4 | **JavaScript** | 2.61 s | 3,896 | 1.95× |
+| 5 | **C#** | 3.39 s | 4,728 | 2.54× |
+| 6 | **Python** | 38.67 s | 3,427 | 28.92× |
+| 7 | **C** | 61.92 s | 14,488 | 46.31× |
+| 8 | **Zig** | 63.51 s | 13,559 | 47.50× |
+| 9 | **Go** | 71.86 s | 13,313 | 53.76× |
+| 10 | **ARM64** | 73.60 s | 40,336 | 55.05× |
 
 ## Speed vs Code Size
 
-How much code does each language need to solve these 100 problems, and how
+How much code does each language need to solve these 200 problems, and how
 fast does that code run?  Bottom-left = fast and concise; top-right = slow
 and verbose.  ARM64's outlier position (most lines) is expected — assembly
 trades verbosity for direct hardware control.
@@ -58,7 +58,7 @@ image above because browsers treat `<img>` SVGs as opaque.
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 1 band), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 2 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
@@ -179,6 +179,111 @@ fixed tier order (native → managed → interpreted).
 | **p099** | 110.0 µs | 153.1 µs | 203.7 µs | 113.7 µs | 129.0 µs | 176.8 µs | 16.99 ms | 11.24 ms | 380.2 µs | 439.0 µs |
 | **p100** | 0 ns | 42 ns | 125 ns | 42 ns | 125 ns | 1.9 µs | 68.0 µs | 2.2 µs | 13.7 µs | 3.7 µs |
 
+### Problems 101–200
+
+| Problem | ARM64 | C | C++ | Rust | Zig | Go | C# | Java | JavaScript | Python |
+|---------|----:|----:|----:|----:|----:|----:|----:|----:|----:|----:|
+| **p101** | 1.0 µs | 1.3 µs | — | — | 1.6 µs | 3.6 µs | — | — | — | — |
+| **p102** | 153.0 µs | 482.3 µs | — | — | 173.2 µs | 189.9 µs | — | — | — | — |
+| **p103** | 7.71 ms | 26.93 ms | — | — | 25.31 ms | 66.76 ms | — | — | — | — |
+| **p104** | 6.71 ms | 6.17 ms | — | — | 6.47 ms | 7.13 ms | — | — | — | — |
+| **p105** | 3.21 ms | 19.67 ms | — | — | 19.90 ms | 21.38 ms | — | — | — | — |
+| **p106** | 0 ns | 208 ns | — | — | 333 ns | 2.1 µs | — | — | — | — |
+| **p107** | 146.0 µs | 167.3 µs | — | — | 145.2 µs | 142.1 µs | — | — | — | — |
+| **p108** | 352.0 µs | 7.8 µs | — | — | 8.2 µs | 9.0 µs | — | — | — | — |
+| **p109** | 32.0 µs | 4.3 µs | — | — | 9.7 µs | 30.7 µs | — | — | — | — |
+| **p110** | 5.89 ms | 8.92 ms | — | — | 70.24 ms | 11.20 ms | — | — | — | — |
+| **p111** | 936.0 µs | 1.44 ms | — | — | 1.17 ms | 1.25 ms | — | — | — | — |
+| **p112** | 8.06 ms | 4.98 ms | — | — | 6.33 ms | 6.93 ms | — | — | — | — |
+| **p113** | 0 ns | 41 ns | — | — | 42 ns | 1.2 µs | — | — | — | — |
+| **p114** | 3.0 µs | 1.7 µs | — | — | 1.6 µs | 5.3 µs | — | — | — | — |
+| **p115** | 657.0 µs | 173.9 µs | — | — | 186.5 µs | 857.3 µs | — | — | — | — |
+| **p116** | 1.0 µs | 291 ns | — | — | 42 ns | 6.3 µs | — | — | — | — |
+| **p117** | 0 ns | 125 ns | — | — | 125 ns | 3.1 µs | — | — | — | — |
+| **p118** | 134.71 ms | 584.91 ms | — | — | 605.82 ms | 253.26 ms | — | — | — | — |
+| **p119** | 24.0 µs | 16.2 µs | — | — | 18.8 µs | 29.7 µs | — | — | — | — |
+| **p120** | 431.0 µs | 412.2 µs | — | — | 418.7 µs | 585.5 µs | — | — | — | — |
+| **p121** | 0 ns | 250 ns | — | — | 42 ns | 2.4 µs | — | — | — | — |
+| **p122** | 1.92 s | 1.19 s | — | — | 1.19 s | 1.22 s | — | — | — | — |
+| **p123** | 3.98 ms | 4.86 ms | — | — | 2.16 ms | 3.15 ms | — | — | — | — |
+| **p124** | 7.84 ms | 7.25 ms | — | — | 6.86 ms | 13.01 ms | — | — | — | — |
+| **p125** | 3.11 ms | 2.60 ms | — | — | 2.45 ms | 3.09 ms | — | — | — | — |
+| **p126** | 3.42 ms | 2.39 ms | — | — | 2.30 ms | 4.63 ms | — | — | — | — |
+| **p127** | 37.07 ms | 31.41 ms | — | — | 29.07 ms | 34.20 ms | — | — | — | — |
+| **p128** | 8.53 ms | 6.97 ms | — | — | 6.63 ms | 6.94 ms | — | — | — | — |
+| **p129** | 9.69 ms | 10.41 ms | — | — | 12.54 ms | 9.74 ms | — | — | — | — |
+| **p130** | 31.49 ms | 31.39 ms | — | — | 37.93 ms | 31.48 ms | — | — | — | — |
+| **p131** | 42.0 µs | 31.5 µs | — | — | 31.2 µs | 32.1 µs | — | — | — | — |
+| **p132** | 3.40 ms | 3.26 ms | — | — | 4.45 ms | 3.38 ms | — | — | — | — |
+| **p133** | 2.89 ms | 2.10 ms | — | — | 2.37 ms | 2.21 ms | — | — | — | — |
+| **p134** | 6.17 ms | 5.87 ms | — | — | 6.16 ms | 6.28 ms | — | — | — | — |
+| **p135** | 4.66 ms | 3.46 ms | — | — | 3.11 ms | 4.60 ms | — | — | — | — |
+| **p136** | 640.13 ms | 494.10 ms | — | — | 490.94 ms | 533.67 ms | — | — | — | — |
+| **p137** | 0 ns | 125 ns | — | — | 125 ns | 1.8 µs | — | — | — | — |
+| **p138** | 0 ns | 42 ns | — | — | 83 ns | 1.5 µs | — | — | — | — |
+| **p139** | 235.19 ms | 227.09 ms | — | — | 302.89 ms | 236.94 ms | — | — | — | — |
+| **p140** | 8.0 µs | 3.4 µs | — | — | 2.2 µs | 7.1 µs | — | — | — | — |
+| **p141** | 1.48 s | 1.45 s | — | — | 1.97 s | 1.49 s | — | — | — | — |
+| **p142** | 2.26 ms | 2.77 ms | — | — | 2.48 ms | 2.16 ms | — | — | — | — |
+| **p143** | 47.42 ms | 18.18 ms | — | — | 19.49 ms | 28.62 ms | — | — | — | — |
+| **p144** | 14.0 µs | 11.6 µs | — | — | 13.0 µs | 13.3 µs | — | — | — | — |
+| **p145** | 76.61 ms | 45.40 ms | — | — | 45.46 ms | 84.34 ms | — | — | — | — |
+| **p146** | 9.47 s | 2.85 s | — | — | 2.77 s | 2.93 s | — | — | — | — |
+| **p147** | 5.09 ms | 1.43 ms | — | — | 2.63 ms | 3.34 ms | — | — | — | — |
+| **p148** | 0 ns | 42 ns | — | — | 42 ns | 5.0 µs | — | — | — | — |
+| **p149** | 42.95 ms | 44.93 ms | — | — | 48.34 ms | 52.98 ms | — | — | — | — |
+| **p150** | 127.03 ms | 158.85 ms | — | — | 123.28 ms | 226.44 ms | — | — | — | — |
+| **p151** | 11.0 µs | — | — | — | 1.8 µs | 3.9 µs | — | — | — | — |
+| **p152** | 1.62 s | 783.50 ms | — | — | 766.73 ms | 1.22 s | — | — | — | — |
+| **p153** | 2.41 s | 2.38 s | — | — | 3.15 s | 2.43 s | — | — | — | — |
+| **p154** | 3.47 s | 2.68 s | — | — | 3.10 s | 3.92 s | — | — | — | — |
+| **p155** | 811.52 ms | 598.02 ms | — | — | 612.28 ms | 837.06 ms | — | — | — | — |
+| **p156** | 143.76 ms | 90.24 ms | — | — | 77.07 ms | 126.54 ms | — | — | — | — |
+| **p157** | 6.53 ms | 5.66 ms | — | — | 4.87 ms | 5.30 ms | — | — | — | — |
+| **p158** | 0 ns | 41 ns | — | — | 42 ns | 1.2 µs | — | — | — | — |
+| **p159** | 13.19 ms | 19.29 ms | — | — | 12.28 ms | 19.70 ms | — | — | — | — |
+| **p160** | 287.0 µs | 245.7 µs | — | — | 309.5 µs | 248.3 µs | — | — | — | — |
+| **p161** | 47.17 ms | 29.87 ms | — | — | 27.07 ms | 46.05 ms | — | — | — | — |
+| **p162** | 0 ns | 41 ns | — | — | 42 ns | 8.0 µs | — | — | — | — |
+| **p163** | 150.42 ms | 115.47 ms | — | — | 144.29 ms | 167.05 ms | — | — | — | — |
+| **p164** | 6.0 µs | 5.8 µs | — | — | 5.2 µs | 6.8 µs | — | — | — | — |
+| **p165** | 660.91 ms | 607.31 ms | — | — | 608.29 ms | 879.32 ms | — | — | — | — |
+| **p166** | 171.29 ms | 24.53 ms | — | — | 17.02 ms | 162.78 ms | — | — | — | — |
+| **p167** | 129.05 ms | 122.85 ms | — | — | 138.54 ms | 130.05 ms | — | — | — | — |
+| **p168** | 32.0 µs | 25.5 µs | — | — | 27.3 µs | 33.1 µs | — | — | — | — |
+| **p169** | 1.0 µs | 167 ns | — | — | 208 ns | 10.7 µs | — | — | — | — |
+| **p170** | 39.50 s | 39.45 s | — | — | 38.48 s | 40.38 s | — | — | — | — |
+| **p171** | 2.90 ms | 1.46 ms | — | — | 2.14 ms | 3.20 ms | — | — | — | — |
+| **p172** | 3.0 µs | 2.1 µs | — | — | 2.5 µs | 6.5 µs | — | — | — | — |
+| **p173** | 10.02 ms | 536.7 µs | — | — | 590.8 µs | 740.6 µs | — | — | — | — |
+| **p174** | 3.50 ms | 2.68 ms | — | — | 2.09 ms | 3.08 ms | — | — | — | — |
+| **p175** | 0 ns | 208 ns | — | — | 125 ns | 1.5 µs | — | — | — | — |
+| **p176** | 285.0 µs | 16.5 µs | — | — | 62.0 µs | 40.1 µs | — | — | — | — |
+| **p177** | 6.55 s | 4.57 s | — | — | 5.07 s | 10.05 s | — | — | — | — |
+| **p178** | 351.0 µs | 589.2 µs | — | — | 509.8 µs | 536.4 µs | — | — | — | — |
+| **p179** | 192.94 ms | 260.81 ms | — | — | 281.21 ms | 441.64 ms | — | — | — | — |
+| **p180** | 9.13 ms | 22.94 ms | — | — | 23.36 ms | 29.96 ms | — | — | — | — |
+| **p181** | 3.46 ms | 7.51 ms | — | — | 7.99 ms | 17.16 ms | — | — | — | — |
+| **p182** | 203.40 ms | 202.46 ms | — | — | 278.88 ms | 206.15 ms | — | — | — | — |
+| **p183** | 936.0 µs | 735.8 µs | — | — | 828.7 µs | 867.2 µs | — | — | — | — |
+| **p184** | 2.83 ms | 3.61 ms | — | — | 2.52 ms | 5.85 ms | — | — | — | — |
+| **p185** | 94.79 ms | 219.9 µs | — | — | 47.87 ms | 25.32 ms | — | — | — | — |
+| **p186** | 32.91 ms | 39.25 ms | — | — | 44.76 ms | 76.42 ms | — | — | — | — |
+| **p187** | 397.35 ms | 431.12 ms | — | — | 366.35 ms | 398.51 ms | — | — | — | — |
+| **p188** | 6.0 µs | 2.8 µs | — | — | 3.2 µs | 22.2 µs | — | — | — | — |
+| **p189** | 116.94 ms | 133.45 ms | — | — | 170.35 ms | 313.10 ms | — | — | — | — |
+| **p190** | 2.0 µs | 1.3 µs | — | — | 1.3 µs | 4.0 µs | — | — | — | — |
+| **p191** | 1.0 µs | 792 ns | — | — | 792 ns | 2.5 µs | — | — | — | — |
+| **p192** | 19.04 ms | 18.85 ms | — | — | 29.24 ms | 48.78 ms | — | — | — | — |
+| **p193** | 309.78 ms | 251.43 ms | — | — | 255.11 ms | 358.61 ms | — | — | — | — |
+| **p194** | 4.0 µs | 1.8 µs | — | — | 4.7 µs | 3.7 µs | — | — | — | — |
+| **p195** | 233.82 ms | 229.28 ms | — | — | 313.32 ms | 231.73 ms | — | — | — | — |
+| **p196** | 151.93 ms | 137.90 ms | — | — | 140.27 ms | 159.54 ms | — | — | — | — |
+| **p197** | 29.0 µs | 22.0 µs | — | — | 41.5 µs | 77.4 µs | — | — | — | — |
+| **p198** | 131.20 ms | 136.01 ms | — | — | 418.20 ms | 311.53 ms | — | — | — | — |
+| **p199** | 2.05 ms | — | — | — | 649.2 µs | 1.63 ms | — | — | — | — |
+| **p200** | 76.67 ms | 10.53 ms | — | — | 10.04 ms | 10.23 ms | — | — | — | — |
+
 ## Method
 
 For each (language, problem):
@@ -217,7 +322,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 100 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 200 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -300,7 +405,7 @@ around p007+.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-100 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
 python3 report.py
 ```
 
