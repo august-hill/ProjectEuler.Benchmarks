@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1312" height="730" viewBox="0 0 1312 730" font-family="-apple-system, BlinkMacSystemFont, sans-serif">
 <style>text { fill:#222; font-size:11px; }.title { font-size:14px; font-weight:600; }.subtitle { font-size:10px; fill:#666; }.band { font-size:12px; font-weight:500; }.tick { font-size:9px; fill:#555; }.cell { stroke:#fff; stroke-width:0.5; }.cell:hover { stroke:#000; stroke-width:1.5; }</style>
 <text class="title" x="92" y="26">Coverage + Speed Heatmap — tier-aware (300 problems in scope)</text>
-<text class="subtitle" x="92" y="42">Hover any cell for problem · language · per-invocation time</text>
+<text class="subtitle" x="92" y="42">Hover any cell for problem · language · per-invocation time  ·  * = partial measurement (samples&lt;10)</text>
 <text class="band" x="92" y="71">Problems 001–100  (Foundation — 10 langs)</text>
 <text x="86" y="91.0" text-anchor="end">ARM64</text>
 <text x="86" y="109.0" text-anchor="end">C</text>
@@ -1279,15 +1279,18 @@
 <rect class="cell" x="596" y="360" width="12" height="18" fill="#1E6A1E"><title>p143 C++: 16.59 ms</title></rect>
 <rect class="cell" x="608" y="360" width="12" height="18" fill="#84E184"><title>p144 C++: 9.1 µs</title></rect>
 <rect class="cell" x="620" y="360" width="12" height="18" fill="#1E6A1E"><title>p145 C++: 45.48 ms</title></rect>
-<rect class="cell" x="632" y="360" width="12" height="18" fill="#F0C808"><title>p146 C++: 2.89 s</title></rect>
+<rect class="cell" x="632" y="360" width="12" height="18" fill="#F0C808"><title>p146 C++: 2.89 s (samples=3, partial)</title></rect>
+<text class="partial" x="638.0" y="372.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="360" width="12" height="18" fill="#36A036"><title>p147 C++: 1.99 ms</title></rect>
 <rect class="cell" x="656" y="360" width="12" height="18" fill="#84E184"><title>p148 C++: 167 ns</title></rect>
 <rect class="cell" x="668" y="360" width="12" height="18" fill="#1E6A1E"><title>p149 C++: 37.89 ms</title></rect>
 <rect class="cell" x="680" y="360" width="12" height="18" fill="#F0C808"><title>p150 C++: 158.33 ms</title></rect>
 <rect class="cell" x="692" y="360" width="12" height="18" fill="#84E184"><title>p151 C++: 2.7 µs</title></rect>
 <rect class="cell" x="704" y="360" width="12" height="18" fill="#F0C808"><title>p152 C++: 754.11 ms</title></rect>
-<rect class="cell" x="716" y="360" width="12" height="18" fill="#F0C808"><title>p153 C++: 2.39 s</title></rect>
-<rect class="cell" x="728" y="360" width="12" height="18" fill="#F0C808"><title>p154 C++: 2.69 s</title></rect>
+<rect class="cell" x="716" y="360" width="12" height="18" fill="#F0C808"><title>p153 C++: 2.39 s (samples=3, partial)</title></rect>
+<text class="partial" x="722.0" y="372.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="360" width="12" height="18" fill="#F0C808"><title>p154 C++: 2.69 s (samples=3, partial)</title></rect>
+<text class="partial" x="734.0" y="372.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="740" y="360" width="12" height="18" fill="#F0C808"><title>p155 C++: 611.56 ms</title></rect>
 <rect class="cell" x="752" y="360" width="12" height="18" fill="#1E6A1E"><title>p156 C++: 88.25 ms</title></rect>
 <rect class="cell" x="764" y="360" width="12" height="18" fill="#36A036"><title>p157 C++: 6.12 ms</title></rect>
@@ -1303,14 +1306,16 @@
 <rect class="cell" x="884" y="360" width="12" height="18" fill="#F0C808"><title>p167 C++: 127.29 ms</title></rect>
 <rect class="cell" x="896" y="360" width="12" height="18" fill="#84E184"><title>p168 C++: 21.7 µs</title></rect>
 <rect class="cell" x="908" y="360" width="12" height="18" fill="#84E184"><title>p169 C++: 208 ns</title></rect>
-<rect class="cell" x="920" y="360" width="12" height="18" fill="#F0C808"><title>p170 C++: 38.41 s</title></rect>
+<rect class="cell" x="920" y="360" width="12" height="18" fill="#F0C808"><title>p170 C++: 38.41 s (samples=1, partial)</title></rect>
+<text class="partial" x="926.0" y="372.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="932" y="360" width="12" height="18" fill="#36A036"><title>p171 C++: 2.05 ms</title></rect>
 <rect class="cell" x="944" y="360" width="12" height="18" fill="#84E184"><title>p172 C++: 3.3 µs</title></rect>
 <rect class="cell" x="956" y="360" width="12" height="18" fill="#5BC85B"><title>p173 C++: 634.2 µs</title></rect>
 <rect class="cell" x="968" y="360" width="12" height="18" fill="#36A036"><title>p174 C++: 2.63 ms</title></rect>
 <rect class="cell" x="980" y="360" width="12" height="18" fill="#84E184"><title>p175 C++: 125 ns</title></rect>
 <rect class="cell" x="992" y="360" width="12" height="18" fill="#84E184"><title>p176 C++: 11.2 µs</title></rect>
-<rect class="cell" x="1004" y="360" width="12" height="18" fill="#F0C808"><title>p177 C++: 4.60 s</title></rect>
+<rect class="cell" x="1004" y="360" width="12" height="18" fill="#F0C808"><title>p177 C++: 4.60 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="372.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="360" width="12" height="18" fill="#5BC85B"><title>p178 C++: 481.2 µs</title></rect>
 <rect class="cell" x="1028" y="360" width="12" height="18" fill="#F0C808"><title>p179 C++: 245.28 ms</title></rect>
 <rect class="cell" x="1040" y="360" width="12" height="18" fill="#1E6A1E"><title>p180 C++: 21.62 ms</title></rect>
@@ -1379,15 +1384,18 @@
 <rect class="cell" x="596" y="378" width="12" height="18" fill="#F0C808"><title>p143 Rust: 110.14 ms</title></rect>
 <rect class="cell" x="608" y="378" width="12" height="18" fill="#84E184"><title>p144 Rust: 12.5 µs</title></rect>
 <rect class="cell" x="620" y="378" width="12" height="18" fill="#1E6A1E"><title>p145 Rust: 47.92 ms</title></rect>
-<rect class="cell" x="632" y="378" width="12" height="18" fill="#F0C808"><title>p146 Rust: 2.94 s</title></rect>
+<rect class="cell" x="632" y="378" width="12" height="18" fill="#F0C808"><title>p146 Rust: 2.94 s (samples=3, partial)</title></rect>
+<text class="partial" x="638.0" y="390.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="378" width="12" height="18" fill="#36A036"><title>p147 Rust: 6.17 ms</title></rect>
 <rect class="cell" x="656" y="378" width="12" height="18" fill="#84E184"><title>p148 Rust: 3.2 µs</title></rect>
 <rect class="cell" x="668" y="378" width="12" height="18" fill="#1E6A1E"><title>p149 Rust: 78.41 ms</title></rect>
 <rect class="cell" x="680" y="378" width="12" height="18" fill="#F0C808"><title>p150 Rust: 179.99 ms</title></rect>
 <rect class="cell" x="692" y="378" width="12" height="18" fill="#84E184"><title>p151 Rust: 3.6 µs</title></rect>
 <rect class="cell" x="704" y="378" width="12" height="18" fill="#F0C808"><title>p152 Rust: 707.69 ms</title></rect>
-<rect class="cell" x="716" y="378" width="12" height="18" fill="#F0C808"><title>p153 Rust: 2.31 s</title></rect>
-<rect class="cell" x="728" y="378" width="12" height="18" fill="#F0C808"><title>p154 Rust: 4.04 s</title></rect>
+<rect class="cell" x="716" y="378" width="12" height="18" fill="#F0C808"><title>p153 Rust: 2.31 s (samples=3, partial)</title></rect>
+<text class="partial" x="722.0" y="390.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="378" width="12" height="18" fill="#F0C808"><title>p154 Rust: 4.04 s (samples=3, partial)</title></rect>
+<text class="partial" x="734.0" y="390.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="740" y="378" width="12" height="18" fill="#F0C808"><title>p155 Rust: 1.10 s</title></rect>
 <rect class="cell" x="752" y="378" width="12" height="18" fill="#1E6A1E"><title>p156 Rust: 79.98 ms</title></rect>
 <rect class="cell" x="764" y="378" width="12" height="18" fill="#36A036"><title>p157 Rust: 5.60 ms</title></rect>
@@ -1403,14 +1411,16 @@
 <rect class="cell" x="884" y="378" width="12" height="18" fill="#F0C808"><title>p167 Rust: 126.88 ms</title></rect>
 <rect class="cell" x="896" y="378" width="12" height="18" fill="#84E184"><title>p168 Rust: 31.5 µs</title></rect>
 <rect class="cell" x="908" y="378" width="12" height="18" fill="#84E184"><title>p169 Rust: 2.0 µs</title></rect>
-<rect class="cell" x="920" y="378" width="12" height="18" fill="#F0C808"><title>p170 Rust: 24.67 s</title></rect>
+<rect class="cell" x="920" y="378" width="12" height="18" fill="#F0C808"><title>p170 Rust: 24.67 s (samples=1, partial)</title></rect>
+<text class="partial" x="926.0" y="390.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="932" y="378" width="12" height="18" fill="#36A036"><title>p171 Rust: 2.20 ms</title></rect>
 <rect class="cell" x="944" y="378" width="12" height="18" fill="#84E184"><title>p172 Rust: 4.1 µs</title></rect>
 <rect class="cell" x="956" y="378" width="12" height="18" fill="#5BC85B"><title>p173 Rust: 621.5 µs</title></rect>
 <rect class="cell" x="968" y="378" width="12" height="18" fill="#36A036"><title>p174 Rust: 2.73 ms</title></rect>
 <rect class="cell" x="980" y="378" width="12" height="18" fill="#84E184"><title>p175 Rust: 1.4 µs</title></rect>
 <rect class="cell" x="992" y="378" width="12" height="18" fill="#84E184"><title>p176 Rust: 27.2 µs</title></rect>
-<rect class="cell" x="1004" y="378" width="12" height="18" fill="#F0C808"><title>p177 Rust: 9.18 s</title></rect>
+<rect class="cell" x="1004" y="378" width="12" height="18" fill="#F0C808"><title>p177 Rust: 9.18 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="390.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="378" width="12" height="18" fill="#5BC85B"><title>p178 Rust: 580.0 µs</title></rect>
 <rect class="cell" x="1028" y="378" width="12" height="18" fill="#F0C808"><title>p179 Rust: 244.51 ms</title></rect>
 <rect class="cell" x="1040" y="378" width="12" height="18" fill="#1E6A1E"><title>p180 Rust: 15.39 ms</title></rect>
@@ -1679,15 +1689,18 @@
 <rect class="cell" x="596" y="432" width="12" height="18" fill="#1E6A1E"><title>p143 C#: 67.32 ms</title></rect>
 <rect class="cell" x="608" y="432" width="12" height="18" fill="#5BC85B"><title>p144 C#: 142.6 µs</title></rect>
 <rect class="cell" x="620" y="432" width="12" height="18" fill="#1E6A1E"><title>p145 C#: 75.27 ms</title></rect>
-<rect class="cell" x="632" y="432" width="12" height="18" fill="#F0C808"><title>p146 C#: 7.41 s</title></rect>
+<rect class="cell" x="632" y="432" width="12" height="18" fill="#F0C808"><title>p146 C#: 7.41 s (samples=3, partial)</title></rect>
+<text class="partial" x="638.0" y="444.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="432" width="12" height="18" fill="#36A036"><title>p147 C#: 4.80 ms</title></rect>
 <rect class="cell" x="656" y="432" width="12" height="18" fill="#5BC85B"><title>p148 C#: 128.7 µs</title></rect>
 <rect class="cell" x="668" y="432" width="12" height="18" fill="#1E6A1E"><title>p149 C#: 70.81 ms</title></rect>
 <rect class="cell" x="680" y="432" width="12" height="18" fill="#F0C808"><title>p150 C#: 232.78 ms</title></rect>
 <rect class="cell" x="692" y="432" width="12" height="18" fill="#5BC85B"><title>p151 C#: 605.3 µs</title></rect>
 <rect class="cell" x="704" y="432" width="12" height="18" fill="#F0C808"><title>p152 C#: 1.01 s</title></rect>
-<rect class="cell" x="716" y="432" width="12" height="18" fill="#F0C808"><title>p153 C#: 2.74 s</title></rect>
-<rect class="cell" x="728" y="432" width="12" height="18" fill="#F0C808"><title>p154 C#: 5.31 s</title></rect>
+<rect class="cell" x="716" y="432" width="12" height="18" fill="#F0C808"><title>p153 C#: 2.74 s (samples=3, partial)</title></rect>
+<text class="partial" x="722.0" y="444.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="432" width="12" height="18" fill="#F0C808"><title>p154 C#: 5.31 s (samples=3, partial)</title></rect>
+<text class="partial" x="734.0" y="444.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="740" y="432" width="12" height="18" fill="#F0C808"><title>p155 C#: 1.31 s</title></rect>
 <rect class="cell" x="752" y="432" width="12" height="18" fill="#F0C808"><title>p156 C#: 249.35 ms</title></rect>
 <rect class="cell" x="764" y="432" width="12" height="18" fill="#36A036"><title>p157 C#: 7.18 ms</title></rect>
@@ -1703,14 +1716,16 @@
 <rect class="cell" x="884" y="432" width="12" height="18" fill="#F0C808"><title>p167 C#: 139.25 ms</title></rect>
 <rect class="cell" x="896" y="432" width="12" height="18" fill="#5BC85B"><title>p168 C#: 248.5 µs</title></rect>
 <rect class="cell" x="908" y="432" width="12" height="18" fill="#5BC85B"><title>p169 C#: 411.8 µs</title></rect>
-<rect class="cell" x="920" y="432" width="12" height="18" fill="#F0C808"><title>p170 C#: 392.34 ms</title></rect>
+<rect class="cell" x="920" y="432" width="12" height="18" fill="#F0C808"><title>p170 C#: 392.34 ms (samples=1, partial)</title></rect>
+<text class="partial" x="926.0" y="444.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="932" y="432" width="12" height="18" fill="#36A036"><title>p171 C#: 4.00 ms</title></rect>
 <rect class="cell" x="944" y="432" width="12" height="18" fill="#5BC85B"><title>p172 C#: 614.7 µs</title></rect>
 <rect class="cell" x="956" y="432" width="12" height="18" fill="#36A036"><title>p173 C#: 1.11 ms</title></rect>
 <rect class="cell" x="968" y="432" width="12" height="18" fill="#36A036"><title>p174 C#: 3.20 ms</title></rect>
 <rect class="cell" x="980" y="432" width="12" height="18" fill="#5BC85B"><title>p175 C#: 155.0 µs</title></rect>
 <rect class="cell" x="992" y="432" width="12" height="18" fill="#5BC85B"><title>p176 C#: 733.4 µs</title></rect>
-<rect class="cell" x="1004" y="432" width="12" height="18" fill="#F0C808"><title>p177 C#: 6.75 s</title></rect>
+<rect class="cell" x="1004" y="432" width="12" height="18" fill="#F0C808"><title>p177 C#: 6.75 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="444.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="432" width="12" height="18" fill="#36A036"><title>p178 C#: 1.91 ms</title></rect>
 <rect class="cell" x="1028" y="432" width="12" height="18" fill="#F0C808"><title>p179 C#: 379.50 ms</title></rect>
 <rect class="cell" x="1040" y="432" width="12" height="18" fill="#1E6A1E"><title>p180 C#: 33.91 ms</title></rect>
@@ -1779,15 +1794,18 @@
 <rect class="cell" x="596" y="450" width="12" height="18" fill="#1E6A1E"><title>p143 Java: 73.20 ms</title></rect>
 <rect class="cell" x="608" y="450" width="12" height="18" fill="#84E184"><title>p144 Java: 59.2 µs</title></rect>
 <rect class="cell" x="620" y="450" width="12" height="18" fill="#F0C808"><title>p145 Java: 102.87 ms</title></rect>
-<rect class="cell" x="632" y="450" width="12" height="18" fill="#F0C808"><title>p146 Java: 4.09 s</title></rect>
+<rect class="cell" x="632" y="450" width="12" height="18" fill="#F0C808"><title>p146 Java: 4.09 s (samples=3, partial)</title></rect>
+<text class="partial" x="638.0" y="462.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="450" width="12" height="18" fill="#36A036"><title>p147 Java: 7.64 ms</title></rect>
 <rect class="cell" x="656" y="450" width="12" height="18" fill="#84E184"><title>p148 Java: 3.1 µs</title></rect>
 <rect class="cell" x="668" y="450" width="12" height="18" fill="#1E6A1E"><title>p149 Java: 87.47 ms</title></rect>
 <rect class="cell" x="680" y="450" width="12" height="18" fill="#F0C808"><title>p150 Java: 242.33 ms</title></rect>
 <rect class="cell" x="692" y="450" width="12" height="18" fill="#84E184"><title>p151 Java: 52.2 µs</title></rect>
 <rect class="cell" x="704" y="450" width="12" height="18" fill="#F0C808"><title>p152 Java: 887.04 ms</title></rect>
-<rect class="cell" x="716" y="450" width="12" height="18" fill="#F0C808"><title>p153 Java: 2.45 s</title></rect>
-<rect class="cell" x="728" y="450" width="12" height="18" fill="#F0C808"><title>p154 Java: 6.20 s</title></rect>
+<rect class="cell" x="716" y="450" width="12" height="18" fill="#F0C808"><title>p153 Java: 2.45 s (samples=3, partial)</title></rect>
+<text class="partial" x="722.0" y="462.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="450" width="12" height="18" fill="#F0C808"><title>p154 Java: 6.20 s (samples=3, partial)</title></rect>
+<text class="partial" x="734.0" y="462.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="740" y="450" width="12" height="18" fill="#F0C808"><title>p155 Java: 3.06 s</title></rect>
 <rect class="cell" x="752" y="450" width="12" height="18" fill="#F0C808"><title>p156 Java: 107.89 ms</title></rect>
 <rect class="cell" x="764" y="450" width="12" height="18" fill="#36A036"><title>p157 Java: 6.99 ms</title></rect>
@@ -1803,14 +1821,16 @@
 <rect class="cell" x="884" y="450" width="12" height="18" fill="#F0C808"><title>p167 Java: 161.03 ms</title></rect>
 <rect class="cell" x="896" y="450" width="12" height="18" fill="#5BC85B"><title>p168 Java: 197.8 µs</title></rect>
 <rect class="cell" x="908" y="450" width="12" height="18" fill="#5BC85B"><title>p169 Java: 533.3 µs</title></rect>
-<rect class="cell" x="920" y="450" width="12" height="18" fill="#F0C808"><title>p170 Java: 56.12 s</title></rect>
+<rect class="cell" x="920" y="450" width="12" height="18" fill="#F0C808"><title>p170 Java: 56.12 s (samples=1, partial)</title></rect>
+<text class="partial" x="926.0" y="462.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="932" y="450" width="12" height="18" fill="#36A036"><title>p171 Java: 7.25 ms</title></rect>
 <rect class="cell" x="944" y="450" width="12" height="18" fill="#84E184"><title>p172 Java: 41.0 µs</title></rect>
 <rect class="cell" x="956" y="450" width="12" height="18" fill="#36A036"><title>p173 Java: 9.07 ms</title></rect>
 <rect class="cell" x="968" y="450" width="12" height="18" fill="#36A036"><title>p174 Java: 5.94 ms</title></rect>
 <rect class="cell" x="980" y="450" width="12" height="18" fill="#84E184"><title>p175 Java: 3.4 µs</title></rect>
 <rect class="cell" x="992" y="450" width="12" height="18" fill="#5BC85B"><title>p176 Java: 346.5 µs</title></rect>
-<rect class="cell" x="1004" y="450" width="12" height="18" fill="#F0C808"><title>p177 Java: 11.44 s</title></rect>
+<rect class="cell" x="1004" y="450" width="12" height="18" fill="#F0C808"><title>p177 Java: 11.44 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="462.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="450" width="12" height="18" fill="#36A036"><title>p178 Java: 3.16 ms</title></rect>
 <rect class="cell" x="1028" y="450" width="12" height="18" fill="#F0C808"><title>p179 Java: 307.46 ms</title></rect>
 <rect class="cell" x="1040" y="450" width="12" height="18" fill="#1E6A1E"><title>p180 Java: 75.84 ms</title></rect>
@@ -1879,15 +1899,18 @@
 <rect class="cell" x="596" y="468" width="12" height="18" fill="#1E6A1E"><title>p143 JavaScript: 42.90 ms</title></rect>
 <rect class="cell" x="608" y="468" width="12" height="18" fill="#5BC85B"><title>p144 JavaScript: 142.8 µs</title></rect>
 <rect class="cell" x="620" y="468" width="12" height="18" fill="#F0C808"><title>p145 JavaScript: 168.21 ms</title></rect>
-<rect class="cell" x="632" y="468" width="12" height="18" fill="#F0C808"><title>p146 JavaScript: 9.57 s</title></rect>
+<rect class="cell" x="632" y="468" width="12" height="18" fill="#F0C808"><title>p146 JavaScript: 9.57 s (samples=3, partial)</title></rect>
+<text class="partial" x="638.0" y="480.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="468" width="12" height="18" fill="#36A036"><title>p147 JavaScript: 9.26 ms</title></rect>
 <rect class="cell" x="656" y="468" width="12" height="18" fill="#84E184"><title>p148 JavaScript: 37.2 µs</title></rect>
 <rect class="cell" x="668" y="468" width="12" height="18" fill="#1E6A1E"><title>p149 JavaScript: 98.05 ms</title></rect>
 <rect class="cell" x="680" y="468" width="12" height="18" fill="#F0C808"><title>p150 JavaScript: 553.92 ms</title></rect>
 <rect class="cell" x="692" y="468" width="12" height="18" fill="#84E184"><title>p151 JavaScript: 83.0 µs</title></rect>
 <rect class="cell" x="704" y="468" width="12" height="18" fill="#F0C808"><title>p152 JavaScript: 5.66 s</title></rect>
-<rect class="cell" x="716" y="468" width="12" height="18" fill="#F0C808"><title>p153 JavaScript: 7.09 s</title></rect>
-<rect class="cell" x="728" y="468" width="12" height="18" fill="#F0C808"><title>p154 JavaScript: 9.36 s</title></rect>
+<rect class="cell" x="716" y="468" width="12" height="18" fill="#F0C808"><title>p153 JavaScript: 7.09 s (samples=3, partial)</title></rect>
+<text class="partial" x="722.0" y="480.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="468" width="12" height="18" fill="#F0C808"><title>p154 JavaScript: 9.36 s (samples=3, partial)</title></rect>
+<text class="partial" x="734.0" y="480.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="740" y="468" width="12" height="18" fill="#F0C808"><title>p155 JavaScript: 982.12 ms</title></rect>
 <rect class="cell" x="752" y="468" width="12" height="18" fill="#F0C808"><title>p156 JavaScript: 1.06 s</title></rect>
 <rect class="cell" x="764" y="468" width="12" height="18" fill="#36A036"><title>p157 JavaScript: 8.91 ms</title></rect>
@@ -1903,14 +1926,16 @@
 <rect class="cell" x="884" y="468" width="12" height="18" fill="#F0C808"><title>p167 JavaScript: 236.92 ms</title></rect>
 <rect class="cell" x="896" y="468" width="12" height="18" fill="#5BC85B"><title>p168 JavaScript: 274.0 µs</title></rect>
 <rect class="cell" x="908" y="468" width="12" height="18" fill="#84E184"><title>p169 JavaScript: 40.0 µs</title></rect>
-<rect class="cell" x="920" y="468" width="12" height="18" fill="#36A036"><title>p170 JavaScript: 7.70 ms</title></rect>
+<rect class="cell" x="920" y="468" width="12" height="18" fill="#36A036"><title>p170 JavaScript: 7.70 ms (samples=1, partial)</title></rect>
+<text class="partial" x="926.0" y="480.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="932" y="468" width="12" height="18" fill="#1E6A1E"><title>p171 JavaScript: 20.31 ms</title></rect>
 <rect class="cell" x="944" y="468" width="12" height="18" fill="#5BC85B"><title>p172 JavaScript: 122.8 µs</title></rect>
 <rect class="cell" x="956" y="468" width="12" height="18" fill="#36A036"><title>p173 JavaScript: 3.50 ms</title></rect>
 <rect class="cell" x="968" y="468" width="12" height="18" fill="#36A036"><title>p174 JavaScript: 5.67 ms</title></rect>
 <rect class="cell" x="980" y="468" width="12" height="18" fill="#84E184"><title>p175 JavaScript: 30.5 µs</title></rect>
 <rect class="cell" x="992" y="468" width="12" height="18" fill="#5BC85B"><title>p176 JavaScript: 391.3 µs</title></rect>
-<rect class="cell" x="1004" y="468" width="12" height="18" fill="#F0C808"><title>p177 JavaScript: 15.08 s</title></rect>
+<rect class="cell" x="1004" y="468" width="12" height="18" fill="#F0C808"><title>p177 JavaScript: 15.08 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="480.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="468" width="12" height="18" fill="#36A036"><title>p178 JavaScript: 6.78 ms</title></rect>
 <rect class="cell" x="1028" y="468" width="12" height="18" fill="#1E6A1E"><title>p179 JavaScript: 16.82 ms</title></rect>
 <rect class="cell" x="1040" y="468" width="12" height="18" fill="#F0C808"><title>p180 JavaScript: 132.27 ms</title></rect>
@@ -1974,21 +1999,27 @@
 <rect class="cell" x="536" y="486" width="12" height="18" fill="#84E184"><title>p138 Python: 2.9 µs</title></rect>
 <rect class="cell" x="548" y="486" width="12" height="18" fill="#F0C808"><title>p139 Python: 2.13 s</title></rect>
 <rect class="cell" x="560" y="486" width="12" height="18" fill="#84E184"><title>p140 Python: 70.8 µs</title></rect>
-<rect class="cell" x="572" y="486" width="12" height="18" fill="#F0C808"><title>p141 Python: 9.00 s</title></rect>
+<rect class="cell" x="572" y="486" width="12" height="18" fill="#F0C808"><title>p141 Python: 9.00 s (samples=3, partial)</title></rect>
+<text class="partial" x="578.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="584" y="486" width="12" height="18" fill="#F0C808"><title>p142 Python: 110.37 ms</title></rect>
 <rect class="cell" x="596" y="486" width="12" height="18" fill="#F0C808"><title>p143 Python: 320.93 ms</title></rect>
 <rect class="cell" x="608" y="486" width="12" height="18" fill="#5BC85B"><title>p144 Python: 134.1 µs</title></rect>
 <rect class="cell" x="620" y="486" width="12" height="18" fill="#F0C808"><title>p145 Python: 4.72 s</title></rect>
-<rect class="cell" x="632" y="486" width="12" height="18" fill="#F0C808"><title>p146 Python: 19.21 s</title></rect>
+<rect class="cell" x="632" y="486" width="12" height="18" fill="#F0C808"><title>p146 Python: 19.21 s (samples=1, partial)</title></rect>
+<text class="partial" x="638.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="644" y="486" width="12" height="18" fill="#F0C808"><title>p147 Python: 528.01 ms</title></rect>
 <rect class="cell" x="656" y="486" width="12" height="18" fill="#84E184"><title>p148 Python: 8.1 µs</title></rect>
 <rect class="cell" x="668" y="486" width="12" height="18" fill="#F0C808"><title>p149 Python: 2.01 s</title></rect>
 <rect class="cell" x="680" y="486" width="12" height="18" fill="#F0C808"><title>p150 Python: 16.64 s</title></rect>
 <rect class="cell" x="692" y="486" width="12" height="18" fill="#84E184"><title>p151 Python: 41.8 µs</title></rect>
-<rect class="cell" x="704" y="486" width="12" height="18" fill="#F0C808"><title>p152 Python: 815.61 ms</title></rect>
-<rect class="cell" x="716" y="486" width="12" height="18" fill="#F0C808"><title>p153 Python: 32.80 s</title></rect>
-<rect class="cell" x="728" y="486" width="12" height="18" fill="#F0C808"><title>p154 Python: 292.18 s</title></rect>
-<rect class="cell" x="740" y="486" width="12" height="18" fill="#F0C808"><title>p155 Python: 7.34 s</title></rect>
+<rect class="cell" x="704" y="486" width="12" height="18" fill="#F0C808"><title>p152 Python: 815.61 ms (samples=3, partial)</title></rect>
+<text class="partial" x="710.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="716" y="486" width="12" height="18" fill="#F0C808"><title>p153 Python: 32.80 s (samples=1, partial)</title></rect>
+<text class="partial" x="722.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="728" y="486" width="12" height="18" fill="#F0C808"><title>p154 Python: 292.18 s (samples=1, partial)</title></rect>
+<text class="partial" x="734.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
+<rect class="cell" x="740" y="486" width="12" height="18" fill="#F0C808"><title>p155 Python: 7.34 s (samples=3, partial)</title></rect>
+<text class="partial" x="746.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="752" y="486" width="12" height="18" fill="#F0C808"><title>p156 Python: 7.37 s</title></rect>
 <rect class="cell" x="764" y="486" width="12" height="18" fill="#F0C808"><title>p157 Python: 234.05 ms</title></rect>
 <rect class="cell" x="776" y="486" width="12" height="18" fill="#84E184"><title>p158 Python: 7.7 µs</title></rect>
@@ -1998,7 +2029,8 @@
 <rect class="cell" x="824" y="486" width="12" height="18" fill="#84E184"><title>p162 Python: 9.3 µs</title></rect>
 <rect class="cell" x="836" y="486" width="12" height="18" fill="#F0C808"><title>p163 Python: 2.71 s</title></rect>
 <rect class="cell" x="848" y="486" width="12" height="18" fill="#5BC85B"><title>p164 Python: 333.1 µs</title></rect>
-<rect class="cell" x="860" y="486" width="12" height="18" fill="#F0C808"><title>p165 Python: 6.95 s</title></rect>
+<rect class="cell" x="860" y="486" width="12" height="18" fill="#F0C808"><title>p165 Python: 6.95 s (samples=3, partial)</title></rect>
+<text class="partial" x="866.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="872" y="486" width="12" height="18" fill="#F0C808"><title>p166 Python: 8.91 s</title></rect>
 <rect class="cell" x="884" y="486" width="12" height="18" fill="#F0C808"><title>p167 Python: 7.37 s</title></rect>
 <rect class="cell" x="896" y="486" width="12" height="18" fill="#5BC85B"><title>p168 Python: 533.3 µs</title></rect>
@@ -2010,7 +2042,8 @@
 <rect class="cell" x="968" y="486" width="12" height="18" fill="#F0C808"><title>p174 Python: 166.08 ms</title></rect>
 <rect class="cell" x="980" y="486" width="12" height="18" fill="#84E184"><title>p175 Python: 4.0 µs</title></rect>
 <rect class="cell" x="992" y="486" width="12" height="18" fill="#5BC85B"><title>p176 Python: 392.5 µs</title></rect>
-<rect class="cell" x="1004" y="486" width="12" height="18" fill="#F0C808"><title>p177 Python: 12.78 s</title></rect>
+<rect class="cell" x="1004" y="486" width="12" height="18" fill="#F0C808"><title>p177 Python: 12.78 s (samples=1, partial)</title></rect>
+<text class="partial" x="1010.0" y="498.0" text-anchor="middle" font-size="11" font-weight="bold" fill="black" pointer-events="none">*</text>
 <rect class="cell" x="1016" y="486" width="12" height="18" fill="#1E6A1E"><title>p178 Python: 11.14 ms</title></rect>
 <rect class="cell" x="1028" y="486" width="12" height="18" fill="#F0C808"><title>p179 Python: 11.61 s</title></rect>
 <rect class="cell" x="1040" y="486" width="12" height="18" fill="#F0C808"><title>p180 Python: 138.05 ms</title></rect>
