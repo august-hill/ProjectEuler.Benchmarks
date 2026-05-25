@@ -196,10 +196,16 @@ func writeRun(db *sql.DB, r *runRow) error {
 			error, measured_at, compiler, platform
 		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?)`
 
+	// INTEGER fields stored as-is — including legitimate 0 measurements
+	// (closed-form algos can clock at sub-ns, faster than CLOCK_MONOTONIC's
+	// resolution → time_ns=0). The `status` column is the authoritative
+	// "is this data meaningful" gate; downstream consumers gate on
+	// status='pass' before trusting time fields. Strings still null-out
+	// on empty (less semantic loss there — "" vs NULL doesn't usually matter).
 	args := []interface{}{
 		r.Lang, r.Problem, r.Status, nullableString(r.Answer),
-		nullableInt64(r.TimeNs), nullableInt64(r.TimeMinNs), nullableInt64(r.TimeMaxNs), r.Samples,
-		nullableInt64(r.SubprocessWallNs), nullableInt64(r.CompileTimeNs), nullableInt64(r.PeakRSSBytes),
+		r.TimeNs, r.TimeMinNs, r.TimeMaxNs, r.Samples,
+		r.SubprocessWallNs, r.CompileTimeNs, r.PeakRSSBytes,
 		r.SourceLines, r.SourceBytes, nullableString(r.SourceHash),
 		nullableString(r.Error), r.MeasuredAt, nullableString(r.Compiler), nullableString(r.Platform),
 	}
@@ -220,14 +226,7 @@ func nullableString(s string) interface{} {
 	return s
 }
 
-// nullableInt64 returns nil for zero values so SQLite stores NULL, preserving
-// the meaningful distinction between "not measured" (NULL) and "measured 0"
-// (which would be legitimate for trivial closed-form algorithms). Callers
-// that genuinely measured zero should pass an explicit positive epsilon, but
-// in practice 0 means "missing" in our schema.
-func nullableInt64(n int64) interface{} {
-	if n == 0 {
-		return nil
-	}
-	return n
-}
+// (nullableInt64 retired 2026-05-25 — the zero-coercion semantically conflated
+// "fail / not measured" with "measured 0" (legitimate for closed-form algos
+// that clock at sub-ns). Status column is the authoritative gate; INTEGER
+// fields now store as-is.)
