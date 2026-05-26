@@ -1190,3 +1190,129 @@ the stopped lang's ceiling — wrong behavior. Tier-aware rendering would
 maintain meaningful comparisons within each tier independently. **Filed as
 a follow-up task; current common-set fix is good enough until we have a lang
 that intentionally stops.**
+
+## Episode: Deep Coverage to 400 (2026-05-25 overnight)
+
+Tier 2 had been **201–300** for the four days since the tier model was
+formalized. Tonight we bumped it to **201–400**. The lang membership stayed
+the same (cpp/go/python/rust/zig); Tier 3 Frontier shifted from 301+ to 401+.
+On paper this was a single edit to `data/tiers.json`; in practice it was the
+forcing function for a 30-minute pre-flight before the porting work could
+honestly begin.
+
+### Why the boundary moved
+
+Coverage in 301–400 had become uneven enough to be embarrassing. C++ had 62
+of 100 source files in the range; Go had 58; Zig 42; Python 54; Rust just 15.
+The lopsidedness was a relic — Rust had only entered Tier 2 two days earlier,
+and Zig's 301–400 coverage was accidental drift from prior solo sprints, not
+a deliberate target. Calling 201–300 the "Deep Coverage" surface while
+having 47 unported problems in 301–400 sitting under Frontier (cpp+go only)
+was honest at the time but no longer reflected what we actually wanted to
+compare.
+
+The expansion target is **cpp's envelope in 201–400**, not new exploration:
+- rust: 47 problems missing in 301–400, 0 actionable in 201–300 (the one
+  candidate, p275, is the 81-second deferred problem that cpp barely fits in
+  the bench ceiling)
+- zig: 20 missing in 301–400, 3 actionable in 201–300
+- python: 8 missing in 301–400, 9 viable in 201–300 (skipping a couple of
+  ≥30-second cpp problems where Python wouldn't reach scale under the budget)
+- go: **0 actionable** — the 4 problems Go is missing in 301–400 are all
+  known-deferred (one is even a cpp stub returning -1 that we hadn't
+  realised was still a stub). Go is already at its maximum sensible coverage.
+
+Total porting target after filtering: ~80 problem×lang cells, down from a
+back-of-envelope ~109. The shrinkage matters because the work had to be
+careful, not just plentiful.
+
+### The pre-flight that surfaced the real blocker
+
+Before dispatching any agents we ran three cross-language audit sweeps —
+each one a memory-resident lesson learned the hard way:
+
+1. **Trusted-reference corruption.** Grep all 10 lang repos for comments
+   admitting "matches cpp", "to reproduce", "mirror the truncation", etc.
+   Three hits, all stale comments from the post-p254 cleanup (the original
+   port had faithfully reproduced a cpp int-truncation bug; the comments
+   document the fix). Sweep clean.
+
+2. **Solve-cache violations.** Grep for `OnceLock` / `sync.Once` /
+   `_initialized` / `@lru_cache` / `_ANSWER = _compute()` across all langs
+   inside `solve()`. Many hits in tier-1 langs, all in the campaign-closed
+   category — the single-call harness makes them silent. The two
+   problematic per-problem caches the memory specifically called out (csharp
+   p170, go p170) had already been removed during the algorithm rewrites two
+   days back. Sweep clean for live violations.
+
+3. **Cross-language answer disagreements (1–300).** SQL query against
+   `bench-private.db` for any problem where the 5+ langs that bench it
+   returned different answer values. **Zero hits.** The p254 cross-lang fix
+   from earlier this week held — the only previously-known disagreement,
+   gone. Sweep clean.
+
+All three sweeps were independent reads, ran in parallel, ~30 seconds total.
+The reward for the sweep wasn't finding bugs; it was earning the right to
+dispatch porting agents in good faith. If sweep #3 had found a new
+disagreement, the entire porting plan would have stalled until it was
+resolved.
+
+### The real blocker: cpp 301–400 had zero bench rows
+
+The SQL probe to sort port queues by cpp time_ns surfaced something we
+should have predicted but hadn't: `SELECT COUNT(*) FROM runs WHERE lang='cpp'
+AND CAST(problem AS INTEGER) BETWEEN 301 AND 400` returned **0**. C++ had
+source files for 62 problems in that range, but none had been measured under
+the post-SQLite-migration harness. Tier 3 was historically cpp+go territory
+with bench data, but the migration cutoff happened to land just before any
+301+ sweep, and nothing had triggered one since.
+
+Porting from an unbenched reference is exactly how the p254 trap reproduces.
+If cpp `problem_NNN/main.cpp` exists but has never been compiled-and-run
+under the canonical harness, we don't know whether it passes, fails, hangs,
+or quietly returns a wrong answer that no cross-language pair has yet
+contradicted. Sending agents to port 47 such files into Rust with the
+prompt "the cpp source is the reference" would have been a guaranteed
+incident.
+
+So the plan grew a phase: bench cpp + go in 301–400 at `iters=1` for fast
+pass/fail triage (~40 min for the pair), filter port queues to cpp-passing
+only, then bench cpp 301–400 at `iters=10` for the passing set (~60 min)
+to establish real reference timings. Two extra hours of bench wall before
+the first port agent, but a much cleaner downstream.
+
+### The doc-ripple
+
+A `tiers.json` edit looks like a one-line change. It isn't. The 4 report
+scripts read tier ranges dynamically via `scripts/tiers.py`, so
+`RESULTS.md`, per-band detail pages, charts, and `in_scope()` cell
+filtering all reflect the new boundary the next time `report.py` runs — no
+hand-editing required. The trap is the *prose* documentation: any hand-typed
+range literal in a CLAUDE.md or README that says "201–300" or "Tier 3
+(301+)" becomes a lie at the moment of the edit.
+
+A grep across `*.md` for hardcoded ranges and tier labels found 5 active
+files needing edits: `benchmarks/README.md` (the tier table + the
+reproducibility bench-command example), and the per-lang CLAUDE.md files
+for python, go, rust, and zig (each describes that lang's tier-2 scope, all
+of which just expanded). `JOURNEY.md` and `archive/legacy/` are historical
+narrative — those literals are correct as historical record and stay as-is.
+That distinction (code reads SSOT live; prose freezes at write time) is the
+whole point of the stale-doc grep discipline.
+
+### Where things stand at this writing
+
+The closure bench for the 28 still-partial cells in 101–200 is running in
+the background as this chapter is written — cpp and rust waves done, csharp
+mid-execution, java/javascript/python queued. After that comes the cpp+go
+301–400 triage, then the cpp 301–400 full-iters bench, then four parallel
+port waves at ~5 problems per agent: rust ~47 cells, zig ~23, python ~17.
+Per-lang bench + Gate 1 validation after each wave lands, then a single
+`report.py` regen at the end.
+
+The methodology lesson reinforces an old one: **the worst time to discover
+that cpp doesn't pass a problem is when an agent has just finished porting
+it.** The triage step (iters=1 to filter pass/fail) is cheap; the agent
+session that ports from a dud is expensive in time, in confusion, and in
+the trust cost of having to roll back a "successful" port. Two extra hours
+of bench wall, traded for not paying that cost.
