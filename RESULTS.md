@@ -46,7 +46,23 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-> _Tier 2 common-set is currently empty — no active language reaches 50% coverage in problems 201-400 yet. The ranking and charts will populate as benching continues._
+### Per-Invocation Cost (Common Set, 66 of 200 problems)
+
+![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
+
+| Rank | Language | Total (66-problem common set) | Lines of code | vs Fastest |
+|------|----------|--------------------:|--------------:|-----------:|
+| 1 | **C++** | 7.96 s | 8,832 | 1.00× |
+| 2 | **Go** | 9.02 s | 6,486 | 1.13× |
+| 3 | **Rust** | 9.10 s | 6,216 | 1.14× |
+| 4 | **Zig** | 9.77 s | 7,003 | 1.23× |
+| 5 | **Python** | 140.44 s | 4,418 | 17.64× |
+
+### Speed vs Code Size
+
+Same scatter as the Foundation chart, restricted to the tier-2 active languages over problems 201–400.
+
+![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)
 
 ## Coverage Heatmap
 

@@ -298,7 +298,16 @@ def aggregate() -> dict:
     # threshold prevents a misleading-but-honest case where a lang with just
     # 1 passing cell tightens the common-set to 1 problem (sample size too
     # small for a meaningful rank).
-    ACTIVE_COVERAGE_THRESHOLD = 0.5  # 50% of in-scope tier problems
+    #
+    # 2026-05-25: lowered 0.5 → 0.25 alongside the tier-2 expansion 201-300 →
+    # 201-400. At 50% no lang qualified post-expansion (each was at ~48% of the
+    # widened 200-problem range despite having ~96 cells in the lower half),
+    # which hid the chart entirely. At 25% all 5 langs re-qualify on their
+    # existing 201-300 data and the chart renders with the actual common-set
+    # range surfaced in the title (so readers see "common set spans 201-298"
+    # not just "common set: 65 problems"). Common-set size remains the natural
+    # secondary safeguard against pathological tiny intersections.
+    ACTIVE_COVERAGE_THRESHOLD = 0.25  # 25% of in-scope tier problems
     out["_common_per_tier"] = {}
     for tier_key in TIER_ORDER:
         if tier_key not in _TIERS:
@@ -685,10 +694,17 @@ def render_total_chart_tier2(agg: dict):
         f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
         if inactive else ""
     )
+    common_lo = int(min(common))
+    common_hi = int(max(common))
+    range_note = (
+        f"spans p{common_lo:03d}–p{common_hi:03d}"
+        if (common_hi - common_lo + 1) > len(common)
+        else f"contiguous p{common_lo:03d}–p{common_hi:03d}"
+    )
     ax.set_title(
         f"Per-Invocation Cost — Deep Coverage (Tier 2, problems {t2_lo}-{t2_hi}, "
         f"{len(active)} active of {len(designated)} langs{inactive_note})\n"
-        f"Common set: {len(common)} problems passing in {', '.join(DISPLAY[l] for l in active)}"
+        f"Common set: {len(common)} problems ({range_note}) passing in {', '.join(DISPLAY[l] for l in active)}"
     )
     for i, ms in enumerate(values_ms):
         if ms >= 100:
