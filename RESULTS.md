@@ -1,7 +1,7 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 2500 in-scope cells across 300 problems × tiered languages — 2443 measured (97.7% coverage).**
-> The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
+> **Scope: 2500 in-scope cells across 300 problems × tiered languages — 2444 measured (97.8% coverage).**
+> The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
@@ -12,29 +12,29 @@
 
 All 10 languages benchmarked across the first 200 problems — the apples-to-apples comparison surface that anchors the suite's headline rankings.
 
-### Per-Invocation Cost (Common Set, 199 of 200 problems)
+### Per-Invocation Cost (Common Set, 200 of 200 problems)
 
 We run each program 10 times in fresh OS processes (no warmup, no shared state).
 Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /
 shell-loop user actually pays.  The median wall time across the 10 invocations is
-the headline per-problem number, and the table sums over the 199-problem
+the headline per-problem number, and the table sums over the 200-problem
 common set so partial-coverage languages aren't artificially "faster" than fully-
 covered ones.
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
-| Rank | Language | Total (199-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (200-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C** | 22.47 s | 14,346 | 1.00× |
-| 2 | **C++** | 22.75 s | 10,256 | 1.01× |
-| 3 | **Zig** | 25.02 s | 13,310 | 1.11× |
-| 4 | **Rust** | 29.22 s | 11,443 | 1.30× |
-| 5 | **Go** | 31.49 s | 13,062 | 1.40× |
-| 6 | **ARM64** | 34.10 s | 39,793 | 1.52× |
-| 7 | **C#** | 39.45 s | 10,825 | 1.76× |
-| 8 | **Java** | 43.42 s | 10,468 | 1.93× |
-| 9 | **JavaScript** | 68.46 s | 9,123 | 3.05× |
-| 10 | **Python** | 669.59 s | 8,459 | 29.80× |
+| 1 | **C#** | 39.84 s | 10,974 | 1.00× |
+| 2 | **Rust** | 53.89 s | 11,633 | 1.35× |
+| 3 | **C++** | 61.16 s | 10,390 | 1.54× |
+| 4 | **C** | 61.92 s | 14,488 | 1.55× |
+| 5 | **Zig** | 63.51 s | 13,559 | 1.59× |
+| 6 | **JavaScript** | 68.47 s | 9,310 | 1.72× |
+| 7 | **Go** | 71.86 s | 13,313 | 1.80× |
+| 8 | **ARM64** | 73.60 s | 40,336 | 1.85× |
+| 9 | **Java** | 99.54 s | 10,621 | 2.50× |
+| 10 | **Python** | 669.95 s | 8,544 | 16.82× |
 
 ### Speed vs Code Size
 
