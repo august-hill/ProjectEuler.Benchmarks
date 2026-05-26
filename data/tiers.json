@@ -9,9 +9,9 @@
     },
     "tier_2_deep_coverage": {
       "label": "Deep Coverage",
-      "langs": ["cpp", "go", "zig", "python"],
+      "langs": ["cpp", "go", "python", "rust", "zig"],
       "problem_range": [201, 300],
-      "description": "Languages we've intentionally pushed past 200; richer comparison among the deeper four."
+      "description": "Languages we've intentionally pushed past 200; richer comparison among the deeper five. Rust promoted 2026-05-25 — replaces Zig as the user-auditable native lang for long-term maintenance, while keeping Zig in for compiled-lang diversity."
     },
     "tier_3_frontier": {
       "label": "Frontier",
