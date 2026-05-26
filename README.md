@@ -115,7 +115,7 @@ that rejects any staged file under `data/` not on the small config allowlist
 | `charts/per_iter_total_tier2.png` | Deep Coverage per-invocation total (4 langs over the tier-2 common set) |
 | `charts/per_iter_speed_vs_size.png` | Foundation speed vs source lines |
 | `charts/per_iter_speed_vs_size_tier2.png` | Deep Coverage speed vs source lines |
-| `charts/per_iter_coverage_grid.{png,svg}` | Tier-aware coverage heatmap (3 bands × variable lang rows) |
+| `charts/per_iter_coverage_grid.png` | Tier-aware coverage heatmap (3 bands × variable lang rows) |
 | `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era + per-tier coverage) — historical reference only |
 
 ## License + contact

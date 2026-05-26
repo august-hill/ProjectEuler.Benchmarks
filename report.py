@@ -23,7 +23,6 @@ Scope:
   audited), the SCOPE_PROBLEMS list is the single place to change.
 """
 
-import html
 import json
 import sqlite3
 import sys
@@ -585,198 +584,6 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     return out
 
 
-def render_coverage_grid_svg(agg: dict) -> Path:
-    """Same banded heatmap as the PNG, but as a hand-written SVG so each cell
-    carries a <title> tooltip ("p347 Zig: 2.3 ms").
-
-    Rendering channels:
-      - RESULTS.md embeds the PNG via ![](...).  Tooltips don't fire in <img>.
-      - RESULTS.md ALSO links the .svg file directly.  Opened as a page
-        (raw.githubusercontent.com or local file://), the <title> tooltips
-        fire on hover — that's the "drill into one cell" channel.
-
-    Hand-written rather than savefig(format='svg') because matplotlib's SVG
-    output is 5-10× larger and has no semantic structure to hang tooltips on.
-
-    Every text interpolation runs through html.escape() — otherwise legend
-    labels like "<100µs" would break XML parsing (the parser reads "<1" as
-    a malformed start-tag).  This bit me on first deploy; do not remove.
-    """
-    # Module-local helper: XML-escape any user-text going into element content
-    # or attribute values.  quote=True covers " (attr values) too.
-    def esc(s) -> str:
-        return html.escape(str(s), quote=True)
-
-    n_probs = len(SCOPE_PROBLEMS)
-    bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
-    n_bands = len(bands)
-
-    # Tier-aware: each band's lang list may differ. Compute band heights
-    # individually so band 1 (10 langs) and band 3 (4 langs) render at their
-    # natural sizes instead of padding short bands with blank rows.
-    bands_langs = [langs_for_band(bp) for bp in bands]
-
-    # SVG user-unit dimensions (≈ CSS pixels).
-    cell_w, cell_h = 12, 18
-    margin_l, margin_r = 92, 20
-    margin_t = 56
-    band_title_h = 22
-    band_xaxis_h = 18
-    band_gap = 26
-    legend_h = 70
-
-    # Per-band heights for variable layouts.
-    band_grid_hs = [len(bl) * cell_h for bl in bands_langs]
-    band_hs = [band_title_h + g + band_xaxis_h for g in band_grid_hs]
-
-    fig_w = margin_l + BAND_SIZE * cell_w + margin_r
-    fig_h = (margin_t
-             + sum(band_hs)
-             + (n_bands - 1) * band_gap
-             + legend_h)
-
-    parts = []
-    parts.append(
-        f'<svg xmlns="http://www.w3.org/2000/svg" '
-        f'width="{fig_w}" height="{fig_h}" '
-        f'viewBox="0 0 {fig_w} {fig_h}" '
-        f'font-family="-apple-system, BlinkMacSystemFont, sans-serif">'
-    )
-    parts.append(
-        '<style>'
-        'text { fill:#222; font-size:11px; }'
-        '.title { font-size:14px; font-weight:600; }'
-        '.subtitle { font-size:10px; fill:#666; }'
-        '.band { font-size:12px; font-weight:500; }'
-        '.tick { font-size:9px; fill:#555; }'
-        '.cell { stroke:#fff; stroke-width:0.5; }'
-        '.cell:hover { stroke:#000; stroke-width:1.5; }'
-        '</style>'
-    )
-
-    # Figure title + subtitle
-    parts.append(
-        f'<text class="title" x="{margin_l}" y="26">'
-        f'{esc(f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)")}'
-        f'</text>'
-    )
-    parts.append(
-        f'<text class="subtitle" x="{margin_l}" y="42">'
-        f'{esc("Hover any cell for problem · language · per-invocation time  ·  * = partial measurement (samples<10)")}'
-        f'</text>'
-    )
-
-    # Running y-cursor for variable-height bands.
-    cum_y = margin_t
-    for band_i, band_probs in enumerate(bands):
-        band_langs = bands_langs[band_i]
-        n_band_langs = len(band_langs)
-        band_grid_h = band_grid_hs[band_i]
-        band_h = band_hs[band_i]
-        band_y0 = cum_y
-        grid_y0 = band_y0 + band_title_h
-
-        # Band title — include tier label
-        tier_key = tier_for_problem(int(band_probs[0]), _TIERS)
-        tier_lbl = tier_label(tier_key, _TIERS) if tier_key else ""
-        band_title_text = f"Problems {band_probs[0]}–{band_probs[-1]}"
-        if tier_lbl:
-            band_title_text += f"  ({tier_lbl} — {n_band_langs} langs)"
-        parts.append(
-            f'<text class="band" x="{margin_l}" y="{band_y0 + 15}">'
-            f'{esc(band_title_text)}'
-            f'</text>'
-        )
-
-        # Y-axis lang labels (right-aligned into the left margin)
-        for ri, lang in enumerate(band_langs):
-            y = grid_y0 + (ri + 0.5) * cell_h + 4   # +4 ≈ baseline tweak
-            parts.append(
-                f'<text x="{margin_l - 6}" y="{y}" text-anchor="end">'
-                f'{esc(DISPLAY[lang])}</text>'   # "C++" has no <>& but esc is cheap
-            )
-
-        # Cells with <title> tooltips
-        for ri, lang in enumerate(band_langs):
-            for ci, p in enumerate(band_probs):
-                st = agg[lang]["per_problem_status"][p]
-                ns = agg[lang]["per_problem_ns"][p]
-                s = agg[lang]["per_problem_samples"][p]
-                color = cell_color(st, ns)
-                x = margin_l + ci * cell_w
-                y = grid_y0 + ri * cell_h
-                if st == "missing":
-                    tip = "missing"
-                elif st == "fail":
-                    tip = "fail"
-                elif ns is None:
-                    tip = "—"
-                else:
-                    tip = fmt_time(ns)
-                    if s is not None and s < 10:
-                        tip += f" (samples={s}, partial)"
-                parts.append(
-                    f'<rect class="cell" x="{x}" y="{y}" '
-                    f'width="{cell_w}" height="{cell_h}" fill="{color}">'
-                    f'<title>{esc(f"p{p} {DISPLAY[lang]}: {tip}")}</title>'
-                    f'</rect>'
-                )
-                # Partial-measurement marker overlay — same as PNG version
-                if s is not None and s < 10:
-                    cx = x + cell_w / 2
-                    cy = y + cell_h / 2 + 3  # +3 ≈ baseline tweak so '*' sits centered
-                    parts.append(
-                        f'<text class="partial" x="{cx}" y="{cy}" '
-                        f'text-anchor="middle" font-size="11" font-weight="bold" '
-                        f'fill="black" pointer-events="none">*</text>'
-                    )
-
-        # X-axis ticks every 10 problems within the band
-        xaxis_y = grid_y0 + band_grid_h + 12
-        for i in range(0, len(band_probs), 10):
-            x = margin_l + (i + 0.5) * cell_w
-            parts.append(
-                f'<text class="tick" x="{x}" y="{xaxis_y}" text-anchor="middle">'
-                f'{esc(f"p{band_probs[i]}")}</text>'
-            )
-
-        # Advance cursor past this band + the inter-band gap.
-        cum_y += band_h + band_gap
-
-    # Legend.  Labels here contain "<100µs", "<1ms", etc. — the literal "<"
-    # is what broke the SVG on first deploy.  esc() turns it into "&lt;".
-    legend_y = cum_y - band_gap + 28
-    swatch = 14
-    item_w = (fig_w - margin_l - margin_r) / len(LEGEND_ITEMS)
-    for i, (color, label) in enumerate(LEGEND_ITEMS):
-        lx = margin_l + i * item_w
-        parts.append(
-            f'<rect x="{lx}" y="{legend_y}" width="{swatch}" height="{swatch}" '
-            f'fill="{color}" stroke="#000" stroke-width="0.3"/>'
-        )
-        parts.append(
-            f'<text x="{lx + swatch + 4}" y="{legend_y + 11}">{esc(label)}</text>'
-        )
-
-    parts.append('</svg>')
-    out = CHARTS_DIR / "per_iter_coverage_grid.svg"
-    out.write_text("\n".join(parts))
-
-    # Self-check: parse the file we just wrote as XML.  If a future change
-    # forgets esc() somewhere and emits a stray "<" into text content, this
-    # raises here instead of silently shipping a broken SVG to GitHub.
-    import xml.etree.ElementTree as _ET
-    try:
-        _ET.parse(out)
-    except _ET.ParseError as e:
-        raise RuntimeError(
-            f"Generated SVG is not valid XML — likely an unescaped <, >, or & "
-            f"in a text interpolation.  Run html.escape() on any new text "
-            f"added to render_coverage_grid_svg().  Parser error: {e}"
-        )
-    return out
-
-
 def render_total_chart(agg: dict) -> Path:
     """Horizontal bar: total cost per language over the COMMON SET (problems
     where all 10 langs have status='pass'), sorted fastest first, log scale X.
@@ -1166,18 +973,6 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
-    # Link goes direct to raw.githubusercontent.com — GitHub's /blob/ viewer no
-    # longer renders inline SVG previews (shows "Invalid image source" since
-    # their security hardening), but the raw CDN serves it as image/svg+xml so
-    # the browser renders it natively and <title> hover tooltips fire.
-    svg_raw_url = ("https://raw.githubusercontent.com/august-hill/"
-                   "ProjectEuler.Benchmarks/main/charts/per_iter_coverage_grid.svg")
-    md.append(f"**🔍 [Open the SVG version]({svg_raw_url})** — same chart, with a")
-    md.append("hover tooltip on every cell (`p347 Zig: 2.3 ms`).  The link goes direct to")
-    md.append("`raw.githubusercontent.com` because GitHub's `/blob/` viewer no longer renders")
-    md.append("inline SVG previews; tooltips also don't fire inside the inline `![](...)`")
-    md.append("image above because browsers treat `<img>` SVGs as opaque.")
-    md.append("")
     n_bands = (len(SCOPE_PROBLEMS) + BAND_SIZE - 1) // BAND_SIZE
     md.append(f"Rows are in fixed tier order (native → managed → interpreted) so the chart")
     md.append(f"doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are")
@@ -1383,8 +1178,6 @@ def main() -> int:
     print(f"=== Chart written: {chart2}")
     chart3 = render_coverage_grid_chart(agg)
     print(f"=== Chart written: {chart3}")
-    chart3_svg = render_coverage_grid_svg(agg)
-    print(f"=== Chart written: {chart3_svg}")
     # Tier-2 charts — only rendered when at least one tier-2 lang has data.
     t2_total = render_total_chart_tier2(agg)
     if t2_total:
