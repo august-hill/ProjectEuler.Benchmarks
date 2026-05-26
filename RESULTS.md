@@ -53,10 +53,10 @@ Same per-invocation metric, restricted to the deeper subset of languages (C++, G
 | Rank | Language | Total (66-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
 | 1 | **C++** | 7.96 s | 8,832 | 1.00× |
-| 2 | **Go** | 9.03 s | 6,485 | 1.13× |
+| 2 | **Go** | 9.02 s | 6,486 | 1.13× |
 | 3 | **Rust** | 9.10 s | 6,216 | 1.14× |
-| 4 | **Zig** | 9.62 s | 7,005 | 1.21× |
-| 5 | **Python** | 111.27 s | 4,430 | 13.98× |
+| 4 | **Zig** | 9.77 s | 7,003 | 1.23× |
+| 5 | **Python** | 140.44 s | 4,418 | 17.64× |
 
 ### Speed vs Code Size
 

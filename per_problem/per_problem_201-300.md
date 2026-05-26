@@ -63,7 +63,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p251** | 2.94 s | 3.20 s | 3.57 s | 3.18 s | — |
 | **p252** | 250.13 ms | 319.63 ms | 257.24 ms | 426.81 ms | 375 ns |
 | **p253** | 60.9 µs | 72.3 µs | 25.1 µs | 71.2 µs | 1.47 ms |
-| **p254** | 381.33 ms | 350.31 ms | 355.10 ms | 446.54 ms | 333 ns |
+| **p254** | 381.33 ms | 350.31 ms | 505.27 ms* | 431.17 ms | 29.17 s |
 | **p255** | 465.74 ms | 482.98 ms | 666.09 ms | 623.47 ms | 458 ns |
 | **p256** | 1.03 s | 1.40 s | 1.10 s | 1.32 s | — |
 | **p257** | 370.36 ms | 361.28 ms | 378.97 ms | 394.40 ms | 2.07 s |
@@ -110,5 +110,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p298** | 161.16 ms | 12.59 ms | — | 17.01 ms | — |
 | **p299** | 257.83 ms | 302.88 ms | 265.79 ms | 402.83 ms | — |
 | **p300** | 37.35 s | 32.07 s | — | 6.46 s | — |
+
+> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
 ⬅ [Back to RESULTS](../RESULTS.md)
