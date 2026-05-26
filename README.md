@@ -8,16 +8,29 @@ Apple Silicon.  See [JOURNEY.md](JOURNEY.md) for the full story — including th
 reset from 200+ problems back to a verified 10×10 core and the disciplined
 expansion since.
 
-![Per-Invocation Cost](charts/per_iter_total.png)
+![Per-Invocation Cost — Foundation](charts/per_iter_total.png)
 
-## Current scope: 100 problems × 10 languages = 1000 measurements
+## Current scope: tiered 3-tier model
 
-Every (language, problem) in scope has passed an audit for state-leak safety,
-answer correctness, and methodology fit.  We extend carefully — each new
-problem gets the same audit before it appears in these numbers.
+The suite uses an explicit **tier model** — different languages cover different
+problem ranges, so cross-language comparisons stay apples-to-apples within each
+tier.  Live definitions in [`data/tiers.json`](data/tiers.json).
 
-**See [RESULTS.md](RESULTS.md)** for the rankings, the per-problem detail grid,
-and the full methodology.
+| Tier | Problem range | Languages in scope | Role |
+|------|---------------|---------------------|------|
+| **Foundation** | 1–200 | All 10 (ARM64, C, C++, C#, Go, Java, JS, Python, Rust, Zig) | Apples-to-apples 10-language comparison — the headline ranking |
+| **Deep Coverage** | 201–300 | C++, Go, Python, Zig | Deeper comparison among the 4 languages that intentionally extend past 200 |
+| **Frontier** | 301+ | C++, Go | Exploration zone — C++ as deep-frontier reference, Go as verification pair |
+
+Foundation problems are the apples-to-apples cross-language comparison surface.
+Deep Coverage extends 4 of those languages to harder problems; the other 6 are
+intentionally capped at 200 to keep the 10-language story clean.  Frontier work
+ships as paired C++/Go implementations (the verification protocol — see
+[JOURNEY.md](JOURNEY.md)).
+
+**See [RESULTS.md](RESULTS.md)** for per-tier rankings, the tier-aware coverage
+heatmap, and full methodology.  Per-problem detail tables live under
+[`per_problem/`](per_problem/), one page per 100-problem band.
 
 ## What we measure
 
@@ -52,22 +65,31 @@ per-invocation cost.
 
 ```bash
 cd benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-100 --iters 10 --write
+
+# Foundation tier (all 10 langs, 1-200) — the apples-to-apples surface
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
+
+# Deep Coverage tier (4 langs, 201-300) — language extension
+cmd/euler-bench/euler-bench per-iter --lang cpp,go,python,zig --problems 201-300 --iters 10 --write
+
+# Regen RESULTS.md + per-band detail pages + all charts (PNG + SVG)
 python3 report.py
 ```
 
 The Go tool ([`cmd/euler-bench/`](cmd/euler-bench/)) is the single source of
 truth for measurement — one binary builds, runs, validates answers, and writes
 sanitized data atomically.  No flock, no hook chain, no per-language scripts.
-See JOURNEY.md for the data-architecture refactor story.
+`report.py` consumes [`data/tiers.json`](data/tiers.json) via the shared
+[`scripts/tiers.py`](scripts/tiers.py) helper, so changing the tier model is a
+config edit, not a code refactor.
 
 ## Trust + safety
 
-This repo is **public**; the lang repos are **private**. Per the project's
+This repo is **public**; the lang repos are **private**.  Per the project's
 [PE compliance rules](CLAUDE.md), **the public repo carries no raw bench data
-at all** — only rendered narrative (RESULTS.md, JOURNEY.md, this README) and
-charts. All measurements (including answer values) live in the gitignored
-SQLite SSOT `data/bench-private.db`.
+at all** — only rendered narrative (RESULTS.md, JOURNEY.md, this README,
+per-band detail pages) and charts.  All measurements (including answer values)
+live in the gitignored SQLite SSOT `data/bench-private.db`.
 
 This is a structural invariant, not a field-stripping discipline: leak
 prevention is enforced at the file-system boundary by `.gitignore` plus a
@@ -79,13 +101,21 @@ that rejects any staged file under `data/` not on the small config allowlist
 
 | Path | What |
 |------|------|
-| `RESULTS.md` | The numbers — rankings, per-problem grid, methodology |
+| `RESULTS.md` | Per-tier rankings, coverage heatmap, methodology |
+| `per_problem/per_problem_*.md` | Per-band timing detail tables (one page per 100-problem band) |
 | `JOURNEY.md` | The story — how we got here, what we learned, what we tried that didn't work |
 | `cmd/euler-bench/` | The Go bench + write tool (`run`, `failures`, `status`, `per-iter`) — single SSOT writer |
-| `report.py` | Markdown + chart generator (reads SQLite SSOT, writes `RESULTS.md` + `charts/`) |
+| `report.py` | Markdown + chart generator (reads SQLite SSOT, writes `RESULTS.md` + `per_problem/*` + `charts/`) |
 | `data/bench-private.db` | SQLite SSOT (gitignored) — `runs` + `run_history` tables |
-| `data/{tiers,parked,difficulty,levels}.json` | Config files (versioned) — tier model, parked-problem list, PE-site metadata |
-| `scripts/sanitization_gate.py` | Pre-commit hook: rejects any raw bench data file (`*.json`/`*.db`) outside the config allowlist |
+| `data/tiers.json` | Tier model SSOT — which languages are in scope for which problem range |
+| `data/{parked,difficulty,levels}.json` | Other config (parked problems, PE-site metadata) |
+| `scripts/tiers.py` | Shared tier helper — `load_tiers`, `langs_in_tier`, `in_scope`, etc. |
+| `scripts/sanitization_gate.py` | Pre-commit hook: rejects any raw bench data file outside the config allowlist |
+| `charts/per_iter_total.png` | Foundation per-invocation total (10 langs over the common set) |
+| `charts/per_iter_total_tier2.png` | Deep Coverage per-invocation total (4 langs over the tier-2 common set) |
+| `charts/per_iter_speed_vs_size.png` | Foundation speed vs source lines |
+| `charts/per_iter_speed_vs_size_tier2.png` | Deep Coverage speed vs source lines |
+| `charts/per_iter_coverage_grid.{png,svg}` | Tier-aware coverage heatmap (3 bands × variable lang rows) |
 | `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era + per-tier coverage) — historical reference only |
 
 ## License + contact
