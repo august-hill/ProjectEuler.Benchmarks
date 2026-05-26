@@ -767,8 +767,14 @@ def render_per_problem_pages(agg: dict) -> list:
         lines.append("Median wall time per fresh-process invocation, one row per problem, one")
         lines.append("column per language in tier-1 display order (native → managed → interpreted).")
         if tier_lbl == "Deep Coverage":
+            # Live-derived from tiers.json so this stays correct as the
+            # tier-2 lang list changes (e.g., Rust joined 2026-05-25,
+            # bumping the count from 4 to 5).
+            n_tier2 = len(display_langs)
+            n_tier1_only = len(LANGS) - n_tier2
             lines.append("")
-            lines.append("> _Only the 4 Deep Coverage languages are shown — the other 6 are tier-1-only_")
+            lines.append(f"> _Only the {n_tier2} Deep Coverage languages are shown — the other "
+                         f"{n_tier1_only} are tier-1-only_")
             lines.append("> _(capped at problem 200 by the project's language-cap policy)._")
         lines.append("")
 
