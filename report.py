@@ -44,8 +44,10 @@ _PER_PROBLEM_DIR = PER_PROBLEM_DIR.name  # for relative links from RESULTS.md
 
 # Tier model — single source of truth at data/tiers.json, consumed via the
 # shared scripts/tiers.py helper. Tier 1 = Foundation (all 10 langs, 1-200);
-# Tier 2 = Deep Coverage (cpp/go/python/zig, 201-300); Tier 3 = Frontier
-# (cpp+go, 301+).  See project_pe_tier_model_2026-05-22 auto-memory for why.
+# Tier 2 = Deep Coverage (cpp/go/python/rust/zig, currently 201-400 — bumped
+# from 201-300 in the 2026-05-25 overnight expansion); Tier 3 = Frontier
+# (cpp+go, currently 401+ — was 301+ before the same expansion).
+# See project_pe_tier_model_2026-05-22 auto-memory for why.
 sys.path.insert(0, str(REPO / "scripts"))
 from tiers import (  # noqa: E402
     load_tiers, langs_in_tier, in_scope as _in_scope,
@@ -53,13 +55,17 @@ from tiers import (  # noqa: E402
 )
 _TIERS = load_tiers()
 
-# Scope: extended to 1-300 to cover tier-1 Foundation + tier-2 Deep Coverage.
-# Per-tier rendering filters out langs that aren't in scope for a given band
-# (e.g., ARM64 doesn't appear in the 201-300 band — it's tier-1 only).
-# Partial-coverage is supported and intentional — when a (lang, problem) cell
-# is unmeasured (AND the lang IS in scope per tier), report.py renders it as
-# "missing" in the grid and excludes it from per-lang totals.
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, 301)]
+# Scope: cover tier-1 Foundation + tier-2 Deep Coverage by deriving the upper
+# bound from tiers.json. Tier-3 Frontier is unbounded (hi=null) but we don't
+# iterate it here — Frontier renders as a separate per-tier ranking table
+# without a per-band heatmap. Per-tier rendering filters out langs that aren't
+# in scope for a given band (e.g., ARM64 doesn't appear in 201+ bands — it's
+# tier-1 only). Partial-coverage is supported and intentional — when a
+# (lang, problem) cell is unmeasured (AND the lang IS in scope per tier),
+# report.py renders it as "missing" in the grid and excludes it from per-lang
+# totals.
+_T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 400
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _T2_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.
@@ -1001,9 +1007,11 @@ def render_results_md(agg: dict) -> str:
     md.append("## Per-Problem Detail")
     md.append("")
     md.append("Median wall time per fresh-process invocation, for each (language, problem).")
+    _n_t1 = len(langs_in_tier("tier_1_foundation", _TIERS))
+    _n_t2 = len(langs_in_tier("tier_2_deep_coverage", _TIERS))
     md.append(f"Split across {len(_bands(SCOPE_PROBLEMS, BAND_SIZE))} pages, one per "
               f"{BAND_SIZE}-problem band, so this main page stays navigable.  Each band's "
-              f"table is tier-filtered (10 langs in Foundation bands, 4 in Deep Coverage).")
+              f"table is tier-filtered ({_n_t1} langs in Foundation bands, {_n_t2} in Deep Coverage).")
     md.append("")
     md.append("| Band | Tier | Languages | Page |")
     md.append("|------|------|-----------|------|")
