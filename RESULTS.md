@@ -1,12 +1,12 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3000 in-scope cells across 400 problems × tiered languages — 2644 measured (88.1% coverage).**
+> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2577 measured (83.1% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 400-problem scope.
+> core, then the disciplined expansion to today's 500-problem scope.
 
 ## Foundation — Tier 1 (10 languages, problems 1-200)
 
@@ -42,27 +42,48 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 ![Speed vs Code Size](charts/per_iter_speed_vs_size.png)
 
-## Deep Coverage — Tier 2 (5 languages, problems 201-400)
+## Deep Coverage — Tier 2 (5 languages, problems 201-300)
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-### Per-Invocation Cost (Common Set, 78 of 200 problems)
+### Per-Invocation Cost (Common Set, 66 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Total (78-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (66-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 10.29 s | 10,227 | 1.00× |
-| 2 | **Go** | 11.19 s | 7,845 | 1.09× |
-| 3 | **Zig** | 11.36 s | 8,389 | 1.10× |
-| 4 | **Rust** | 11.85 s | 7,353 | 1.15× |
-| 5 | **Python** | 162.27 s | 5,261 | 15.78× |
+| 1 | **C++** | 7.96 s | 8,832 | 1.00× |
+| 2 | **Go** | 9.02 s | 6,486 | 1.13× |
+| 3 | **Rust** | 9.10 s | 6,216 | 1.14× |
+| 4 | **Zig** | 9.77 s | 7,003 | 1.23× |
+| 5 | **Python** | 140.44 s | 4,418 | 17.64× |
 
 ### Speed vs Code Size
 
-Same scatter as the Foundation chart, restricted to the tier-2 active languages over problems 201–400.
+Same scatter as the Foundation chart, restricted to the tier-2 active languages over problems 201–300.
 
 ![Speed vs Size — Tier 2](charts/per_iter_speed_vs_size_tier2.png)
+
+## Frontier — Tier 3 (3 languages, problems 301+)
+
+The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
+
+### Per-Invocation Cost (Common Set, 58 of ≤200 problems in scope)
+
+_Common set computed over the **2 active** tier-3 langs_ _(C++, Go);_ _awaiting: Rust (below 50% coverage threshold). Common set will tighten once awaited langs reach majority coverage in tier 3._
+
+![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
+
+| Rank | Language | Total (58-problem common set) | Lines of code | vs Fastest |
+|------|----------|--------------------:|--------------:|-----------:|
+| 1 | **C++** | 37.94 s | 6,448 | 1.00× |
+| 2 | **Go** | 42.13 s | 6,542 | 1.11× |
+
+### Speed vs Code Size
+
+Same scatter as the Foundation chart, restricted to the tier-3 active languages over problems 301–+.
+
+![Speed vs Size — Tier 3](charts/per_iter_speed_vs_size_tier3.png)
 
 ## Coverage Heatmap
 
@@ -81,7 +102,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 4 bands), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 5 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
@@ -93,14 +114,15 @@ language.  No red or black cells: the audit gate is holding.
 ## Per-Problem Detail
 
 Median wall time per fresh-process invocation, for each (language, problem).
-Split across 4 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
+Split across 5 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
 
 | Band | Tier | Languages | Page |
 |------|------|-----------|------|
 | p001–p100 | Foundation | 10 | [Open](per_problem/per_problem_001-100.md) |
 | p101–p200 | Foundation | 10 | [Open](per_problem/per_problem_101-200.md) |
 | p201–p300 | Deep Coverage | 5 | [Open](per_problem/per_problem_201-300.md) |
-| p301–p400 | Deep Coverage | 5 | [Open](per_problem/per_problem_301-400.md) |
+| p301–p400 | Frontier | 3 | [Open](per_problem/per_problem_301-400.md) |
+| p401–p500 | Frontier | 3 | [Open](per_problem/per_problem_401-500.md) |
 
 ## Method
 
@@ -149,7 +171,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 400 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 500 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -223,7 +245,7 @@ language honesty — the OS enforces it for free.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-400 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-500 --iters 10 --write
 python3 report.py
 ```
 

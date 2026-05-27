@@ -55,17 +55,19 @@ from tiers import (  # noqa: E402
 )
 _TIERS = load_tiers()
 
-# Scope: cover tier-1 Foundation + tier-2 Deep Coverage by deriving the upper
-# bound from tiers.json. Tier-3 Frontier is unbounded (hi=null) but we don't
-# iterate it here — Frontier renders as a separate per-tier ranking table
-# without a per-band heatmap. Per-tier rendering filters out langs that aren't
-# in scope for a given band (e.g., ARM64 doesn't appear in 201+ bands — it's
-# tier-1 only). Partial-coverage is supported and intentional — when a
-# (lang, problem) cell is unmeasured (AND the lang IS in scope per tier),
-# report.py renders it as "missing" in the grid and excludes it from per-lang
-# totals.
-_T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 400
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _T2_HI + 1)]
+# Scope: cover tier-1 Foundation + tier-2 Deep Coverage + tier-3 Frontier
+# (capped at 500 because tier-3 hi is unbounded but we don't iterate forever).
+# Per-tier rendering filters out langs that aren't in scope for a given band
+# (e.g., ARM64 doesn't appear in 201+ bands — it's tier-1 only; python/zig
+# don't appear in 301+ bands — they're tier-1+tier-2 only). Partial-coverage
+# is supported and intentional — when a (lang, problem) cell is unmeasured
+# (AND the lang IS in scope per tier), report.py renders it as "missing" in
+# the grid and excludes it from per-lang totals.
+_T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
+_T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
+# Display cap: max(t2_hi, 500) covers current tier-3 work range with headroom.
+_DISPLAY_HI = max(_T2_HI, 500)
+SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.
@@ -762,6 +764,119 @@ def render_speed_vs_size_chart_tier2(agg: dict):
     return out
 
 
+def _tier3_meta(agg: dict):
+    """Pull tier-3 active langs + common-set. Returns (active, common, t3_dict)
+    or (None, None, None) if there's no tier-3 data yet. Clone of _tier2_meta
+    with key tier_3_frontier — added 2026-05-26 when rust joined cpp+go in the
+    frontier verification trio."""
+    t3 = agg["_common_per_tier"].get("tier_3_frontier", {})
+    common = t3.get("problems", [])
+    active = t3.get("langs", [])
+    if not active or not common:
+        return None, None, None
+    return active, common, t3
+
+
+def render_total_chart_tier3(agg: dict):
+    """Tier-3 analog of render_total_chart_tier2 — common-set across ACTIVE
+    tier-3 langs (cpp/go/rust). Returns None if no data yet. Rust is the
+    common-set ceiling initially (smallest 301+ coverage); the chart populates
+    as rust's frontier ports land."""
+    active, common, t3 = _tier3_meta(agg)
+    if active is None:
+        return None
+    designated = t3["designated_langs"]
+    rows = [(lang, t3["per_lang_total_ns"][lang]) for lang in active
+            if t3["per_lang_total_ns"][lang] > 0]
+    rows.sort(key=lambda r: r[1])
+    labels = [DISPLAY[lang] for lang, _ in rows]
+    values_ms = [v / 1_000_000 for _, v in rows]
+    colors = [COLOR[lang] for lang, _ in rows]
+
+    t3_lo, t3_hi = tier_problem_range("tier_3_frontier", _TIERS)
+    t3_hi_label = f"{t3_hi}" if t3_hi else "+"
+    fig, ax = plt.subplots(figsize=(10, 3.5))
+    y_pos = range(len(labels))
+    ax.barh(y_pos, values_ms, color=colors)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_xscale("log")
+    ax.set_xlabel(f"Total per-invocation cost across the {len(common)}-problem tier-3 common set (ms, log scale)")
+    inactive = [l for l in designated if l not in active]
+    inactive_note = (
+        f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
+        if inactive else ""
+    )
+    common_lo = int(min(common))
+    common_hi = int(max(common))
+    range_note = (
+        f"spans p{common_lo:03d}–p{common_hi:03d}"
+        if (common_hi - common_lo + 1) > len(common)
+        else f"contiguous p{common_lo:03d}–p{common_hi:03d}"
+    )
+    ax.set_title(
+        f"Per-Invocation Cost — Frontier (Tier 3, problems {t3_lo}{t3_hi_label if t3_hi else '+'}, "
+        f"{len(active)} active of {len(designated)} langs{inactive_note})\n"
+        f"Common set: {len(common)} problems ({range_note}) passing in {', '.join(DISPLAY[l] for l in active)}"
+    )
+    for i, ms in enumerate(values_ms):
+        if ms >= 100:
+            label = f"{ms:.0f} ms"
+        elif ms >= 10:
+            label = f"{ms:.1f} ms"
+        else:
+            label = f"{ms:.2f} ms"
+        ax.text(ms * 1.02, i, label, va="center", fontsize=9)
+    ax.grid(axis="x", which="major", alpha=0.3)
+    ax.grid(axis="x", which="minor", alpha=0.15)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_total_tier3.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
+def render_speed_vs_size_chart_tier3(agg: dict):
+    """Tier-3 analog of render_speed_vs_size_chart_tier2. Returns None if no data."""
+    active, common, t3 = _tier3_meta(agg)
+    if active is None:
+        return None
+    designated = t3["designated_langs"]
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for lang in active:
+        x = t3["per_lang_total_lines"][lang]
+        y_ms = t3["per_lang_total_ns"][lang] / 1_000_000
+        if x == 0 or y_ms == 0:
+            continue
+        ax.scatter(x, y_ms, s=200, c=COLOR[lang], edgecolors="black",
+                   linewidths=0.6, alpha=0.85, zorder=3)
+        ax.annotate(DISPLAY[lang], xy=(x, y_ms), xytext=(8, 4),
+                    textcoords="offset points", fontsize=10,
+                    bbox=dict(boxstyle="round,pad=0.2", fc="white",
+                              ec="none", alpha=0.85))
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    t3_lo, t3_hi = tier_problem_range("tier_3_frontier", _TIERS)
+    t3_hi_label = f"{t3_hi}" if t3_hi else "+"
+    ax.set_xlabel(f"Total source lines across tier-3 problems {t3_lo}–{t3_hi_label} (log scale)")
+    ax.set_ylabel("Total per-invocation cost — ms (log scale)")
+    inactive = [l for l in designated if l not in active]
+    inactive_note = f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}" if inactive else ""
+    ax.set_title(
+        f"Speed vs Code Size — Frontier (Tier 3, problems {t3_lo}–{t3_hi_label}, "
+        f"{len(active)} active{inactive_note})\n"
+        f"Common set: {len(common)} problems"
+    )
+    ax.grid(which="major", alpha=0.3)
+    ax.grid(which="minor", alpha=0.12)
+    plt.tight_layout()
+    out = CHARTS_DIR / "per_iter_speed_vs_size_tier3.png"
+    plt.savefig(out, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out
+
+
 def render_per_problem_pages(agg: dict) -> list:
     """Write one per_problem_NNN-MMM.md file per band, return the list of paths.
 
@@ -983,6 +1098,64 @@ def render_results_md(agg: dict) -> str:
         md.append(f"> _Tier 2 common-set is currently empty — no active language reaches 50% "
                   f"coverage in problems {t2_lo}-{t2_hi} yet. The ranking and charts will "
                   f"populate as benching continues._")
+        md.append("")
+
+    # Tier 3: Frontier ranking (cpp/go/rust at 301+). Mirrors tier-2 shape.
+    t3 = agg["_common_per_tier"].get("tier_3_frontier", {})
+    t3_common = t3.get("problems", [])
+    t3_langs = t3.get("langs", [])
+    t3_designated = t3.get("designated_langs", [])
+    t3_lo, t3_hi = tier_problem_range("tier_3_frontier", _TIERS)
+    t3_hi_label = f"{t3_hi}" if t3_hi else "+"
+    md.append(f"## Frontier — Tier 3 ({len(t3_designated)} languages, problems {t3_lo}{t3_hi_label if t3_hi else '+'})")
+    md.append("")
+    md.append(f"The frontier verification trio — {', '.join(DISPLAY[l] for l in t3_designated)} — "
+              f"on problems above {t2_hi}. 3-way cross-language agreement is the verification "
+              f"protocol (strictly stronger than 2-way; see JOURNEY.md \"Tier Reframing\" episode "
+              f"for the p254 lesson that motivated it). Python and Zig are explicitly out of this "
+              f"tier — python's wall cost makes it impractical at level 5+, and zig's role caps at "
+              f"Tier 2.")
+    md.append("")
+    inactive_t3 = [l for l in t3_designated if l not in t3_langs]
+    if t3_common:
+        t3_size = (t3_hi - t3_lo + 1) if t3_hi else (_DISPLAY_HI - t3_lo + 1)
+        md.append(f"### Per-Invocation Cost (Common Set, {len(t3_common)} of ≤{t3_size} problems in scope)")
+        md.append("")
+        if inactive_t3:
+            md.append(f"_Common set computed over the **{len(t3_langs)} active** tier-3 langs_ "
+                      f"_({', '.join(DISPLAY[l] for l in t3_langs)});_ "
+                      f"_awaiting: {', '.join(DISPLAY[l] for l in inactive_t3)} "
+                      f"(below 50% coverage threshold). Common set will tighten once awaited langs "
+                      f"reach majority coverage in tier 3._")
+            md.append("")
+        if (CHARTS_DIR / "per_iter_total_tier3.png").exists():
+            md.append("![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)")
+            md.append("")
+        t3_ranked = sorted(
+            [(lang, t3["per_lang_total_ns"][lang]) for lang in t3_langs
+             if t3["per_lang_total_ns"][lang] > 0],
+            key=lambda r: r[1],
+        )
+        t3_fastest = t3_ranked[0][1] if t3_ranked else 1
+        md.append(f"| Rank | Language | Total ({len(t3_common)}-problem common set) | Lines of code | vs Fastest |")
+        md.append("|------|----------|--------------------:|--------------:|-----------:|")
+        for i, (lang, total) in enumerate(t3_ranked, 1):
+            ratio = total / t3_fastest
+            lines = t3["per_lang_total_lines"][lang]
+            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+        md.append("")
+        if (CHARTS_DIR / "per_iter_speed_vs_size_tier3.png").exists():
+            md.append("### Speed vs Code Size")
+            md.append("")
+            md.append(f"Same scatter as the Foundation chart, restricted to the "
+                      f"tier-3 active languages over problems {t3_lo}–{t3_hi_label}.")
+            md.append("")
+            md.append("![Speed vs Size — Tier 3](charts/per_iter_speed_vs_size_tier3.png)")
+            md.append("")
+    else:
+        md.append(f"> _Tier 3 common-set is currently empty — no active language reaches 50% "
+                  f"coverage in problems {t3_lo}+ yet. The ranking and charts will populate as "
+                  f"the rust port wave (cpp→rust 301-400 catchup) lands._")
         md.append("")
 
     md.append("## Coverage Heatmap")
@@ -1215,6 +1388,13 @@ def main() -> int:
     t2_svs = render_speed_vs_size_chart_tier2(agg)
     if t2_svs:
         print(f"=== Chart written: {t2_svs}")
+    # Tier-3 charts — same rendering shape; cpp/go/rust frontier trio.
+    t3_total = render_total_chart_tier3(agg)
+    if t3_total:
+        print(f"=== Chart written: {t3_total}")
+    t3_svs = render_speed_vs_size_chart_tier3(agg)
+    if t3_svs:
+        print(f"=== Chart written: {t3_svs}")
 
     # Render per-band per-problem detail pages (one .md per band).  Done
     # BEFORE render_results_md so the index table in RESULTS.md links to

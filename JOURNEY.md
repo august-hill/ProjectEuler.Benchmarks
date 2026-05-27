@@ -1316,3 +1316,106 @@ it.** The triage step (iters=1 to filter pass/fail) is cheap; the agent
 session that ports from a dud is expensive in time, in confusion, and in
 the trust cost of having to roll back a "successful" port. Two extra hours
 of bench wall, traded for not paying that cost.
+
+## Episode: Tier Reframing (2026-05-26)
+
+The 2026-05-25 expansion bumped Tier 2 Deep Coverage from 201-300 to
+201-400 and left Tier 3 Frontier as cpp+go at 401+. After running bench
+chains across the new range we noticed the shape didn't sit right.
+
+### What we observed
+
+After tonight's bench chain populated 87 more cells in 301-400 across
+cpp/go/zig/rust, the tier-2 common-set ranking refused to grow into the
+new range. Math told the story: with rust at only 15 source files in
+301-400 and python at 54, the intersection of all 5 languages over the
+expanded range was capped at the rust count — and the 28 unbench'd python
+problems turned out to be entirely disjoint from the 13 problems where
+cpp/go/rust/zig all already passed. Benching those 28 python cells would
+have moved the ranking by zero problems. The tier definition was
+spreading thin without earning anything.
+
+At the same time, the "what is each language *for* in tier-2 vs tier-3"
+question had gotten genuinely confusing. Python was carrying a Deep
+Coverage commitment past level 5 (where its wall cost makes it impractical
+per the established prospector-vs-shipper memory). Zig was trickling into
+301-400 with no clear forward purpose — interesting at the boundary,
+uninteresting beyond. Rust had been promoted into Tier 2 on 2026-05-25
+specifically to be a verification anchor, but the 301-400 work it did was
+sitting in the same tier as python and zig instead of being recognized as
+the harder cross-language verification it actually was.
+
+### The reframing
+
+Two minimal edits to `data/tiers.json`:
+
+- **Tier 2 Deep Coverage** narrowed from 201-400 back to **201-300**.
+  Membership unchanged: cpp/go/python/rust/zig. This is the natural
+  apples-among-five surface where all five languages can credibly
+  participate.
+
+- **Tier 3 Frontier** widened from 401+ to **301+**, membership expanded
+  from cpp+go to **cpp/go/rust**. Rust joins the verification trio.
+
+The change isn't about *less coverage* — it's about putting each
+language's work where it earns its keep. Python and zig keep all their
+existing 301+ solutions as historical exceptions; the source files don't
+move, the bench data doesn't disappear. What moves is which cells count
+toward the cross-tier comparison stats.
+
+### Why a trio is strictly stronger than a pair
+
+The 2026-05-25 p254 incident gave us a concrete case: cpp had an int
+truncation bug, several porting agents faithfully mirrored it because
+they accepted cpp as canonical without independent reasoning, and the bug
+sat for ~2 weeks before Rust caught it (by *refusing to compile* the
+mirror — Rust's stricter types surfaced what cpp's loose ones hid). With
+only two implementations, a shared misreading or shared bug propagates
+silently; the second implementation just confirms the first. A third
+independent implementation makes that failure mode much harder — all
+three would have to make the same mistake to agree on the wrong answer.
+
+This is the well-known principle behind triple-modular-redundancy in
+fault-tolerant computing; the PE verification protocol now follows it.
+
+### Why rust as the third frontier language
+
+Rust earns this role on two grounds. First, its strict type system has
+already caught a cpp bug in production (p254), demonstrating exactly the
+kind of independent-implementation discipline the trio is meant to
+provide. Second, of the systems languages in the suite, it's the
+cleanest to audit by hand — the borrow checker forces decisions that
+zig's looser allocator model or cpp's manual memory management leave
+implicit. When the canonical answer is wrong, you want the lang most
+likely to refuse to play along.
+
+### What this means in practice
+
+- Tier 2 ranking is unchanged at the moment of the reframing (the
+  existing common-set was already inside 201-300; the renaming just
+  makes that explicit rather than incidental).
+- Tier 3 ranking emerges with cpp/go/rust over 301+, and the current
+  common-set there is capped by rust's coverage. Rust currently has 15
+  source files passing in 301-400; cpp and go have ~60 each. So the
+  Tier 3 common-set in 301-400 starts at ~14 problems — meaningful but
+  small.
+- The natural next-step work is a Rust port wave for 301-400 (47 cpp
+  solutions to port). Each port that lands raises the Tier 3
+  common-set ceiling by one. This is the new build-out track.
+- For the 38 cpp-unsolved problems in 301-400 (the genuinely
+  cpp-doesn't-have-a-solution-yet ones), the verification protocol is
+  now triple: cpp+go+rust independent implementations agreeing.
+  Python stays available as a fourth opinion when sympy/mpmath give a
+  structurally different algorithmic approach, but the canonical trio
+  is the source of truth.
+
+### Methodology lesson
+
+Tier definitions are not just labels — they imply work commitments and
+verification protocols. When tier-2 spread thin across 201-400 with
+five languages, we had a definition that *sounded* expansive but
+*delivered* a smaller cross-language comparison surface (capped by the
+weakest member). Narrowing the tier where the membership makes sense,
+and tightening tier-3 around the languages that earn verification
+weight, produces a smaller but more honest set of comparisons. Less
+real-estate, more signal.
