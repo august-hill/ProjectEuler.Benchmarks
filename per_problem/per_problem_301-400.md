@@ -84,7 +84,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p375** | — | — | — |
 | **p376** | — | — | — |
 | **p377** | — | — | — |
-| **p378** | 3.59 s | — | 3.59 s |
+| **p378** | 3.59 s | 3.12 s | 3.59 s |
 | **p379** | 2.23 s | 2.39 s | 2.27 s |
 | **p380** | — | — | — |
 | **p381** | 504.11 ms | 357.60 ms | 425.47 ms |
