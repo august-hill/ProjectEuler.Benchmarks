@@ -10,14 +10,14 @@
     "tier_2_deep_coverage": {
       "label": "Deep Coverage",
       "langs": ["cpp", "go", "python", "rust", "zig"],
-      "problem_range": [201, 400],
-      "description": "Languages we've intentionally pushed past 200; richer comparison among the deeper five. Range expanded 201-300 → 201-400 on 2026-05-25 (overnight session) to broaden the Deep Coverage comparison surface; ports waves dispatched in this session bring rust/zig/python/go up to cpp's coverage envelope in 201-400. Rust promoted 2026-05-25 — replaces Zig as the user-auditable native lang for long-term maintenance, while keeping Zig in for compiled-lang diversity."
+      "problem_range": [201, 300],
+      "description": "Languages we've intentionally pushed past 200; the 5-lang comparison surface for the 201-300 band. Range was briefly expanded to 201-400 on 2026-05-25 then narrowed back to 201-300 on 2026-05-26 — python and zig are explicitly NOT extended into 301+ (python out-of-gas at level 5+, zig deliberately uninteresting for tier-3 work). This is the natural ceiling for Deep Coverage; tier 3 takes over above 300 with a tighter 3-lang trio."
     },
     "tier_3_frontier": {
       "label": "Frontier",
-      "langs": ["cpp", "go"],
-      "problem_range": [401, null],
-      "description": "C++ and Go paired on unexplored problems. Lower bound bumped 301 → 401 on 2026-05-25 alongside the tier-2 expansion. Go replaces Python as C++'s exploration partner (decided 2026-05-22 — Python's wall cost made it impractical above level 4)."
+      "langs": ["cpp", "go", "rust"],
+      "problem_range": [301, null],
+      "description": "C++, Go, and Rust as the verification trio for unexplored problems. Rust promoted into the trio on 2026-05-26 — 3-way cross-language agreement is strictly stronger than 2-way (harder to fall into a shared-misreading trap like the 2026-05-25 p254 incident). Lower bound moved 401 → 301 on 2026-05-26 to reframe 301-400 from 'tier-2 extension' to 'tier-3 build-out' where rust is the natural ceiling-setting lang."
     }
   },
   "_historical_exceptions_note": "Languages may have committed solutions beyond their highest tier's problem_range (e.g., Rust has 36 problems above 200). Those stay preserved per the historical-exception convention in project_200_cap_policy auto-memory, but do NOT count for tier-comparison stats. Reports show them only in the lang's own data, not in cross-tier rankings."

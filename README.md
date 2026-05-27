@@ -19,14 +19,14 @@ tier.  Live definitions in [`data/tiers.json`](data/tiers.json).
 | Tier | Problem range | Languages in scope | Role |
 |------|---------------|---------------------|------|
 | **Foundation** | 1–200 | All 10 (ARM64, C, C++, C#, Go, Java, JS, Python, Rust, Zig) | Apples-to-apples 10-language comparison — the headline ranking |
-| **Deep Coverage** | 201–400 | C++, Go, Python, Rust, Zig | Deeper comparison among the 5 languages that intentionally extend past 200 |
-| **Frontier** | 401+ | C++, Go | Exploration zone — C++ as deep-frontier reference, Go as verification pair |
+| **Deep Coverage** | 201–300 | C++, Go, Python, Rust, Zig | Deeper comparison among the 5 languages that intentionally extend past 200 |
+| **Frontier** | 301+ | C++, Go, Rust | Exploration zone — 3-way C++/Go/Rust verification trio on unexplored problems |
 
 Foundation problems are the apples-to-apples cross-language comparison surface.
 Deep Coverage extends 5 of those languages to harder problems; the other 5 are
 intentionally capped at 200 to keep the 10-language story clean.  Frontier work
-ships as paired C++/Go implementations (the verification protocol — see
-[JOURNEY.md](JOURNEY.md)).
+ships as paired C++/Go/Rust implementations — 3-way agreement is the
+verification protocol (see [JOURNEY.md](JOURNEY.md)).
 
 **See [RESULTS.md](RESULTS.md)** for per-tier rankings, the tier-aware coverage
 heatmap, and full methodology.  Per-problem detail tables live under
@@ -69,8 +69,11 @@ cd benchmarks
 # Foundation tier (all 10 langs, 1-200) — the apples-to-apples surface
 cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
 
-# Deep Coverage tier (5 langs, 201-400) — language extension
-cmd/euler-bench/euler-bench per-iter --lang cpp,go,python,rust,zig --problems 201-400 --iters 10 --write
+# Deep Coverage tier (5 langs, 201-300) — language extension
+cmd/euler-bench/euler-bench per-iter --lang cpp,go,python,rust,zig --problems 201-300 --iters 10 --write
+
+# Frontier tier (3 langs, 301+) — C++/Go/Rust verification trio on unexplored work
+cmd/euler-bench/euler-bench per-iter --lang cpp,go,rust --problems 301-500 --iters 10 --write
 
 # Regen RESULTS.md + per-band detail pages + all charts (PNG + SVG)
 python3 report.py
