@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2607 measured (84.1% coverage).**
+> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2612 measured (84.3% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -68,16 +68,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 58 of ≤200 problems in scope)
-
-_Common set computed over the **2 active** tier-3 langs_ _(C++, Go);_ _awaiting: Rust (below 50% coverage threshold). Common set will tighten once awaited langs reach majority coverage in tier 3._
+### Per-Invocation Cost (Common Set, 50 of ≤200 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Total (58-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (50-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 37.94 s | 6,448 | 1.00× |
-| 2 | **Go** | 42.13 s | 6,542 | 1.11× |
+| 1 | **C++** | 7.67 s | 5,385 | 1.00× |
+| 2 | **Rust** | 7.74 s | 5,295 | 1.01× |
+| 3 | **Go** | 11.86 s | 5,530 | 1.55× |
 
 ### Speed vs Code Size
 

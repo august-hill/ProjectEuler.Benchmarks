@@ -25,10 +25,10 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p316** | 53.89 ms | 25.28 ms | 107.20 ms |
 | **p317** | 83 ns | 42 ns | 1.2 µs |
 | **p318** | 276.5 µs | 206.5 µs | 370.1 µs |
-| **p319** | 273.69 ms | — | 801.20 ms |
+| **p319** | 273.69 ms | 210.80 ms | 801.20 ms |
 | **p320** | — | — | — |
 | **p321** | 2.8 µs | 1.1 µs | 9.5 µs |
-| **p322** | 401.50 ms | — | 876.06 ms |
+| **p322** | 401.50 ms | 391.15 ms | 876.06 ms |
 | **p323** | 167 ns | 333 ns | 2.3 µs |
 | **p324** | 177.79 ms | 122.52 ms | 71.64 ms |
 | **p325** | 18.5 µs | 10.6 µs | 31.8 µs |
@@ -54,7 +54,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p345** | 1.98 ms | 1.06 ms | 1.68 ms |
 | **p346** | 57.45 ms | 25.34 ms | 69.29 ms |
 | **p347** | 27.61 ms | 14.53 ms | 14.23 ms |
-| **p348** | 184.66 ms | — | 238.41 ms |
+| **p348** | 184.66 ms | 183.91 ms | 238.41 ms |
 | **p349** | 4.04 ms | 5.27 ms | 11.93 ms |
 | **p350** | 8.82 ms | 8.64 ms | 10.10 ms |
 | **p351** | 6.08 ms | 6.08 ms | 9.59 ms |
@@ -71,7 +71,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p362** | — | — | — |
 | **p363** | 9.98 ms | 10.77 ms | 31.24 ms |
 | **p364** | — | — | — |
-| **p365** | 273.65 ms | — | 126.84 ms |
+| **p365** | 273.65 ms | 142.10 ms | 126.84 ms |
 | **p366** | — | — | — |
 | **p367** | — | — | — |
 | **p368** | — | — | — |
@@ -87,7 +87,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p378** | 3.59 s | — | 3.59 s |
 | **p379** | 2.23 s | — | 2.27 s |
 | **p380** | — | — | — |
-| **p381** | 504.11 ms | — | 425.47 ms |
+| **p381** | 504.11 ms | 357.60 ms | 425.47 ms |
 | **p382** | — | — | — |
 | **p383** | — | — | — |
 | **p384** | — | — | — |
