@@ -19,7 +19,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p310** | 66.49 ms | — | 37.66 ms |
 | **p311** | 5.01 s | — | 6.66 s |
 | **p312** | 6.3 µs | 9.2 µs | 4.8 µs |
-| **p313** | 4.95 ms | — | 3.22 ms |
+| **p313** | 4.95 ms | 3.98 ms | 3.22 ms |
 | **p314** | 4.90 s | — | — |
 | **p315** | 122.89 ms | — | 165.97 ms |
 | **p316** | 53.89 ms | — | 107.20 ms |
@@ -55,9 +55,9 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p346** | 57.45 ms | 25.34 ms | 69.29 ms |
 | **p347** | 27.61 ms | 14.53 ms | 14.23 ms |
 | **p348** | 184.66 ms | — | 238.41 ms |
-| **p349** | 4.04 ms | — | 11.93 ms |
-| **p350** | 8.82 ms | — | 10.10 ms |
-| **p351** | 6.08 ms | — | 9.59 ms |
+| **p349** | 4.04 ms | 5.27 ms | 11.93 ms |
+| **p350** | 8.82 ms | 8.64 ms | 10.10 ms |
+| **p351** | 6.08 ms | 6.08 ms | 9.59 ms |
 | **p352** | — | — | — |
 | **p353** | — | — | — |
 | **p354** | — | — | — |
@@ -93,7 +93,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p384** | — | — | — |
 | **p385** | — | — | — |
 | **p386** | — | — | — |
-| **p387** | 1.41 ms | — | 1.26 ms |
+| **p387** | 1.41 ms | 1.12 ms | 1.26 ms |
 | **p388** | — | — | — |
 | **p389** | 1.1 µs | 2.3 µs | 16.0 µs |
 | **p390** | — | — | — |
