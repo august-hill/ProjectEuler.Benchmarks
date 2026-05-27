@@ -1419,3 +1419,114 @@ weakest member). Narrowing the tier where the membership makes sense,
 and tightening tier-3 around the languages that earn verification
 weight, produces a smaller but more honest set of comparisons. Less
 real-estate, more signal.
+
+## Episode: Rust LTO doc/code drift, fixed forward (2026-05-27)
+
+Two independent agents porting Rust problems during the 2026-05-26 tier-3
+build-out wave flagged the same anomaly within minutes of each other:
+the rust CLAUDE.md claimed per-problem release builds use
+`[profile.release] opt-level=3 lto=true` and take "2-5s", but the actual
+per-problem Cargo.toml template (and every Cargo.toml in the repo) had
+no `[profile.release]` block at all, and builds were completing in
+~0.25s. The doc was aspirational. The code was vanilla cargo defaults.
+
+### How long had this been the case
+
+Looking back through git history, the LTO line in CLAUDE.md was there
+from the rust repo's earliest days — likely a copy-paste from someone's
+mental model of what production Rust binaries look like, never actually
+implemented. So the rust suite has been benchmarked at "cargo's default
+release" the entire time: `opt-level = 3` (yes), `lto = false`,
+`codegen-units = 16`. Cross-lang comparisons against C++ (which gets
+full whole-program optimization within its single translation unit via
+`-O3`) have been mildly unfair to Rust the whole time. By how much?
+The Rust performance book and a small survey of well-known OSS Rust
+projects suggested roughly 0-15%, with the win concentrated on small/fast
+problems where the harness boundary cost is relatively large.
+
+### The survey
+
+A quick web pass through OSS Rust CLI tools settled the convention
+question:
+
+- **bat / fd / eza**: all use the same recipe — `[profile.release]` with
+  `lto = true`, `codegen-units = 1`, `strip = true`. Standard "I want my
+  binary fast" config.
+- **ripgrep**: keeps base `[profile.release]` minimal (`debug = 1`) and
+  defines a separate `[profile.release-lto]` for ship builds. Dev
+  iteration uses `--release`, CI/release builds use
+  `--profile release-lto`. Split-the-difference approach.
+- **deno**: most aggressive — fat LTO + `opt-level = 'z'` (size) +
+  `panic = "abort"`, plus an opt-in `release-lite` profile with thin LTO
+  + 128 codegen-units for fast incremental dev.
+- **rust-analyzer / tokio**: don't override release at all. Libraries
+  defer profile choice to consumers.
+
+The CLI-tools pattern matched our shape (each `problem_NNN` is a small
+standalone binary whose runtime is exactly what we publish), so the
+question collapsed to "do we want one profile or two."
+
+### The decision
+
+We picked ripgrep's split. Each per-problem `Cargo.toml` now declares
+two profiles:
+
+```toml
+# Dev iteration: fast compile, symbols intact for panic backtraces
+[profile.release]
+debug = 1
+
+# Bench/ship: full optimization
+[profile.release-lto]
+inherits = "release"
+debug = false
+strip = "symbols"
+lto = true
+codegen-units = 1
+panic = "abort"
+```
+
+Build invocations:
+- `cargo build --release` → `target/release/problem_NNN` — fast iteration
+  with symbols (~0.25s build, dev-friendly)
+- `cargo build --profile release-lto` → `target/release-lto/problem_NNN`
+  — fully optimized (~2-5s build, what gets measured)
+
+The two artifacts coexist in different `target/` subdirectories without
+invalidating each other, so switching between profiles during a session
+doesn't trigger rebuilds.
+
+The `euler-bench` Rust adapter was updated to invoke
+`cargo build --profile release-lto` and look for binaries in
+`target/release-lto/`. All 351 per-problem `Cargo.toml` files in the
+repo got the two profile blocks appended in one mechanical sweep (the
+template at `problem_290` was edited by hand first, the rest by a small
+Python script).
+
+### Re-benching
+
+Switching the profile means the entire rust history of bench numbers is
+now under the wrong optimization regime — they were all measured at
+no-LTO and the published comparison would be incoherent if the new and
+old data mixed. So a clean re-bench of all rust cells (currently ~310
+problems across the tier-1 + tier-2 + tier-3 ranges) followed. At
+~2-5s build per problem + the cells' actual runtimes, the wall budget
+for the full re-bench was ~30-90 minutes, run autonomously in the
+background while the editorial work landed.
+
+### Methodology lesson
+
+Doc/code drift like this is the bench equivalent of a measurement-unit
+bug. The numbers were honest within their own regime, but the regime
+didn't match the documented intent, so anyone reading "Rust was
+benchmarked with LTO" was getting a wrong story about what the data
+meant. The fix is straightforward when the drift is caught early — a
+template edit, a mechanical sweep across existing files, an adapter
+change in the bench tool, a re-bench. The cost was real but bounded.
+
+The fact that two unrelated porting agents independently noticed within
+hours of each other (each reporting "wait, the builds are way faster
+than the doc claims") was a useful canary. Cross-agent corroboration
+on an anomaly is high-signal — neither agent was looking for the drift,
+both stumbled into it. Worth treating that pattern as a discovery
+mechanism, not just noise to filter out.

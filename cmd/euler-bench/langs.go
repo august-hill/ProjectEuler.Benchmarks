@@ -94,23 +94,27 @@ var languages = []Lang{
 		Key: "rust", Display: "Rust", Repo: "rust",
 		SrcFile: "src/main.rs", SrcSubdir: true,
 		BuildArgs: func(repoDir, probDir string) [][]string {
-			return [][]string{{"cargo", "build", "--release", "-q"}}
+			// Use the custom release-lto profile defined in each per-problem
+			// Cargo.toml (fat LTO + codegen-units=1 + strip + panic=abort).
+			// Default `cargo build --release` is reserved for dev iteration
+			// (debug=1 in [profile.release]). Bench measures the ship build.
+			return [][]string{{"cargo", "build", "--profile", "release-lto", "-q"}}
 		},
 		RunArgs: func(_, probDir string) (string, []string) {
 			name := filepath.Base(probDir)
-			bin := filepath.Join("target", "release", name)
+			bin := filepath.Join("target", "release-lto", name)
 			if _, err := os.Stat(filepath.Join(probDir, bin)); err == nil {
 				return bin, nil
 			}
-			// Fallback: find first executable in target/release
-			entries, _ := os.ReadDir(filepath.Join(probDir, "target", "release"))
+			// Fallback: find first executable in target/release-lto
+			entries, _ := os.ReadDir(filepath.Join(probDir, "target", "release-lto"))
 			for _, e := range entries {
 				if e.IsDir() || strings.HasSuffix(e.Name(), ".d") {
 					continue
 				}
 				info, _ := e.Info()
 				if info != nil && info.Mode()&0111 != 0 {
-					return filepath.Join("target", "release", e.Name()), nil
+					return filepath.Join("target", "release-lto", e.Name()), nil
 				}
 			}
 			return bin, nil // fallback to expected name
