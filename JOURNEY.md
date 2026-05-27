@@ -1530,3 +1530,45 @@ than the doc claims") was a useful canary. Cross-agent corroboration
 on an anomaly is high-signal — neither agent was looking for the drift,
 both stumbled into it. Worth treating that pattern as a discovery
 mechanism, not just noise to filter out.
+
+### Result: ~1.5-2% on harder tiers, position change in Tier 2
+
+The full rust re-bench under release-lto landed at 8:39 the morning of
+the fix (2754 seconds, 1-500 at iters=10). Before/after, holding the
+other 9 languages' numbers fixed (they weren't recompiled):
+
+| Tier | Common set | Lang | Before (no LTO) | After (release-lto) | Delta |
+|------|-----------|------|------|------|------|
+| 1 Foundation | 200 problems | Rust | 28.80 s (#4, 1.28× C) | 28.75 s (#4, 1.28× C) | −0.17% (noise) |
+| 2 Deep Coverage | 66 problems | Rust | 9.10 s (#3, 1.14× cpp) | **8.94 s (#2, 1.12× cpp)** | **−1.8%, +1 rank** |
+| 3 Frontier | 56 problems | Rust | 21.54 s (1.04× cpp) | 21.22 s (1.02× cpp) | −1.5% |
+
+Three observations from the table:
+
+1. **Tier 1 didn't move.** At the 200-problem common set, the headline
+   ranking is dominated by problems where the algorithm is in a tight
+   intra-crate loop and the harness call boundary is rounding error.
+   LTO has nothing to inline that wasn't already inlined. The 0.17%
+   delta is within run-to-run noise — could be measurement jitter, not
+   a real LTO win.
+
+2. **Tier 2 had a position change.** Rust overtook Go (8.94 vs 9.02 s).
+   Pre-LTO they were essentially tied at 1.14× / 1.13× cpp; post-LTO
+   Rust is 1.12× and Go remained at 1.13×. A 1.8% LTO benefit was
+   enough to flip the order because the two were already statistical
+   neighbors.
+
+3. **Tier 3 tightened.** Rust at 1.02× cpp is now within measurement
+   noise of the canonical reference. Whether Rust *catches* cpp on
+   future Tier 3 problems depends as much on which problems they pick
+   as on language perf — but the gap is now small enough that it's not
+   a meaningful comparison story anymore: it's a tie.
+
+The shape matches what the Rust performance book and the OSS survey
+predicted: LTO helps modestly on small/harness-overhead-bound problems,
+helps less on long-running algorithm-bound problems, and rarely
+re-orders rankings except where two langs are already statistical
+neighbors. Tier 2 was that case. The fix-forward decision earned its
+keep with a one-rank shift and a tighter Tier 3 picture — not a
+revolution, but the honest measurement we should have been publishing
+all along.
