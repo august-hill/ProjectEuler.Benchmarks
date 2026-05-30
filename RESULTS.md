@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2636 measured (85.0% coverage).**
+> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2785 measured (89.8% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -68,15 +68,17 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 62 of ≤200 problems in scope)
+> ⚠️ **Interim render (mid-rebench):** the C++/Go/Rust frontier figures below are being refreshed to 10-iteration medians. Rust's 301+ cells are still on prior single-iteration timings as of this commit, so the ordering here is not yet apples-to-apples and will update shortly.
+
+### Per-Invocation Cost (Common Set, 81 of ≤200 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Total (62-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (81-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Rust** | 30.18 s | 6,787 | 1.00× |
-| 2 | **C++** | 32.41 s | 6,832 | 1.07× |
-| 3 | **Go** | 41.41 s | 7,012 | 1.37× |
+| 1 | **Rust** | 117.49 s | 9,667 | 1.00× |
+| 2 | **Go** | 137.60 s | 10,040 | 1.17× |
+| 3 | **C++** | 197.21 s | 9,234 | 1.68× |
 
 ### Speed vs Code Size
 
