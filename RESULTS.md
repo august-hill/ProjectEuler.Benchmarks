@@ -68,15 +68,13 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-> ⚠️ **Interim render (mid-rebench):** the C++/Go/Rust frontier figures below are being refreshed to 10-iteration medians. Rust's 301+ cells are still on prior single-iteration timings as of this commit, so the ordering here is not yet apples-to-apples and will update shortly.
-
 ### Per-Invocation Cost (Common Set, 81 of ≤200 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
 | Rank | Language | Total (81-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Rust** | 117.49 s | 9,667 | 1.00× |
+| 1 | **Rust** | 117.34 s | 9,667 | 1.00× |
 | 2 | **Go** | 137.60 s | 10,040 | 1.17× |
 | 3 | **C++** | 197.21 s | 9,234 | 1.68× |
 
