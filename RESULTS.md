@@ -1,12 +1,12 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3100 in-scope cells across 500 problems × tiered languages — 2951 measured (95.2% coverage).**
+> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 2962 measured (87.1% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 500-problem scope.
+> core, then the disciplined expansion to today's 600-problem scope.
 
 ## Foundation — Tier 1 (10 languages, problems 1-200)
 
@@ -68,7 +68,7 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 165 of ≤200 problems in scope)
+### Per-Invocation Cost (Common Set, 165 of ≤300 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
@@ -101,7 +101,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 5 bands), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 6 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
@@ -113,7 +113,7 @@ language.  No red or black cells: the audit gate is holding.
 ## Per-Problem Detail
 
 Median wall time per fresh-process invocation, for each (language, problem).
-Split across 5 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
+Split across 6 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
 
 | Band | Tier | Languages | Page |
 |------|------|-----------|------|
@@ -122,6 +122,7 @@ Split across 5 pages, one per 100-problem band, so this main page stays navigabl
 | p201–p300 | Deep Coverage | 5 | [Open](per_problem/per_problem_201-300.md) |
 | p301–p400 | Frontier | 3 | [Open](per_problem/per_problem_301-400.md) |
 | p401–p500 | Frontier | 3 | [Open](per_problem/per_problem_401-500.md) |
+| p501–p600 | Frontier | 3 | [Open](per_problem/per_problem_501-600.md) |
 
 ## Method
 
@@ -170,7 +171,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 500 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 600 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -244,7 +245,7 @@ language honesty — the OS enforces it for free.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-500 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-600 --iters 10 --write
 python3 report.py
 ```
 
