@@ -56,7 +56,7 @@ from tiers import (  # noqa: E402
 _TIERS = load_tiers()
 
 # Scope: cover tier-1 Foundation + tier-2 Deep Coverage + tier-3 Frontier
-# (capped at 500 because tier-3 hi is unbounded but we don't iterate forever).
+# (capped at 600 because tier-3 hi is unbounded but we don't iterate forever).
 # Per-tier rendering filters out langs that aren't in scope for a given band
 # (e.g., ARM64 doesn't appear in 201+ bands — it's tier-1 only; python/zig
 # don't appear in 301+ bands — they're tier-1+tier-2 only). Partial-coverage
@@ -65,8 +65,8 @@ _TIERS = load_tiers()
 # the grid and excludes it from per-lang totals.
 _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
-# Display cap: max(t2_hi, 500) covers current tier-3 work range with headroom.
-_DISPLAY_HI = max(_T2_HI, 500)
+# Display cap: max(t2_hi, 600) covers current tier-3 work range with headroom.
+_DISPLAY_HI = max(_T2_HI, 600)
 SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
