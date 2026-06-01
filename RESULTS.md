@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 2962 measured (87.1% coverage).**
+> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 2976 measured (87.5% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -75,7 +75,7 @@ The frontier verification trio — C++, Go, Rust — on problems above 300. 3-wa
 | Rank | Language | Total (165-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
 | 1 | **Rust** | 525.28 s | 21,543 | 1.00× |
-| 2 | **Go** | 555.29 s | 22,378 | 1.06× |
+| 2 | **Go** | 555.08 s | 22,378 | 1.06× |
 | 3 | **C++** | 650.76 s | 20,168 | 1.24× |
 
 ### Speed vs Code Size

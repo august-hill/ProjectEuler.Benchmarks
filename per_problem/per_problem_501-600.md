@@ -19,7 +19,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p510** | — | — | — |
 | **p511** | — | — | — |
 | **p512** | 16.14 ms | — | — |
-| **p513** | — | — | — |
+| **p513** | — | 51.82 s* | 58.86 s* |
 | **p514** | — | — | — |
 | **p515** | — | — | — |
 | **p516** | 58.28 ms | — | — |
@@ -35,14 +35,14 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p526** | — | — | — |
 | **p527** | — | — | — |
 | **p528** | — | — | — |
-| **p529** | — | — | — |
+| **p529** | 1.19 s | — | — |
 | **p530** | — | — | — |
 | **p531** | 676.24 ms | — | — |
 | **p532** | — | — | — |
 | **p533** | — | — | — |
 | **p534** | — | — | — |
 | **p535** | — | — | — |
-| **p536** | — | — | — |
+| **p536** | 16.37 s* | — | — |
 | **p537** | — | — | — |
 | **p538** | — | — | — |
 | **p539** | — | — | — |
@@ -58,8 +58,8 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p549** | — | — | — |
 | **p550** | — | — | — |
 | **p551** | — | — | — |
-| **p552** | — | — | — |
-| **p553** | — | — | — |
+| **p552** | — | — | 918.43 ms |
+| **p553** | — | — | 2.21 s |
 | **p554** | — | — | — |
 | **p555** | — | — | — |
 | **p556** | — | — | — |
@@ -68,14 +68,14 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p559** | — | — | — |
 | **p560** | — | — | — |
 | **p561** | — | — | — |
-| **p562** | — | — | — |
-| **p563** | — | — | — |
-| **p564** | — | — | — |
+| **p562** | 24.52 s* | — | — |
+| **p563** | 1.13 s | — | 20.08 s* |
+| **p564** | 13.45 s* | — | 18.36 s* |
 | **p565** | — | — | — |
 | **p566** | — | — | — |
 | **p567** | — | — | — |
 | **p568** | — | — | — |
-| **p569** | — | — | — |
+| **p569** | — | — | 3.61 s |
 | **p570** | — | — | — |
 | **p571** | — | — | — |
 | **p572** | — | — | — |
@@ -107,5 +107,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p598** | — | — | — |
 | **p599** | — | — | — |
 | **p600** | — | — | — |
+
+> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
 ⬅ [Back to RESULTS](../RESULTS.md)
