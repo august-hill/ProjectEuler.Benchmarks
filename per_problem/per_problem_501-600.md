@@ -101,7 +101,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p592** | — | — | — |
 | **p593** | 1.58 s | — | — |
 | **p594** | — | — | — |
-| **p595** | — | — | — |
+| **p595** | 1.03 ms | 1.09 ms | 59.81 ms |
 | **p596** | — | — | — |
 | **p597** | — | — | — |
 | **p598** | — | — | — |
