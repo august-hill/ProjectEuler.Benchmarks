@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Three independent Go modules, each with its own go.mod (all pull in modernc.org/sqlite).
+  # Dependabot needs every module directory listed explicitly — a single "/" entry matches none.
+  - package-ecosystem: "gomod"
+    directories:
+      - "/cmd/euler-bench"
+      - "/cmd/companion-export"
+      - "/scripts"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 10
