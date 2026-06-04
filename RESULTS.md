@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 2998 measured (88.2% coverage).**
+> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 3008 measured (88.5% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -46,17 +46,17 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-### Per-Invocation Cost (Common Set, 66 of 100 problems)
+### Per-Invocation Cost (Common Set, 68 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Total (66-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (68-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 7.96 s | 8,832 | 1.00× |
-| 2 | **Rust** | 8.94 s | 6,216 | 1.12× |
-| 3 | **Go** | 9.02 s | 6,486 | 1.13× |
-| 4 | **Zig** | 9.77 s | 7,003 | 1.23× |
-| 5 | **Python** | 140.44 s | 4,418 | 17.64× |
+| 1 | **C++** | 10.19 s | 8,966 | 1.00× |
+| 2 | **Rust** | 10.56 s | 6,392 | 1.04× |
+| 3 | **Go** | 11.11 s | 6,697 | 1.09× |
+| 4 | **Zig** | 11.33 s | 7,202 | 1.11× |
+| 5 | **Python** | 142.67 s | 4,524 | 14.00× |
 
 ### Speed vs Code Size
 
