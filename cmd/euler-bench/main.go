@@ -15,7 +15,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"sync"
 )
@@ -231,7 +230,7 @@ func cmdFailures(args []string) {
 			}
 			failures = append(failures, prob)
 		}
-		sort.Strings(failures)
+		sortProblems(failures)
 
 		totalFail += len(failures)
 		totalSkipped += skipped
