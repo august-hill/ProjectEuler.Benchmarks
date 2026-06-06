@@ -69,6 +69,14 @@ _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
 _DISPLAY_HI = max(_T2_HI, 600)
 SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
 
+# Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
+# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06); the report's
+# stats/coverage scope (_DISPLAY_HI) stays at its audited ceiling. A solved problem above
+# _DISPLAY_HI therefore shows as a cell on the grid but is NOT folded into per-lang totals,
+# coverage %, or tier denominators (those are stat surfaces; the grid is just a map).
+_GRID_HI = 1000
+GRID_PROBLEMS = [f"{i:03d}" for i in range(1, _GRID_HI + 1)]
+
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.
 LANGS = ["arm64", "c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig"]
@@ -248,6 +256,12 @@ def aggregate() -> dict:
         per_prob_lines = {p: source_lines(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_status = {p: status_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_samples = {p: samples_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        # Grid-only status, over the wider GRID_PROBLEMS range. Kept separate from the
+        # per_problem_* dicts above so the totals below (which sum .values()) stay scoped
+        # to SCOPE_PROBLEMS and are NOT inflated by solved problems above _DISPLAY_HI.
+        grid_status = {p: status_of(probs.get(p, {})) for p in GRID_PROBLEMS}
+        grid_ns = {p: time_ns(probs.get(p, {})) for p in GRID_PROBLEMS}
+        grid_samples = {p: samples_of(probs.get(p, {})) for p in GRID_PROBLEMS}
         total_ns = sum(v for v in per_prob_ns.values() if v is not None)
         total_lines = sum(per_prob_lines.values())
         # "missing" is computed over the lang's IN-SCOPE problems per the tier
@@ -262,6 +276,9 @@ def aggregate() -> dict:
             "per_problem_lines": per_prob_lines,
             "per_problem_status": per_prob_status,
             "per_problem_samples": per_prob_samples,
+            "grid_status": grid_status,
+            "grid_ns": grid_ns,
+            "grid_samples": grid_samples,
             "total_ns": total_ns,
             "total_lines": total_lines,
             "missing": missing,
@@ -502,8 +519,8 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     Row order is fixed (LANG_DISPLAY_ORDER) so the chart doesn't visually
     reshuffle when ranking-by-total drifts between snapshots.
     """
-    n_probs = len(SCOPE_PROBLEMS)
-    bands = _bands(SCOPE_PROBLEMS, BAND_SIZE)
+    n_probs = len(GRID_PROBLEMS)
+    bands = _bands(GRID_PROBLEMS, BAND_SIZE)
     n_bands = len(bands)
 
     # Tier-aware: each band's lang list may differ (e.g., 10 langs at 1-200,
@@ -538,9 +555,9 @@ def render_coverage_grid_chart(agg: dict) -> Path:
 
         for ri, lang in enumerate(band_langs):
             for ci, p in enumerate(band_probs):
-                st = agg[lang]["per_problem_status"][p]
-                ns = agg[lang]["per_problem_ns"][p]
-                s = agg[lang]["per_problem_samples"][p]
+                st = agg[lang]["grid_status"][p]
+                ns = agg[lang]["grid_ns"][p]
+                s = agg[lang]["grid_samples"][p]
                 ax.add_patch(plt.Rectangle(
                     (ci, n_band_langs - 1 - ri), 1, 1,
                     facecolor=cell_color(st, ns),
@@ -579,7 +596,7 @@ def render_coverage_grid_chart(agg: dict) -> Path:
             spine.set_visible(False)
 
     fig.suptitle(
-        f"Coverage + Speed Heatmap — tier-aware ({n_probs} problems in scope)  ·  "
+        f"Coverage + Speed Heatmap — tier-aware ({n_probs}-problem range)  ·  "
         f"* = partial measurement (samples<10)",
         fontsize=12, y=0.995,
     )
@@ -1174,7 +1191,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
-    n_bands = (len(SCOPE_PROBLEMS) + BAND_SIZE - 1) // BAND_SIZE
+    n_bands = (len(GRID_PROBLEMS) + BAND_SIZE - 1) // BAND_SIZE
     md.append(f"Rows are in fixed tier order (native → managed → interpreted) so the chart")
     md.append(f"doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are")
     md.append(f"chunked into bands of {BAND_SIZE} (currently {n_bands} band"
