@@ -154,8 +154,27 @@ func discoverProblems(lang *Lang, repoDir string) ([]string, error) {
 			nums = append(nums, num)
 		}
 	}
-	sort.Strings(nums)
+	sortProblems(nums)
 	return nums, nil
+}
+
+// sortProblems orders problem-number keys numerically ("9" < "10" < "1000"),
+// not lexically. Keys zero-pad to a minimum of 3 digits but widen naturally
+// past 999 (problem_1000, NOT problem_01000), so a plain string sort would
+// misplace 4-digit problems among the 100s ("1000" < "200" lexically). Keys
+// that aren't plain integers (shouldn't occur) sort last, by string.
+func sortProblems(keys []string) {
+	sort.Slice(keys, func(i, j int) bool {
+		ni, ei := strconv.Atoi(keys[i])
+		nj, ej := strconv.Atoi(keys[j])
+		if ei == nil && ej == nil {
+			return ni < nj
+		}
+		if ei != nil && ej != nil {
+			return keys[i] < keys[j]
+		}
+		return ei == nil // numeric keys sort before non-numeric
+	})
 }
 
 func sourceFiles(lang *Lang, repoDir, problem string) []string {
@@ -406,7 +425,7 @@ func generateMarkdown(lang *Lang, res *BenchmarkResults, repoDir string) error {
 	for k := range res.Problems {
 		keys = append(keys, k)
 	}
-	sort.Strings(keys)
+	sortProblems(keys)
 
 	var totalNs int64
 	count := 0
