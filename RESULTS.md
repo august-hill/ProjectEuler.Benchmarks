@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 3008 measured (88.5% coverage).**
+> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 3012 measured (88.6% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -101,7 +101,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 6 bands), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 10 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
