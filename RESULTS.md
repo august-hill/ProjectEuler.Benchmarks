@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3267 measured (71.0% coverage).**
+> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3282 measured (71.3% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -68,15 +68,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 216 of ≤700 problems in scope)
+### Per-Invocation Cost (Common Set, 221 of ≤700 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Total (216-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (221-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Rust** | 621.23 s | 27,096 | 1.00× |
-| 2 | **Go** | 684.64 s | 28,234 | 1.10× |
-| 3 | **C++** | 746.96 s | 24,997 | 1.20× |
+| 1 | **Rust** | 738.40 s | 27,712 | 1.00× |
+| 2 | **C++** | 864.97 s | 25,470 | 1.17× |
+| 3 | **Go** | 873.63 s | 28,873 | 1.18× |
 
 ### Speed vs Code Size
 

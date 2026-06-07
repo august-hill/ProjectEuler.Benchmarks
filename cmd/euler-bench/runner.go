@@ -192,6 +192,27 @@ func sourceFiles(lang *Lang, repoDir, problem string) []string {
 }
 
 // runOneProblem builds, runs, and parses results for a single problem.
+// benchTimeoutSecs returns the per-invocation gtimeout (seconds, as a string),
+// scaled by problem-number series. The low tiers (1-300) are the apples-to-apples
+// comparison surface and stay strict at 120s; the frontier series get progressively
+// more headroom, because legitimately heavier algorithms — and extended-precision
+// solves like p737's double-double (which needs //go:noinline in Go, ~178s) — live
+// up there. Tiered by century-series per the tier model (see data/tiers.json).
+func benchTimeoutSecs(problem string) string {
+	n, err := strconv.Atoi(problem)
+	if err != nil {
+		return "120"
+	}
+	switch {
+	case n <= 300:
+		return "120" // Foundation (1-200) + Deep Coverage (201-300)
+	case n <= 600:
+		return "300" // Frontier 301-600
+	default:
+		return "600" // Deep frontier 601+
+	}
+}
+
 func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 	probDir := filepath.Join(repoDir, "problem_"+problem)
 
@@ -241,8 +262,8 @@ func runOneProblem(lang *Lang, repoDir, problem string) ProblemResult {
 		workDir = repoDir
 	}
 
-	// Execute with gtimeout + /usr/bin/time
-	fullArgs := []string{"120", "/usr/bin/time", "-l", runBin}
+	// Execute with gtimeout + /usr/bin/time (tiered timeout by problem series)
+	fullArgs := []string{benchTimeoutSecs(problem), "/usr/bin/time", "-l", runBin}
 	fullArgs = append(fullArgs, runArgs...)
 	cmd := exec.Command("gtimeout", fullArgs...)
 	cmd.Dir = workDir

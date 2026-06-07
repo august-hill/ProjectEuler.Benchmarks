@@ -99,7 +99,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p890** | — | — | — |
 | **p891** | — | — | — |
 | **p892** | — | — | — |
-| **p893** | — | — | — |
+| **p893** | 9.30 s* | 11.48 s* | 11.21 s* |
 | **p894** | — | — | — |
 | **p895** | — | — | — |
 | **p896** | — | — | — |
