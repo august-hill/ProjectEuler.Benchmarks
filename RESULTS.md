@@ -1,12 +1,12 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 3400 in-scope cells across 600 problems × tiered languages — 3066 measured (90.2% coverage).**
+> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3267 measured (71.0% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 600-problem scope.
+> core, then the disciplined expansion to today's 1000-problem scope.
 
 ## Foundation — Tier 1 (10 languages, problems 1-200)
 
@@ -68,15 +68,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 178 of ≤300 problems in scope)
+### Per-Invocation Cost (Common Set, 216 of ≤700 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Total (178-problem common set) | Lines of code | vs Fastest |
+| Rank | Language | Total (216-problem common set) | Lines of code | vs Fastest |
 |------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Rust** | 569.99 s | 23,306 | 1.00× |
-| 2 | **Go** | 604.30 s | 24,284 | 1.06× |
-| 3 | **C++** | 671.12 s | 21,712 | 1.18× |
+| 1 | **Rust** | 621.23 s | 27,096 | 1.00× |
+| 2 | **Go** | 684.64 s | 28,234 | 1.10× |
+| 3 | **C++** | 746.96 s | 24,997 | 1.20× |
 
 ### Speed vs Code Size
 
@@ -113,7 +113,7 @@ language.  No red or black cells: the audit gate is holding.
 ## Per-Problem Detail
 
 Median wall time per fresh-process invocation, for each (language, problem).
-Split across 6 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
+Split across 10 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
 
 | Band | Tier | Languages | Page |
 |------|------|-----------|------|
@@ -123,6 +123,10 @@ Split across 6 pages, one per 100-problem band, so this main page stays navigabl
 | p301–p400 | Frontier | 3 | [Open](per_problem/per_problem_301-400.md) |
 | p401–p500 | Frontier | 3 | [Open](per_problem/per_problem_401-500.md) |
 | p501–p600 | Frontier | 3 | [Open](per_problem/per_problem_501-600.md) |
+| p601–p700 | Frontier | 3 | [Open](per_problem/per_problem_601-700.md) |
+| p701–p800 | Frontier | 3 | [Open](per_problem/per_problem_701-800.md) |
+| p801–p900 | Frontier | 3 | [Open](per_problem/per_problem_801-900.md) |
+| p901–p1000 | Frontier | 3 | [Open](per_problem/per_problem_901-1000.md) |
 
 ## Method
 
@@ -171,7 +175,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 600 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 1000 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -245,7 +249,7 @@ language honesty — the OS enforces it for free.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-600 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1000 --iters 10 --write
 python3 report.py
 ```
 
