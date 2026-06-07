@@ -13,7 +13,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p904** | — | — | — |
 | **p905** | — | — | — |
 | **p906** | — | — | — |
-| **p907** | — | — | — |
+| **p907** | 26.0 µs | 17.3 µs | 28.0 µs |
 | **p908** | — | — | — |
 | **p909** | — | — | — |
 | **p910** | — | — | — |

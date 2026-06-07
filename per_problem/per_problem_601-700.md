@@ -79,7 +79,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p670** | — | — | — |
 | **p671** | — | — | — |
 | **p672** | — | — | — |
-| **p673** | — | — | — |
+| **p673** | 287.3 µs | 64.5 µs | 265.2 µs |
 | **p674** | — | — | — |
 | **p675** | 2.79 s | — | — |
 | **p676** | — | — | — |

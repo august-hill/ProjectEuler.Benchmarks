@@ -33,7 +33,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p724** | 101.09 ms | 96.07 ms | 129.37 ms |
 | **p725** | 14.81 ms | — | — |
 | **p726** | — | — | — |
-| **p727** | — | — | — |
+| **p727** | 5.69 ms | 2.97 ms | 4.62 ms |
 | **p728** | — | — | — |
 | **p729** | — | — | — |
 | **p730** | — | — | — |
@@ -43,7 +43,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p734** | — | — | — |
 | **p735** | — | — | — |
 | **p736** | — | — | — |
-| **p737** | — | — | — |
+| **p737** | 108.70 s* | 105.69 s* | 177.77 s* |
 | **p738** | — | — | — |
 | **p739** | 2.41 s* | — | 2.48 s* |
 | **p740** | — | — | — |
