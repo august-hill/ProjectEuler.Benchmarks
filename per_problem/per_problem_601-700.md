@@ -7,28 +7,28 @@ column per language in tier-1 display order (native → managed → interpreted)
 
 | Problem | C++ | Rust | Go |
 |---------|----:|----:|----:|
-| **p601** | 1.2 µs | — | — |
+| **p601** | 1.2 µs | 625 ns | 1.8 µs |
 | **p602** | 1.22 s | — | — |
 | **p603** | 196.06 ms | — | — |
 | **p604** | 69.70 ms | — | — |
-| **p605** | 292 ns | — | — |
+| **p605** | 292 ns | 250 ns | 1.6 µs |
 | **p606** | 978.74 ms | — | — |
-| **p607** | 12.0 µs | — | — |
+| **p607** | 12.0 µs | 4.1 µs | 7.3 µs |
 | **p608** | — | — | — |
 | **p609** | 1.55 s | 1.61 s | 1.61 s |
-| **p610** | 847.7 µs | — | — |
+| **p610** | 847.7 µs | 1.02 ms | 1.60 ms |
 | **p611** | — | — | — |
 | **p612** | 702.6 µs | 671.7 µs | 1.22 ms |
 | **p613** | — | — | — |
 | **p614** | — | — | — |
 | **p615** | — | — | — |
 | **p616** | — | — | — |
-| **p617** | 18.8 µs | — | — |
+| **p617** | 18.8 µs | 15.1 µs | 23.5 µs |
 | **p618** | 83.02 ms | — | — |
 | **p619** | 38.25 ms | — | — |
 | **p620** | — | — | — |
 | **p621** | 4.53 s* | — | — |
-| **p622** | 2.19 ms | — | — |
+| **p622** | 2.19 ms | 900.3 µs | 651.7 µs |
 | **p623** | 2.42 s | — | — |
 | **p624** | 8.5 µs | 9.8 µs | 4.5 µs |
 | **p625** | 911.95 ms | — | — |
@@ -62,7 +62,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p653** | 23.28 ms | — | — |
 | **p654** | 10.66 s* | — | — |
 | **p655** | 6.84 s* | 6.87 s* | 15.79 s* |
-| **p656** | 689.3 µs | — | — |
+| **p656** | 689.3 µs | 697.8 µs | 840.2 µs |
 | **p657** | 9.30 s | 4.34 s | 4.12 s |
 | **p658** | — | — | — |
 | **p659** | 497.18 ms | 509.99 ms | 618.09 ms |
@@ -72,7 +72,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p663** | 3.54 s* | — | — |
 | **p664** | — | — | — |
 | **p665** | — | — | — |
-| **p666** | 465.2 µs | — | — |
+| **p666** | 465.2 µs | 444.5 µs | 1.29 ms |
 | **p667** | — | — | — |
 | **p668** | 13.10 ms | 14.53 ms | 17.66 ms |
 | **p669** | 2.58 ms | — | — |
@@ -85,12 +85,12 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p676** | — | — | — |
 | **p677** | — | — | — |
 | **p678** | — | — | — |
-| **p679** | 143.3 µs | — | — |
+| **p679** | 143.3 µs | 124.4 µs | 474.2 µs |
 | **p680** | — | — | — |
 | **p681** | 52.04 s* | — | — |
 | **p682** | — | — | — |
 | **p683** | 1.26 s | — | — |
-| **p684** | 35.3 µs | — | — |
+| **p684** | 35.3 µs | 18.5 µs | 12.9 µs |
 | **p685** | — | — | — |
 | **p686** | — | — | — |
 | **p687** | 42.45 ms | — | — |
@@ -98,7 +98,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p689** | — | — | — |
 | **p690** | — | — | — |
 | **p691** | 362.17 ms | — | — |
-| **p692** | 49.9 µs | — | — |
+| **p692** | 49.9 µs | 24.9 µs | 33.2 µs |
 | **p693** | — | — | — |
 | **p694** | 18.96 ms | — | — |
 | **p695** | — | — | — |
@@ -106,7 +106,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p697** | 10.5 µs | 3.9 µs | 7.6 µs |
 | **p698** | 215.2 µs | 159.6 µs | 254.2 µs |
 | **p699** | — | — | — |
-| **p700** | 250 ns | — | — |
+| **p700** | 250 ns | 250 ns | 1.7 µs |
 
 > \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
