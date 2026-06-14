@@ -10,16 +10,16 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p701** | — | — | — |
 | **p702** | — | — | — |
 | **p703** | — | — | — |
-| **p704** | 42 ns | — | — |
+| **p704** | 42 ns | 42 ns | 1.2 µs |
 | **p705** | 697.24 ms | 729.33 ms | 893.95 ms |
-| **p706** | 14.06 ms | — | — |
+| **p706** | 14.06 ms | 2.97 ms | 5.68 ms |
 | **p707** | — | — | — |
 | **p708** | — | — | — |
 | **p709** | 1.09 s | 1.93 s | 1.70 s |
-| **p710** | 13.60 ms | — | — |
+| **p710** | 13.60 ms | 13.90 ms | 9.82 ms |
 | **p711** | 168.55 ms | 168.78 ms | 543.40 ms |
 | **p712** | 490.30 ms | 518.32 ms | 498.23 ms |
-| **p713** | 17.56 ms | — | — |
+| **p713** | 17.56 ms | 16.64 ms | 18.07 ms |
 | **p714** | — | — | — |
 | **p715** | — | — | — |
 | **p716** | — | — | — |
@@ -31,13 +31,13 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p722** | — | — | — |
 | **p723** | — | — | — |
 | **p724** | 101.09 ms | 96.07 ms | 129.37 ms |
-| **p725** | 14.81 ms | — | — |
+| **p725** | 14.81 ms | 7.77 ms | 10.06 ms |
 | **p726** | — | — | — |
 | **p727** | 5.69 ms | 2.97 ms | 4.62 ms |
 | **p728** | — | — | — |
 | **p729** | — | — | — |
 | **p730** | — | — | — |
-| **p731** | 92.3 µs | — | — |
+| **p731** | 92.3 µs | 112.2 µs | 66.2 µs |
 | **p732** | — | — | — |
 | **p733** | 392.21 ms | 326.43 ms | 652.00 ms |
 | **p734** | — | — | — |
@@ -61,12 +61,12 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p752** | 924.47 ms | 604.34 ms | 960.81 ms |
 | **p753** | — | — | — |
 | **p754** | 18.75 s* | 18.41 s* | 19.84 s* |
-| **p755** | 26.2 µs | — | — |
+| **p755** | 26.2 µs | 8.8 µs | 21.0 µs |
 | **p756** | — | — | — |
 | **p757** | 2.17 s | — | — |
 | **p758** | — | — | — |
 | **p759** | 94.3 µs | 36.1 µs | 56.7 µs |
-| **p760** | 45.0 µs | — | — |
+| **p760** | 45.0 µs | 16.0 µs | 42.9 µs |
 | **p761** | — | — | — |
 | **p762** | — | — | — |
 | **p763** | — | — | — |
@@ -94,19 +94,19 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p785** | — | — | — |
 | **p786** | — | — | — |
 | **p787** | — | — | — |
-| **p788** | 4.76 ms | — | — |
+| **p788** | 4.76 ms | 3.80 ms | 3.80 ms |
 | **p789** | — | — | — |
 | **p790** | — | — | — |
 | **p791** | — | — | — |
 | **p792** | — | — | — |
 | **p793** | 148.85 ms | 180.90 ms | 234.70 ms |
-| **p794** | 146.93 ms | — | — |
-| **p795** | 97.85 ms | — | — |
+| **p794** | 146.93 ms | 68.01 ms | 56.72 ms |
+| **p795** | 97.85 ms | 99.78 ms | 109.42 ms |
 | **p796** | — | — | — |
 | **p797** | — | — | — |
 | **p798** | — | — | — |
 | **p799** | — | — | — |
-| **p800** | 92.37 ms | — | — |
+| **p800** | 92.37 ms | 54.99 ms | 49.65 ms |
 
 > \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
