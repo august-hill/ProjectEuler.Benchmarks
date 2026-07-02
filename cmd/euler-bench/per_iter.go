@@ -133,8 +133,39 @@ func parseProblemSpec(spec string) []string {
 	return out
 }
 
-// runPerIterOne builds (lang, problem) and runs the binary `iters` times.
-func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResult {
+// Adaptive early-stop: for expensive problems (per-sample time >= the floor),
+// stop sampling once two samples corroborate each other within the spread
+// fraction — run 2, accept if close; otherwise add one sample at a time as a
+// tie-break until a pair agrees or the iters cap is hit. Noise on a
+// multi-second deterministic run is 1-3% of the reading, so 10 fixed samples
+// buy nothing but wall-clock; cheap problems keep the full iters because
+// scheduler noise is a much larger fraction of their reading.
+const (
+	adaptiveMinSampleNs = 2_000_000_000 // eligibility floor: median sample >= 2s
+	adaptiveSpreadFrac  = 0.05          // two samples within 5% => corroborated
+)
+
+// adaptiveDone reports whether some pair of samples agrees within
+// adaptiveSpreadFrac. Samples are sorted into a scratch copy; only adjacent
+// pairs need checking.
+func adaptiveDone(samples []int64) bool {
+	if len(samples) < 2 {
+		return false
+	}
+	s := append([]int64(nil), samples...)
+	sort.Slice(s, func(i, j int) bool { return s[i] < s[j] })
+	for i := 1; i < len(s); i++ {
+		if float64(s[i]-s[i-1]) <= adaptiveSpreadFrac*float64(s[i-1]) {
+			return true
+		}
+	}
+	return false
+}
+
+// runPerIterOne builds (lang, problem) and runs the binary up to `iters`
+// times. With adaptive=true, expensive problems may stop early (see
+// adaptiveDone); the recorded sample count is always the honest n.
+func runPerIterOne(lang *Lang, baseDir, problem string, iters int, adaptive bool) *perIterResult {
 	r := &perIterResult{Lang: lang.Key, Problem: problem}
 
 	repoDir := filepath.Join(baseDir, lang.Repo)
@@ -246,6 +277,12 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int) *perIterResul
 		r.Answer = strings.TrimSpace(string(rm[2]))
 		r.TimeSamplesNs = append(r.TimeSamplesNs, timeNs)
 		r.WallSamplesNs = append(r.WallSamplesNs, wall)
+
+		if adaptive && len(r.TimeSamplesNs) >= 2 &&
+			r.timeMedianNs() >= adaptiveMinSampleNs &&
+			adaptiveDone(r.TimeSamplesNs) {
+			break
+		}
 	}
 
 	return r
@@ -264,7 +301,11 @@ func cmdPerIter(args []string) {
 	fs := flag.NewFlagSet("per-iter", flag.ExitOnError)
 	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all')")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
-	iters := fs.Int("iters", 10, "fresh-process invocations per problem (minimum 1; for stable timings 10+)")
+	iters := fs.Int("iters", 10, "fresh-process invocations per problem (minimum 1; for stable timings 10+). With -adaptive (default), this is the CAP for expensive problems")
+	adaptive := fs.Bool("adaptive", true,
+		"for problems with per-sample time >= 2s, stop as soon as two samples agree within 5% "+
+			"(run 2; if close, done; else add tie-break samples up to -iters). "+
+			"Cheap problems always run the full -iters. -adaptive=false restores fixed iteration counts")
 	write := fs.Bool("write", false,
 		"upsert results into data/bench-private.db (the SQLite SSOT, gitignored). "+
 			"Two tables: runs (latest per lang+problem) + run_history (append-only). "+
@@ -304,7 +345,7 @@ func cmdPerIter(args []string) {
 		grid[key] = make(map[string]*perIterResult)
 		fmt.Printf("--- %s:\n", lang.Display)
 		for _, p := range problems {
-			r := runPerIterOne(lang, baseDir, p, *iters)
+			r := runPerIterOne(lang, baseDir, p, *iters, *adaptive)
 			grid[key][p] = r
 			switch {
 			case r.BuildErr != "":
