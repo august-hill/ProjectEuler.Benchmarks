@@ -109,7 +109,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p297** | 2.9 µs | 3.0 µs | 1.1 µs | 8.0 µs | 25.8 µs |
 | **p298** | 161.16 ms | 11.37 ms | 11.81 ms | 17.01 ms | — |
 | **p299** | 257.83 ms | 271.37 ms | 265.79 ms | 402.83 ms | — |
-| **p300** | 37.35 s | 32.02 s | — | 6.46 s | — |
+| **p300** | 37.35 s | 32.02 s | 25.20 s* | 6.46 s | — |
 
 > \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
 
