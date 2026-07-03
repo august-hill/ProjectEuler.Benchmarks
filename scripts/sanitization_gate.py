@@ -23,6 +23,7 @@ Override: `git commit --no-verify` bypasses this. Discouraged.
 
 Allowlist under data/ (config files, not measurements — stay versioned):
   tiers.json       — tier model (which langs in which problem range)
+  parallel.json    — parallel-class problem list (METHODOLOGY.md §5)
   parked.json      — list of parked problems (across all langs)
   difficulty.json  — per-problem PE difficulty ratings (sourced from PE site)
   levels.json      — per-problem PE level metadata (sourced from PE site)
@@ -48,7 +49,7 @@ TERMS_FILE = REPO / "scripts" / "forbidden_terms.txt"
 
 # Config files under data/ that ARE meant to be versioned. Everything else
 # under data/ is bench data and must not be committed.
-DATA_ALLOWLIST = {"tiers.json", "parked.json", "difficulty.json", "levels.json"}
+DATA_ALLOWLIST = {"tiers.json", "parked.json", "difficulty.json", "levels.json", "parallel.json"}
 
 PROBLEM_REF = re.compile(r"\b(?:p|problem_)(\d+)\b", re.IGNORECASE)
 

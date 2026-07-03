@@ -88,6 +88,9 @@ func ensureSchema(db *sql.DB) error {
 			measured_at        INTEGER NOT NULL,
 			compiler           TEXT,
 			platform           TEXT,
+			cpu_ns             INTEGER,
+			loadavg            REAL,
+			flags              TEXT,
 			PRIMARY KEY (lang, problem)
 		)`,
 		`CREATE TABLE IF NOT EXISTS run_history (
@@ -109,7 +112,10 @@ func ensureSchema(db *sql.DB) error {
 			error              TEXT,
 			measured_at        INTEGER NOT NULL,
 			compiler           TEXT,
-			platform           TEXT
+			platform           TEXT,
+			cpu_ns             INTEGER,
+			loadavg            REAL,
+			flags              TEXT
 		)`,
 		`CREATE INDEX IF NOT EXISTS ix_history_by_problem
 			ON run_history(lang, problem, measured_at DESC)`,
@@ -120,17 +126,36 @@ func ensureSchema(db *sql.DB) error {
 		}
 	}
 
-	// Initialize schema_version row if not yet set.
+	// Initialize schema_version row if not yet set; migrate v1 -> v2 in place.
+	// v2 (2026-07-03): adds cpu_ns (rusage user+sys, process-contract gate),
+	// loadavg (1-min system load at measurement, environment audit trail),
+	// flags (comma-separated warnings, e.g. no-corroboration / near-zero-time).
 	var v int
 	err := db.QueryRow("SELECT version FROM schema_version LIMIT 1").Scan(&v)
 	if err == sql.ErrNoRows {
-		if _, err := db.Exec("INSERT INTO schema_version (version) VALUES (1)"); err != nil {
+		if _, err := db.Exec("INSERT INTO schema_version (version) VALUES (2)"); err != nil {
 			return fmt.Errorf("init schema_version: %w", err)
 		}
 	} else if err != nil {
 		return fmt.Errorf("read schema_version: %w", err)
-	} else if v != 1 {
-		return fmt.Errorf("unsupported schema_version=%d (this tool expects 1)", v)
+	} else if v == 1 {
+		for _, mig := range []string{
+			"ALTER TABLE runs ADD COLUMN cpu_ns INTEGER",
+			"ALTER TABLE runs ADD COLUMN loadavg REAL",
+			"ALTER TABLE runs ADD COLUMN flags TEXT",
+			"ALTER TABLE run_history ADD COLUMN cpu_ns INTEGER",
+			"ALTER TABLE run_history ADD COLUMN loadavg REAL",
+			"ALTER TABLE run_history ADD COLUMN flags TEXT",
+		} {
+			if _, err := db.Exec(mig); err != nil {
+				return fmt.Errorf("v1->v2 migration failed: %w\nstmt: %s", err, mig)
+			}
+		}
+		if _, err := db.Exec("UPDATE schema_version SET version = 2"); err != nil {
+			return fmt.Errorf("bump schema_version: %w", err)
+		}
+	} else if v != 2 {
+		return fmt.Errorf("unsupported schema_version=%d (this tool expects 2)", v)
 	}
 	return nil
 }
@@ -156,6 +181,9 @@ type runRow struct {
 	MeasuredAt       int64  // unix epoch seconds
 	Compiler         string
 	Platform         string
+	CPUNs            int64   // median rusage user+sys across samples
+	LoadAvg          float64 // max 1-min loadavg observed across samples
+	Flags            string  // comma-separated warnings; empty -> NULL
 }
 
 // writeRun upserts the given row into `runs` AND appends it to `run_history`,
@@ -173,8 +201,9 @@ func writeRun(db *sql.DB, r *runRow) error {
 			time_ns, time_min_ns, time_max_ns, samples,
 			subprocess_wall_ns, compile_time_ns, peak_rss_bytes,
 			source_lines, source_bytes, source_hash,
-			error, measured_at, compiler, platform
-		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?)
+			error, measured_at, compiler, platform,
+			cpu_ns, loadavg, flags
+		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ?,?,?)
 		ON CONFLICT(lang, problem) DO UPDATE SET
 			status=excluded.status, answer=excluded.answer,
 			time_ns=excluded.time_ns, time_min_ns=excluded.time_min_ns,
@@ -185,7 +214,8 @@ func writeRun(db *sql.DB, r *runRow) error {
 			source_lines=excluded.source_lines, source_bytes=excluded.source_bytes,
 			source_hash=excluded.source_hash,
 			error=excluded.error, measured_at=excluded.measured_at,
-			compiler=excluded.compiler, platform=excluded.platform`
+			compiler=excluded.compiler, platform=excluded.platform,
+			cpu_ns=excluded.cpu_ns, loadavg=excluded.loadavg, flags=excluded.flags`
 
 	const insertHistory = `
 		INSERT INTO run_history (
@@ -193,8 +223,9 @@ func writeRun(db *sql.DB, r *runRow) error {
 			time_ns, time_min_ns, time_max_ns, samples,
 			subprocess_wall_ns, compile_time_ns, peak_rss_bytes,
 			source_lines, source_bytes, source_hash,
-			error, measured_at, compiler, platform
-		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?)`
+			error, measured_at, compiler, platform,
+			cpu_ns, loadavg, flags
+		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ?,?,?)`
 
 	// INTEGER fields stored as-is — including legitimate 0 measurements
 	// (closed-form algos can clock at sub-ns, faster than CLOCK_MONOTONIC's
@@ -208,6 +239,7 @@ func writeRun(db *sql.DB, r *runRow) error {
 		r.SubprocessWallNs, r.CompileTimeNs, r.PeakRSSBytes,
 		r.SourceLines, r.SourceBytes, nullableString(r.SourceHash),
 		nullableString(r.Error), r.MeasuredAt, nullableString(r.Compiler), nullableString(r.Platform),
+		r.CPUNs, r.LoadAvg, nullableString(r.Flags),
 	}
 	if _, err := tx.Exec(upsertRuns, args...); err != nil {
 		return fmt.Errorf("upsert runs: %w", err)

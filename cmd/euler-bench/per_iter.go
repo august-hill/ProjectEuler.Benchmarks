@@ -53,6 +53,8 @@ type perIterResult struct {
 	WallSamplesNs []int64 // Go-perceived wall (process spawn → exit), sanity-check secondary
 	CompileTimeNs int64   // single measurement: wall time of the build phase
 	PeakRSSBytes  int64   // max RSS observed across iters (bytes on Darwin, KB on Linux — see captureRSS)
+	CPUSamplesNs  []int64 // rusage user+sys per sample (process-contract gate input)
+	LoadAvgMax    float64 // max 1-min system loadavg observed across samples
 	BuildErr      string
 	RunErr        string
 }
@@ -61,6 +63,12 @@ func (r *perIterResult) timeMedianNs() int64 { return medianI64(r.TimeSamplesNs)
 func (r *perIterResult) timeMinNs() int64    { return minI64(r.TimeSamplesNs) }
 func (r *perIterResult) timeMaxNs() int64    { return maxI64(r.TimeSamplesNs) }
 func (r *perIterResult) wallMedianNs() int64 { return medianI64(r.WallSamplesNs) }
+func (r *perIterResult) cpuMedianNs() int64  { return medianI64(r.CPUSamplesNs) }
+
+// corroborated reports whether some pair of time samples agrees within 5%
+// (METHODOLOGY.md §3). With 1 sample it is vacuously false; callers only
+// consult it when the sampling rule has finished.
+func (r *perIterResult) corroborated() bool { return pairAgrees(r.TimeSamplesNs) }
 
 func medianI64(s []int64) int64 {
 	if len(s) == 0 {
@@ -133,39 +141,54 @@ func parseProblemSpec(spec string) []string {
 	return out
 }
 
-// Adaptive early-stop: for expensive problems (per-sample time >= the floor),
-// stop sampling once two samples corroborate each other within the spread
-// fraction — run 2, accept if close; otherwise add one sample at a time as a
-// tie-break until a pair agrees or the iters cap is hit. Noise on a
-// multi-second deterministic run is 1-3% of the reading, so 10 fixed samples
-// buy nothing but wall-clock; cheap problems keep the full iters because
-// scheduler noise is a much larger fraction of their reading.
-const (
-	adaptiveMinSampleNs = 2_000_000_000 // eligibility floor: median sample >= 2s
-	adaptiveSpreadFrac  = 0.05          // two samples within 5% => corroborated
-)
+// Sampling rule (METHODOLOGY.md §3): run 2 fresh-process samples; if they
+// agree within corroborationFrac, accept and stop. Otherwise add samples one
+// at a time up to the cap (default 3) and take the median. If no two samples
+// agree even then, the row is still written but carries a no-corroboration
+// warning — on a deterministic single-threaded program, mutually inconsistent
+// samples indicate a broken measurement environment, which is fixed by
+// investigating and re-benching, not by sampling further. Grounding: SPEC CPU
+// reportable runs = 3/median; Phoronix = 3 + bounded variance escalation.
+const corroborationFrac = 0.05
 
-// adaptiveDone reports whether some pair of samples agrees within
-// adaptiveSpreadFrac. Samples are sorted into a scratch copy; only adjacent
-// pairs need checking.
-func adaptiveDone(samples []int64) bool {
+// pairAgrees reports whether any two samples lie within corroborationFrac of
+// each other (sorted adjacent-pair check).
+func pairAgrees(samples []int64) bool {
 	if len(samples) < 2 {
 		return false
 	}
 	s := append([]int64(nil), samples...)
 	sort.Slice(s, func(i, j int) bool { return s[i] < s[j] })
 	for i := 1; i < len(s); i++ {
-		if float64(s[i]-s[i-1]) <= adaptiveSpreadFrac*float64(s[i-1]) {
+		if float64(s[i]-s[i-1]) <= corroborationFrac*float64(s[i-1]) {
 			return true
 		}
 	}
 	return false
 }
 
+// sampleLoadavg returns the 1-minute system load average, or 0 on failure.
+// Recorded per sample as the environment audit trail (METHODOLOGY.md §4).
+func sampleLoadavg() float64 {
+	out, err := exec.Command("sysctl", "-n", "vm.loadavg").Output()
+	if err != nil {
+		return 0
+	}
+	fields := strings.Fields(strings.Trim(strings.TrimSpace(string(out)), "{}"))
+	if len(fields) == 0 {
+		return 0
+	}
+	v, err := strconv.ParseFloat(fields[0], 64)
+	if err != nil {
+		return 0
+	}
+	return v
+}
+
 // runPerIterOne builds (lang, problem) and runs the binary up to `iters`
-// times. With adaptive=true, expensive problems may stop early (see
-// adaptiveDone); the recorded sample count is always the honest n.
-func runPerIterOne(lang *Lang, baseDir, problem string, iters int, adaptive bool) *perIterResult {
+// times under the corroborate-or-tie-break sampling rule; `fixed` forces
+// exactly `iters` samples. The recorded sample count is always the honest n.
+func runPerIterOne(lang *Lang, baseDir, problem string, iters int, fixed bool) *perIterResult {
 	r := &perIterResult{Lang: lang.Key, Problem: problem}
 
 	repoDir := filepath.Join(baseDir, lang.Repo)
@@ -245,21 +268,26 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, adaptive bool
 		err := cmd.Run()
 		wall := time.Since(t0).Nanoseconds()
 
-		// Capture max RSS for this subprocess (cmd.ProcessState is non-nil
-		// after Run returns regardless of err). We track the max across iters
-		// because that's the worst-case footprint a user pays on any single
-		// invocation. Darwin reports Maxrss in bytes; Linux in KB — convert.
+		// Capture max RSS + CPU time for this subprocess (cmd.ProcessState is
+		// non-nil after Run returns regardless of err). RSS: worst-case
+		// footprint across iters. CPU: user+sys per sample — the process-
+		// contract gate compares it against the reported time_ns
+		// (METHODOLOGY.md §2). Darwin reports Maxrss in bytes; Linux in KB.
+		var sampleCPUNs int64
 		if cmd.ProcessState != nil {
 			if rusage, ok := cmd.ProcessState.SysUsage().(*syscall.Rusage); ok {
 				rss := int64(rusage.Maxrss)
-				// Linux: KB → bytes. Darwin already in bytes.
 				if runtime.GOOS == "linux" {
 					rss *= 1024
 				}
 				if rss > r.PeakRSSBytes {
 					r.PeakRSSBytes = rss
 				}
+				sampleCPUNs = rusage.Utime.Nano() + rusage.Stime.Nano()
 			}
+		}
+		if la := sampleLoadavg(); la > r.LoadAvgMax {
+			r.LoadAvgMax = la
 		}
 
 		if err != nil {
@@ -277,10 +305,9 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, adaptive bool
 		r.Answer = strings.TrimSpace(string(rm[2]))
 		r.TimeSamplesNs = append(r.TimeSamplesNs, timeNs)
 		r.WallSamplesNs = append(r.WallSamplesNs, wall)
+		r.CPUSamplesNs = append(r.CPUSamplesNs, sampleCPUNs)
 
-		if adaptive && len(r.TimeSamplesNs) >= 2 &&
-			r.timeMedianNs() >= adaptiveMinSampleNs &&
-			adaptiveDone(r.TimeSamplesNs) {
+		if !fixed && len(r.TimeSamplesNs) >= 2 && pairAgrees(r.TimeSamplesNs) {
 			break
 		}
 	}
@@ -301,11 +328,9 @@ func cmdPerIter(args []string) {
 	fs := flag.NewFlagSet("per-iter", flag.ExitOnError)
 	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all')")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
-	iters := fs.Int("iters", 10, "fresh-process invocations per problem (minimum 1; for stable timings 10+). With -adaptive (default), this is the CAP for expensive problems")
-	adaptive := fs.Bool("adaptive", true,
-		"for problems with per-sample time >= 2s, stop as soon as two samples agree within 5% "+
-			"(run 2; if close, done; else add tie-break samples up to -iters). "+
-			"Cheap problems always run the full -iters. -adaptive=false restores fixed iteration counts")
+	iters := fs.Int("iters", 3, "sample CAP per problem. Rule (METHODOLOGY.md §3): run 2; if within 5% done; "+
+		"else tie-break samples up to this cap, median, and a no-corroboration warning if still inconsistent")
+	fixed := fs.Bool("fixed", false, "run exactly -iters samples with no early stop (diagnostics only)")
 	write := fs.Bool("write", false,
 		"upsert results into data/bench-private.db (the SQLite SSOT, gitignored). "+
 			"Two tables: runs (latest per lang+problem) + run_history (append-only). "+
@@ -345,7 +370,7 @@ func cmdPerIter(args []string) {
 		grid[key] = make(map[string]*perIterResult)
 		fmt.Printf("--- %s:\n", lang.Display)
 		for _, p := range problems {
-			r := runPerIterOne(lang, baseDir, p, *iters, *adaptive)
+			r := runPerIterOne(lang, baseDir, p, *iters, *fixed)
 			grid[key][p] = r
 			switch {
 			case r.BuildErr != "":
