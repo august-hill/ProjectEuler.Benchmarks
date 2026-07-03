@@ -28,8 +28,9 @@ intentionally capped at 200 to keep the 10-language story clean.  Frontier work
 ships as paired C++/Go/Rust implementations — 3-way agreement is the
 verification protocol (see [JOURNEY.md](JOURNEY.md)).
 
-**See [RESULTS.md](RESULTS.md)** for per-tier rankings, the tier-aware coverage
-heatmap, and full methodology.  Per-problem detail tables live under
+**See [RESULTS.md](RESULTS.md)** for per-tier rankings and the tier-aware coverage
+heatmap, and [METHODOLOGY.md](METHODOLOGY.md) for the normative methodology
+(metric, sampling, process-contract enforcement, concurrency policy, rankings).  Per-problem detail tables live under
 [`per_problem/`](per_problem/), one page per 100-problem band.
 
 ## What we measure

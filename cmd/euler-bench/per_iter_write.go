@@ -13,6 +13,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -22,6 +23,65 @@ import (
 	"strings"
 	"time"
 )
+
+// ---------------------------------------------------------------------------
+// Process-contract gate (METHODOLOGY.md §2). The per-invocation metric relies
+// on "all work happens inside the timed region, on one thread"; these checks
+// verify the contract from process observables instead of source review.
+
+// startupAllowanceNs: how much wall-vs-time and cpu slack a language gets for
+// runtime/interpreter startup. Generous — measured honest baselines are
+// 7-110ms for compiled/managed languages and ~400ms for python (numpy import).
+var startupAllowanceNs = map[string]int64{
+	"c": 250e6, "cpp": 250e6, "rust": 250e6, "zig": 250e6, "arm64": 250e6,
+	"go": 750e6, "java": 750e6, "javascript": 750e6, "csharp": 750e6,
+	"python": 2000e6,
+}
+
+// cpuMultiplier: serial-class ceiling for cpu vs reported time. GC runtimes
+// legitimately burn background CPU on other cores, so they get extra headroom.
+var cpuMultiplier = map[string]float64{
+	"go": 1.5, "java": 1.5, "javascript": 1.5, "csharp": 1.5,
+}
+
+func allowanceFor(lang string) int64 {
+	if v, ok := startupAllowanceNs[lang]; ok {
+		return v
+	}
+	return 250e6
+}
+
+func cpuMultFor(lang string) float64 {
+	if v, ok := cpuMultiplier[lang]; ok {
+		return v
+	}
+	return 1.3
+}
+
+// loadParallelClass reads data/parallel.json (the parallel-class problem list,
+// METHODOLOGY.md §5). Missing/broken file -> empty set (everything serial).
+func loadParallelClass(baseDir string) map[string]bool {
+	set := map[string]bool{}
+	data, err := os.ReadFile(filepath.Join(baseDir, "benchmarks", "data", "parallel.json"))
+	if err != nil {
+		// baseDir may already be the benchmarks dir depending on invocation
+		data, err = os.ReadFile(filepath.Join("data", "parallel.json"))
+		if err != nil {
+			return set
+		}
+	}
+	var doc struct {
+		Problems []string `json:"problems"`
+	}
+	if json.Unmarshal(data, &doc) != nil {
+		return set
+	}
+	for _, p := range doc.Problems {
+		set[fmt.Sprintf("%03s", p)] = true
+		set[p] = true
+	}
+	return set
+}
 
 // readCanonicalAnswer pulls the `// Answer: NNN` or `# Answer: NNN` header
 // from the lang's source file.  Returns the trimmed answer string and an
@@ -175,7 +235,7 @@ func hashAlgorithmSources(lang *Lang, baseDir, problem string) string {
 // Handles status (pass/fail/mismatch), nullable fields, and source metadata.
 func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	srcLines, srcBytes int, srcHash, compiler, platform string,
-	measuredAt int64) *runRow {
+	measuredAt int64, parallelClass bool) *runRow {
 	row := &runRow{
 		Lang:        lang.Key,
 		Problem:     r.Problem,
@@ -209,6 +269,38 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	row.SubprocessWallNs = r.wallMedianNs()
 	row.CompileTimeNs = r.CompileTimeNs
 	row.PeakRSSBytes = r.PeakRSSBytes
+	row.CPUNs = r.cpuMedianNs()
+	row.LoadAvg = r.LoadAvgMax
+
+	// Process-contract gate (METHODOLOGY.md §2) — structural, not advisory.
+	allow := allowanceFor(lang.Key)
+	if delta := row.SubprocessWallNs - row.TimeNs; delta > allow {
+		row.Status = "fail"
+		row.Error = fmt.Sprintf("untimed-work: wall exceeds timed region by %s (allowance %s) — work is executing outside the timer (module scope / static init / global ctor)",
+			fmtNs(delta), fmtNs(allow))
+		return row
+	}
+	if !parallelClass && row.TimeNs > 0 {
+		ceiling := int64(float64(row.TimeNs)*cpuMultFor(lang.Key)) + allow
+		if row.CPUNs > ceiling {
+			row.Status = "fail"
+			row.Error = fmt.Sprintf("parallel-execution: cpu %s vs time %s exceeds serial-class ceiling %s — problem is serial-class (see data/parallel.json / METHODOLOGY.md §5)",
+				fmtNs(row.CPUNs), fmtNs(row.TimeNs), fmtNs(ceiling))
+			return row
+		}
+	}
+	// Warnings (flags): recorded, not fatal.
+	var flags []string
+	if len(r.TimeSamplesNs) >= 2 && !r.corroborated() {
+		flags = append(flags, "no-corroboration")
+	}
+	if row.TimeNs < 1000 && lang.Key != "python" && lang.Key != "javascript" {
+		// near-zero runtime in an AOT language: legitimate for closed forms,
+		// but also the signature of compile-time folding — flag for review.
+		flags = append(flags, "near-zero-time")
+	}
+	row.Flags = strings.Join(flags, ",")
+
 	// Mismatch handling: if canonical disagrees with measured, mark fail.
 	// The error message intentionally records both values for debugging —
 	// safe to keep because the answer column is also stored on this row
@@ -233,6 +325,7 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 	compiler := getCompilerVersionPI(lang.CompilerCmd)
 	platform := detectPlatform()
 	measuredAt := time.Now().UTC().Unix()
+	parallelClass := loadParallelClass(baseDir)
 
 	for _, r := range results {
 		canonical, _ := readCanonicalAnswer(lang, baseDir, r.Problem)
@@ -240,9 +333,15 @@ func writeBenchResults(lang *Lang, baseDir string, results []*perIterResult) (mi
 		srcHash := hashAlgorithmSources(lang, baseDir, r.Problem)
 
 		row := buildRunRow(lang, r, canonical, srcLines, srcBytes, srcHash,
-			compiler, platform, measuredAt)
+			compiler, platform, measuredAt, parallelClass[r.Problem])
 		if row.Status == "fail" && strings.Contains(row.Error, "mismatch") {
 			mismatches++
+		}
+		if row.Status == "fail" && (strings.HasPrefix(row.Error, "untimed-work") || strings.HasPrefix(row.Error, "parallel-execution")) {
+			fmt.Printf("  GATE FAIL %s/p%s: %s\n", lang.Key, r.Problem, row.Error)
+		}
+		if row.Flags != "" {
+			fmt.Printf("  flag %s/p%s: %s\n", lang.Key, r.Problem, row.Flags)
 		}
 		if err := writeRun(db, row); err != nil {
 			return mismatches, fmt.Errorf("writeRun %s/%s: %w", lang.Key, r.Problem, err)

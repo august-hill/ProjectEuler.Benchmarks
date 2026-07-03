@@ -1,0 +1,4 @@
+{
+  "_doc": "Parallel-class problems (METHODOLOGY.md §5). Default is serial-class: solutions must be single-threaded, enforced by the harness cpu/time check. Problems listed here require EVERY language in the problem's tier to field its idiomatic parallel implementation — a problem enters for all tier languages at once or not at all. Admission guideline: serial cost > ~5s and naturally partitionable work. Tier 1 (1-200) is never parallel-class.",
+  "problems": ["245", "296", "300", "476", "534", "544", "557", "558"]
+}
