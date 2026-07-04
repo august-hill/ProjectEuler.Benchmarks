@@ -39,19 +39,25 @@ source patterns. For every sample it records, alongside the internal time:
 - **CPU time** (user + system, from `rusage`),
 - **1-minute system load average** at sample start.
 
-At write time, three corroboration checks run:
+At write time, the contract is enforced from these observables:
 
-1. **Untimed-work check**: `wall − time` must not exceed a per-language
-   startup allowance (native ≈ 250 ms; VM/JIT runtimes ≈ 750 ms;
-   Python ≈ 2 s). A large excess means significant computation executed
-   outside the timed region; the row is recorded as a **failure**, not a
-   flattering near-zero time. Honest rows sit orders of magnitude below the
-   allowance (measured baselines: 7–110 ms for compiled/managed languages,
-   ~400 ms for Python including `numpy` import).
-2. **Concurrency check**: for serial-class problems, `cpu / time` must stay
-   near 1 (threshold 1.3). A ratio well above 1 means the solution ran in
-   parallel; the row fails. Parallel-class problems (§5) are exempt and are
-   instead expected to exceed it.
+1. **Untimed-work / concurrency check (CPU-based, load-robust)**: for
+   serial-class problems, `cpu` must not exceed `time × 1.3 + startup-allowance`
+   (native ≈ 250 ms; VM/JIT ≈ 750 ms; Python ≈ 2 s for `numpy` import). Real
+   work outside the timed region — module scope, static initializers, global
+   constructors — or undeclared parallelism *burns CPU*, so `cpu` rises above
+   the ceiling and the row is recorded as a **failure**, not a flattering
+   near-zero time. This check is **invariant to machine load**: CPU cycles are
+   the same whether the box is idle or busy. It replaced a wall-based check
+   (`wall − time > allowance`) that conflated untimed work with process-spawn
+   and scheduling latency, and so flipped its verdict with system load —
+   identical clean source (cpp p593) failed at load 5 and passed at load 1.5.
+   Parallel-class problems (§5) legitimately run `cpu ≫ time` and are exempt.
+2. **Wall-suspect flag (advisory, never fatal)**: `wall − time` exceeding the
+   startup allowance is recorded as a non-fatal `wall-suspect` flag. It is the
+   only untimed-work signal available for parallel-class problems (which get a
+   generous ≈ 2 s allowance before it trips) and an audit hint elsewhere — but
+   it never fails a row on its own, precisely because wall excess is load-driven.
 3. **Compile-time-folding check**: a near-zero runtime on a non-trivial
    problem in an ahead-of-time language flags the row for review — work can
    also hide in compile-time evaluation, which no runtime observable can see.
