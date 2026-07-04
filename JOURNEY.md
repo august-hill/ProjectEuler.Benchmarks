@@ -1572,3 +1572,91 @@ neighbors. Tier 2 was that case. The fix-forward decision earned its
 keep with a one-rank shift and a tighter Tier 3 picture — not a
 revolution, but the honest measurement we should have been publishing
 all along.
+
+## Episode: The process-contract gate, and the day it measured the weather (2026-07-03/04)
+
+The per-invocation metric rests on a promise: the reported time is the cost of
+the *algorithm* — all the real work happening between timer-start and timer-stop,
+on one thread. For a long time that promise was enforced by trust and source
+review. History showed trust wasn't enough: work can hide in module scope, in a
+static initializer, in a global constructor, in the compiler's own constant
+folding. A solve that returns a precomputed constant reports a near-zero time and
+tells a lie the aggregate ranking then repeats.
+
+So the schema grew a conscience (v2): every sample now records not just the
+internal time but the subprocess wall time, the CPU time from `rusage`, and the
+1-minute load average at the moment it ran. And a **process-contract gate** began
+rejecting rows that break the promise — recording them as failures instead of
+flattering times.
+
+### The gate that flipped with the machine's mood
+
+The first gate asked a plausible question: does the whole process take much longer
+than the timed region? `wall − time > allowance` → something ran outside the
+timer. It caught real offenders. It also, we discovered the hard way, caught the
+machine being busy.
+
+The tell was a single problem, p593, benched twice on the same unchanged source:
+**failed at load 5, passed at load 1.5.** Nothing about the code had changed —
+only how busy the box was. The gate's verdict was a function of ambient load, not
+of the program.
+
+The reason is that `wall − time` is really two things added together:
+
+    wall − time  =  (computation outside the timer)  +  (spawn & scheduling latency)
+
+The first term is what we want to catch. The second — the process waiting in the
+run queue for a CPU, dynamic linking, interpreter warmup — has nothing to do with
+the algorithm and *scales with how loaded the machine is*. On a busy desktop,
+that latency alone crosses the allowance, and clean code fails for the crime of
+being scheduled slowly.
+
+### Choosing the observable that measures the thing, not its shadow
+
+The fix was not to loosen the allowance — that would only blur the line. It was to
+change *which clock we read*. Untimed work is **computation**, and computation
+**burns CPU**. Scheduling latency is the process sitting idle, waiting; it burns
+almost none. So `cpu − time` isolates exactly the thing the gate is meant to
+detect and ignores exactly the thing that was polluting it. CPU cycles are
+invariant to how busy the box is: a 47-second sieve is 47 CPU-seconds whether the
+machine is idle or slammed.
+
+The gate is now CPU-based for serial-class problems: `cpu` must not exceed
+`time × 1.3 + startup-allowance`. The wall comparison didn't get deleted — it got
+*demoted* to a non-fatal `wall-suspect` flag, so the observation is still on the
+record for auditing, just no longer able to fail a row on the strength of the
+weather. The proof came from the same problems that used to fail: re-benched under
+the new gate, they passed at load 13, at load 22 — loads where the old gate would
+have failed anything — because their CPU never lied.
+
+Parallel-class problems (which legitimately run `cpu ≫ time`) are exempt from the
+CPU check and keep a generous wall flag as their only tripwire; there are few of
+them and they are audited by hand.
+
+### A runaway, and the hazard of no deadline
+
+The same weekend surfaced a second lesson, cheaper to state and more expensive to
+learn: the per-invocation runner had no timeout. One pathologically slow solve —
+a port that never finished — spun a core for **fifteen and a half hours**, holding
+a pipe open and deadlocking the whole run behind it. The fix is the boring correct
+one: a hard per-problem deadline that SIGKILLs the entire process group, so a
+runaway is recorded as an honest `timeout` failure and the pipeline moves on. A
+benchmark that can be stalled indefinitely by a single bad input isn't robust; it's
+lucky.
+
+### Rankings: the typical problem, not the whole marathon
+
+The headline ranking is a geometric mean over the set of problems every compared
+language shares, with each cell floored at 100 µs. Geomean answers "how fast is
+this language on the *typical* problem," which is the question a reader actually
+has — as opposed to a raw sum, which answers "how fast to run the entire suite
+back-to-back" and lets a handful of heavy problems dominate the story.
+
+### Methodology lesson
+
+A gate whose verdict depends on how busy the machine is isn't measuring integrity
+— it's measuring weather. The failure mode wasn't that the threshold was too tight
+or too loose; it was that we were reading a clock (`wall`) that bundles the signal
+with a load-driven confound. The remedy was not a better threshold on the wrong
+observable but the *right* observable: the one that moves with the thing you care
+about and stays still for everything else. Measure the thing, not its shadow.

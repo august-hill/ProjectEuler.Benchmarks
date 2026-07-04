@@ -2,8 +2,9 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median wall time per fresh-process invocation, one row per problem, one
-column per language in tier-1 display order (native → managed → interpreted).
+Median internal time per fresh-process invocation (2-or-3 corroborated
+samples, METHODOLOGY.md §3), one row per problem, one column per language
+in tier-1 display order (native → managed → interpreted).
 
 > _Only the 5 Deep Coverage languages are shown — the other 5 are tier-1-only_
 > _(capped at problem 200 by the project's language-cap policy)._
@@ -20,25 +21,25 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p208** | 11.99 ms | 18.58 ms | 11.76 ms | 17.90 ms | 1.59 s |
 | **p209** | 1.8 µs | 4.1 µs | 667 ns | 2.2 µs | 33.4 µs |
 | **p210** | 464.57 ms | 807.60 ms | 360.87 ms | 291.34 ms | 2.41 s |
-| **p211** | 3.78 s | 3.93 s | 4.52 s | 4.55 s | — |
-| **p212** | 6.03 s | 5.53 s | 5.61 s | 10.82 s | — |
+| **p211** | 3.78 s | 3.93 s | 4.52 s | 4.55 s | 10.76 s |
+| **p212** | 6.03 s | 5.53 s | 5.61 s | 10.82 s | 17.83 s |
 | **p213** | 93.46 ms | 84.88 ms | 189.24 ms | 115.33 ms | 4.48 s |
 | **p214** | 533.59 ms | 635.39 ms | 571.97 ms | 732.09 ms | 14.67 s |
 | **p215** | 5.43 ms | 7.50 ms | 6.64 ms | 10.93 ms | 391.64 ms |
-| **p216** | 4.76 s | 2.73 s | 1.78 s | 1.81 s | — |
+| **p216** | 4.76 s | 2.73 s | 1.78 s | 1.81 s | 13.11 s |
 | **p217** | 1.32 ms | 1.67 ms | 664.9 µs | 1.40 ms | 5.31 ms |
 | **p218** | 616.52 ms | 616.33 ms | 42 ns | 683.70 ms | 1.40 s |
 | **p219** | 2.6 µs | 2.8 µs | 1.6 µs | 2.9 µs | 26.0 µs |
 | **p220** | 1.6 µs | 708 ns | 1.5 µs | 2.5 µs | 87.2 µs |
 | **p221** | 20.94 ms | 11.10 ms | 14.59 ms | 48.79 ms | 284.41 ms |
 | **p222** | 20.0 µs | 31.8 µs | 1.88 s | 27.3 µs | 1.11 ms |
-| **p223** | 5.53 s | 4.70 s | 6.90 s | 5.69 s | — |
-| **p224** | 2.07 s | 1.69 s | 2.16 s | 1.84 s | — |
+| **p223** | 5.53 s | 4.70 s | 6.90 s | 5.69 s | 76.70 s |
+| **p224** | 2.07 s | 1.69 s | 2.16 s | 1.84 s | 45.00 s |
 | **p225** | 15.87 ms | 17.38 ms | 15.81 ms | 16.29 ms | 348.93 ms |
-| **p226** | 497.15 ms | 499.53 ms | 54.20 ms | 2.48 s | — |
+| **p226** | 497.15 ms | 499.53 ms | 54.20 ms | 2.48 s | 6.17 s |
 | **p227** | 75.7 µs | 47.8 µs | 12.2 µs | 83.7 µs | 1.54 ms |
 | **p228** | 13.2 µs | 17.6 µs | 8.1 µs | 13.5 µs | 242.9 µs |
-| **p229** | 4.62 s | 4.93 s | 15.11 s | 6.86 s | — |
+| **p229** | 4.62 s | 4.93 s | 15.11 s | 6.86 s | 32.63 s |
 | **p230** | 4.7 µs | 5.4 µs | 2.3 µs | 3.8 µs | 66.4 µs |
 | **p231** | 49.37 ms | 59.40 ms | 49.15 ms | 59.08 ms | 660.81 ms |
 | **p232** | 303.3 µs | 295.2 µs | 1.37 ms | 408.5 µs | 20.22 ms |
@@ -54,37 +55,37 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p242** | 1.5 µs | 667 ns | 1.2 µs | 4.2 µs | 26.1 µs |
 | **p243** | 1.9 µs | 375 ns | 45.2 µs | 5.3 µs | 13.9 µs |
 | **p244** | 16.30 ms | 10.84 ms | 61.97 ms | 16.33 ms | 89.55 ms |
-| **p245** | 1.03 s | 1.57 s | 1.28 s | 746.20 ms | 6.68 s |
-| **p246** | 1.80 s | 1.69 s | 3.47 ms | 2.02 s | — |
+| **p245** | 1.03 s | 1.57 s | 1.28 s | 746.20 ms | 21.05 s |
+| **p246** | 1.80 s | 1.69 s | 3.47 ms | 2.02 s | 3.84 s |
 | **p247** | 137.25 ms | 230.65 ms | 17.65 ms | 680.01 ms | 941.11 ms |
 | **p248** | 747.81 ms | 707.97 ms | 804.48 ms | 891.92 ms | 11.41 s |
-| **p249** | 1.11 s | 1.65 s | 253.55 ms | 1.47 s | — |
+| **p249** | 1.11 s | 1.65 s | 253.55 ms | 1.47 s | 2.35 s |
 | **p250** | 105.56 ms | 68.98 ms | 107.52 ms | 209.86 ms | 5.18 s |
-| **p251** | 2.94 s | 3.21 s | 3.57 s | 3.18 s | — |
-| **p252** | 250.13 ms | 297.88 ms | 257.24 ms | 426.81 ms | 375 ns |
+| **p251** | 2.94 s | 3.21 s | 3.57 s | 3.18 s | 23.76 s |
+| **p252** | 250.13 ms | 297.88 ms | 257.24 ms | 426.81 ms | 42.06 s |
 | **p253** | 60.9 µs | 58.8 µs | 25.1 µs | 71.2 µs | 1.47 ms |
-| **p254** | 381.33 ms | 339.38 ms | 505.27 ms* | 431.17 ms | 29.17 s |
-| **p255** | 465.74 ms | 487.16 ms | 666.09 ms | 623.47 ms | 458 ns |
-| **p256** | 1.03 s | 1.44 s | 1.10 s | 1.32 s | — |
+| **p254** | 381.33 ms | 339.38 ms | 505.27 ms | 431.17 ms | 29.17 s |
+| **p255** | 465.74 ms | 487.16 ms | 666.09 ms | 623.47 ms | 54.97 s |
+| **p256** | 1.03 s | 1.44 s | 1.10 s | 1.32 s | 4.62 s |
 | **p257** | 370.36 ms | 366.53 ms | 378.97 ms | 394.40 ms | 2.07 s |
 | **p258** | 184.26 ms | 537.24 ms | 205.72 ms | 262.07 ms | 177.49 ms |
-| **p259** | 4.76 s | 1.97 s | 14.36 s | 1.40 s | — |
-| **p260** | 1.58 s | 1.19 s | 1.11 s | 1.90 s | — |
+| **p259** | 4.76 s | 1.97 s | 14.36 s | 1.40 s | 8.48 s |
+| **p260** | 1.58 s | 1.19 s | 1.11 s | 1.90 s | 12.51 s |
 | **p261** | 18.31 ms | 15.94 ms | 16.33 ms | 14.73 ms | 600.07 ms |
-| **p262** | 5.92 s | 3.27 s | 3.35 s* | 5.52 s | — |
-| **p263** | 5.31 s | 2.17 s | 1.88 s | 1.60 s | — |
+| **p262** | 5.92 s | 3.27 s | 3.27 s | 5.52 s | — |
+| **p263** | 5.31 s | 2.17 s | 1.88 s | 1.60 s | 21.80 s |
 | **p264** | 254.91 ms | 265.69 ms | 264.77 ms | 307.66 ms | 11.62 s |
 | **p265** | 479.8 µs | 533.0 µs | 501.6 µs | 980.5 µs | 42.78 ms |
-| **p266** | 1.52 s | 1.03 s | 1.43 s | 5.03 s | — |
+| **p266** | 1.52 s | 1.03 s | 1.43 s | 5.03 s | 11.84 s |
 | **p267** | 15.1 µs | 24.7 µs | 12.5 µs | 30.4 µs | 328.2 µs |
 | **p268** | 37.80 ms | 24.48 ms | 24.14 ms | 35.47 ms | 2.47 s |
 | **p269** | 178.83 ms | 117.01 ms | 28.59 ms | 57.19 ms | 1.06 s |
 | **p270** | 688.8 µs | 552.8 µs | 41 ns | 704.6 µs | 16.17 ms |
 | **p271** | 100.1 µs | 181.0 µs | 42 ns | 45.9 µs | 240.1 µs |
-| **p272** | 6.43 s | 7.27 s | 6.74 s | 8.03 s | — |
-| **p273** | 1.68 s | 965.82 ms | 1.82 s | 4.65 s | — |
+| **p272** | 6.43 s | 7.27 s | 6.74 s | 8.03 s | 13.99 s |
+| **p273** | 1.68 s | 965.82 ms | 1.82 s | 4.65 s | 17.41 s |
 | **p274** | 97.32 ms | 56.62 ms | 198.65 ms | 63.87 ms | 572.57 ms |
-| **p275** | 81.69 s | 78.53 s* | 69.92 s* | 110.97 s* | — |
+| **p275** | 81.69 s | 83.63 s | 69.92 s | 110.97 s | — |
 | **p276** | 74.11 ms | 67.55 ms | 64.82 ms | 82.33 ms | 1.14 s |
 | **p277** | 6.3 µs | 8.4 µs | 5.7 µs | 24.2 µs | 19.4 µs |
 | **p278** | 32.83 ms | 21.46 ms | 65.32 ms | 34.54 ms | 5.95 s |
@@ -100,17 +101,17 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p288** | 131.74 ms | 70.89 ms | 137.20 ms | 45.75 ms | 737.05 ms |
 | **p289** | 26.55 ms | 32.87 ms | 16.83 ms | 21.51 ms | — |
 | **p290** | 7.27 ms | 10.23 ms | 7.68 ms | 10.72 ms | — |
-| **p291** | 2.04 s | 4.06 s | 2.73 s | 2.00 s | — |
+| **p291** | 2.04 s | 4.06 s | 2.73 s | 2.00 s | 24.09 s |
 | **p292** | 408.09 ms | 532.95 ms | 425.52 ms | 495.46 ms | — |
 | **p293** | 44.26 ms | 41.35 ms | 43.76 ms | 44.67 ms | 78.58 ms |
 | **p294** | 4.82 s | 4.30 s | 7.24 s | 9.61 s | — |
 | **p295** | 537.45 ms | 326.61 ms | 252.08 ms | 507.05 ms | 3.24 s |
-| **p296** | 17.67 s | 24.89 s | 18.14 s | 3.73 s | — |
+| **p296** ‖ | 2.37 s (×8.3) ‖ | 3.29 s (×8.4) ‖ | 2.46 s (×7.6) ‖ | 3.73 s ‖ | 9.57 s (×3.2) ‖ |
 | **p297** | 2.9 µs | 3.0 µs | 1.1 µs | 8.0 µs | 25.8 µs |
 | **p298** | 161.16 ms | 11.37 ms | 11.81 ms | 17.01 ms | — |
 | **p299** | 257.83 ms | 271.37 ms | 265.79 ms | 402.83 ms | — |
-| **p300** | 37.35 s | 32.02 s | 25.20 s* | 6.46 s | — |
+| **p300** ‖ | 4.97 s (×7.9) ‖ | 4.45 s (×7.9) ‖ | 4.47 s (×5.6) ‖ | 5.09 s (×9.6) ‖ | — |
 
-> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
+> ‖ — *parallel-class problem* (METHODOLOGY.md §5): every tier language fields its idiomatic parallel implementation; (×N) is the achieved parallel speedup (CPU time / wall time). These rows are never directly comparable to serial-class rows.
 
 ⬅ [Back to RESULTS](../RESULTS.md)

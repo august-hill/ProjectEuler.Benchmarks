@@ -2,8 +2,9 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median wall time per fresh-process invocation, one row per problem, one
-column per language in tier-1 display order (native → managed → interpreted).
+Median internal time per fresh-process invocation (2-or-3 corroborated
+samples, METHODOLOGY.md §3), one row per problem, one column per language
+in tier-1 display order (native → managed → interpreted).
 
 | Problem | C++ | Rust | Go |
 |---------|----:|----:|----:|
@@ -20,7 +21,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p911** | — | — | — |
 | **p912** | — | — | — |
 | **p913** | — | — | — |
-| **p914** | 104.69 ms* | — | 103.76 ms* |
+| **p914** | 104.69 ms | — | 103.76 ms |
 | **p915** | — | — | — |
 | **p916** | — | — | — |
 | **p917** | — | — | — |
@@ -81,10 +82,10 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p972** | 13.18 s | — | — |
 | **p973** | — | — | — |
 | **p974** | 7.08 ms | — | — |
-| **p975** | — | — | — |
+| **p975** | ✗ fail | — | — |
 | **p976** | — | — | — |
 | **p977** | — | — | — |
-| **p978** | 84 ns* | — | 2.6 µs* |
+| **p978** | 84 ns | — | 2.6 µs |
 | **p979** | — | — | — |
 | **p980** | 180.73 ms | — | — |
 | **p981** | — | — | — |
@@ -108,6 +109,6 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p999** | — | — | — |
 | **p1000** | — | — | — |
 
-> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
+> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 ⬅ [Back to RESULTS](../RESULTS.md)
