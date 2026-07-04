@@ -26,7 +26,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p516** | 58.59 ms | — | — |
 | **p517** | 546.84 ms | — | 206.25 ms |
 | **p518** | 2.38 s | — | — |
-| **p519** | 13.52 s | — | ✗ fail |
+| **p519** | 13.52 s | — | 5.29 s |
 | **p520** | 200.09 ms | — | 611.5 µs† |
 | **p521** | 762.29 ms | — | 2.37 s |
 | **p522** | 4.27 s | — | 1.01 s |
@@ -110,8 +110,6 @@ in tier-1 display order (native → managed → interpreted).
 | **p600** | 215.41 ms | — | — |
 
 > ‖ — *parallel-class problem* (METHODOLOGY.md §5): every tier language fields its idiomatic parallel implementation; (×N) is the achieved parallel speedup (CPU time / wall time). These rows are never directly comparable to serial-class rows.
-
-> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 > † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
 
