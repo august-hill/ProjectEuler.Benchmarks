@@ -273,24 +273,37 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	row.LoadAvg = r.LoadAvgMax
 
 	// Process-contract gate (METHODOLOGY.md §2) — structural, not advisory.
+	// The untimed-work / undeclared-parallelism check is CPU-based (load-robust):
+	// real work outside the timed region BURNS CPU, so cpu_ns exceeds time_ns by
+	// more than a calibrated startup+GC allowance. Scheduling latency (which inflates
+	// WALL under machine load) burns no CPU, so this verdict does NOT flip with
+	// loadavg — unlike the retired wall-delta gate, under which identical clean
+	// source (cpp p593) failed at load 5 and passed at load 1.5. Parallel-class
+	// problems legitimately run cpu >> time and are exempt; for them a large wall
+	// excess is the only tripwire, recorded as a non-fatal flag below.
 	allow := allowanceFor(lang.Key)
-	if delta := row.SubprocessWallNs - row.TimeNs; delta > allow {
-		row.Status = "fail"
-		row.Error = fmt.Sprintf("untimed-work: wall exceeds timed region by %s (allowance %s) — work is executing outside the timer (module scope / static init / global ctor)",
-			fmtNs(delta), fmtNs(allow))
-		return row
-	}
 	if !parallelClass && row.TimeNs > 0 {
 		ceiling := int64(float64(row.TimeNs)*cpuMultFor(lang.Key)) + allow
 		if row.CPUNs > ceiling {
 			row.Status = "fail"
-			row.Error = fmt.Sprintf("parallel-execution: cpu %s vs time %s exceeds serial-class ceiling %s — problem is serial-class (see data/parallel.json / METHODOLOGY.md §5)",
-				fmtNs(row.CPUNs), fmtNs(row.TimeNs), fmtNs(ceiling))
+			row.Error = fmt.Sprintf("untimed-work: cpu %s exceeds serial ceiling %s (time %s × %.1f + %s) — work outside the timed region (module scope / static init) or undeclared parallelism (see data/parallel.json / METHODOLOGY.md §2/§5)",
+				fmtNs(row.CPUNs), fmtNs(ceiling), fmtNs(row.TimeNs), cpuMultFor(lang.Key), fmtNs(allow))
 			return row
 		}
 	}
 	// Warnings (flags): recorded, not fatal.
 	var flags []string
+	// wall-suspect: wall−time exceeds the startup allowance. NOT a failure — wall
+	// excess conflates untimed work with load-driven spawn/scheduling latency, so it
+	// is only an audit hint (and the sole untimed-work signal for parallel-class,
+	// which gets a generous allowance before the flag trips).
+	wallAllow := allow
+	if parallelClass {
+		wallAllow = 2000e6
+	}
+	if row.SubprocessWallNs-row.TimeNs > wallAllow {
+		flags = append(flags, "wall-suspect")
+	}
 	if len(r.TimeSamplesNs) >= 2 && !r.corroborated() {
 		flags = append(flags, "no-corroboration")
 	}
