@@ -24,6 +24,7 @@ Scope:
 """
 
 import json
+import math
 import sqlite3
 import sys
 from pathlib import Path
@@ -68,6 +69,44 @@ _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
 # Display cap: max(t2_hi, 1000) covers the 501-1000 frontier campaign range
 # (highest solved is 985 cpp / 978 go / 948 rust as of 2026-06-07).
 _DISPLAY_HI = max(_T2_HI, 1000)
+
+# Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
+# idiomatic-parallel by policy and get a distinct marker in every table where
+# a serial row could otherwise be compared against them unlabeled.
+def _load_parallel_class() -> set:
+    try:
+        with open(DATA_DIR / "parallel.json") as f:
+            return {p.zfill(3) for p in json.load(f)["problems"]}
+    except (OSError, KeyError, ValueError):
+        return set()
+
+
+# Geomean floor (METHODOLOGY.md §6): below 100 µs, per-problem ratios measure
+# timer granularity and fixed overheads, not computation.
+GEOMEAN_FLOOR_NS = 100_000
+
+
+def geomean_ns(cells) -> float:
+    """Geometric mean of per-problem times, each floored at GEOMEAN_FLOOR_NS."""
+    cells = [c for c in cells if c is not None]
+    if not cells:
+        return 0.0
+    logs = [math.log(max(int(c), GEOMEAN_FLOOR_NS)) for c in cells]
+    return math.exp(sum(logs) / len(logs))
+
+
+# Per-lang startup allowance for the retro wall-vs-time sweep — mirrors
+# allowanceFor() in cmd/euler-bench/per_iter_write.go. Pass rows whose
+# wall−time exceeds this are pre-v2 untimed-work suspects (no cpu data).
+_ALLOWANCE_NS = {
+    "python": 2_000_000_000,
+    "go": 750_000_000, "java": 750_000_000,
+    "javascript": 750_000_000, "csharp": 750_000_000,
+}  # everything else (native): 250 ms
+
+
+def allowance_ns(lang: str) -> int:
+    return _ALLOWANCE_NS.get(lang, 250_000_000)
 SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
@@ -196,12 +235,11 @@ def status_of(entry: dict) -> str:
 
 
 def samples_of(entry: dict):
-    """Iteration count behind this measurement.
+    """Sample count behind this measurement.
 
-    Suite-standard is `iters=10`; any cell with samples<10 is a partial
-    measurement (median is still meaningful for >1s problems, but variance
-    estimate is degraded). Cells with samples<10 are marked with `*` in
-    the per-problem detail table.
+    Suite standard is 2-or-3 corroborated fresh-process samples
+    (METHODOLOGY.md §3); a single-sample cell is a partial measurement and
+    is marked with `*` in the per-problem detail table and the grid.
 
     Returns int or None (missing).
     """
@@ -257,6 +295,14 @@ def aggregate() -> dict:
         per_prob_lines = {p: source_lines(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_status = {p: status_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
         per_prob_samples = {p: samples_of(probs.get(p, {})) for p in SCOPE_PROBLEMS}
+        per_prob_flags = {p: ((probs.get(p) or {}).get("flags") or "")
+                          for p in SCOPE_PROBLEMS}
+        per_prob_error = {p: ((probs.get(p) or {}).get("error") or "")
+                          for p in SCOPE_PROBLEMS}
+        per_prob_cpu = {p: (probs.get(p) or {}).get("cpu_ns")
+                        for p in SCOPE_PROBLEMS}
+        per_prob_wall = {p: (probs.get(p) or {}).get("subprocess_wall_ns")
+                         for p in SCOPE_PROBLEMS}
         # Grid-only status, over the wider GRID_PROBLEMS range. Kept separate from the
         # per_problem_* dicts above so the totals below (which sum .values()) stay scoped
         # to SCOPE_PROBLEMS and are NOT inflated by solved problems above _DISPLAY_HI.
@@ -277,6 +323,10 @@ def aggregate() -> dict:
             "per_problem_lines": per_prob_lines,
             "per_problem_status": per_prob_status,
             "per_problem_samples": per_prob_samples,
+            "per_problem_flags": per_prob_flags,
+            "per_problem_error": per_prob_error,
+            "per_problem_cpu_ns": per_prob_cpu,
+            "per_problem_wall_ns": per_prob_wall,
             "grid_status": grid_status,
             "grid_ns": grid_ns,
             "grid_samples": grid_samples,
@@ -304,6 +354,13 @@ def aggregate() -> dict:
         "per_lang_total_ns": {
             lang: sum(out[lang]["per_problem_ns"][p] for p in common_problems
                       if out[lang]["per_problem_ns"][p] is not None)
+            for lang in LANGS
+        },
+        # Headline metric (METHODOLOGY.md §6): geomean over the common set,
+        # cells floored at 100 µs. The sum above stays as a secondary column.
+        "per_lang_geomean_ns": {
+            lang: geomean_ns(out[lang]["per_problem_ns"][p]
+                             for p in common_problems)
             for lang in LANGS
         },
         "per_lang_total_lines": {
@@ -360,6 +417,11 @@ def aggregate() -> dict:
             "per_lang_total_ns": {
                 lang: sum(out[lang]["per_problem_ns"][p] for p in tier_common
                           if out[lang]["per_problem_ns"][p] is not None)
+                for lang in active_langs
+            },
+            "per_lang_geomean_ns": {
+                lang: geomean_ns(out[lang]["per_problem_ns"][p]
+                                 for p in tier_common)
                 for lang in active_langs
             },
             "per_lang_total_lines": {
@@ -564,11 +626,11 @@ def render_coverage_grid_chart(agg: dict) -> Path:
                     facecolor=cell_color(st, ns),
                     edgecolor="white", linewidth=0.6,
                 ))
-                # Partial-measurement marker: small black '*' overlaid on cells
-                # bench'd at samples<10 (suite-standard is 10). Matches the
-                # asterisk in per-problem detail tables; the legend below
-                # explains it.
-                if s is not None and s < 10:
+                # Partial-measurement marker: small black '*' overlaid on
+                # single-sample cells (suite standard is 2-or-3 corroborated
+                # samples, METHODOLOGY.md §3). Matches the asterisk in the
+                # per-problem detail tables; the legend below explains it.
+                if s is not None and s < 2:
                     ax.text(
                         ci + 0.5, n_band_langs - 1 - ri + 0.55, "*",
                         fontsize=8, ha="center", va="center",
@@ -598,7 +660,7 @@ def render_coverage_grid_chart(agg: dict) -> Path:
 
     fig.suptitle(
         f"Coverage + Speed Heatmap — tier-aware ({n_probs}-problem range)  ·  "
-        f"* = partial measurement (samples<10)",
+        f"* = partial measurement (single sample; standard is 2-or-3 corroborated)",
         fontsize=12, y=0.995,
     )
 
@@ -620,18 +682,18 @@ def render_coverage_grid_chart(agg: dict) -> Path:
 
 
 def render_total_chart(agg: dict) -> Path:
-    """Horizontal bar: total cost per language over the COMMON SET (problems
+    """Horizontal bar: GEOMEAN cost per language over the COMMON SET (problems
     where all 10 langs have status='pass'), sorted fastest first, log scale X.
 
-    Using common-set totals keeps the chart apples-to-apples under partial
-    coverage. A lang at 100/200 with low total isn't visually misleading vs a
-    lang at 200/200 with high total — both are measured over the same problem
-    set in this chart.
+    Geomean over the common set (cells floored at 100 µs) is the headline
+    ranking metric per METHODOLOGY.md §6 — the sum is dominated by a handful
+    of slow problems, the geomean weights every problem's ratio equally.
+    The common set keeps the chart apples-to-apples under partial coverage.
     """
     common = agg["_common"]
     n_common = len(common["problems"])
-    rows = [(lang, common["per_lang_total_ns"][lang])
-            for lang in LANGS if common["per_lang_total_ns"][lang] > 0]
+    rows = [(lang, common["per_lang_geomean_ns"][lang])
+            for lang in LANGS if common["per_lang_geomean_ns"][lang] > 0]
     rows.sort(key=lambda r: r[1])  # ascending (fastest first; chart will flip for top-at-top)
 
     labels = [DISPLAY[lang] for lang, _ in rows]
@@ -647,10 +709,11 @@ def render_total_chart(agg: dict) -> Path:
     ax.set_xscale("log")
     # Tier-1 chart uses the Foundation common-set (max problem = tier_1's hi).
     _t1_hi = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
-    ax.set_xlabel(f"Total per-invocation cost across the {n_common}-problem common set (ms, log scale)")
+    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {n_common}-problem "
+                  f"common set (ms, log scale; cells floored at 100 µs)")
     ax.set_title(f"Per-Invocation Cost — Foundation ({len(LANGS)} languages, "
                  f"common set: {n_common} of {_t1_hi} problems)\n"
-                 f"Each binary run 10 times in a fresh process; median wall time summed "
+                 f"Geometric mean of per-problem medians (METHODOLOGY.md §6) "
                  f"across the {n_common} problems all langs pass")
     # Value labels at the end of each bar
     for i, (bar, ms) in enumerate(zip(bars, values_ms)):
@@ -658,8 +721,10 @@ def render_total_chart(agg: dict) -> Path:
             label = f"{ms:.0f} ms"
         elif ms >= 10:
             label = f"{ms:.1f} ms"
-        else:
+        elif ms >= 1:
             label = f"{ms:.2f} ms"
+        else:
+            label = f"{ms*1000:.0f} µs"
         ax.text(ms * 1.02, i, label, va="center", fontsize=9)
     ax.grid(axis="x", which="major", alpha=0.3)
     ax.grid(axis="x", which="minor", alpha=0.15)
@@ -693,8 +758,8 @@ def render_total_chart_tier2(agg: dict):
     if active is None:
         return None
     designated = t2["designated_langs"]
-    rows = [(lang, t2["per_lang_total_ns"][lang]) for lang in active
-            if t2["per_lang_total_ns"][lang] > 0]
+    rows = [(lang, t2["per_lang_geomean_ns"][lang]) for lang in active
+            if t2["per_lang_geomean_ns"][lang] > 0]
     rows.sort(key=lambda r: r[1])
     labels = [DISPLAY[lang] for lang, _ in rows]
     values_ms = [v / 1_000_000 for _, v in rows]
@@ -708,7 +773,8 @@ def render_total_chart_tier2(agg: dict):
     ax.set_yticklabels(labels)
     ax.invert_yaxis()
     ax.set_xscale("log")
-    ax.set_xlabel(f"Total per-invocation cost across the {len(common)}-problem tier-2 common set (ms, log scale)")
+    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {len(common)}-problem "
+                  f"tier-2 common set (ms, log scale; 100 µs floor)")
     inactive = [l for l in designated if l not in active]
     inactive_note = (
         f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
@@ -731,8 +797,10 @@ def render_total_chart_tier2(agg: dict):
             label = f"{ms:.0f} ms"
         elif ms >= 10:
             label = f"{ms:.1f} ms"
-        else:
+        elif ms >= 1:
             label = f"{ms:.2f} ms"
+        else:
+            label = f"{ms*1000:.0f} µs"
         ax.text(ms * 1.02, i, label, va="center", fontsize=9)
     ax.grid(axis="x", which="major", alpha=0.3)
     ax.grid(axis="x", which="minor", alpha=0.15)
@@ -804,8 +872,8 @@ def render_total_chart_tier3(agg: dict):
     if active is None:
         return None
     designated = t3["designated_langs"]
-    rows = [(lang, t3["per_lang_total_ns"][lang]) for lang in active
-            if t3["per_lang_total_ns"][lang] > 0]
+    rows = [(lang, t3["per_lang_geomean_ns"][lang]) for lang in active
+            if t3["per_lang_geomean_ns"][lang] > 0]
     rows.sort(key=lambda r: r[1])
     labels = [DISPLAY[lang] for lang, _ in rows]
     values_ms = [v / 1_000_000 for _, v in rows]
@@ -820,7 +888,8 @@ def render_total_chart_tier3(agg: dict):
     ax.set_yticklabels(labels)
     ax.invert_yaxis()
     ax.set_xscale("log")
-    ax.set_xlabel(f"Total per-invocation cost across the {len(common)}-problem tier-3 common set (ms, log scale)")
+    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {len(common)}-problem "
+                  f"tier-3 common set (ms, log scale; 100 µs floor)")
     inactive = [l for l in designated if l not in active]
     inactive_note = (
         f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
@@ -843,8 +912,10 @@ def render_total_chart_tier3(agg: dict):
             label = f"{ms:.0f} ms"
         elif ms >= 10:
             label = f"{ms:.1f} ms"
-        else:
+        elif ms >= 1:
             label = f"{ms:.2f} ms"
+        else:
+            label = f"{ms*1000:.0f} µs"
         ax.text(ms * 1.02, i, label, va="center", fontsize=9)
     ax.grid(axis="x", which="major", alpha=0.3)
     ax.grid(axis="x", which="minor", alpha=0.15)
@@ -919,8 +990,9 @@ def render_per_problem_pages(agg: dict) -> list:
         lines.append("")
         lines.append("⬅ [Back to RESULTS](../RESULTS.md)")
         lines.append("")
-        lines.append("Median wall time per fresh-process invocation, one row per problem, one")
-        lines.append("column per language in tier-1 display order (native → managed → interpreted).")
+        lines.append("Median internal time per fresh-process invocation (2-or-3 corroborated")
+        lines.append("samples, METHODOLOGY.md §3), one row per problem, one column per language")
+        lines.append("in tier-1 display order (native → managed → interpreted).")
         if tier_lbl == "Deep Coverage":
             # Live-derived from tiers.json so this stays correct as the
             # tier-2 lang list changes (e.g., Rust joined 2026-05-25,
@@ -938,33 +1010,79 @@ def render_per_problem_pages(agg: dict) -> list:
         lines.append(header)
         lines.append(sep)
 
-        any_partial = False
+        parallel_class = _load_parallel_class()
+        any_partial = any_nocorr = any_parallel = any_fail = False
         for p in band_probs:
             cells = []
             for lang in display_langs:
                 ns = agg[lang]["per_problem_ns"][p]
+                status = agg[lang]["per_problem_status"][p]
                 if ns is None:
-                    cells.append("—")
-                else:
-                    s = agg[lang]["per_problem_samples"][p]
-                    # Suite-standard iters=10; flag <10-sample cells with '*'.
-                    if s is not None and s < 10:
-                        cells.append(fmt_time(ns) + "*")
-                        any_partial = True
+                    if status == "fail":
+                        err = agg[lang]["per_problem_error"][p]
+                        # Reason class = text before the first ':' for the
+                        # structured gate errors; generic '✗ fail' otherwise.
+                        cls = err.split(":", 1)[0] if ":" in err else ""
+                        if cls in ("untimed-work", "parallel-execution"):
+                            cells.append(f"✗ {cls}")
+                        else:
+                            cells.append("✗ fail")
+                        any_fail = True
                     else:
-                        cells.append(fmt_time(ns))
-            lines.append(f"| **p{p}** | " + " | ".join(cells) + " |")
+                        cells.append("—")
+                    continue
+                cell = fmt_time(ns)
+                # Parallel-class rows: achieved speedup (cpu/time), never
+                # shown unmarked next to serial rows (METHODOLOGY.md §5).
+                if p in parallel_class:
+                    any_parallel = True
+                    cpu = agg[lang]["per_problem_cpu_ns"][p]
+                    if cpu and ns > 0:
+                        cell += f" (×{cpu/ns:.1f})"
+                    cell += " ‖"
+                s = agg[lang]["per_problem_samples"][p]
+                # Suite standard is 2-or-3 corroborated samples; a single
+                # sample is a partial measurement.
+                if s is not None and s < 2:
+                    cell += "*"
+                    any_partial = True
+                flags = agg[lang]["per_problem_flags"][p]
+                if "no-corroboration" in flags:
+                    cell += "†"
+                    any_nocorr = True
+                cells.append(cell)
+            plabel = f"**p{p}**" + (" ‖" if p in parallel_class else "")
+            lines.append(f"| {plabel} | " + " | ".join(cells) + " |")
         lines.append("")
 
-        if any_partial:
-            lines.append(
-                "> \\* — *partial measurement*: cell was bench'd with fewer than the "
-                "suite-standard 10 iterations (typically 1 or 3, for heavy problems "
-                "where iters=10 would exceed the per-chunk wall budget). The median "
-                "is still meaningful for >1s problems, but the variance estimate is "
-                "degraded. These cells are queued for a future uniform-iters=10 "
-                "re-bench pass."
+        notes = []
+        if any_parallel:
+            notes.append(
+                "> ‖ — *parallel-class problem* (METHODOLOGY.md §5): every tier "
+                "language fields its idiomatic parallel implementation; (×N) is "
+                "the achieved parallel speedup (CPU time / wall time). These "
+                "rows are never directly comparable to serial-class rows."
             )
+        if any_fail:
+            notes.append(
+                "> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row "
+                "is recorded as a failure with its reason class (untimed-work / "
+                "parallel-execution) — there is no path by which a "
+                "contract-breaking measurement appears as a fast time."
+            )
+        if any_partial:
+            notes.append(
+                "> \\* — *partial measurement*: a single sample, below the "
+                "2-or-3 corroborated standard (METHODOLOGY.md §3)."
+            )
+        if any_nocorr:
+            notes.append(
+                "> † — *no corroboration*: no two samples agreed within 5%; "
+                "median recorded, environment flagged for re-bench "
+                "(METHODOLOGY.md §3)."
+            )
+        for n in notes:
+            lines.append(n)
             lines.append("")
         lines.append("⬅ [Back to RESULTS](../RESULTS.md)")
         lines.append("")
@@ -983,9 +1101,11 @@ def render_results_md(agg: dict) -> str:
     # than fully-covered langs. Per-lang's own coverage is shown separately
     # in the per-lang section.
     common = agg["_common"]
+    # Headline rank = geomean over the common set, 100 µs floor
+    # (METHODOLOGY.md §6). Sum stays as a secondary column.
     ranked = sorted(
-        [(lang, common["per_lang_total_ns"][lang])
-         for lang in LANGS if common["per_lang_total_ns"][lang] > 0],
+        [(lang, common["per_lang_geomean_ns"][lang])
+         for lang in LANGS if common["per_lang_geomean_ns"][lang] > 0],
         key=lambda r: r[1],
     )
     fastest_ns = ranked[0][1] if ranked else 1
@@ -1027,21 +1147,23 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append(f"### Per-Invocation Cost (Common Set, {n_common} of {tier1_max} problems)")
     md.append("")
-    md.append("We run each program 10 times in fresh OS processes (no warmup, no shared state).")
-    md.append("Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /")
-    md.append("shell-loop user actually pays.  The median wall time across the 10 invocations is")
-    md.append(f"the headline per-problem number, and the table sums over the {n_common}-problem")
-    md.append("common set so partial-coverage languages aren't artificially \"faster\" than fully-")
-    md.append("covered ones.")
+    md.append("Each program runs in fresh OS processes (no warmup, no shared state) under the")
+    md.append("2-or-3 corroborated sampling rule; every invocation pays full startup + algorithm")
+    md.append("cost — the cost a real CLI / cron / shell-loop user actually pays.  The ranking")
+    md.append(f"below is the **geometric mean** of per-problem medians over the {n_common}-problem")
+    md.append("common set, with cells floored at 100 µs so timer-granularity trivia can't swing")
+    md.append("the mean; the sum over the same set is shown as a secondary column.  See")
+    md.append("[METHODOLOGY.md](METHODOLOGY.md) §3 (sampling) and §6 (ranking) for why.")
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
     md.append("")
-    md.append(f"| Rank | Language | Total ({n_common}-problem common set) | Lines of code | vs Fastest |")
-    md.append("|------|----------|--------------------:|--------------:|-----------:|")
-    for i, (lang, total) in enumerate(ranked, 1):
-        ratio = total / fastest_ns
+    md.append(f"| Rank | Language | Geomean ({n_common}-problem common set) | Total (sum) | Lines of code | vs Fastest |")
+    md.append("|------|----------|--------------------:|------------:|--------------:|-----------:|")
+    for i, (lang, gm) in enumerate(ranked, 1):
+        ratio = gm / fastest_ns
         lines = common["per_lang_total_lines"][lang]
-        md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+        total = common["per_lang_total_ns"][lang]
+        md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(int(gm))} | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
     md.append("")
     # Foundation Speed-vs-Size is a CHILD of the Foundation parent (was a
     # standalone ## sitting awkwardly between tier-2 and Coverage Heatmap).
@@ -1092,17 +1214,18 @@ def render_results_md(agg: dict) -> str:
             md.append("![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)")
             md.append("")
         t2_ranked = sorted(
-            [(lang, t2["per_lang_total_ns"][lang]) for lang in t2_langs
-             if t2["per_lang_total_ns"][lang] > 0],
+            [(lang, t2["per_lang_geomean_ns"][lang]) for lang in t2_langs
+             if t2["per_lang_geomean_ns"][lang] > 0],
             key=lambda r: r[1],
         )
         t2_fastest = t2_ranked[0][1] if t2_ranked else 1
-        md.append(f"| Rank | Language | Total ({len(t2_common)}-problem common set) | Lines of code | vs Fastest |")
-        md.append("|------|----------|--------------------:|--------------:|-----------:|")
-        for i, (lang, total) in enumerate(t2_ranked, 1):
-            ratio = total / t2_fastest
+        md.append(f"| Rank | Language | Geomean ({len(t2_common)}-problem common set) | Total (sum) | Lines of code | vs Fastest |")
+        md.append("|------|----------|--------------------:|------------:|--------------:|-----------:|")
+        for i, (lang, gm) in enumerate(t2_ranked, 1):
+            ratio = gm / t2_fastest
             lines = t2["per_lang_total_lines"][lang]
-            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+            total = t2["per_lang_total_ns"][lang]
+            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(int(gm))} | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
         md.append("")
         if (CHARTS_DIR / "per_iter_speed_vs_size_tier2.png").exists():
             md.append("### Speed vs Code Size")
@@ -1150,17 +1273,18 @@ def render_results_md(agg: dict) -> str:
             md.append("![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)")
             md.append("")
         t3_ranked = sorted(
-            [(lang, t3["per_lang_total_ns"][lang]) for lang in t3_langs
-             if t3["per_lang_total_ns"][lang] > 0],
+            [(lang, t3["per_lang_geomean_ns"][lang]) for lang in t3_langs
+             if t3["per_lang_geomean_ns"][lang] > 0],
             key=lambda r: r[1],
         )
         t3_fastest = t3_ranked[0][1] if t3_ranked else 1
-        md.append(f"| Rank | Language | Total ({len(t3_common)}-problem common set) | Lines of code | vs Fastest |")
-        md.append("|------|----------|--------------------:|--------------:|-----------:|")
-        for i, (lang, total) in enumerate(t3_ranked, 1):
-            ratio = total / t3_fastest
+        md.append(f"| Rank | Language | Geomean ({len(t3_common)}-problem common set) | Total (sum) | Lines of code | vs Fastest |")
+        md.append("|------|----------|--------------------:|------------:|--------------:|-----------:|")
+        for i, (lang, gm) in enumerate(t3_ranked, 1):
+            ratio = gm / t3_fastest
             lines = t3["per_lang_total_lines"][lang]
-            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
+            total = t3["per_lang_total_ns"][lang]
+            md.append(f"| {i} | **{DISPLAY[lang]}** | {fmt_time(int(gm))} | {fmt_time(total)} | {lines:,} | {ratio:.2f}× |")
         md.append("")
         if (CHARTS_DIR / "per_iter_speed_vs_size_tier3.png").exists():
             md.append("### Speed vs Code Size")
@@ -1187,8 +1311,8 @@ def render_results_md(agg: dict) -> str:
     md.append("- 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)")
     md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
     md.append("- ⚫ **Black** — missing entry (no measurement)")
-    md.append("- **`*`** — *partial measurement* (samples<10, suite-standard is 10); "
-              "the cell median is still meaningful for >1s problems but the variance estimate is degraded")
+    md.append("- **`*`** — *partial measurement* (single sample; suite standard is "
+              "2-or-3 corroborated samples per METHODOLOGY.md §3)")
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
@@ -1203,7 +1327,8 @@ def render_results_md(agg: dict) -> str:
     md.append(f"startup; Python at the bottom shows the heaviest amber load.  Vertical amber")
     md.append(f"bars that cut across multiple languages (currently visible near p061 and p071)")
     md.append(f"flag *intrinsically hard* problems — the algorithm cost dominates regardless of")
-    md.append(f"language.  No red or black cells: the audit gate is holding.")
+    md.append(f"language.  Red cells are process-contract failures (METHODOLOGY.md §2) — the")
+    md.append(f"per-problem detail pages carry each failure's reason class.")
     md.append("")
 
     # Per-problem detail — moved off the main page (300 problems × 10 cols was
@@ -1237,11 +1362,17 @@ def render_results_md(agg: dict) -> str:
     md.append("For each (language, problem):")
     md.append("")
     md.append("1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).")
-    md.append("2. Run the binary 10 times, each in a fresh OS process.  No warmup; no shared state.")
+    md.append("2. Run fresh-process samples under the **2-or-3 corroboration rule** "
+              "([METHODOLOGY.md](METHODOLOGY.md) §3): two samples that agree within 5% "
+              "settle the cell; otherwise a third tie-breaks by median.  No warmup; no "
+              "shared state.")
     md.append("3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,")
     md.append("   captured by the bench tool.  The answer is compared against the canonical")
     md.append("   (each source file's `// Answer:` header comment); the bench aborts on mismatch.")
-    md.append("4. We report the **median** wall time across the 10 invocations.")
+    md.append("4. Alongside the internal time, the harness records **process observables** — ")
+    md.append("   subprocess wall time, CPU time, load average — and enforces the process")
+    md.append("   contract at write time (METHODOLOGY.md §2): rows with untimed work or")
+    md.append("   serial-class parallelism are recorded as failures, never as fast times.")
     md.append("")
     md.append("That's the entire metric.  No \"hot\" vs \"cold\" — just per-invocation cost, which")
     md.append("is what every CLI / cron / shell-loop user actually pays.")
@@ -1265,7 +1396,7 @@ def render_results_md(agg: dict) -> str:
     md.append("| C | `gcc -O2 -std=c11 -I.. main.c -o main_bench -lm` | `-O2` |")
     md.append("| C++ | `g++ -O2 -std=c++17 -I../include main.cpp -o main_bench -lm` | `-O2` |")
     md.append("| ARM64 | `as ... && cc -O2 -o main_bench main.c solve.o -lm` | `-O2` on the C harness; the `.s` file is hand-tuned |")
-    md.append("| Rust | `cargo build --release` | `opt-level=3 + lto=true` (per repo's `[profile.release]`) |")
+    md.append("| Rust | `cargo build --profile release-lto` | fat LTO + `codegen-units=1` (per repo's `[profile.release-lto]`) |")
     md.append("| Go | `go build -o main_bench main.go` | default (Go optimizes by default; no `-N` debug flag) |")
     md.append("| Zig | `zig build-exe -O ReleaseFast ...` | `ReleaseFast` |")
     md.append("| C# | `dotnet build -c Release` | `Release` |")
@@ -1353,7 +1484,7 @@ def render_results_md(agg: dict) -> str:
     md.append("")
     md.append("```bash")
     md.append("cd pe/benchmarks")
-    md.append(f"cmd/euler-bench/euler-bench per-iter --lang all --problems 1-{len(SCOPE_PROBLEMS)} --iters 10 --write")
+    md.append(f"cmd/euler-bench/euler-bench per-iter --lang all --problems 1-{len(SCOPE_PROBLEMS)} --write")
     md.append("python3 report.py")
     md.append("```")
     md.append("")
@@ -1393,6 +1524,57 @@ def main() -> int:
         missing_str = f", missing {d['missing']}" if d["missing"] else ""
         print(f"  {DISPLAY[lang]:>12s}: total {fmt_time(d['total_ns']):>10s}"
               f"  ({passing}/{in_scope} problems{missing_str})")
+
+    # Headline geomean ranking (the pre-publish priors-check target — see
+    # benchmarks/CLAUDE.md "Pre-publish ranking sanity check").
+    _common = agg["_common"]
+    _gm_ranked = sorted(
+        [(l, g) for l, g in _common["per_lang_geomean_ns"].items() if g > 0],
+        key=lambda r: r[1])
+    print(f"\n=== Tier-1 geomean ranking (headline, "
+          f"{len(_common['problems'])}-problem common set, 100 µs floor):")
+    for i, (lang, g) in enumerate(_gm_ranked, 1):
+        print(f"  {i:2d}. {DISPLAY[lang]:>12s}  {fmt_time(int(g))}")
+
+    # Gate-audit (methodology overhaul): the process-contract gate is CPU-based and
+    # load-robust (METHODOLOGY.md §2), so the audit that matters is "would the CPU
+    # gate fail any row currently marked pass?" — real untimed work / undeclared
+    # parallelism the retired wall-based gate could miss. Wall−time is no longer a
+    # sweep criterion (it conflated untimed work with load-driven spawn latency); it
+    # survives only as the per-row advisory `wall-suspect` flag.
+    _parallel = _load_parallel_class()
+    def _cpu_mult(lang):
+        return 1.5 if lang in ("go", "java", "javascript", "csharp") else 1.3
+    _offenders, _nocpu = [], 0
+    for lang in LANGS:
+        d = agg[lang]
+        for p in SCOPE_PROBLEMS:
+            if d["per_problem_status"].get(p) != "pass":
+                continue
+            ns = d["per_problem_ns"][p]
+            if ns is None:
+                continue
+            cpu = d["per_problem_cpu_ns"][p]
+            if cpu is None:
+                _nocpu += 1
+                continue
+            if p in _parallel:
+                continue  # cpu >> time is expected and legitimate here
+            ceiling = int(ns) * _cpu_mult(lang) + allowance_ns(lang)
+            if int(cpu) > ceiling:
+                _offenders.append((lang, p, int(cpu), int(ns)))
+    if _offenders:
+        _offenders.sort(key=lambda w: -(w[2] / max(w[3], 1)))
+        print(f"\n!! GATE-AUDIT — {len(_offenders)} pass row(s) exceed the CPU serial "
+              f"ceiling (untimed work / undeclared parallelism; re-bench or fix):")
+        for lang, p, cpu, ns in _offenders[:20]:
+            print(f"   {DISPLAY[lang]} p{p}: cpu {fmt_time(cpu)} vs time {fmt_time(ns)} "
+                  f"({cpu / max(ns, 1):.1f}×)")
+        if len(_offenders) > 20:
+            print(f"   ... and {len(_offenders) - 20} more")
+    else:
+        print(f"\n=== GATE-AUDIT: 0 CPU-gate offenders among pass rows "
+              f"({_nocpu} pre-v2 rows lack cpu data, unverifiable by the cpu gate) ===")
 
     # Render charts
     chart1 = render_total_chart(agg)

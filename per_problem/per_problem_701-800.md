@@ -2,8 +2,9 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median wall time per fresh-process invocation, one row per problem, one
-column per language in tier-1 display order (native → managed → interpreted).
+Median internal time per fresh-process invocation (2-or-3 corroborated
+samples, METHODOLOGY.md §3), one row per problem, one column per language
+in tier-1 display order (native → managed → interpreted).
 
 | Problem | C++ | Rust | Go |
 |---------|----:|----:|----:|
@@ -20,14 +21,14 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p711** | 168.55 ms | 168.78 ms | 543.40 ms |
 | **p712** | 490.30 ms | 518.32 ms | 498.23 ms |
 | **p713** | 17.56 ms | 16.64 ms | 18.07 ms |
-| **p714** | — | — | — |
+| **p714** | ✗ fail | — | — |
 | **p715** | — | — | — |
 | **p716** | — | — | — |
 | **p717** | — | — | — |
 | **p718** | 2.02 s | 1.70 s | 6.68 s |
-| **p719** | — | — | — |
+| **p719** | ✗ fail | — | — |
 | **p720** | — | — | — |
-| **p721** | 6.75 s* | 1.78 s* | 6.35 s* |
+| **p721** | 6.75 s | 1.78 s | 6.35 s |
 | **p722** | — | — | — |
 | **p723** | — | — | — |
 | **p724** | 101.09 ms | 96.07 ms | 129.37 ms |
@@ -43,9 +44,9 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p734** | — | — | — |
 | **p735** | — | — | — |
 | **p736** | — | — | — |
-| **p737** | 108.70 s* | 105.69 s* | 177.77 s* |
+| **p737** | 108.70 s | 105.69 s | 177.77 s |
 | **p738** | — | — | — |
-| **p739** | 2.41 s* | — | 2.48 s* |
+| **p739** | 2.41 s | — | 2.48 s |
 | **p740** | — | — | — |
 | **p741** | — | — | — |
 | **p742** | — | — | — |
@@ -55,12 +56,12 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p746** | — | — | — |
 | **p747** | — | — | — |
 | **p748** | — | — | — |
-| **p749** | 1.79 s* | — | 2.73 s* |
+| **p749** | 1.79 s | — | 2.73 s |
 | **p750** | — | — | — |
 | **p751** | 134.0 µs | — | — |
 | **p752** | 924.47 ms | 604.34 ms | 960.81 ms |
 | **p753** | — | — | — |
-| **p754** | 18.75 s* | 18.41 s* | 19.84 s* |
+| **p754** | 18.75 s | 18.41 s | 19.84 s |
 | **p755** | 26.2 µs | 8.8 µs | 21.0 µs |
 | **p756** | — | — | — |
 | **p757** | 2.17 s | 1.36 s | 4.21 s |
@@ -82,7 +83,7 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p773** | — | — | — |
 | **p774** | — | — | — |
 | **p775** | — | — | — |
-| **p776** | 144.5 µs* | — | 2.23 ms* |
+| **p776** | 144.5 µs | — | 2.23 ms |
 | **p777** | — | — | — |
 | **p778** | 219.7 µs | 59.1 µs | 43.3 µs |
 | **p779** | 8.05 ms | 2.34 ms | 2.49 ms |
@@ -108,6 +109,6 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p799** | — | — | — |
 | **p800** | 92.37 ms | 54.99 ms | 49.65 ms |
 
-> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
+> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 ⬅ [Back to RESULTS](../RESULTS.md)

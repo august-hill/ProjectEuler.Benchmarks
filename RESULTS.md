@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3488 measured (75.8% coverage).**
+> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3569 measured (77.6% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -14,27 +14,28 @@ All 10 languages benchmarked across the first 200 problems — the apples-to-app
 
 ### Per-Invocation Cost (Common Set, 200 of 200 problems)
 
-We run each program 10 times in fresh OS processes (no warmup, no shared state).
-Each invocation pays full startup + algorithm cost — the cost a real CLI / cron /
-shell-loop user actually pays.  The median wall time across the 10 invocations is
-the headline per-problem number, and the table sums over the 200-problem
-common set so partial-coverage languages aren't artificially "faster" than fully-
-covered ones.
+Each program runs in fresh OS processes (no warmup, no shared state) under the
+2-or-3 corroborated sampling rule; every invocation pays full startup + algorithm
+cost — the cost a real CLI / cron / shell-loop user actually pays.  The ranking
+below is the **geometric mean** of per-problem medians over the 200-problem
+common set, with cells floored at 100 µs so timer-granularity trivia can't swing
+the mean; the sum over the same set is shown as a secondary column.  See
+[METHODOLOGY.md](METHODOLOGY.md) §3 (sampling) and §6 (ranking) for why.
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
-| Rank | Language | Total (200-problem common set) | Lines of code | vs Fastest |
-|------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C** | 22.47 s | 14,524 | 1.00× |
-| 2 | **C++** | 22.59 s | 10,369 | 1.01× |
-| 3 | **Zig** | 25.03 s | 13,474 | 1.11× |
-| 4 | **Rust** | 28.75 s | 11,614 | 1.28× |
-| 5 | **Go** | 31.49 s | 13,225 | 1.40× |
-| 6 | **ARM64** | 34.11 s | 40,297 | 1.52× |
-| 7 | **C#** | 39.33 s | 11,019 | 1.75× |
-| 8 | **Java** | 44.05 s | 10,611 | 1.96× |
-| 9 | **JavaScript** | 68.63 s | 9,310 | 3.05× |
-| 10 | **Python** | 671.19 s | 8,558 | 29.87× |
+| Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
+|------|----------|--------------------:|------------:|--------------:|-----------:|
+| 1 | **Zig** | 1.93 ms | 25.03 s | 13,474 | 1.00× |
+| 2 | **ARM64** | 2.00 ms | 34.11 s | 40,297 | 1.04× |
+| 3 | **C** | 2.03 ms | 22.47 s | 14,524 | 1.06× |
+| 4 | **C++** | 2.19 ms | 22.59 s | 10,369 | 1.14× |
+| 5 | **Rust** | 2.26 ms | 28.75 s | 11,614 | 1.17× |
+| 6 | **Go** | 2.49 ms | 31.49 s | 13,225 | 1.29× |
+| 7 | **JavaScript** | 4.72 ms | 68.63 s | 9,310 | 2.45× |
+| 8 | **Java** | 5.93 ms | 44.05 s | 10,611 | 3.08× |
+| 9 | **C#** | 7.20 ms | 39.33 s | 11,019 | 3.74× |
+| 10 | **Python** | 20.16 ms | 671.19 s | 8,558 | 10.46× |
 
 ### Speed vs Code Size
 
@@ -46,17 +47,17 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-### Per-Invocation Cost (Common Set, 68 of 100 problems)
+### Per-Invocation Cost (Common Set, 87 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Total (68-problem common set) | Lines of code | vs Fastest |
-|------|----------|--------------------:|--------------:|-----------:|
-| 1 | **C++** | 10.19 s | 8,966 | 1.00× |
-| 2 | **Rust** | 10.56 s | 6,392 | 1.04× |
-| 3 | **Go** | 11.11 s | 6,697 | 1.09× |
-| 4 | **Zig** | 11.33 s | 7,202 | 1.11× |
-| 5 | **Python** | 142.67 s | 4,524 | 14.00× |
+| Rank | Language | Geomean (87-problem common set) | Total (sum) | Lines of code | vs Fastest |
+|------|----------|--------------------:|------------:|--------------:|-----------:|
+| 1 | **Zig** | 18.29 ms | 84.93 s | 9,727 | 1.00× |
+| 2 | **Rust** | 20.43 ms | 64.51 s | 8,535 | 1.12× |
+| 3 | **C++** | 21.67 ms | 70.05 s | 11,138 | 1.18× |
+| 4 | **Go** | 23.73 ms | 81.50 s | 8,909 | 1.30× |
+| 5 | **Python** | 175.77 ms | 610.56 s | 6,068 | 9.61× |
 
 ### Speed vs Code Size
 
@@ -68,15 +69,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 301 of ≤700 problems in scope)
+### Per-Invocation Cost (Common Set, 319 of ≤700 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Total (301-problem common set) | Lines of code | vs Fastest |
-|------|----------|--------------------:|--------------:|-----------:|
-| 1 | **Rust** | 1010.89 s | 36,605 | 1.00× |
-| 2 | **C++** | 1123.25 s | 33,041 | 1.11× |
-| 3 | **Go** | 1235.57 s | 38,476 | 1.22× |
+| Rank | Language | Geomean (319-problem common set) | Total (sum) | Lines of code | vs Fastest |
+|------|----------|--------------------:|------------:|--------------:|-----------:|
+| 1 | **Rust** | 51.89 ms | 1063.49 s | 39,186 | 1.00× |
+| 2 | **C++** | 58.34 ms | 1171.17 s | 35,132 | 1.12× |
+| 3 | **Go** | 70.26 ms | 1297.46 s | 41,034 | 1.35× |
 
 ### Speed vs Code Size
 
@@ -95,7 +96,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 - 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)
 - 🔴 **Red** — fail (wrong answer, build error, timeout)
 - ⚫ **Black** — missing entry (no measurement)
-- **`*`** — *partial measurement* (samples<10, suite-standard is 10); the cell median is still meaningful for >1s problems but the variance estimate is degraded
+- **`*`** — *partial measurement* (single sample; suite standard is 2-or-3 corroborated samples per METHODOLOGY.md §3)
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 
@@ -108,7 +109,8 @@ Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 startup; Python at the bottom shows the heaviest amber load.  Vertical amber
 bars that cut across multiple languages (currently visible near p061 and p071)
 flag *intrinsically hard* problems — the algorithm cost dominates regardless of
-language.  No red or black cells: the audit gate is holding.
+language.  Red cells are process-contract failures (METHODOLOGY.md §2) — the
+per-problem detail pages carry each failure's reason class.
 
 ## Per-Problem Detail
 
@@ -133,11 +135,14 @@ Split across 10 pages, one per 100-problem band, so this main page stays navigab
 For each (language, problem):
 
 1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).
-2. Run the binary 10 times, each in a fresh OS process.  No warmup; no shared state.
+2. Run fresh-process samples under the **2-or-3 corroboration rule** ([METHODOLOGY.md](METHODOLOGY.md) §3): two samples that agree within 5% settle the cell; otherwise a third tie-breaks by median.  No warmup; no shared state.
 3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,
    captured by the bench tool.  The answer is compared against the canonical
    (each source file's `// Answer:` header comment); the bench aborts on mismatch.
-4. We report the **median** wall time across the 10 invocations.
+4. Alongside the internal time, the harness records **process observables** — 
+   subprocess wall time, CPU time, load average — and enforces the process
+   contract at write time (METHODOLOGY.md §2): rows with untimed work or
+   serial-class parallelism are recorded as failures, never as fast times.
 
 That's the entire metric.  No "hot" vs "cold" — just per-invocation cost, which
 is what every CLI / cron / shell-loop user actually pays.
@@ -161,7 +166,7 @@ measurements:
 | C | `gcc -O2 -std=c11 -I.. main.c -o main_bench -lm` | `-O2` |
 | C++ | `g++ -O2 -std=c++17 -I../include main.cpp -o main_bench -lm` | `-O2` |
 | ARM64 | `as ... && cc -O2 -o main_bench main.c solve.o -lm` | `-O2` on the C harness; the `.s` file is hand-tuned |
-| Rust | `cargo build --release` | `opt-level=3 + lto=true` (per repo's `[profile.release]`) |
+| Rust | `cargo build --profile release-lto` | fat LTO + `codegen-units=1` (per repo's `[profile.release-lto]`) |
 | Go | `go build -o main_bench main.go` | default (Go optimizes by default; no `-N` debug flag) |
 | Zig | `zig build-exe -O ReleaseFast ...` | `ReleaseFast` |
 | C# | `dotnet build -c Release` | `Release` |
@@ -249,7 +254,7 @@ language honesty — the OS enforces it for free.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1000 --iters 10 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1000 --write
 python3 report.py
 ```
 
@@ -257,9 +262,11 @@ Sanitization invariant: the public repo carries no raw bench data files —
 only this rendered narrative and the charts.  All measurements live in the
 gitignored SQLite SSOT `data/bench-private.db`.  See `scripts/sanitization_gate.py`.
 
-## Methodology Story
+## Methodology
 
-See [JOURNEY.md](JOURNEY.md) for the full story.  Recent chapters cover:
+The normative spec — metric, sampling, process-contract enforcement,
+serial/parallel-class concurrency policy, and ranking rationale — is
+[METHODOLOGY.md](METHODOLOGY.md).  See [JOURNEY.md](JOURNEY.md) for the story.  Recent chapters cover:
 - The 24-hour cache-strip campaign and its reset (155 source edits reverted)
 - The shift from in-process warm iterations to fresh-process per-invocation cost
 - The invocation-isolation principle and why the OS is the audit tool

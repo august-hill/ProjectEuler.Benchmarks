@@ -2,8 +2,9 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median wall time per fresh-process invocation, one row per problem, one
-column per language in tier-1 display order (native → managed → interpreted).
+Median internal time per fresh-process invocation (2-or-3 corroborated
+samples, METHODOLOGY.md §3), one row per problem, one column per language
+in tier-1 display order (native → managed → interpreted).
 
 | Problem | C++ | Rust | Go |
 |---------|----:|----:|----:|
@@ -19,17 +20,17 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p610** | 847.7 µs | 1.02 ms | 1.60 ms |
 | **p611** | — | — | — |
 | **p612** | 702.6 µs | 671.7 µs | 1.22 ms |
-| **p613** | — | — | — |
+| **p613** | ✗ fail | — | — |
 | **p614** | — | — | — |
-| **p615** | 4.40 s | 3.86 s* | 11.33 s* |
+| **p615** | 4.40 s | 3.53 s | 11.33 s |
 | **p616** | — | — | — |
 | **p617** | 18.8 µs | 15.1 µs | 23.5 µs |
 | **p618** | 83.02 ms | 162.87 ms | 124.39 ms |
 | **p619** | 38.25 ms | 66.82 ms | 43.75 ms |
 | **p620** | — | — | — |
-| **p621** | 4.53 s* | 6.80 s* | 4.97 s* |
+| **p621** | 4.53 s | 6.76 s | 4.97 s |
 | **p622** | 2.19 ms | 900.3 µs | 651.7 µs |
-| **p623** | 2.42 s | 2.43 s* | 1.10 s |
+| **p623** | 2.42 s | 2.46 s | 1.10 s |
 | **p624** | 8.5 µs | 9.8 µs | 4.5 µs |
 | **p625** | 911.95 ms | 660.05 ms | 802.22 ms |
 | **p626** | — | — | — |
@@ -41,18 +42,18 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p632** | 1.24 s | 1.29 s | 1.28 s |
 | **p633** | — | — | — |
 | **p634** | 7.87 ms | 10.03 ms | 10.64 ms |
-| **p635** | 11.19 s* | 5.48 s* | 2.66 s* |
+| **p635** | 11.19 s | 5.54 s | 2.66 s |
 | **p636** | — | — | — |
-| **p637** | 40.69 s* | 42.50 s* | 101.17 s* |
+| **p637** | 40.69 s | 42.50 s | 101.17 s |
 | **p638** | 80.30 ms | 117.97 ms | 102.12 ms |
 | **p639** | — | — | — |
 | **p640** | 71.19 ms | 73.69 ms | 268.27 ms |
-| **p641** | 11.43 s* | 11.16 s* | 11.21 s* |
-| **p642** | 33.41 s* | 35.75 s* | 39.25 s* |
-| **p643** | 455.32 ms* | 488.93 ms | 592.66 ms* |
+| **p641** | 11.43 s | 11.35 s | 11.21 s |
+| **p642** | 33.41 s | 35.75 s | 39.25 s |
+| **p643** | 455.32 ms | 488.93 ms | 592.66 ms |
 | **p644** | — | — | — |
 | **p645** | — | — | — |
-| **p646** | 1.92 s | 6.01 s* | 4.79 s* |
+| **p646** | 1.92 s | 6.24 s | 4.79 s |
 | **p647** | 4.53 ms | 2.68 ms | 5.85 ms |
 | **p648** | 766.77 ms | 727.59 ms | 1.31 s |
 | **p649** | 2.3 µs | 4.2 µs | 38.2 µs |
@@ -60,16 +61,16 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p651** | — | — | — |
 | **p652** | — | — | — |
 | **p653** | 23.28 ms | 16.82 ms | 64.96 ms |
-| **p654** | 10.66 s* | 2.23 s* | 2.88 s* |
-| **p655** | 6.84 s* | 6.87 s* | 15.79 s* |
+| **p654** | 10.66 s | 2.23 s | 2.88 s |
+| **p655** | 6.84 s | 6.87 s | 15.79 s |
 | **p656** | 689.3 µs | 697.8 µs | 840.2 µs |
 | **p657** | 9.30 s | 4.34 s | 4.12 s |
 | **p658** | — | — | — |
 | **p659** | 497.18 ms | 509.99 ms | 618.09 ms |
-| **p660** | 50.49 s | 61.17 s* | 68.91 s* |
+| **p660** | 50.49 s | 61.17 s | 68.91 s |
 | **p661** | — | — | — |
-| **p662** | 6.64 s* | 6.03 s* | 9.83 s* |
-| **p663** | 3.54 s* | 3.77 s* | 5.61 s* |
+| **p662** | 6.64 s | 6.16 s | 9.83 s |
+| **p663** | 3.54 s | 4.11 s† | 5.61 s |
 | **p664** | — | — | — |
 | **p665** | — | — | — |
 | **p666** | 465.2 µs | 444.5 µs | 1.29 ms |
@@ -81,18 +82,18 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p672** | — | — | — |
 | **p673** | 287.3 µs | 64.5 µs | 265.2 µs |
 | **p674** | — | — | — |
-| **p675** | 2.79 s | 2.62 s* | 2.96 s* |
+| **p675** | 2.79 s | 2.60 s | 2.96 s |
 | **p676** | — | — | — |
 | **p677** | — | — | — |
 | **p678** | — | — | — |
 | **p679** | 143.3 µs | 124.4 µs | 474.2 µs |
 | **p680** | — | — | — |
-| **p681** | 52.04 s* | 65.81 s* | 63.04 s* |
+| **p681** | 52.04 s | 65.81 s | 63.04 s |
 | **p682** | — | — | — |
-| **p683** | 1.26 s | 1.38 s | 3.72 s* |
+| **p683** | 1.26 s | 1.38 s | 3.72 s |
 | **p684** | 35.3 µs | 18.5 µs | 12.9 µs |
 | **p685** | — | — | — |
-| **p686** | — | — | — |
+| **p686** | ✗ fail | — | — |
 | **p687** | 42.45 ms | 1.02 ms | 1.23 ms |
 | **p688** | 904.96 ms | 946.26 ms | 1.14 s |
 | **p689** | — | — | — |
@@ -108,6 +109,8 @@ column per language in tier-1 display order (native → managed → interpreted)
 | **p699** | — | — | — |
 | **p700** | 250 ns | 250 ns | 1.7 µs |
 
-> \* — *partial measurement*: cell was bench'd with fewer than the suite-standard 10 iterations (typically 1 or 3, for heavy problems where iters=10 would exceed the per-chunk wall budget). The median is still meaningful for >1s problems, but the variance estimate is degraded. These cells are queued for a future uniform-iters=10 re-bench pass.
+> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
+
+> † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
 
 ⬅ [Back to RESULTS](../RESULTS.md)
