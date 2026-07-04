@@ -27,6 +27,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -255,11 +256,33 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, fixed bool) *
 
 	runBin, runArgs := lang.RunArgs(repoDir, probDir)
 
+	// Per-problem hard timeout (tiered by series; EULER_BENCH_MAX_SECS overrides,
+	// for testing the kill path without waiting a full tier budget).
+	timeoutSecs, _ := strconv.Atoi(benchTimeoutSecs(problem))
+	if ov := os.Getenv("EULER_BENCH_MAX_SECS"); ov != "" {
+		if v, e := strconv.Atoi(ov); e == nil && v > 0 {
+			timeoutSecs = v
+		}
+	}
+
 	// Run N times in fresh processes.
 	for i := 0; i < iters; i++ {
 		fullArgs := append([]string{runBin}, runArgs...)
-		cmd := exec.Command(fullArgs[0], fullArgs[1:]...)
+		// Hard deadline with own process group + group-SIGKILL on expiry: a runaway
+		// solve (and anything it spawned) can't survive holding the stdout pipe open
+		// and deadlock cmd.Run() — the p519 15.8h hang (2026-07-04). WaitDelay forces
+		// the pipes closed so Run() always returns even if a child lingers.
+		ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutSecs)*time.Second)
+		cmd := exec.CommandContext(ctx, fullArgs[0], fullArgs[1:]...)
 		cmd.Dir = workDir
+		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+		cmd.Cancel = func() error {
+			if cmd.Process != nil {
+				return syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL) // negative pid = whole group
+			}
+			return nil
+		}
+		cmd.WaitDelay = 10 * time.Second
 		var stdout, stderr bytes.Buffer
 		cmd.Stdout = &stdout
 		cmd.Stderr = &stderr
@@ -267,6 +290,8 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, fixed bool) *
 		t0 := time.Now()
 		err := cmd.Run()
 		wall := time.Since(t0).Nanoseconds()
+		timedOut := ctx.Err() == context.DeadlineExceeded
+		cancel()
 
 		// Capture max RSS + CPU time for this subprocess (cmd.ProcessState is
 		// non-nil after Run returns regardless of err). RSS: worst-case
@@ -291,6 +316,10 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, fixed bool) *
 		}
 
 		if err != nil {
+			if timedOut {
+				r.RunErr = fmt.Sprintf("timeout: exceeded %ds budget", timeoutSecs)
+				break // a runaway won't corroborate; don't burn more budget retrying
+			}
 			r.RunErr = fmt.Sprintf("iter %d: %v (stderr: %s)", i+1, err, truncate(stderr.String(), 80))
 			continue
 		}
