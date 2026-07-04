@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3569 measured (77.6% coverage).**
+> **Scope: 4600 in-scope cells across 1000 problems × tiered languages — 3575 measured (77.7% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -47,17 +47,17 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-### Per-Invocation Cost (Common Set, 87 of 100 problems)
+### Per-Invocation Cost (Common Set, 92 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Geomean (87-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (92-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 18.29 ms | 84.93 s | 9,727 | 1.00× |
-| 2 | **Rust** | 20.43 ms | 64.51 s | 8,535 | 1.12× |
-| 3 | **C++** | 21.67 ms | 70.05 s | 11,138 | 1.18× |
-| 4 | **Go** | 23.73 ms | 81.50 s | 8,909 | 1.30× |
-| 5 | **Python** | 175.77 ms | 610.56 s | 6,068 | 9.61× |
+| 1 | **Zig** | 19.19 ms | 85.66 s | 10,847 | 1.00× |
+| 2 | **Rust** | 21.58 ms | 65.37 s | 9,501 | 1.12× |
+| 3 | **C++** | 23.26 ms | 70.91 s | 12,103 | 1.21× |
+| 4 | **Go** | 24.96 ms | 82.45 s | 9,894 | 1.30× |
+| 5 | **Python** | 181.90 ms | 612.44 s | 6,767 | 9.48× |
 
 ### Speed vs Code Size
 
