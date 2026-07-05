@@ -9,7 +9,7 @@ This is the only public repo in the 10-language Project Euler suite. The other 1
 PE's publishing rule (projecteuler.net/about#publish) restricts public solution discussion to problems 1–100. Everything in this repo is constrained by that:
 
 ### Allowed in this repo
-- **Problem numbers** (`p221`, `problem_435`, etc.) — bare references are fine
+- **Problem numbers** (`p221`, `problem_0435`, etc.) — bare references are fine
 - **Timing data** (ns, ms, ratios) — pure numbers reveal no algorithm
 - **Methodology** — benchmark harness, single-call (per-invocation) cost metric
 - **Aggregate analysis** — language-vs-language ratios, fastest-on-average, etc.

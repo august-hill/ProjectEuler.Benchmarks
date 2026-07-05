@@ -1500,7 +1500,7 @@ The `euler-bench` Rust adapter was updated to invoke
 `cargo build --profile release-lto` and look for binaries in
 `target/release-lto/`. All 351 per-problem `Cargo.toml` files in the
 repo got the two profile blocks appended in one mechanical sweep (the
-template at `problem_290` was edited by hand first, the rest by a small
+template at `problem_0290` was edited by hand first, the rest by a small
 Python script).
 
 ### Re-benching
