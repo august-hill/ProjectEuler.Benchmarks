@@ -130,12 +130,12 @@ func parseProblemSpec(spec string) []string {
 				continue
 			}
 			for i := lo; i <= hi; i++ {
-				out = append(out, fmt.Sprintf("%03d", i))
+				out = append(out, fmt.Sprintf("%04d", i))
 			}
 		} else {
 			n, err := strconv.Atoi(part)
 			if err == nil {
-				out = append(out, fmt.Sprintf("%03d", n))
+				out = append(out, fmt.Sprintf("%04d", n))
 			}
 		}
 	}

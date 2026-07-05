@@ -93,10 +93,10 @@ var (
 	stubAsmRe = regexp.MustCompile(`(?s)_solve:\s*(?:mov[a-z]?\s+x0\s*,\s*#?\d+\s*)+\s*ret`)
 )
 
-func zeroPad(n int) string { return fmt.Sprintf("%03d", n) }
+func zeroPad(n int) string { return fmt.Sprintf("%04d", n) }
 
 func numFromDir(name string) (int, bool) {
-	if !strings.HasPrefix(name, "problem_") || len(name) != 11 {
+	if !strings.HasPrefix(name, "problem_") || len(name) <= 8 {
 		return 0, false
 	}
 	n, err := strconv.Atoi(name[8:])
@@ -108,7 +108,7 @@ func numFromPyFile(name string) (int, bool) {
 		return 0, false
 	}
 	mid := name[8 : len(name)-3]
-	if len(mid) != 3 {
+	if len(mid) == 0 {
 		return 0, false
 	}
 	n, err := strconv.Atoi(mid)
@@ -619,7 +619,7 @@ func writeHumanSummary(w *os.File, r Report) {
 				fmt.Fprintf(w, "  ... %d more\n", len(errs)-30)
 				break
 			}
-			fmt.Fprintf(w, "  %-10s p%03d  %s  %s\n", f.Lang, f.Problem, f.Category, f.Details)
+			fmt.Fprintf(w, "  %-10s p%04d  %s  %s\n", f.Lang, f.Problem, f.Category, f.Details)
 		}
 	}
 }

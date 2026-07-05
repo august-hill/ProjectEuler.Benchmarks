@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -27,7 +28,7 @@ func loadParkedProblems(baseDir string) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		// Fallback if file not found
-		for _, p := range []string{"167", "185", "196"} {
+		for _, p := range []string{"0167", "0185", "0196"} {
 			parkedProblems[p] = true
 		}
 		return
@@ -35,6 +36,12 @@ func loadParkedProblems(baseDir string) {
 	var probs []string
 	if json.Unmarshal(data, &probs) == nil {
 		for _, p := range probs {
+			p = strings.TrimSpace(p)
+			// Canonical key is fixed 4-digit zero-pad; normalize any width so
+			// membership matches discovered problem keys (problem_0001..).
+			if n, e := strconv.Atoi(p); e == nil {
+				parkedProblems[fmt.Sprintf("%04d", n)] = true
+			}
 			parkedProblems[p] = true
 		}
 	}
