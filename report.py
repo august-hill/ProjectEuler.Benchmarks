@@ -66,9 +66,10 @@ _TIERS = load_tiers()
 # the grid and excludes it from per-lang totals.
 _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
-# Display cap: max(t2_hi, 1000) covers the 501-1000 frontier campaign range
-# (highest solved is 985 cpp / 978 go / 948 rust as of 2026-06-07).
-_DISPLAY_HI = max(_T2_HI, 1000)
+# Display cap: max(t2_hi, 1005) covers PE's full published range (PE reached
+# #1005 in 2026-07) so coverage % reckons against the true universe. Highest
+# solved is 985 cpp / 978 go / 948 rust — so 986-1005 is an unsolved frontier.
+_DISPLAY_HI = max(_T2_HI, 1005)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
 # idiomatic-parallel by policy and get a distinct marker in every table where
