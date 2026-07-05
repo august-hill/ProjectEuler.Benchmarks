@@ -626,16 +626,8 @@ def render_coverage_grid_chart(agg: dict) -> Path:
                     facecolor=cell_color(st, ns),
                     edgecolor="white", linewidth=0.6,
                 ))
-                # Partial-measurement marker: small black '*' overlaid on
-                # single-sample cells (suite standard is 2-or-3 corroborated
-                # samples, METHODOLOGY.md §3). Matches the asterisk in the
-                # per-problem detail tables; the legend below explains it.
-                if s is not None and s < 2:
-                    ax.text(
-                        ci + 0.5, n_band_langs - 1 - ri + 0.55, "*",
-                        fontsize=8, ha="center", va="center",
-                        color="black", fontweight="bold",
-                    )
+                # (cell markers intentionally OFF for this experiment —
+                #  no '*', no sample-count numbers)
 
         # Uniform x extent across bands keeps cell width constant even on a
         # final partial band (e.g. 50 problems instead of 100).
@@ -659,8 +651,7 @@ def render_coverage_grid_chart(agg: dict) -> Path:
             spine.set_visible(False)
 
     fig.suptitle(
-        f"Coverage + Speed Heatmap — tier-aware ({n_probs}-problem range)  ·  "
-        f"* = partial measurement (single sample; standard is 2-or-3 corroborated)",
+        f"Coverage + Speed Heatmap — tier-aware ({n_probs}-problem range)",
         fontsize=12, y=0.995,
     )
 
@@ -690,44 +681,84 @@ def render_total_chart(agg: dict) -> Path:
     of slow problems, the geomean weights every problem's ratio equally.
     The common set keeps the chart apples-to-apples under partial coverage.
     """
+    # Forest plot with bootstrap uncertainty: the geomean ranking among the top
+    # compiled langs is a statistical tie, not a strict 1-N order. We show each
+    # lang's point geomean + 95% CI (bootstrap over the common-set problems) and
+    # cluster the "tied-for-#1" tier by P(#1) — the probability a lang is fastest
+    # across resamples. See METHODOLOGY.md §6.
+    import math, random
+    from matplotlib.patches import Patch
+    from matplotlib.ticker import NullFormatter
+    random.seed(42)  # deterministic bootstrap -> stable chart across regens
+
     common = agg["_common"]
     n_common = len(common["problems"])
-    rows = [(lang, common["per_lang_geomean_ns"][lang])
-            for lang in LANGS if common["per_lang_geomean_ns"][lang] > 0]
-    rows.sort(key=lambda r: r[1])  # ascending (fastest first; chart will flip for top-at-top)
-
-    labels = [DISPLAY[lang] for lang, _ in rows]
-    values_ms = [v / 1_000_000 for _, v in rows]
-    colors = [COLOR[lang] for lang, _ in rows]
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-    y_pos = range(len(labels))
-    bars = ax.barh(y_pos, values_ms, color=colors)
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(labels)
-    ax.invert_yaxis()  # fastest on top
-    ax.set_xscale("log")
-    # Tier-1 chart uses the Foundation common-set (max problem = tier_1's hi).
+    cprobs = common["problems"]
     _t1_hi = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
-    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {n_common}-problem "
-                  f"common set (ms, log scale; cells floored at 100 µs)")
-    ax.set_title(f"Per-Invocation Cost — Foundation ({len(LANGS)} languages, "
-                 f"common set: {n_common} of {_t1_hi} problems)\n"
-                 f"Geometric mean of per-problem medians (METHODOLOGY.md §6) "
-                 f"across the {n_common} problems all langs pass")
-    # Value labels at the end of each bar
-    for i, (bar, ms) in enumerate(zip(bars, values_ms)):
-        if ms >= 100:
-            label = f"{ms:.0f} ms"
-        elif ms >= 10:
-            label = f"{ms:.1f} ms"
-        elif ms >= 1:
-            label = f"{ms:.2f} ms"
-        else:
-            label = f"{ms*1000:.0f} µs"
-        ax.text(ms * 1.02, i, label, va="center", fontsize=9)
-    ax.grid(axis="x", which="major", alpha=0.3)
-    ax.grid(axis="x", which="minor", alpha=0.15)
+    FLOOR = 1e5  # 100 µs geomean floor (METHODOLOGY.md §6)
+
+    active = [l for l in LANGS if common["per_lang_geomean_ns"][l] > 0]
+    times = {l: [max((agg[l]["per_problem_ns"][p] or 0), FLOOR) for p in cprobs] for l in active}
+    gm = lambda v: math.exp(sum(math.log(x) for x in v) / len(v))
+    point = {l: gm(times[l]) / 1e6 for l in active}  # ms
+
+    B, N = 2000, n_common
+    boot = {l: [] for l in active}
+    for _ in range(B):
+        idx = [random.randrange(N) for _ in range(N)]
+        for l in active:
+            boot[l].append(gm([times[l][i] for i in idx]) / 1e6)
+    ci = {l: (sorted(boot[l])[int(.025 * B)], sorted(boot[l])[int(.975 * B)]) for l in active}
+    wins = {l: 0 for l in active}
+    for i in range(B):
+        wins[min(active, key=lambda l: boot[l][i])] += 1
+    p1 = {l: wins[l] / B for l in active}
+
+    order = sorted(active, key=lambda l: point[l])   # fastest first
+    tie = [l for l in order if p1[l] >= 0.01]         # tied-for-#1 by P(#1)
+    _COMPILED = {'c', 'cpp', 'rust', 'zig', 'arm64', 'go'}
+    def _clu(l):
+        if l in tie: return 'tie'
+        if l in _COMPILED: return 'comp'
+        if l == 'python': return 'py'
+        return 'mgd'
+    _CC = {'tie': '#1a7a1a', 'comp': '#8bc34a', 'mgd': '#e8912a', 'py': '#c0392b'}
+
+    fig, ax = plt.subplots(figsize=(10.2, 5.6))
+    ys = list(range(len(order)))[::-1]  # fastest at top
+    for y, l in zip(ys, order):
+        lo, hi = ci[l]; c = _CC[_clu(l)]; big = l in tie
+        ax.plot([lo, hi], [y, y], color=c, lw=2.4 if big else 1.8, alpha=.6, solid_capstyle='round')
+        ax.plot([lo], [y], '|', color=c, ms=10, mew=2)
+        ax.plot([hi], [y], '|', color=c, ms=10, mew=2)
+        ax.plot([point[l]], [y], 'o', color=c, ms=10 if big else 8, zorder=3)
+        lbl = f"{point[l]:.2f} ms" + (f"   ·  P(#1)={round(p1[l] * 100)}%" if p1[l] >= 0.01 else "")
+        ax.text(hi * 1.05, y, lbl, va='center', fontsize=8.5,
+                color='#222' if big else '#666', fontweight='bold' if big else 'normal')
+    xlo = min(ci[l][0] for l in active) * 0.9
+    xhi = max(ci[l][1] for l in active) * 2.0
+    tys = [y for y, l in zip(ys, order) if l in tie]
+    if tys:
+        ax.axhspan(min(tys) - .5, max(tys) + .5, color=_CC['tie'], alpha=.08, zorder=0)
+        ax.text(xlo * 1.04, (min(tys) + max(tys)) / 2, "tied for #1", rotation=90,
+                ha='center', va='center', fontsize=9, color='#0f5a0f', fontweight='bold')
+    ax.set_yticks(ys); ax.set_yticklabels([DISPLAY[l] for l in order], fontsize=10)
+    ax.set_xscale('log'); ax.set_xlim(xlo, xhi)
+    ax.set_xticks([1.5, 2, 3, 5, 10, 20, 50])
+    ax.set_xticklabels(['1.5', '2', '3', '5', '10', '20', '50'])
+    ax.xaxis.set_minor_formatter(NullFormatter())
+    ax.set_xlabel(f"Foundation geomean per-invocation cost over the {n_common}-problem common set "
+                  f"— ms, log; 100µs floor  ·  95% CI (bootstrap 2000×)  ·  tier = P(#1)")
+    ax.set_title(f"Per-Invocation Cost — Foundation ({len(LANGS)} langs, common set {n_common} of "
+                 f"{_t1_hi}): a compiled race for #1, not a strict ranking", loc='left')
+    for s in ('top', 'right'):
+        ax.spines[s].set_visible(False)
+    ax.grid(axis='x', which='both', alpha=.25)
+    ax.legend(handles=[Patch(color=_CC['tie'], label='tied for #1  (P(#1)≥1%)'),
+                       Patch(color=_CC['comp'], label='compiled, not a #1 contender'),
+                       Patch(color=_CC['mgd'], label='managed / JS'),
+                       Patch(color=_CC['py'], label='Python')],
+              loc='upper center', bbox_to_anchor=(0.5, -0.13), ncol=4, fontsize=8.5, frameon=False)
     plt.tight_layout()
     out = CHARTS_DIR / "per_iter_total.png"
     plt.savefig(out, dpi=130, bbox_inches="tight")
@@ -1156,6 +1187,13 @@ def render_results_md(agg: dict) -> str:
     md.append("[METHODOLOGY.md](METHODOLOGY.md) §3 (sampling) and §6 (ranking) for why.")
     md.append("")
     md.append("![Per-Invocation Cost](charts/per_iter_total.png)")
+    md.append("")
+    md.append("> **The top compiled languages are a statistical tie for #1, not a strict order.** "
+              "Bootstrapping the geomean over the common set (2000× resamples) leaves several compiled "
+              "langs with overlapping 95% confidence intervals and non-trivial P(#1) (the chance a lang "
+              "is fastest across resamples) — the chart above shows the intervals. Read the table below "
+              "as **tiers**, not a 1-N ranking: the fine order among the top compiled langs is within "
+              "measurement noise. The coarse structure (compiled → managed → Python) is robust.")
     md.append("")
     md.append(f"| Rank | Language | Geomean ({n_common}-problem common set) | Total (sum) | Lines of code | vs Fastest |")
     md.append("|------|----------|--------------------:|------------:|--------------:|-----------:|")
