@@ -110,11 +110,11 @@ def allowance_ns(lang: str) -> int:
 SCOPE_PROBLEMS = [f"{i:04d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
-# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06); the report's
-# stats/coverage scope (_DISPLAY_HI) stays at its audited ceiling. A solved problem above
-# _DISPLAY_HI therefore shows as a cell on the grid but is NOT folded into per-lang totals,
-# coverage %, or tier denominators (those are stat surfaces; the grid is just a map).
-_GRID_HI = 1000
+# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06; to 1005 when
+# PE reached #1005, 2026-07); the report's stats/coverage scope (_DISPLAY_HI) stays at its
+# audited ceiling. A solved problem above _DISPLAY_HI therefore shows as a cell on the grid
+# but is NOT folded into per-lang totals, coverage %, or tier denominators (grid is just a map).
+_GRID_HI = 1005
 GRID_PROBLEMS = [f"{i:04d}" for i in range(1, _GRID_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
