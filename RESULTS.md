@@ -104,7 +104,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 
 Rows are in fixed tier order (native → managed → interpreted) so the chart
 doesn't reshuffle between snapshots as ranking-by-total drifts.  Problems are
-chunked into bands of 100 (currently 10 bands), which keeps cells legibly sized as we extend
+chunked into bands of 100 (currently 11 bands), which keeps cells legibly sized as we extend
 toward the 1000-problem target.  Native compiled rows (ARM64 / C / C++ / Rust /
 Zig) sit near the top in mostly bright-green territory; managed-runtime rows
 (C# / Java / JavaScript) carry darker greens and scattered amber from JIT
