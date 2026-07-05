@@ -672,6 +672,92 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     return out
 
 
+def _render_forest(out_path, active, cprobs, agg, title, scope_label):
+    """Forest plot shared by all three tier charts: per-lang geomean point + 95%
+    bootstrap CI over the common-set problems, with the 'tied-for-#1' tier
+    clustered by P(#1) (probability a lang is fastest across resamples). The
+    geomean ranking among close langs is a statistical TIE, not a strict 1-N
+    order; the CIs make that explicit. Cells floored at 100µs (METHODOLOGY §6);
+    bootstrap seeded so the chart is stable across regens."""
+    import math, random
+    from matplotlib.patches import Patch
+    from matplotlib.ticker import LogLocator, FuncFormatter, NullFormatter
+    random.seed(42)
+    FLOOR = 1e5
+    active = list(active)
+    n = len(cprobs)
+    times = {l: [max((agg[l]["per_problem_ns"][p] or 0), FLOOR) for p in cprobs] for l in active}
+    gm = lambda v: math.exp(sum(math.log(x) for x in v) / len(v))
+    point = {l: gm(times[l]) / 1e6 for l in active}
+    B = 2000
+    boot = {l: [] for l in active}
+    for _ in range(B):
+        idx = [random.randrange(n) for _ in range(n)]
+        for l in active:
+            boot[l].append(gm([times[l][i] for i in idx]) / 1e6)
+    ci = {l: (sorted(boot[l])[int(.025 * B)], sorted(boot[l])[int(.975 * B)]) for l in active}
+    wins = {l: 0 for l in active}
+    for i in range(B):
+        wins[min(active, key=lambda l: boot[l][i])] += 1
+    p1 = {l: wins[l] / B for l in active}
+
+    order = sorted(active, key=lambda l: point[l])
+    leader = order[0]
+    clear_winner = p1[leader] >= 0.80  # one lang wins nearly every resample -> not a tie
+    tie = [leader] if clear_winner else [l for l in order if p1[l] >= 0.01]
+    _COMPILED = {'c', 'cpp', 'rust', 'zig', 'arm64', 'go'}
+    def _clu(l):
+        if l in tie: return 'tie'
+        if l in _COMPILED: return 'comp'
+        if l == 'python': return 'py'
+        return 'mgd'
+    _CC = {'tie': '#1a7a1a', 'comp': '#8bc34a', 'mgd': '#e8912a', 'py': '#c0392b'}
+
+    fig, ax = plt.subplots(figsize=(10.2, max(2.7, 1.7 + 0.52 * len(order))))
+    ys = list(range(len(order)))[::-1]
+    for y, l in zip(ys, order):
+        lo, hi = ci[l]; c = _CC[_clu(l)]; big = l in tie
+        ax.plot([lo, hi], [y, y], color=c, lw=2.4 if big else 1.8, alpha=.6, solid_capstyle='round')
+        ax.plot([lo], [y], '|', color=c, ms=10, mew=2)
+        ax.plot([hi], [y], '|', color=c, ms=10, mew=2)
+        ax.plot([point[l]], [y], 'o', color=c, ms=10 if big else 8, zorder=3)
+        _v = f"{point[l]:.2f} ms" if point[l] < 100 else f"{point[l]:.0f} ms"
+        lbl = _v + (f"   ·  P(#1)={round(p1[l] * 100)}%" if p1[l] >= 0.01 else "")
+        ax.text(hi * 1.06, y, lbl, va='center', fontsize=8.5,
+                color='#222' if big else '#666', fontweight='bold' if big else 'normal')
+    xlo = min(ci[l][0] for l in active) * 0.9
+    xhi = max(ci[l][1] for l in active) * 2.3
+    tys = [y for y, l in zip(ys, order) if l in tie]
+    if tys and not clear_winner:
+        ax.axhspan(min(tys) - .5, max(tys) + .5, color=_CC['tie'], alpha=.08, zorder=0)
+        ax.text(xlo * 1.06, (min(tys) + max(tys)) / 2, "tied for #1", rotation=90,
+                ha='center', va='center', fontsize=9, color='#0f5a0f', fontweight='bold')
+    ax.set_yticks(ys); ax.set_yticklabels([DISPLAY[l] for l in order], fontsize=10)
+    ax.set_xscale('log'); ax.set_xlim(xlo, xhi)
+    ax.xaxis.set_major_locator(LogLocator(base=10, subs=(1, 2, 3, 5)))
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x:g}" if x < 1000 else f"{x/1000:g}k"))
+    ax.xaxis.set_minor_formatter(NullFormatter())
+    ax.set_xlabel(f"Geomean per-invocation cost over the {n}-problem {scope_label} common set "
+                  f"— ms, log; 100µs floor  ·  95% CI (bootstrap 2000×)  ·  tier = P(#1)")
+    ax.set_title(title, loc='left', fontsize=11)
+    for s in ('top', 'right'):
+        ax.spines[s].set_visible(False)
+    ax.grid(axis='x', which='both', alpha=.25)
+    present = {_clu(l) for l in active}
+    handles = []
+    if 'tie' in present: handles.append(Patch(color=_CC['tie'], label='clear #1' if clear_winner else 'tied for #1  (P(#1)≥1%)'))
+    if 'comp' in present: handles.append(Patch(color=_CC['comp'], label='compiled, not a #1 contender'))
+    if 'mgd' in present: handles.append(Patch(color=_CC['mgd'], label='managed / JS'))
+    if 'py' in present: handles.append(Patch(color=_CC['py'], label='Python'))
+    ax.legend(handles=handles, loc='upper center',
+              bbox_to_anchor=(0.5, -0.22 if len(order) <= 4 else -0.14),
+              ncol=len(handles), fontsize=8.5, frameon=False)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=130, bbox_inches="tight")
+    plt.close(fig)
+    return out_path
+
+
 def render_total_chart(agg: dict) -> Path:
     """Horizontal bar: GEOMEAN cost per language over the COMMON SET (problems
     where all 10 langs have status='pass'), sorted fastest first, log scale X.
@@ -681,89 +767,14 @@ def render_total_chart(agg: dict) -> Path:
     of slow problems, the geomean weights every problem's ratio equally.
     The common set keeps the chart apples-to-apples under partial coverage.
     """
-    # Forest plot with bootstrap uncertainty: the geomean ranking among the top
-    # compiled langs is a statistical tie, not a strict 1-N order. We show each
-    # lang's point geomean + 95% CI (bootstrap over the common-set problems) and
-    # cluster the "tied-for-#1" tier by P(#1) — the probability a lang is fastest
-    # across resamples. See METHODOLOGY.md §6.
-    import math, random
-    from matplotlib.patches import Patch
-    from matplotlib.ticker import NullFormatter
-    random.seed(42)  # deterministic bootstrap -> stable chart across regens
-
     common = agg["_common"]
-    n_common = len(common["problems"])
-    cprobs = common["problems"]
+    n = len(common["problems"])
     _t1_hi = tier_problem_range("tier_1_foundation", _TIERS)[1] or len(SCOPE_PROBLEMS)
-    FLOOR = 1e5  # 100 µs geomean floor (METHODOLOGY.md §6)
-
     active = [l for l in LANGS if common["per_lang_geomean_ns"][l] > 0]
-    times = {l: [max((agg[l]["per_problem_ns"][p] or 0), FLOOR) for p in cprobs] for l in active}
-    gm = lambda v: math.exp(sum(math.log(x) for x in v) / len(v))
-    point = {l: gm(times[l]) / 1e6 for l in active}  # ms
-
-    B, N = 2000, n_common
-    boot = {l: [] for l in active}
-    for _ in range(B):
-        idx = [random.randrange(N) for _ in range(N)]
-        for l in active:
-            boot[l].append(gm([times[l][i] for i in idx]) / 1e6)
-    ci = {l: (sorted(boot[l])[int(.025 * B)], sorted(boot[l])[int(.975 * B)]) for l in active}
-    wins = {l: 0 for l in active}
-    for i in range(B):
-        wins[min(active, key=lambda l: boot[l][i])] += 1
-    p1 = {l: wins[l] / B for l in active}
-
-    order = sorted(active, key=lambda l: point[l])   # fastest first
-    tie = [l for l in order if p1[l] >= 0.01]         # tied-for-#1 by P(#1)
-    _COMPILED = {'c', 'cpp', 'rust', 'zig', 'arm64', 'go'}
-    def _clu(l):
-        if l in tie: return 'tie'
-        if l in _COMPILED: return 'comp'
-        if l == 'python': return 'py'
-        return 'mgd'
-    _CC = {'tie': '#1a7a1a', 'comp': '#8bc34a', 'mgd': '#e8912a', 'py': '#c0392b'}
-
-    fig, ax = plt.subplots(figsize=(10.2, 5.6))
-    ys = list(range(len(order)))[::-1]  # fastest at top
-    for y, l in zip(ys, order):
-        lo, hi = ci[l]; c = _CC[_clu(l)]; big = l in tie
-        ax.plot([lo, hi], [y, y], color=c, lw=2.4 if big else 1.8, alpha=.6, solid_capstyle='round')
-        ax.plot([lo], [y], '|', color=c, ms=10, mew=2)
-        ax.plot([hi], [y], '|', color=c, ms=10, mew=2)
-        ax.plot([point[l]], [y], 'o', color=c, ms=10 if big else 8, zorder=3)
-        lbl = f"{point[l]:.2f} ms" + (f"   ·  P(#1)={round(p1[l] * 100)}%" if p1[l] >= 0.01 else "")
-        ax.text(hi * 1.05, y, lbl, va='center', fontsize=8.5,
-                color='#222' if big else '#666', fontweight='bold' if big else 'normal')
-    xlo = min(ci[l][0] for l in active) * 0.9
-    xhi = max(ci[l][1] for l in active) * 2.0
-    tys = [y for y, l in zip(ys, order) if l in tie]
-    if tys:
-        ax.axhspan(min(tys) - .5, max(tys) + .5, color=_CC['tie'], alpha=.08, zorder=0)
-        ax.text(xlo * 1.04, (min(tys) + max(tys)) / 2, "tied for #1", rotation=90,
-                ha='center', va='center', fontsize=9, color='#0f5a0f', fontweight='bold')
-    ax.set_yticks(ys); ax.set_yticklabels([DISPLAY[l] for l in order], fontsize=10)
-    ax.set_xscale('log'); ax.set_xlim(xlo, xhi)
-    ax.set_xticks([1.5, 2, 3, 5, 10, 20, 50])
-    ax.set_xticklabels(['1.5', '2', '3', '5', '10', '20', '50'])
-    ax.xaxis.set_minor_formatter(NullFormatter())
-    ax.set_xlabel(f"Foundation geomean per-invocation cost over the {n_common}-problem common set "
-                  f"— ms, log; 100µs floor  ·  95% CI (bootstrap 2000×)  ·  tier = P(#1)")
-    ax.set_title(f"Per-Invocation Cost — Foundation ({len(LANGS)} langs, common set {n_common} of "
-                 f"{_t1_hi}): a compiled race for #1, not a strict ranking", loc='left')
-    for s in ('top', 'right'):
-        ax.spines[s].set_visible(False)
-    ax.grid(axis='x', which='both', alpha=.25)
-    ax.legend(handles=[Patch(color=_CC['tie'], label='tied for #1  (P(#1)≥1%)'),
-                       Patch(color=_CC['comp'], label='compiled, not a #1 contender'),
-                       Patch(color=_CC['mgd'], label='managed / JS'),
-                       Patch(color=_CC['py'], label='Python')],
-              loc='upper center', bbox_to_anchor=(0.5, -0.13), ncol=4, fontsize=8.5, frameon=False)
-    plt.tight_layout()
-    out = CHARTS_DIR / "per_iter_total.png"
-    plt.savefig(out, dpi=130, bbox_inches="tight")
-    plt.close(fig)
-    return out
+    title = (f"Per-Invocation Cost — Foundation ({len(LANGS)} langs, common set {n} of "
+             f"{_t1_hi}): a compiled race for #1, not a strict ranking")
+    return _render_forest(CHARTS_DIR / "per_iter_total.png", active, common["problems"],
+                          agg, title, "Foundation")
 
 
 def _tier2_meta(agg: dict):
@@ -788,58 +799,12 @@ def render_total_chart_tier2(agg: dict):
     active, common, t2 = _tier2_meta(agg)
     if active is None:
         return None
-    designated = t2["designated_langs"]
-    rows = [(lang, t2["per_lang_geomean_ns"][lang]) for lang in active
-            if t2["per_lang_geomean_ns"][lang] > 0]
-    rows.sort(key=lambda r: r[1])
-    labels = [DISPLAY[lang] for lang, _ in rows]
-    values_ms = [v / 1_000_000 for _, v in rows]
-    colors = [COLOR[lang] for lang, _ in rows]
-
+    active = [l for l in active if t2["per_lang_geomean_ns"][l] > 0]
     t2_lo, t2_hi = tier_problem_range("tier_2_deep_coverage", _TIERS)
-    fig, ax = plt.subplots(figsize=(10, 3.5))
-    y_pos = range(len(labels))
-    bars = ax.barh(y_pos, values_ms, color=colors)
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(labels)
-    ax.invert_yaxis()
-    ax.set_xscale("log")
-    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {len(common)}-problem "
-                  f"tier-2 common set (ms, log scale; 100 µs floor)")
-    inactive = [l for l in designated if l not in active]
-    inactive_note = (
-        f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
-        if inactive else ""
-    )
-    common_lo = int(min(common))
-    common_hi = int(max(common))
-    range_note = (
-        f"spans p{common_lo:04d}–p{common_hi:04d}"
-        if (common_hi - common_lo + 1) > len(common)
-        else f"contiguous p{common_lo:04d}–p{common_hi:04d}"
-    )
-    ax.set_title(
-        f"Per-Invocation Cost — Deep Coverage (Tier 2, problems {t2_lo}-{t2_hi}, "
-        f"{len(active)} active of {len(designated)} langs{inactive_note})\n"
-        f"Common set: {len(common)} problems ({range_note}) passing in {', '.join(DISPLAY[l] for l in active)}"
-    )
-    for i, ms in enumerate(values_ms):
-        if ms >= 100:
-            label = f"{ms:.0f} ms"
-        elif ms >= 10:
-            label = f"{ms:.1f} ms"
-        elif ms >= 1:
-            label = f"{ms:.2f} ms"
-        else:
-            label = f"{ms*1000:.0f} µs"
-        ax.text(ms * 1.02, i, label, va="center", fontsize=9)
-    ax.grid(axis="x", which="major", alpha=0.3)
-    ax.grid(axis="x", which="minor", alpha=0.15)
-    plt.tight_layout()
-    out = CHARTS_DIR / "per_iter_total_tier2.png"
-    plt.savefig(out, dpi=130, bbox_inches="tight")
-    plt.close(fig)
-    return out
+    title = (f"Per-Invocation Cost — Deep Coverage (Tier 2, problems {t2_lo}-{t2_hi}, "
+             f"{len(active)} langs, common set {len(common)}): a tie, not a strict order")
+    return _render_forest(CHARTS_DIR / "per_iter_total_tier2.png", active, common,
+                          agg, title, f"tier-2 ({t2_lo}-{t2_hi})")
 
 
 def render_speed_vs_size_chart_tier2(agg: dict):
@@ -902,59 +867,14 @@ def render_total_chart_tier3(agg: dict):
     active, common, t3 = _tier3_meta(agg)
     if active is None:
         return None
-    designated = t3["designated_langs"]
-    rows = [(lang, t3["per_lang_geomean_ns"][lang]) for lang in active
-            if t3["per_lang_geomean_ns"][lang] > 0]
-    rows.sort(key=lambda r: r[1])
-    labels = [DISPLAY[lang] for lang, _ in rows]
-    values_ms = [v / 1_000_000 for _, v in rows]
-    colors = [COLOR[lang] for lang, _ in rows]
-
+    active = [l for l in active if t3["per_lang_geomean_ns"][l] > 0]
     t3_lo, t3_hi = tier_problem_range("tier_3_frontier", _TIERS)
-    t3_hi_label = f"{t3_hi}" if t3_hi else "+"
-    fig, ax = plt.subplots(figsize=(10, 3.5))
-    y_pos = range(len(labels))
-    ax.barh(y_pos, values_ms, color=colors)
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(labels)
-    ax.invert_yaxis()
-    ax.set_xscale("log")
-    ax.set_xlabel(f"Geometric-mean per-invocation cost over the {len(common)}-problem "
-                  f"tier-3 common set (ms, log scale; 100 µs floor)")
-    inactive = [l for l in designated if l not in active]
-    inactive_note = (
-        f"  ·  awaiting: {', '.join(DISPLAY[l] for l in inactive)}"
-        if inactive else ""
-    )
-    common_lo = int(min(common))
-    common_hi = int(max(common))
-    range_note = (
-        f"spans p{common_lo:04d}–p{common_hi:04d}"
-        if (common_hi - common_lo + 1) > len(common)
-        else f"contiguous p{common_lo:04d}–p{common_hi:04d}"
-    )
-    ax.set_title(
-        f"Per-Invocation Cost — Frontier (Tier 3, problems {t3_lo}{t3_hi_label if t3_hi else '+'}, "
-        f"{len(active)} active of {len(designated)} langs{inactive_note})\n"
-        f"Common set: {len(common)} problems ({range_note}) passing in {', '.join(DISPLAY[l] for l in active)}"
-    )
-    for i, ms in enumerate(values_ms):
-        if ms >= 100:
-            label = f"{ms:.0f} ms"
-        elif ms >= 10:
-            label = f"{ms:.1f} ms"
-        elif ms >= 1:
-            label = f"{ms:.2f} ms"
-        else:
-            label = f"{ms*1000:.0f} µs"
-        ax.text(ms * 1.02, i, label, va="center", fontsize=9)
-    ax.grid(axis="x", which="major", alpha=0.3)
-    ax.grid(axis="x", which="minor", alpha=0.15)
-    plt.tight_layout()
-    out = CHARTS_DIR / "per_iter_total_tier3.png"
-    plt.savefig(out, dpi=130, bbox_inches="tight")
-    plt.close(fig)
-    return out
+    hi_lbl = f"{t3_hi}" if t3_hi else "max"
+    cmax = int(max(common))
+    title = (f"Per-Invocation Cost — Frontier (Tier 3, problems {t3_lo}-{hi_lbl}, cpp/go/rust, "
+             f"common set {len(common)} up to p{cmax:04d}): the frontier race")
+    return _render_forest(CHARTS_DIR / "per_iter_total_tier3.png", active, common,
+                          agg, title, f"tier-3 frontier ({t3_lo}+)")
 
 
 def render_speed_vs_size_chart_tier3(agg: dict):
