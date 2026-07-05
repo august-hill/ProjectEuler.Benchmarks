@@ -24,18 +24,20 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 ![Per-Invocation Cost](charts/per_iter_total.png)
 
+> **The top compiled languages are a statistical tie for #1, not a strict order.** Bootstrapping the geomean over the common set (2000× resamples) leaves several compiled langs with overlapping 95% confidence intervals and non-trivial P(#1) (the chance a lang is fastest across resamples) — the chart above shows the intervals. Read the table below as **tiers**, not a 1-N ranking: the fine order among the top compiled langs is within measurement noise. The coarse structure (compiled → managed → Python) is robust.
+
 | Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.93 ms | 25.03 s | 13,474 | 1.00× |
-| 2 | **ARM64** | 2.00 ms | 34.11 s | 40,297 | 1.04× |
-| 3 | **C** | 2.03 ms | 22.47 s | 14,524 | 1.06× |
-| 4 | **C++** | 2.19 ms | 22.59 s | 10,369 | 1.14× |
-| 5 | **Rust** | 2.26 ms | 28.75 s | 11,614 | 1.17× |
-| 6 | **Go** | 2.49 ms | 31.49 s | 13,225 | 1.29× |
-| 7 | **JavaScript** | 4.72 ms | 68.63 s | 9,310 | 2.45× |
-| 8 | **Java** | 5.93 ms | 44.05 s | 10,611 | 3.08× |
-| 9 | **C#** | 7.20 ms | 39.33 s | 11,019 | 3.74× |
-| 10 | **Python** | 20.16 ms | 671.19 s | 8,558 | 10.46× |
+| 1 | **Zig** | 2.18 ms | 25.60 s | 13,474 | 1.00× |
+| 2 | **ARM64** | 2.24 ms | 34.64 s | 40,297 | 1.03× |
+| 3 | **C** | 2.26 ms | 22.60 s | 14,524 | 1.04× |
+| 4 | **C++** | 2.34 ms | 22.88 s | 10,369 | 1.08× |
+| 5 | **Rust** | 2.47 ms | 28.45 s | 11,614 | 1.13× |
+| 6 | **Go** | 2.79 ms | 32.38 s | 13,225 | 1.28× |
+| 7 | **JavaScript** | 4.78 ms | 70.11 s | 9,310 | 2.20× |
+| 8 | **Java** | 6.03 ms | 45.23 s | 10,611 | 2.77× |
+| 9 | **C#** | 7.42 ms | 40.26 s | 11,019 | 3.41× |
+| 10 | **Python** | 20.00 ms | 672.13 s | 8,558 | 9.19× |
 
 ### Speed vs Code Size
 
