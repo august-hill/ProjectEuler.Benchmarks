@@ -159,10 +159,10 @@ func discoverProblems(lang *Lang, repoDir string) ([]string, error) {
 }
 
 // sortProblems orders problem-number keys numerically ("9" < "10" < "1000"),
-// not lexically. Keys zero-pad to a minimum of 3 digits but widen naturally
-// past 999 (problem_1000, NOT problem_01000), so a plain string sort would
-// misplace 4-digit problems among the 100s ("1000" < "200" lexically). Keys
-// that aren't plain integers (shouldn't occur) sort last, by string.
+// not lexically. Keys are fixed 4-digit zero-pad (problem_0001..problem_9999),
+// so within [1,9999] a plain string sort already orders correctly; sorting by
+// int keeps it robust if a 5-digit problem ever appears. Keys that aren't plain
+// integers (shouldn't occur) sort last, by string.
 func sortProblems(keys []string) {
 	sort.Slice(keys, func(i, j int) bool {
 		ni, ei := strconv.Atoi(keys[i])

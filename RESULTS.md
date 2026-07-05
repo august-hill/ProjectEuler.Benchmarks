@@ -119,16 +119,16 @@ Split across 10 pages, one per 100-problem band, so this main page stays navigab
 
 | Band | Tier | Languages | Page |
 |------|------|-----------|------|
-| p001–p100 | Foundation | 10 | [Open](per_problem/per_problem_001-100.md) |
-| p101–p200 | Foundation | 10 | [Open](per_problem/per_problem_101-200.md) |
-| p201–p300 | Deep Coverage | 5 | [Open](per_problem/per_problem_201-300.md) |
-| p301–p400 | Frontier | 3 | [Open](per_problem/per_problem_301-400.md) |
-| p401–p500 | Frontier | 3 | [Open](per_problem/per_problem_401-500.md) |
-| p501–p600 | Frontier | 3 | [Open](per_problem/per_problem_501-600.md) |
-| p601–p700 | Frontier | 3 | [Open](per_problem/per_problem_601-700.md) |
-| p701–p800 | Frontier | 3 | [Open](per_problem/per_problem_701-800.md) |
-| p801–p900 | Frontier | 3 | [Open](per_problem/per_problem_801-900.md) |
-| p901–p1000 | Frontier | 3 | [Open](per_problem/per_problem_901-1000.md) |
+| p0001–p0100 | Foundation | 10 | [Open](per_problem/per_problem_0001-0100.md) |
+| p0101–p0200 | Foundation | 10 | [Open](per_problem/per_problem_0101-0200.md) |
+| p0201–p0300 | Deep Coverage | 5 | [Open](per_problem/per_problem_0201-0300.md) |
+| p0301–p0400 | Frontier | 3 | [Open](per_problem/per_problem_0301-0400.md) |
+| p0401–p0500 | Frontier | 3 | [Open](per_problem/per_problem_0401-0500.md) |
+| p0501–p0600 | Frontier | 3 | [Open](per_problem/per_problem_0501-0600.md) |
+| p0601–p0700 | Frontier | 3 | [Open](per_problem/per_problem_0601-0700.md) |
+| p0701–p0800 | Frontier | 3 | [Open](per_problem/per_problem_0701-0800.md) |
+| p0801–p0900 | Frontier | 3 | [Open](per_problem/per_problem_0801-0900.md) |
+| p0901–p1000 | Frontier | 3 | [Open](per_problem/per_problem_0901-1000.md) |
 
 ## Method
 

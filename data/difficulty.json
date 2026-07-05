@@ -1,48 +1,171 @@
 {
   "source": "projecteuler.net (per-problem page, public)",
   "fetched": "2026-05-17",
-  "note": "Partial — 41 problems sampled from the C++-unsolved set to identify low-difficulty knockable targets. Replace with full pull when available.",
+  "note": "Partial \u2014 41 problems sampled from the C++-unsolved set to identify low-difficulty knockable targets. Replace with full pull when available.",
   "problems": {
-    "236": {"title": "Luxury Hampers", "difficulty": 86},
-    "238": {"title": "Infinite String Tour", "difficulty": 84},
-    "275": {"title": "Balanced Sculptures", "difficulty": 85},
-    "298": {"title": "Selective Amnesia", "difficulty": 82},
-    "352": {"title": "Blood Tests", "difficulty": 65},
-    "353": {"title": "Risky Moon", "difficulty": 55},
-    "354": {"title": "Distances in a Bee's Honeycomb", "difficulty": 80},
-    "356": {"title": "Largest Roots of Cubic Polynomials", "difficulty": 78},
-    "359": {"title": "Hilbert's New Hotel", "difficulty": 23},
-    "360": {"title": "Scary Sphere", "difficulty": 62},
-    "361": {"title": "Subsequence of Thue-Morse Sequence", "difficulty": 97},
-    "362": {"title": "Squarefree Factors", "difficulty": 83},
-    "364": {"title": "Comfortable Distance", "difficulty": 61},
-    "366": {"title": "Stone Game III", "difficulty": 52},
-    "367": {"title": "Bozo Sort", "difficulty": 78},
-    "370": {"title": "Geometric Triangles", "difficulty": 76},
-    "372": {"title": "Pencils of Rays", "difficulty": 75},
-    "378": {"title": "Triangle Triples", "difficulty": 38},
-    "380": {"title": "Amazing Mazes!", "difficulty": 73},
-    "384": {"title": "Rudin-Shapiro Sequence", "difficulty": 80},
-    "388": {"title": "Distinct Lines", "difficulty": 62},
-    "390": {"title": "Triangles with Non Rational Sides and Integral Area", "difficulty": 80},
-    "404": {"title": "Crisscross Ellipses", "difficulty": 76},
-    "471": {"title": "Triangle Inscribed in Ellipse", "difficulty": 92},
-    "511": {"title": "Sequences with Nice Divisibility Properties", "difficulty": 65},
-    "541": {"title": "Divisibility of Harmonic Number Denominators", "difficulty": 97},
-    "566": {"title": "Cake Icing Puzzle", "difficulty": 100},
-    "593": {"title": "Fleeting Medians", "difficulty": 30},
-    "625": {"title": "Gcd Sum", "difficulty": 40},
-    "652": {"title": "Distinct Values of a Proto-logarithmic Function", "difficulty": 81},
-    "678": {"title": "Fermat-like Equations", "difficulty": 67},
-    "714": {"title": "Duodigits", "difficulty": 27},
-    "742": {"title": "Minimum Area of a Convex Grid Polygon", "difficulty": 86},
-    "773": {"title": "Ruff Numbers", "difficulty": 60},
-    "799": {"title": "Pentagonal Puzzle", "difficulty": 61},
-    "830": {"title": "Binomials and Powers", "difficulty": 89},
-    "858": {"title": "LCM", "difficulty": 70},
-    "889": {"title": "Rational Blancmange", "difficulty": 86},
-    "915": {"title": "Giant GCDs", "difficulty": 53},
-    "946": {"title": "Continued Fraction Fraction", "difficulty": 27},
-    "982": {"title": "The Third Dice", "difficulty": 74}
+    "0236": {
+      "title": "Luxury Hampers",
+      "difficulty": 86
+    },
+    "0238": {
+      "title": "Infinite String Tour",
+      "difficulty": 84
+    },
+    "0275": {
+      "title": "Balanced Sculptures",
+      "difficulty": 85
+    },
+    "0298": {
+      "title": "Selective Amnesia",
+      "difficulty": 82
+    },
+    "0352": {
+      "title": "Blood Tests",
+      "difficulty": 65
+    },
+    "0353": {
+      "title": "Risky Moon",
+      "difficulty": 55
+    },
+    "0354": {
+      "title": "Distances in a Bee's Honeycomb",
+      "difficulty": 80
+    },
+    "0356": {
+      "title": "Largest Roots of Cubic Polynomials",
+      "difficulty": 78
+    },
+    "0359": {
+      "title": "Hilbert's New Hotel",
+      "difficulty": 23
+    },
+    "0360": {
+      "title": "Scary Sphere",
+      "difficulty": 62
+    },
+    "0361": {
+      "title": "Subsequence of Thue-Morse Sequence",
+      "difficulty": 97
+    },
+    "0362": {
+      "title": "Squarefree Factors",
+      "difficulty": 83
+    },
+    "0364": {
+      "title": "Comfortable Distance",
+      "difficulty": 61
+    },
+    "0366": {
+      "title": "Stone Game III",
+      "difficulty": 52
+    },
+    "0367": {
+      "title": "Bozo Sort",
+      "difficulty": 78
+    },
+    "0370": {
+      "title": "Geometric Triangles",
+      "difficulty": 76
+    },
+    "0372": {
+      "title": "Pencils of Rays",
+      "difficulty": 75
+    },
+    "0378": {
+      "title": "Triangle Triples",
+      "difficulty": 38
+    },
+    "0380": {
+      "title": "Amazing Mazes!",
+      "difficulty": 73
+    },
+    "0384": {
+      "title": "Rudin-Shapiro Sequence",
+      "difficulty": 80
+    },
+    "0388": {
+      "title": "Distinct Lines",
+      "difficulty": 62
+    },
+    "0390": {
+      "title": "Triangles with Non Rational Sides and Integral Area",
+      "difficulty": 80
+    },
+    "0404": {
+      "title": "Crisscross Ellipses",
+      "difficulty": 76
+    },
+    "0471": {
+      "title": "Triangle Inscribed in Ellipse",
+      "difficulty": 92
+    },
+    "0511": {
+      "title": "Sequences with Nice Divisibility Properties",
+      "difficulty": 65
+    },
+    "0541": {
+      "title": "Divisibility of Harmonic Number Denominators",
+      "difficulty": 97
+    },
+    "0566": {
+      "title": "Cake Icing Puzzle",
+      "difficulty": 100
+    },
+    "0593": {
+      "title": "Fleeting Medians",
+      "difficulty": 30
+    },
+    "0625": {
+      "title": "Gcd Sum",
+      "difficulty": 40
+    },
+    "0652": {
+      "title": "Distinct Values of a Proto-logarithmic Function",
+      "difficulty": 81
+    },
+    "0678": {
+      "title": "Fermat-like Equations",
+      "difficulty": 67
+    },
+    "0714": {
+      "title": "Duodigits",
+      "difficulty": 27
+    },
+    "0742": {
+      "title": "Minimum Area of a Convex Grid Polygon",
+      "difficulty": 86
+    },
+    "0773": {
+      "title": "Ruff Numbers",
+      "difficulty": 60
+    },
+    "0799": {
+      "title": "Pentagonal Puzzle",
+      "difficulty": 61
+    },
+    "0830": {
+      "title": "Binomials and Powers",
+      "difficulty": 89
+    },
+    "0858": {
+      "title": "LCM",
+      "difficulty": 70
+    },
+    "0889": {
+      "title": "Rational Blancmange",
+      "difficulty": 86
+    },
+    "0915": {
+      "title": "Giant GCDs",
+      "difficulty": 53
+    },
+    "0946": {
+      "title": "Continued Fraction Fraction",
+      "difficulty": 27
+    },
+    "0982": {
+      "title": "The Third Dice",
+      "difficulty": 74
+    }
   }
 }

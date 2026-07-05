@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -77,7 +78,12 @@ func loadParallelClass(baseDir string) map[string]bool {
 		return set
 	}
 	for _, p := range doc.Problems {
-		set[fmt.Sprintf("%03s", p)] = true
+		p = strings.TrimSpace(p)
+		// Canonical key is fixed 4-digit zero-pad (problem_0001..problem_9999);
+		// normalize any width in the JSON so membership matches discovered keys.
+		if n, err := strconv.Atoi(p); err == nil {
+			set[fmt.Sprintf("%04d", n)] = true
+		}
 		set[p] = true
 	}
 	return set

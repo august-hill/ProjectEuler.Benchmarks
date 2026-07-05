@@ -76,7 +76,7 @@ _DISPLAY_HI = max(_T2_HI, 1000)
 def _load_parallel_class() -> set:
     try:
         with open(DATA_DIR / "parallel.json") as f:
-            return {p.zfill(3) for p in json.load(f)["problems"]}
+            return {p.zfill(4) for p in json.load(f)["problems"]}
     except (OSError, KeyError, ValueError):
         return set()
 
@@ -107,7 +107,7 @@ _ALLOWANCE_NS = {
 
 def allowance_ns(lang: str) -> int:
     return _ALLOWANCE_NS.get(lang, 250_000_000)
-SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
+SCOPE_PROBLEMS = [f"{i:04d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
 # full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06); the report's
@@ -115,7 +115,7 @@ SCOPE_PROBLEMS = [f"{i:03d}" for i in range(1, _DISPLAY_HI + 1)]
 # _DISPLAY_HI therefore shows as a cell on the grid but is NOT folded into per-lang totals,
 # coverage %, or tier denominators (those are stat surfaces; the grid is just a map).
 _GRID_HI = 1000
-GRID_PROBLEMS = [f"{i:03d}" for i in range(1, _GRID_HI + 1)]
+GRID_PROBLEMS = [f"{i:04d}" for i in range(1, _GRID_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
 # for stability across snapshots.
@@ -783,9 +783,9 @@ def render_total_chart_tier2(agg: dict):
     common_lo = int(min(common))
     common_hi = int(max(common))
     range_note = (
-        f"spans p{common_lo:03d}–p{common_hi:03d}"
+        f"spans p{common_lo:04d}–p{common_hi:04d}"
         if (common_hi - common_lo + 1) > len(common)
-        else f"contiguous p{common_lo:03d}–p{common_hi:03d}"
+        else f"contiguous p{common_lo:04d}–p{common_hi:04d}"
     )
     ax.set_title(
         f"Per-Invocation Cost — Deep Coverage (Tier 2, problems {t2_lo}-{t2_hi}, "
@@ -898,9 +898,9 @@ def render_total_chart_tier3(agg: dict):
     common_lo = int(min(common))
     common_hi = int(max(common))
     range_note = (
-        f"spans p{common_lo:03d}–p{common_hi:03d}"
+        f"spans p{common_lo:04d}–p{common_hi:04d}"
         if (common_hi - common_lo + 1) > len(common)
-        else f"contiguous p{common_lo:03d}–p{common_hi:03d}"
+        else f"contiguous p{common_lo:04d}–p{common_hi:04d}"
     )
     ax.set_title(
         f"Per-Invocation Cost — Frontier (Tier 3, problems {t3_lo}{t3_hi_label if t3_hi else '+'}, "
