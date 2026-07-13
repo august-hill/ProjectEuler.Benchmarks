@@ -13,8 +13,8 @@ in tier-1 display order (native → managed → interpreted).
 | **p1003** | 753.02 ms | 399.57 ms | 1.30 s |
 | **p1004** | 72.95 ms | 71.09 ms | 78.78 ms |
 | **p1005** | 1.27 ms† | 2.28 ms† | 2.45 ms† |
-| **p1006** | — | — | — |
-| **p1007** | — | — | — |
+| **p1006** | 15.94 ms | 20.12 ms† | 94.79 ms |
+| **p1007** | 2.32 s | 2.53 s | 2.90 s |
 
 > † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
 
