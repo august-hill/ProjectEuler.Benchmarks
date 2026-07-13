@@ -66,10 +66,9 @@ _TIERS = load_tiers()
 # the grid and excludes it from per-lang totals.
 _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
-# Display cap: max(t2_hi, 1005) covers PE's full published range (PE reached
-# #1005 in 2026-07) so coverage % reckons against the true universe. Highest
-# solved is 985 cpp / 978 go / 948 rust — so 986-1005 is an unsolved frontier.
-_DISPLAY_HI = max(_T2_HI, 1005)
+# Display cap: max(t2_hi, 1007) covers PE's full published range (PE reached
+# #1007 in 2026-07) so coverage % reckons against the true universe.
+_DISPLAY_HI = max(_T2_HI, 1007)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
 # idiomatic-parallel by policy and get a distinct marker in every table where
@@ -111,11 +110,11 @@ def allowance_ns(lang: str) -> int:
 SCOPE_PROBLEMS = [f"{i:04d}" for i in range(1, _DISPLAY_HI + 1)]
 
 # Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
-# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06; to 1005 when
-# PE reached #1005, 2026-07); the report's stats/coverage scope (_DISPLAY_HI) stays at its
-# audited ceiling. A solved problem above _DISPLAY_HI therefore shows as a cell on the grid
-# but is NOT folded into per-lang totals, coverage %, or tier denominators (grid is just a map).
-_GRID_HI = 1005
+# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06; 1005 and then
+# 1007 as PE published more, 2026-07); the report's stats/coverage scope (_DISPLAY_HI) stays
+# at its audited ceiling. A solved problem above _DISPLAY_HI therefore shows as a cell on the
+# grid but is NOT folded into per-lang totals, coverage %, or tier denominators (just a map).
+_GRID_HI = 1007
 GRID_PROBLEMS = [f"{i:04d}" for i in range(1, _GRID_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic

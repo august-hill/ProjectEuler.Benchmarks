@@ -1,12 +1,12 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4615 in-scope cells across 1005 problems × tiered languages — 3590 measured (77.8% coverage).**
+> **Scope: 4621 in-scope cells across 1007 problems × tiered languages — 3593 measured (77.8% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 1005-problem scope.
+> core, then the disciplined expansion to today's 1007-problem scope.
 
 ## Foundation — Tier 1 (10 languages, problems 1-200)
 
@@ -71,15 +71,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 324 of ≤705 problems in scope)
+### Per-Invocation Cost (Common Set, 325 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (324-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (325-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 52.59 ms | 1104.65 s | 40,009 | 1.00× |
-| 2 | **C++** | 59.17 ms | 1224.31 s | 35,759 | 1.13× |
-| 3 | **Go** | 71.68 ms | 1383.63 s | 41,980 | 1.36× |
+| 1 | **Rust** | 52.99 ms | 1105.28 s | 40,084 | 1.00× |
+| 2 | **C++** | 59.73 ms | 1225.61 s | 35,843 | 1.13× |
+| 3 | **Go** | 72.32 ms | 1384.92 s | 42,076 | 1.36× |
 
 ### Speed vs Code Size
 
@@ -131,7 +131,7 @@ Split across 11 pages, one per 100-problem band, so this main page stays navigab
 | p0701–p0800 | Frontier | 3 | [Open](per_problem/per_problem_0701-0800.md) |
 | p0801–p0900 | Frontier | 3 | [Open](per_problem/per_problem_0801-0900.md) |
 | p0901–p1000 | Frontier | 3 | [Open](per_problem/per_problem_0901-1000.md) |
-| p1001–p1005 | Frontier | 3 | [Open](per_problem/per_problem_1001-1005.md) |
+| p1001–p1007 | Frontier | 3 | [Open](per_problem/per_problem_1001-1007.md) |
 
 ## Method
 
@@ -183,7 +183,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 1005 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 1007 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -257,7 +257,7 @@ language honesty — the OS enforces it for free.
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1005 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1007 --write
 python3 report.py
 ```
 
