@@ -107,8 +107,10 @@ in tier-1 display order (native → managed → interpreted).
 | **p0997** | — | — | — |
 | **p0998** | — | — | — |
 | **p0999** | — | — | — |
-| **p1000** | — | — | — |
+| **p1000** | 17.68 ms | 11.01 ms† | 52.74 ms |
 
 > ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
+
+> † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
 
 ⬅ [Back to RESULTS](../RESULTS.md)
