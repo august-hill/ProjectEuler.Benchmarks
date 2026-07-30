@@ -1,7 +1,7 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4621 in-scope cells across 1007 problems × tiered languages — 3657 measured (79.1% coverage).**
-> The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
+> **Scope: 4621 in-scope cells across 1007 problems × tiered languages — 3655 measured (79.1% coverage).**
+> The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
@@ -12,12 +12,12 @@
 
 All 10 languages benchmarked across the first 200 problems — the apples-to-apples comparison surface that anchors the suite's headline rankings.
 
-### Per-Invocation Cost (Common Set, 200 of 200 problems)
+### Per-Invocation Cost (Common Set, 199 of 200 problems)
 
 Each program runs in fresh OS processes (no warmup, no shared state) under the
-2-or-3 corroborated sampling rule; every invocation pays full startup + algorithm
+magnitude-adaptive sampling rule, minimum reported; every invocation pays full startup + algorithm
 cost — the cost a real CLI / cron / shell-loop user actually pays.  The ranking
-below is the **geometric mean** of per-problem medians over the 200-problem
+below is the **geometric mean** of per-problem medians over the 199-problem
 common set, with cells floored at 100 µs so timer-granularity trivia can't swing
 the mean; the sum over the same set is shown as a secondary column.  See
 [METHODOLOGY.md](METHODOLOGY.md) §3 (sampling) and §6 (ranking) for why.
@@ -26,18 +26,18 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 > **The top compiled languages are a statistical tie for #1, not a strict order.** Bootstrapping the geomean over the common set (2000× resamples) leaves several compiled langs with overlapping 95% confidence intervals and non-trivial P(#1) (the chance a lang is fastest across resamples) — the chart above shows the intervals. Read the table below as **tiers**, not a 1-N ranking: the fine order among the top compiled langs is within measurement noise. The coarse structure (compiled → managed → Python) is robust.
 
-| Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (199-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 2.18 ms | 25.60 s | 13,474 | 1.00× |
-| 2 | **ARM64** | 2.24 ms | 34.64 s | 40,297 | 1.03× |
-| 3 | **C** | 2.26 ms | 22.60 s | 14,524 | 1.04× |
-| 4 | **C++** | 2.34 ms | 22.88 s | 10,369 | 1.08× |
-| 5 | **Rust** | 2.47 ms | 28.45 s | 11,614 | 1.13× |
-| 6 | **Go** | 2.79 ms | 32.38 s | 13,225 | 1.28× |
-| 7 | **JavaScript** | 4.78 ms | 70.11 s | 9,310 | 2.20× |
-| 8 | **Java** | 6.03 ms | 45.23 s | 10,611 | 2.77× |
-| 9 | **C#** | 7.42 ms | 40.26 s | 11,019 | 3.41× |
-| 10 | **Python** | 20.00 ms | 672.13 s | 8,558 | 9.19× |
+| 1 | **Zig** | 1.76 ms | 21.12 s | 13,404 | 1.00× |
+| 2 | **ARM64** | 1.81 ms | 30.46 s | 40,083 | 1.03× |
+| 3 | **C** | 1.84 ms | 19.80 s | 14,446 | 1.05× |
+| 4 | **C++** | 2.01 ms | 20.09 s | 10,321 | 1.14× |
+| 5 | **Rust** | 2.01 ms | 23.55 s | 11,555 | 1.14× |
+| 6 | **Go** | 2.24 ms | 26.78 s | 13,156 | 1.27× |
+| 7 | **JavaScript** | 4.21 ms | 58.40 s | 9,264 | 2.39× |
+| 8 | **Java** | 5.34 ms | 37.12 s | 10,558 | 3.03× |
+| 9 | **C#** | 6.38 ms | 33.38 s | 10,960 | 3.62× |
+| 10 | **Python** | 17.71 ms | 335.71 s | 8,494 | 10.04× |
 
 ### Speed vs Code Size
 
@@ -55,11 +55,11 @@ Same per-invocation metric, restricted to the deeper subset of languages (C++, G
 
 | Rank | Language | Geomean (92-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 19.19 ms | 85.66 s | 10,847 | 1.00× |
-| 2 | **Rust** | 21.58 ms | 65.37 s | 9,501 | 1.12× |
-| 3 | **C++** | 23.26 ms | 70.91 s | 12,103 | 1.21× |
-| 4 | **Go** | 24.96 ms | 82.45 s | 9,894 | 1.30× |
-| 5 | **Python** | 181.90 ms | 612.44 s | 6,767 | 9.48× |
+| 1 | **Zig** | 18.28 ms | 77.84 s | 10,847 | 1.00× |
+| 2 | **Rust** | 20.18 ms | 62.78 s | 9,501 | 1.10× |
+| 3 | **C++** | 22.75 ms | 69.67 s | 12,103 | 1.24× |
+| 4 | **Go** | 23.87 ms | 76.86 s | 9,894 | 1.31× |
+| 5 | **Python** | 171.64 ms | 599.34 s | 6,767 | 9.39× |
 
 ### Speed vs Code Size
 
@@ -71,15 +71,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 351 of ≤707 problems in scope)
+### Per-Invocation Cost (Common Set, 350 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (351-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (350-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 49.71 ms | 1120.85 s | 45,438 | 1.00× |
-| 2 | **C++** | 56.42 ms | 1238.61 s | 39,778 | 1.14× |
-| 3 | **Go** | 69.82 ms | 1409.45 s | 47,335 | 1.40× |
+| 1 | **Rust** | 45.94 ms | 1084.82 s | 45,125 | 1.00× |
+| 2 | **C++** | 53.04 ms | 1135.79 s | 39,570 | 1.15× |
+| 3 | **Go** | 65.22 ms | 1369.80 s | 47,028 | 1.42× |
 
 ### Speed vs Code Size
 
@@ -98,7 +98,7 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 - 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)
 - 🔴 **Red** — fail (wrong answer, build error, timeout)
 - ⚫ **Black** — missing entry (no measurement)
-- **`*`** — *partial measurement* (single sample; suite standard is 2-or-3 corroborated samples per METHODOLOGY.md §3)
+- **`*`** — *partial measurement* (single sample; suite standard is magnitude-adaptive sampling per METHODOLOGY.md §3b)
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 
@@ -138,7 +138,7 @@ Split across 11 pages, one per 100-problem band, so this main page stays navigab
 For each (language, problem):
 
 1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).
-2. Run fresh-process samples under the **2-or-3 corroboration rule** ([METHODOLOGY.md](METHODOLOGY.md) §3): two samples that agree within 5% settle the cell; otherwise a third tie-breaks by median.  No warmup; no shared state.
+2. Run fresh-process samples under the **magnitude-adaptive sampling rule** ([METHODOLOGY.md](METHODOLOGY.md) §3): at least two samples, then up to the count the cell's cost warrants — 15 below 1 ms down to 2 at or above 1 s, since relative noise grows as programs get cheaper while sampling cost moves the other way.  The **minimum** sample is reported: noise here is one-sided additive, so the minimum is the maximum-likelihood estimate of true cost.  No warmup; no shared state.
 3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,
    captured by the bench tool.  The answer is compared against the canonical
    (each source file's `// Answer:` header comment); the bench aborts on mismatch.

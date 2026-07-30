@@ -237,7 +237,7 @@ def status_of(entry: dict) -> str:
 def samples_of(entry: dict):
     """Sample count behind this measurement.
 
-    Suite standard is 2-or-3 corroborated fresh-process samples
+    Suite standard is magnitude-adaptive fresh-process sampling (METHODOLOGY.md §3b)
     (METHODOLOGY.md §3); a single-sample cell is a partial measurement and
     is marked with `*` in the per-problem detail table and the grid.
 
@@ -249,14 +249,44 @@ def samples_of(entry: dict):
     return int(s) if s is not None else None
 
 
+# Measurement floor (METHODOLOGY.md §3c). A single fresh-process invocation
+# cannot resolve below ~1 µs: the platform timer granularity is 41.67 ns and
+# scheduler jitter exceeds the signal. Reporting "84 ns" as distinct from
+# "208 ns" claims precision the measurement does not have, so anything under
+# the floor is published as "<1 µs". The stored time_ns is untouched — this is
+# a display decision only, and the raw value remains auditable in the DB.
+MEASUREMENT_FLOOR_NS = 1_000
+
+# A cell whose observed samples span more than this multiple of the reported
+# figure is marked in the per-problem tables.
+#
+# Calibration note: (max-min) grows MECHANICALLY with sample count — 15 draws
+# find more of the tail than 2 do — so this threshold is tied to the sampling
+# schedule in METHODOLOGY.md §3b and must be re-derived if that schedule
+# changes. Under the current schedule, cells with n>=10 have median spread 89%
+# and p90 273%, so 25% (the value used when the schedule was uniform-2/3) would
+# mark 68% of cells and carry no information. 300% marks the worst ~9%, which
+# is the intent: flag cells where the machine was genuinely disturbed.
+WIDE_SPREAD_FRAC = 3.0
+
+
+def cell_spread(entry: dict):
+    """(max-min)/reported for one measured cell, or None if unavailable."""
+    lo, hi = entry.get("time_min_ns"), entry.get("time_max_ns")
+    base = entry.get("time_ns")
+    if not lo or not hi or not base or base <= 0:
+        return None
+    return (hi - lo) / base
+
+
 def fmt_time(ns: int) -> str:
     """Human-readable nanoseconds.
 
     Note: 0 is a legitimate measurement (trivial algos clock at sub-ns).
     Callers must pre-check None (missing) before formatting.
     """
-    if ns < 1_000:
-        return f"{ns} ns"
+    if ns < MEASUREMENT_FLOOR_NS:
+        return "<1 µs"
     if ns < 1_000_000:
         return f"{ns/1_000:.1f} µs"
     if ns < 1_000_000_000:
@@ -303,6 +333,11 @@ def aggregate() -> dict:
                         for p in SCOPE_PROBLEMS}
         per_prob_wall = {p: (probs.get(p) or {}).get("subprocess_wall_ns")
                          for p in SCOPE_PROBLEMS}
+        # Observed within-cell spread (max-min)/reported, used to mark cells
+        # whose samples disagreed widely (METHODOLOGY.md §3b). The reported
+        # figure is the minimum, so a wide spread does not make it wrong — it
+        # says the environment was noisy while that cell was measured.
+        per_prob_spread = {p: cell_spread(probs.get(p) or {}) for p in SCOPE_PROBLEMS}
         # Grid-only status, over the wider GRID_PROBLEMS range. Kept separate from the
         # per_problem_* dicts above so the totals below (which sum .values()) stay scoped
         # to SCOPE_PROBLEMS and are NOT inflated by solved problems above _DISPLAY_HI.
@@ -327,6 +362,7 @@ def aggregate() -> dict:
             "per_problem_error": per_prob_error,
             "per_problem_cpu_ns": per_prob_cpu,
             "per_problem_wall_ns": per_prob_wall,
+            "per_problem_spread": per_prob_spread,
             "grid_status": grid_status,
             "grid_ns": grid_ns,
             "grid_samples": grid_samples,
@@ -941,7 +977,7 @@ def render_per_problem_pages(agg: dict) -> list:
         lines.append("")
         lines.append("⬅ [Back to RESULTS](../RESULTS.md)")
         lines.append("")
-        lines.append("Median internal time per fresh-process invocation (2-or-3 corroborated")
+        lines.append("Minimum internal time per fresh-process invocation (magnitude-adaptive")
         lines.append("samples, METHODOLOGY.md §3), one row per problem, one column per language")
         lines.append("in tier-1 display order (native → managed → interpreted).")
         if tier_lbl == "Deep Coverage":
@@ -962,7 +998,7 @@ def render_per_problem_pages(agg: dict) -> list:
         lines.append(sep)
 
         parallel_class = _load_parallel_class()
-        any_partial = any_nocorr = any_parallel = any_fail = False
+        any_partial = any_nocorr = any_parallel = any_fail = any_spread = False
         for p in band_probs:
             cells = []
             for lang in display_langs:
@@ -992,7 +1028,7 @@ def render_per_problem_pages(agg: dict) -> list:
                         cell += f" (×{cpu/ns:.1f})"
                     cell += " ‖"
                 s = agg[lang]["per_problem_samples"][p]
-                # Suite standard is 2-or-3 corroborated samples; a single
+                # Suite standard is magnitude-adaptive sampling; a single
                 # sample is a partial measurement.
                 if s is not None and s < 2:
                     cell += "*"
@@ -1001,6 +1037,10 @@ def render_per_problem_pages(agg: dict) -> list:
                 if "no-corroboration" in flags:
                     cell += "†"
                     any_nocorr = True
+                sp = agg[lang]["per_problem_spread"][p]
+                if sp is not None and sp > WIDE_SPREAD_FRAC:
+                    cell += "~"
+                    any_spread = True
                 cells.append(cell)
             plabel = f"**p{p}**" + (" ‖" if p in parallel_class else "")
             lines.append(f"| {plabel} | " + " | ".join(cells) + " |")
@@ -1024,13 +1064,24 @@ def render_per_problem_pages(agg: dict) -> list:
         if any_partial:
             notes.append(
                 "> \\* — *partial measurement*: a single sample, below the "
-                "2-or-3 corroborated standard (METHODOLOGY.md §3)."
+                "magnitude-adaptive standard (METHODOLOGY.md §3b)."
             )
         if any_nocorr:
             notes.append(
-                "> † — *no corroboration*: no two samples agreed within 5%; "
-                "median recorded, environment flagged for re-bench "
-                "(METHODOLOGY.md §3)."
+                "> † — *no corroboration*: no two samples agreed within 5% even "
+                "at the cell's full sample count. Diagnostic only — the reported "
+                "minimum still stands; it flags a disturbed measurement "
+                "environment worth re-benching (METHODOLOGY.md §3)."
+            )
+        if any_spread:
+            notes.append(
+                "> ~ — *wide spread*: observed samples span more than 3× the "
+                "reported figure. Since noise here is one-sided and the reported "
+                "figure is the MINIMUM, a wide spread does not make the number "
+                "too high — it means the machine was disturbed at some point "
+                "while that cell was sampled. The threshold is calibrated to the "
+                "sampling schedule, because observing more samples mechanically "
+                "widens min..max (METHODOLOGY.md §3b)."
             )
         for n in notes:
             lines.append(n)
@@ -1099,7 +1150,7 @@ def render_results_md(agg: dict) -> str:
     md.append(f"### Per-Invocation Cost (Common Set, {n_common} of {tier1_max} problems)")
     md.append("")
     md.append("Each program runs in fresh OS processes (no warmup, no shared state) under the")
-    md.append("2-or-3 corroborated sampling rule; every invocation pays full startup + algorithm")
+    md.append("magnitude-adaptive sampling rule, minimum reported; every invocation pays full startup + algorithm")
     md.append("cost — the cost a real CLI / cron / shell-loop user actually pays.  The ranking")
     md.append(f"below is the **geometric mean** of per-problem medians over the {n_common}-problem")
     md.append("common set, with cells floored at 100 µs so timer-granularity trivia can't swing")
@@ -1270,7 +1321,7 @@ def render_results_md(agg: dict) -> str:
     md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
     md.append("- ⚫ **Black** — missing entry (no measurement)")
     md.append("- **`*`** — *partial measurement* (single sample; suite standard is "
-              "2-or-3 corroborated samples per METHODOLOGY.md §3)")
+              "magnitude-adaptive sampling per METHODOLOGY.md §3b)")
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")
@@ -1320,10 +1371,13 @@ def render_results_md(agg: dict) -> str:
     md.append("For each (language, problem):")
     md.append("")
     md.append("1. Build the binary (or `as` + `cc` for ARM64, `dotnet build` for C#, etc.).")
-    md.append("2. Run fresh-process samples under the **2-or-3 corroboration rule** "
-              "([METHODOLOGY.md](METHODOLOGY.md) §3): two samples that agree within 5% "
-              "settle the cell; otherwise a third tie-breaks by median.  No warmup; no "
-              "shared state.")
+    md.append("2. Run fresh-process samples under the **magnitude-adaptive sampling rule** "
+              "([METHODOLOGY.md](METHODOLOGY.md) §3): at least two samples, then up to the "
+              "count the cell's cost warrants — 15 below 1 ms down to 2 at or above 1 s, "
+              "since relative noise grows as programs get cheaper while sampling cost "
+              "moves the other way.  The **minimum** sample is reported: noise here is "
+              "one-sided additive, so the minimum is the maximum-likelihood estimate of "
+              "true cost.  No warmup; no shared state.")
     md.append("3. Each invocation prints `RESULT|time_ns=N|answer=A` — one line per process,")
     md.append("   captured by the bench tool.  The answer is compared against the canonical")
     md.append("   (each source file's `// Answer:` header comment); the bench aborts on mismatch.")

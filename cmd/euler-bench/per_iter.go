@@ -15,7 +15,8 @@
 //  2. Run N times.  For each invocation:
 //     - parse RESULT|time_ns=N|answer=A from stdout (internal timing),
 //     - record wall via Go's monotonic clock as a sanity check.
-//  3. Aggregate time_ns: median, min, max across the N samples.
+//  3. Aggregate time_ns across the N samples: the MINIMUM is reported (noise
+//     is one-sided additive); min and max are both retained for the spread.
 //  4. Report.
 //
 // Usage:
@@ -142,18 +143,69 @@ func parseProblemSpec(spec string) []string {
 	return out
 }
 
-// Sampling rule (METHODOLOGY.md §3): run 2 fresh-process samples; if they
-// agree within corroborationFrac, accept and stop. Otherwise add samples one
-// at a time up to the cap (default 3) and take the median. If no two samples
-// agree even then, the row is still written but carries a no-corroboration
-// warning — on a deterministic single-threaded program, mutually inconsistent
-// samples indicate a broken measurement environment, which is fixed by
-// investigating and re-benching, not by sampling further. Grounding: SPEC CPU
-// reportable runs = 3/median; Phoronix = 3 + bounded variance escalation.
+// Sampling rule (METHODOLOGY.md §3): run 2 fresh-process samples, then keep
+// sampling until the cell reaches the count its MAGNITUDE warrants (see
+// targetSamples), bounded by the --iters cap and a per-cell wall budget. The
+// reported cost is the MINIMUM sample.
+//
+// This replaced a uniform "run 2, accept if within 5%, else tie-break to 3"
+// rule on 2026-07-25. That rule was well calibrated for multi-second problems
+// (median within-row spread 0.7-1.8%) and badly miscalibrated below 10ms, where
+// the same two-sample agreement test was passing on cells whose true spread was
+// 20-55%. Two draws from a long-tailed distribution can agree with each other
+// and still both sit far off the true cost, so agreement was not evidence of
+// convergence at the cheap end.
 const corroborationFrac = 0.05
 
+// extraSampleBudgetNs caps how much wall a single cell may spend accumulating
+// samples beyond the mandatory 2. Cheap cells never approach it; it only stops
+// a multi-second cell from being sampled further than its magnitude warrants.
+const extraSampleBudgetNs = int64(90 * time.Second)
+
+// targetSamples returns how many fresh-process samples a cell of the given
+// observed cost should receive.
+//
+// Timing noise here is roughly ADDITIVE and near-constant in absolute terms
+// (process spawn, first-exec signature validation, scheduler jitter, timer
+// granularity), so its RELATIVE size grows as the program gets cheaper. Measured
+// across 3670 passing rows, the median within-row min..max spread is:
+//
+//	>10s 0.7% | 1-10s 1.8% | 0.1-1s 4.7% | 10-100ms 16.6% | 1-10ms 22.1%
+//	| 10us-1ms 35.8% | <10us 54.6%
+//
+// Sampling COST moves the opposite way. So the schedule is inverted relative to
+// a uniform rule: cheap cells get many samples (nearly free) and expensive cells
+// get few (already stable to under 2%). Measured against the previous uniform
+// rule this is ~26 minutes CHEAPER over a full pass, because trimming the
+// multi-second tail from 2.5 samples to 2 outweighs everything added at the
+// cheap end.
+func targetSamples(observedNs int64) int {
+	switch {
+	case observedNs < 1_000_000: // <1ms
+		return 15
+	case observedNs < 10_000_000: // 1-10ms
+		return 11
+	case observedNs < 100_000_000: // 10-100ms
+		return 7
+	case observedNs < 1_000_000_000: // 0.1-1s
+		return 4
+	default: // >=1s
+		return 2
+	}
+}
+
+func sumI64(s []int64) int64 {
+	var t int64
+	for _, v := range s {
+		t += v
+	}
+	return t
+}
+
 // pairAgrees reports whether any two samples lie within corroborationFrac of
-// each other (sorted adjacent-pair check).
+// each other (sorted adjacent-pair check). Retained as a diagnostic: under the
+// adaptive rule it no longer gates sampling, but a cell that never produces an
+// agreeing pair even at 15 samples still indicates a disturbed environment.
 func pairAgrees(samples []int64) bool {
 	if len(samples) < 2 {
 		return false
@@ -336,8 +388,16 @@ func runPerIterOne(lang *Lang, baseDir, problem string, iters int, fixed bool) *
 		r.WallSamplesNs = append(r.WallSamplesNs, wall)
 		r.CPUSamplesNs = append(r.CPUSamplesNs, sampleCPUNs)
 
-		if !fixed && len(r.TimeSamplesNs) >= 2 && pairAgrees(r.TimeSamplesNs) {
-			break
+		// Adaptive stop (METHODOLOGY.md §3): keep sampling until this cell has
+		// reached the sample count its magnitude warrants, subject to the cap
+		// and a wall-clock budget so one slow cell can't monopolise a pass.
+		if !fixed && len(r.TimeSamplesNs) >= 2 {
+			if len(r.TimeSamplesNs) >= targetSamples(minI64(r.TimeSamplesNs)) {
+				break
+			}
+			if sumI64(r.WallSamplesNs) > extraSampleBudgetNs {
+				break
+			}
 		}
 	}
 
@@ -357,8 +417,9 @@ func cmdPerIter(args []string) {
 	fs := flag.NewFlagSet("per-iter", flag.ExitOnError)
 	langFilter := fs.String("lang", "", "comma-separated lang keys (or 'all')")
 	probSpec := fs.String("problems", "1-10", "problem range/list: '1-10', '1,3,7', '1'")
-	iters := fs.Int("iters", 3, "sample CAP per problem. Rule (METHODOLOGY.md §3): run 2; if within 5% done; "+
-		"else tie-break samples up to this cap, median, and a no-corroboration warning if still inconsistent")
+	iters := fs.Int("iters", 15, "sample CAP per problem. Rule (METHODOLOGY.md §3): run 2, then keep sampling "+
+		"until the cell reaches the count its magnitude warrants (15 under 1ms down to 2 at or above 1s), "+
+		"bounded by this cap and a per-cell wall budget. Reported time is the MINIMUM sample")
 	fixed := fs.Bool("fixed", false, "run exactly -iters samples with no early stop (diagnostics only)")
 	write := fs.Bool("write", false,
 		"upsert results into data/bench-private.db (the SQLite SSOT, gitignored). "+
@@ -407,8 +468,8 @@ func cmdPerIter(args []string) {
 			case len(r.TimeSamplesNs) == 0:
 				fmt.Printf("    p%s  NO DATA: %s\n", p, r.RunErr)
 			default:
-				fmt.Printf("    p%s  time-med=%8s  wall-med=%8s  (n=%d)\n",
-					p, fmtNs(r.timeMedianNs()), fmtNs(r.wallMedianNs()), len(r.TimeSamplesNs))
+				fmt.Printf("    p%s  time-min=%8s  wall-med=%8s  (n=%d)\n",
+					p, fmtNs(r.timeMinNs()), fmtNs(r.wallMedianNs()), len(r.TimeSamplesNs))
 			}
 		}
 	}
@@ -418,13 +479,13 @@ func cmdPerIter(args []string) {
 	fmt.Println(strings.Repeat("=", 100))
 	fmt.Println("CROSS-LANG SUMMARY")
 	fmt.Println(strings.Repeat("=", 100))
-	fmt.Println("  time-med:  median time_ns across N fresh-process invocations (internal clock)")
+	fmt.Println("  time-min:  MINIMUM time_ns across N fresh-process invocations (internal clock);\n             noise is one-sided additive, so the min is the ML estimate of true cost")
 	fmt.Println("  wall-med:  median Go-perceived wall (process spawn → exit), sanity-check secondary")
 	fmt.Println()
 
 	for _, p := range problems {
 		fmt.Printf("\n  p%s:\n", p)
-		fmt.Printf("    %-8s  %10s  %10s\n", "lang", "time-med", "wall-med")
+		fmt.Printf("    %-8s  %10s  %10s\n", "lang", "time-min", "wall-med")
 		fmt.Printf("    %-8s  %10s  %10s\n", "--------", "----------", "----------")
 		for _, k := range langKeys {
 			r := grid[k][p]
@@ -440,7 +501,7 @@ func cmdPerIter(args []string) {
 				continue
 			}
 			fmt.Printf("    %-8s  %10s  %10s\n",
-				k, fmtNs(r.timeMedianNs()), fmtNs(r.wallMedianNs()))
+				k, fmtNs(r.timeMinNs()), fmtNs(r.wallMedianNs()))
 		}
 	}
 
