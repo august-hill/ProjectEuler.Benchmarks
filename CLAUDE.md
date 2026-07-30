@@ -29,7 +29,7 @@ PE's publishing rule (projecteuler.net/about#publish) restricts public solution 
 
 ## METHODOLOGY.md is normative
 
-`METHODOLOGY.md` (added 2026-07-03) is the normative spec: per-invocation metric, 2-or-3 corroborated sampling, process-contract gate (untimed-work / parallel-execution / near-zero-time), solo-bench environment rule, serial-vs-parallel-class concurrency policy (`data/parallel.json`), geomean-over-common-set rankings. Where older narrative disagrees, METHODOLOGY.md wins. Change methodology → update METHODOLOGY.md in the same commit.
+`METHODOLOGY.md` (added 2026-07-03) is the normative spec: per-invocation metric, magnitude-adaptive sampling with the MINIMUM reported (§3, revised 2026-07-25), process-contract gate (untimed-work / parallel-execution / near-zero-time), solo-bench environment rule, serial-vs-parallel-class concurrency policy (`data/parallel.json`), geomean-over-common-set rankings. Where older narrative disagrees, METHODOLOGY.md wins. Change methodology → update METHODOLOGY.md in the same commit.
 
 ## Pre-commit checklist
 

@@ -2,20 +2,18 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median internal time per fresh-process invocation (2-or-3 corroborated
+Minimum internal time per fresh-process invocation (magnitude-adaptive
 samples, METHODOLOGY.md §3), one row per problem, one column per language
 in tier-1 display order (native → managed → interpreted).
 
 | Problem | C++ | Rust | Go |
 |---------|----:|----:|----:|
-| **p1001** | 1.31 s | 622.94 ms | 1.29 s |
-| **p1002** | 26.12 ms† | 28.38 ms† | 33.73 ms† |
-| **p1003** | 753.02 ms | 399.57 ms | 1.30 s |
-| **p1004** | 72.95 ms | 71.09 ms | 78.78 ms |
-| **p1005** | 1.27 ms† | 2.28 ms† | 2.45 ms† |
-| **p1006** | 15.94 ms | 20.12 ms† | 94.79 ms |
-| **p1007** | 2.32 s | 2.53 s | 2.90 s |
-
-> † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
+| **p1001** | 1.26 s | 579.87 ms | 1.26 s |
+| **p1002** | 21.30 ms | 23.93 ms | 29.30 ms |
+| **p1003** | 705.76 ms | 381.90 ms | 1.31 s |
+| **p1004** | 69.75 ms | 69.16 ms | 73.62 ms |
+| **p1005** | 761.1 µs | 1.22 ms | 1.35 ms |
+| **p1006** | 15.16 ms | 15.10 ms | 86.45 ms |
+| **p1007** | 2.27 s | 2.51 s | 2.81 s |
 
 ⬅ [Back to RESULTS](../RESULTS.md)

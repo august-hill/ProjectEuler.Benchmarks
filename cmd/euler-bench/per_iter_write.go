@@ -268,7 +268,16 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	}
 	row.Status = "pass"
 	row.Answer = r.Answer
-	row.TimeNs = r.timeMedianNs()
+	// Reported cost is the MINIMUM sample, not the median (METHODOLOGY.md §3).
+	// These programs are deterministic and single-threaded, so there is one true
+	// cost and every disturbance can only ADD to it — noise is one-sided. Under
+	// one-sided additive noise the minimum is the maximum-likelihood estimate of
+	// the true cost; the median is the right estimator only for SYMMETRIC noise.
+	// Because the noise floor is near-constant in absolute terms, using the
+	// median inflates cheap cells far more than expensive ones, which
+	// systematically compressed the fast-vs-slow language gap (~10% for compiled
+	// langs vs ~3% for managed). Ordering is unaffected either way.
+	row.TimeNs = r.timeMinNs()
 	row.TimeMinNs = r.timeMinNs()
 	row.TimeMaxNs = r.timeMaxNs()
 	row.Samples = len(r.TimeSamplesNs)

@@ -2,7 +2,7 @@
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
-Median internal time per fresh-process invocation (2-or-3 corroborated
+Minimum internal time per fresh-process invocation (magnitude-adaptive
 samples, METHODOLOGY.md §3), one row per problem, one column per language
 in tier-1 display order (native → managed → interpreted).
 
@@ -14,18 +14,18 @@ in tier-1 display order (native → managed → interpreted).
 | **p0904** | — | — | — |
 | **p0905** | — | — | — |
 | **p0906** | — | — | — |
-| **p0907** | 26.0 µs | 17.3 µs | 28.0 µs |
+| **p0907** | 20.7 µs | 21.3 µs | 28.0 µs |
 | **p0908** | — | — | — |
 | **p0909** | — | — | — |
 | **p0910** | — | — | — |
 | **p0911** | — | — | — |
 | **p0912** | — | — | — |
 | **p0913** | — | — | — |
-| **p0914** | 104.69 ms | — | 103.76 ms |
+| **p0914** | 101.55 ms | — | 100.08 ms |
 | **p0915** | — | — | — |
 | **p0916** | — | — | — |
 | **p0917** | — | — | — |
-| **p0918** | 12.7 µs | — | — |
+| **p0918** | 10.0 µs | — | — |
 | **p0919** | — | — | — |
 | **p0920** | — | — | — |
 | **p0921** | — | — | — |
@@ -33,84 +33,84 @@ in tier-1 display order (native → managed → interpreted).
 | **p0923** | — | — | — |
 | **p0924** | — | — | — |
 | **p0925** | — | — | — |
-| **p0926** | 102.95 ms | — | — |
+| **p0926** | 98.31 ms | — | — |
 | **p0927** | — | — | — |
 | **p0928** | — | — | — |
 | **p0929** | — | — | — |
 | **p0930** | — | — | — |
 | **p0931** | — | — | — |
-| **p0932** | 31.82 ms | — | — |
+| **p0932** | 30.77 ms | — | — |
 | **p0933** | — | — | — |
-| **p0934** | 113.33 ms | 73.97 ms | 781.55 ms |
+| **p0934** | 109.72 ms | 72.50 ms | 767.08 ms |
 | **p0935** | — | — | — |
 | **p0936** | — | — | — |
 | **p0937** | — | — | — |
-| **p0938** | 346.30 ms | — | — |
+| **p0938** | 335.98 ms | — | — |
 | **p0939** | — | — | — |
-| **p0940** | 95.9 µs | — | — |
+| **p0940** | 39.4 µs | — | — |
 | **p0941** | — | — | — |
 | **p0942** | — | — | — |
 | **p0943** | — | — | — |
-| **p0944** | 3.38 s | — | — |
+| **p0944** | 3.35 s | — | — |
 | **p0945** | — | — | — |
-| **p0946** | 685.42 ms | — | — |
+| **p0946** | 668.33 ms | — | — |
 | **p0947** | — | — | — |
-| **p0948** | 368.0 µs | 40.6 µs | 62.6 µs |
+| **p0948** | 203.6 µs | 20.7 µs | 41.8 µs |
 | **p0949** | — | — | — |
 | **p0950** | — | — | — |
 | **p0951** | — | — | — |
 | **p0952** | — | — | — |
 | **p0953** | — | — | — |
 | **p0954** | — | — | — |
-| **p0955** | 946.2 µs | 1.42 ms† | 1.26 ms† |
-| **p0956** | 109.71 ms | 9.95 ms† | 27.89 ms† |
+| **p0955** | 1.07 ms | 692.5 µs | 748.1 µs |
+| **p0956** | 105.81 ms | 9.06 ms | 24.62 ms |
 | **p0957** | — | — | — |
 | **p0958** | — | — | — |
-| **p0959** | 15.4 µs | 148.6 µs† | 39.8 µs |
+| **p0959** | 16.8 µs~ | 84.5 µs | 20.8 µs |
 | **p0960** | — | — | — |
-| **p0961** | 5.91 ms | 2.25 ms | 10.78 ms† |
+| **p0961** | 5.73 ms | 2.17 ms | 6.97 ms |
 | **p0962** | — | — | — |
 | **p0963** | — | — | — |
 | **p0964** | — | — | — |
-| **p0965** | 239.48 ms | 418.55 ms | 346.42 ms |
+| **p0965** | 233.52 ms | 411.01 ms | 341.18 ms |
 | **p0966** | — | — | — |
-| **p0967** | 365.47 ms | 270.26 ms | 496.62 ms |
+| **p0967** | 356.64 ms | 266.93 ms | 470.80 ms |
 | **p0968** | — | — | — |
-| **p0969** | 231.6 µs | 75.3 µs | 102.4 µs |
+| **p0969** | 78.8 µs | 78.5 µs | 102.2 µs |
 | **p0970** | — | — | — |
-| **p0971** | 3.34 s | 1.54 s | 1.60 s |
+| **p0971** | 3.28 s | 1.54 s | 1.60 s |
 | **p0972** | 1.84 s | 2.49 s | 2.54 s |
 | **p0973** | — | — | — |
-| **p0974** | 7.08 ms | 300.8 µs | 21.01 ms† |
+| **p0974** | 4.56 ms | 223.6 µs | 17.01 ms |
 | **p0975** | ✗ fail | — | — |
 | **p0976** | — | — | — |
 | **p0977** | — | — | — |
-| **p0978** | 84 ns | 84 ns | 2.6 µs |
+| **p0978** | <1 µs~ | <1 µs~ | 2.8 µs~ |
 | **p0979** | — | — | — |
-| **p0980** | 180.73 ms | 178.05 ms | 224.65 ms |
-| **p0981** | 78.16 ms | 29.62 ms† | 27.66 ms |
-| **p0982** | 6.89 ms† | 3.30 ms | 81.46 ms |
+| **p0980** | 175.83 ms | 176.68 ms | 222.43 ms |
+| **p0981** | 74.69 ms | 25.17 ms | 25.90 ms |
+| **p0982** | 4.18 ms | 3.32 ms | 70.20 ms |
 | **p0983** | — | — | — |
 | **p0984** | — | — | — |
-| **p0985** | 875 ns | 958 ns† | 3.0 µs† |
+| **p0985** | <1 µs | <1 µs~ | 1.4 µs~ |
 | **p0986** | — | — | — |
-| **p0987** | 859.89 ms | 900.55 ms | 5.80 s |
-| **p0988** | 49.5 µs | 161.5 µs† | 1.37 ms† |
+| **p0987** | 833.91 ms | 861.49 ms | 5.16 s |
+| **p0988** | 29.0 µs | 146.2 µs | 1.16 ms |
 | **p0989** | — | — | — |
-| **p0990** | 141.84 ms | 149.26 ms | 289.79 ms |
-| **p0991** | 25.91 ms† | 26.74 ms† | 26.90 ms† |
-| **p0992** | 19.64 ms† | 22.46 ms† | 22.43 ms† |
-| **p0993** | 886.78 ms | 4.48 s | 5.05 s |
-| **p0994** | 2.48 s | 2.41 s | 4.83 s |
+| **p0990** | 135.16 ms | 143.53 ms | 261.21 ms |
+| **p0991** | 21.51 ms | 22.22 ms | 23.74 ms |
+| **p0992** | 14.48 ms | 17.66 ms | 19.30 ms |
+| **p0993** | 856.78 ms | 4.41 s | 4.53 s |
+| **p0994** | 2.51 s | 2.49 s | 4.88 s |
 | **p0995** | — | — | — |
 | **p0996** | — | — | — |
-| **p0997** | 44.14 ms | 55.09 ms | 105.13 ms |
+| **p0997** | 42.97 ms | 54.54 ms | 104.88 ms |
 | **p0998** | — | — | — |
 | **p0999** | — | — | — |
-| **p1000** | 17.68 ms | 11.01 ms† | 52.74 ms |
+| **p1000** | 16.40 ms | 9.39 ms | 50.45 ms |
 
 > ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
-> † — *no corroboration*: no two samples agreed within 5%; median recorded, environment flagged for re-bench (METHODOLOGY.md §3).
+> ~ — *wide spread*: observed samples span more than 3× the reported figure. Since noise here is one-sided and the reported figure is the MINIMUM, a wide spread does not make the number too high — it means the machine was disturbed at some point while that cell was sampled. The threshold is calibrated to the sampling schedule, because observing more samples mechanically widens min..max (METHODOLOGY.md §3b).
 
 ⬅ [Back to RESULTS](../RESULTS.md)

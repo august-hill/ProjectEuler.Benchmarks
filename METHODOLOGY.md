@@ -65,30 +65,89 @@ At write time, the contract is enforced from these observables:
 These checks are structural, not advisory: a row that breaks the contract
 cannot silently enter the dataset.
 
-## 3. Sampling: run 2, corroborate, tie-break to at most 3
+## 3. Sampling: magnitude-adaptive count, minimum reported
 
 Every solution here is deterministic and (in serial-class) single-threaded:
-there is one true cost, and timing noise is strictly additive. The sampling
-rule:
+there is one true cost, and **timing noise is strictly additive** — every
+disturbance (scheduler preemption, page faults, first-exec signature
+validation, timer granularity, thermal drift) can only make a run *slower*,
+never faster.
 
-1. Run **2** fresh-process samples. If they agree within **5%**, accept the
-   median (their midpoint) and stop.
-2. Otherwise run a **third** and take the median of 3.
-3. If no two of the three agree within 5%, the median is still recorded but
-   the row carries a **no-corroboration warning** — on a deterministic
-   program, three mutually inconsistent samples indicate a broken measurement
-   environment (load, thermal), which is fixed by investigating and
-   re-benching, not by sampling further.
+Two consequences follow, and both are load-bearing.
 
-**Why so few samples?** This matches practice for whole-program benchmarks:
-SPEC CPU's reportable standard is 3 runs / median; Phoronix runs 3 with
-bounded variance escalation. Large sample counts (10+) belong to
-micro-benchmarking, where individual samples are nearly free and per-sample
-noise is proportionally large. On this suite's quiet reference machine,
-repeat samples of multi-second programs agree to a fraction of a percent —
-extra confirmations refine a digit that no cross-language comparison reads.
-Every row records its actual sample count (`samples`), its minimum, and its
-maximum; heterogeneous sample counts are by design.
+### 3a. The reported statistic is the MINIMUM, not the median
+
+Under one-sided additive noise the minimum sample is the maximum-likelihood
+estimate of the true cost. The median is the correct estimator only when
+noise is *symmetric*, which it is not here. `time_ns` is therefore the
+minimum observed sample; `time_min_ns` and `time_max_ns` retain the full
+observed spread.
+
+This matters because the noise floor is near-constant in *absolute* terms
+(~0.15 ms of process and scheduler overhead). On a 1.5 ms cell that is 10%;
+on a 32 ms cell it is 0.5%. Reporting medians therefore inflated cheap cells
+far more than expensive ones, which systematically **compressed the gap
+between fast and slow languages** — measured at −9 to −11% for the compiled
+languages versus −2 to −4% for the managed ones when switching to minimum.
+Language *ordering* is unaffected by the choice; only the ratios are.
+
+### 3b. Sample count scales with magnitude, inversely to cost
+
+Measured across 3670 passing rows, median within-row min..max spread by
+magnitude:
+
+| magnitude | rows | median spread | p90 spread |
+|---|---:|---:|---:|
+| < 10 µs | 422 | 54.6% | 544% |
+| 10 µs – 1 ms | 700 | 35.8% | 223% |
+| 1 – 10 ms | 643 | 22.1% | 70% |
+| 10 – 100 ms | 664 | 16.6% | 65% |
+| 0.1 – 1 s | 598 | 4.7% | 17% |
+| 1 – 10 s | 507 | 1.8% | 7.8% |
+| > 10 s | 136 | 0.7% | 4.5% |
+
+Relative noise grows as programs get cheaper, while sampling *cost* moves the
+opposite way. So the schedule is inverted relative to a uniform rule:
+
+| observed cost | samples |
+|---|---:|
+| < 1 ms | 15 |
+| 1 – 10 ms | 11 |
+| 10 – 100 ms | 7 |
+| 0.1 – 1 s | 4 |
+| ≥ 1 s | 2 |
+
+At least 2 samples always run; further samples are added until the cell
+reaches its target, bounded by the `--iters` cap and a 90 s per-cell wall
+budget. Over a full pass this is **~26 minutes cheaper** than the previous
+uniform rule, because trimming the multi-second tail from 2.5 samples to 2
+outweighs everything added at the cheap end. Every row records its actual
+count (`samples`); heterogeneous counts are by design.
+
+### Why this replaced the previous rule (changed 2026-07-25)
+
+The prior rule ran 2 samples, accepted them if they agreed within 5%, and
+tie-broke to at most 3. It was well calibrated for multi-second programs —
+where the sub-percent agreement it assumed genuinely holds — and badly
+miscalibrated below 10 ms. **Two draws from a long-tailed distribution can
+agree with each other while both sit far from the true cost**, so pairwise
+agreement was not evidence of convergence at the cheap end: 30–34% of sub-ms
+cells failed to corroborate at all, and the ones that *did* corroborate were
+not thereby trustworthy. A single problem was observed being "corroborated"
+at 946 µs and at 2.055 ms in separate passes, on a true cost near 1.08 ms.
+
+The 5% pairwise check is retained only as a **diagnostic**: a cell that never
+produces an agreeing pair even at 15 samples indicates a disturbed
+measurement environment, which is fixed by investigating (see §4), not by
+sampling further.
+
+### 3c. Measurement floor
+
+A single fresh-process invocation cannot resolve costs below roughly 1 µs —
+the platform timer granularity is 41.67 ns and scheduler jitter exceeds the
+signal. Cells measuring under 1 µs are reported as `<1 µs` rather than as a
+specific figure; the stored `time_ns` is retained for auditing but the
+published number does not claim precision it does not have.
 
 ## 4. Environment
 
