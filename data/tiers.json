@@ -3,21 +3,50 @@
   "tiers": {
     "tier_1_foundation": {
       "label": "Foundation",
-      "langs": ["c", "cpp", "csharp", "go", "java", "javascript", "python", "rust", "zig", "arm64"],
-      "problem_range": [1, 200],
+      "langs": [
+        "c",
+        "cpp",
+        "csharp",
+        "go",
+        "java",
+        "javascript",
+        "python",
+        "rust",
+        "zig",
+        "arm64"
+      ],
+      "problem_range": [
+        1,
+        200
+      ],
       "description": "All 10 languages; the apples-to-apples cross-language comparison surface."
     },
     "tier_2_deep_coverage": {
       "label": "Deep Coverage",
-      "langs": ["cpp", "go", "python", "rust", "zig"],
-      "problem_range": [201, 300],
-      "description": "Languages we've intentionally pushed past 200; the 5-lang comparison surface for the 201-300 band. Range was briefly expanded to 201-400 on 2026-05-25 then narrowed back to 201-300 on 2026-05-26 — python and zig are explicitly NOT extended into 301+ (python out-of-gas at level 5+, zig deliberately uninteresting for tier-3 work). This is the natural ceiling for Deep Coverage; tier 3 takes over above 300 with a tighter 3-lang trio."
+      "langs": [
+        "cpp",
+        "go",
+        "rust",
+        "zig"
+      ],
+      "problem_range": [
+        201,
+        300
+      ],
+      "description": "C++, Go, Rust and Zig for the 201-300 band. Range was briefly expanded to 201-400 on 2026-05-25 then narrowed back to 201-300 on 2026-05-26 \u2014 python and zig are explicitly NOT extended into 301+ (python out-of-gas at level 5+, zig deliberately uninteresting for tier-3 work). This is the natural ceiling for Deep Coverage; tier 3 takes over above 300 with a tighter 3-lang trio. PYTHON RETIRED FROM THIS TIER 2026-07-25: it had reached 92/100 and the remaining 8 were unreachable, not merely unwritten \u2014 p275 needs python within 1.5x of C++ on an 82s workload against a 120s bench timeout, and p238/p241 were already recorded as impractical from real attempts. Retiring rather than leaving a permanent 8-problem hole matches the project's standing 'full scale, OR omit python entirely' guardrail and the 2026-05-27 retirement of python as prospector. Python KEEPS its tier-1 membership (1-200, all ten languages) and its 92 committed 201-300 solutions stay in the repo under the historical-exception convention below \u2014 preserved and runnable, simply not counted in tier-comparison stats."
     },
     "tier_3_frontier": {
       "label": "Frontier",
-      "langs": ["cpp", "go", "rust"],
-      "problem_range": [301, null],
-      "description": "C++, Go, and Rust as the verification trio for unexplored problems. Rust promoted into the trio on 2026-05-26 — 3-way cross-language agreement is strictly stronger than 2-way (harder to fall into a shared-misreading trap like the 2026-05-25 p254 incident). Lower bound moved 401 → 301 on 2026-05-26 to reframe 301-400 from 'tier-2 extension' to 'tier-3 build-out' where rust is the natural ceiling-setting lang."
+      "langs": [
+        "cpp",
+        "go",
+        "rust"
+      ],
+      "problem_range": [
+        301,
+        null
+      ],
+      "description": "C++, Go, and Rust as the verification trio for unexplored problems. Rust promoted into the trio on 2026-05-26 \u2014 3-way cross-language agreement is strictly stronger than 2-way (harder to fall into a shared-misreading trap like the 2026-05-25 p254 incident). Lower bound moved 401 \u2192 301 on 2026-05-26 to reframe 301-400 from 'tier-2 extension' to 'tier-3 build-out' where rust is the natural ceiling-setting lang."
     }
   },
   "_historical_exceptions_note": "Languages may have committed solutions beyond their highest tier's problem_range (e.g., Rust has 36 problems above 200). Those stay preserved per the historical-exception convention in project_200_cap_policy auto-memory, but do NOT count for tier-comparison stats. Reports show them only in the lang's own data, not in cross-tier rankings."
