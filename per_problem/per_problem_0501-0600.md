@@ -21,55 +21,55 @@ in tier-1 display order (native → managed → interpreted).
 | **p0511** | 1.10 s | 1.12 s | 1.21 s |
 | **p0512** | 15.78 ms | 9.79 ms | 11.92 ms |
 | **p0513** | — | 49.67 s | 58.30 s |
-| **p0514** | 439.72 ms | — | 736.64 ms |
+| **p0514** | 452.93 ms | 718.97 ms | 759.97 ms |
 | **p0515** | 546.9 µs | 778.0 µs | 907.9 µs |
-| **p0516** | 56.32 ms | — | — |
-| **p0517** | 529.77 ms | — | 208.32 ms |
-| **p0518** | 2.28 s | — | — |
-| **p0519** | 13.33 s | — | 5.28 s |
-| **p0520** | 194.02 ms | — | 462.4 µs |
-| **p0521** | 735.01 ms | — | 2.42 s |
-| **p0522** | 4.26 s | — | 977.44 ms |
+| **p0516** | 56.32 ms | 27.12 ms | — |
+| **p0517** | 529.77 ms | 337.01 ms | 208.32 ms |
+| **p0518** | 2.28 s | 3.40 s | — |
+| **p0519** | 13.33 s | 8.61 s | 5.28 s |
+| **p0520** | 194.02 ms | 198.53 ms | 462.4 µs |
+| **p0521** | 735.01 ms | 851.44 ms | 2.42 s |
+| **p0522** | 4.26 s | 2.07 s | 977.44 ms |
 | **p0523** | 5.7 µs | 3.4 µs | 17.0 µs~ |
 | **p0524** | — | — | — |
 | **p0525** | 273.7 µs | 206.1 µs | 815.5 µs |
 | **p0526** | — | — | — |
-| **p0527** | 6.9 µs | — | 136.1 µs |
+| **p0527** | 7.3 µs | 7.4 µs | 144.8 µs |
 | **p0528** | 3.22 ms | 2.94 ms | 725.8 µs |
 | **p0529** | 1.19 s | 1.33 s | 1.40 s |
-| **p0530** | 496.56 ms | — | 525.59 ms |
-| **p0531** | 650.48 ms | — | — |
-| **p0532** | 157.15 ms | — | 1.32 s |
-| **p0533** | 292.20 ms | — | 319.85 ms |
+| **p0530** | 496.56 ms | 573.87 ms | 525.59 ms |
+| **p0531** | 650.48 ms | 653.22 ms | — |
+| **p0532** | 157.15 ms | 168.42 ms | 1.32 s |
+| **p0533** | 292.20 ms | 321.27 ms | 319.85 ms |
 | **p0534** ‖ | 2.45 s (×3.5) ‖ | 2.59 s (×3.1) ‖ | 9.23 s (×5.9) ‖ |
 | **p0535** | 106.77 ms | 125.19 ms | 1.22 s |
-| **p0536** | 16.23 s | — | — |
-| **p0537** | 5.99 s | — | 152.08 ms |
-| **p0538** | 10.16 s | — | 743.55 ms |
+| **p0536** | 16.23 s | 18.96 s† | — |
+| **p0537** | 5.99 s | 3.36 s | 152.08 ms |
+| **p0538** | 10.16 s | 1.92 s | 743.55 ms |
 | **p0539** | 13.9 µs | 9.9 µs | 27.6 µs |
-| **p0540** | 1.08 s | — | — |
+| **p0540** | 1.08 s | 1.33 s | — |
 | **p0541** | 5.15 ms | 4.91 ms | 4.82 ms |
 | **p0542** | 2.19 ms | 1.85 ms | 693.13 ms |
 | **p0543** | 14.03 ms | 15.76 ms | 20.51 ms |
 | **p0544** ‖ | 7.54 s (×4.2) ‖ | 7.68 s (×4.0) ‖ | 9.56 s (×6.6) ‖ |
-| **p0545** | 3.69 s | — | 3.26 s |
+| **p0545** | 3.69 s | 3.02 s | 3.26 s |
 | **p0546** | 300.9 µs | 295.5 µs | 6.24 ms |
-| **p0547** | 249.18 ms | — | 87.11 ms |
-| **p0548** | 5.86 s | — | 1.06 s |
-| **p0549** | 1.28 s | — | 1.98 s |
-| **p0550** | 1.74 s | — | 1.05 s |
-| **p0551** | 3.05 s | — | 114.54 ms |
+| **p0547** | 249.18 ms | 303.15 ms | 87.11 ms |
+| **p0548** | 5.86 s | 3.08 s | 1.06 s |
+| **p0549** | 1.28 s | 1.36 s | 1.98 s |
+| **p0550** | 1.74 s | 1.71 s | 1.05 s |
+| **p0551** | 3.05 s | 4.23 s† | 114.54 ms |
 | **p0552** | 439.05 ms | 881.67 ms | 889.29 ms |
 | **p0553** | 2.16 s | 1.65 s | 2.18 s |
-| **p0554** | 1.29 s | — | 1.32 s |
+| **p0554** | 1.29 s | 467.79 ms | 1.32 s |
 | **p0555** | 14.50 ms | 2.76 ms | 607.1 µs |
-| **p0556** | 171.84 ms | — | 1.93 s |
+| **p0556** | 171.84 ms | 179.01 ms | 1.93 s |
 | **p0557** ‖ | 3.93 s (×8.9) ‖ | 7.27 s (×8.9) ‖ | 2.41 s (×8.6) ‖ |
 | **p0558** ‖ | 1.22 s (×8.8) ‖ | 1.14 s (×8.9) ‖ | 7.39 s (×8.9) ‖ |
-| **p0559** | 918.54 ms | — | 8.45 s |
-| **p0560** | 378.73 ms | — | 165.60 ms |
+| **p0559** | 918.54 ms | 751.52 ms | 8.45 s |
+| **p0560** | 378.73 ms | 118.94 ms | 165.60 ms |
 | **p0561** | <1 µs | <1 µs | 1.4 µs~ |
-| **p0562** | 24.36 s | — | — |
+| **p0562** | 24.36 s | 23.75 s | — |
 | **p0563** | 1.13 s | 25.47 s | 20.01 s |
 | **p0564** | 13.35 s | 11.02 s | 17.75 s |
 | **p0565** | 357.89 ms | — | 230.24 ms |
@@ -110,6 +110,8 @@ in tier-1 display order (native → managed → interpreted).
 | **p0600** | 231.98 ms | — | — |
 
 > ‖ — *parallel-class problem* (METHODOLOGY.md §5): every tier language fields its idiomatic parallel implementation; (×N) is the achieved parallel speedup (CPU time / wall time). These rows are never directly comparable to serial-class rows.
+
+> † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
 > ~ — *wide spread*: observed samples span more than 3× the reported figure. Since noise here is one-sided and the reported figure is the MINIMUM, a wide spread does not make the number too high — it means the machine was disturbed at some point while that cell was sampled. The threshold is calibrated to the sampling schedule, because observing more samples mechanically widens min..max (METHODOLOGY.md §3b).
 
