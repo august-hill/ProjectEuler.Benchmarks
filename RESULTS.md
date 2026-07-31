@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4621 in-scope cells across 1007 problems × tiered languages — 3689 measured (79.8% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 3597 measured (79.6% coverage).**
 > The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -45,21 +45,20 @@ How much code does each language need to solve these 200 Foundation problems, an
 
 ![Speed vs Code Size](charts/per_iter_speed_vs_size.png)
 
-## Deep Coverage — Tier 2 (5 languages, problems 201-300)
+## Deep Coverage — Tier 2 (4 languages, problems 201-300)
 
-Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Python, Rust, Zig) that intentionally pushed past problem 200. The other 5 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
+Same per-invocation metric, restricted to the deeper subset of languages (C++, Go, Rust, Zig) that intentionally pushed past problem 200. The other 6 Foundation languages are out of tier scope here — they're capped at 200 by the project's language-cap policy (see JOURNEY.md).
 
-### Per-Invocation Cost (Common Set, 92 of 100 problems)
+### Per-Invocation Cost (Common Set, 100 of 100 problems)
 
 ![Per-Invocation Cost — Tier 2](charts/per_iter_total_tier2.png)
 
-| Rank | Language | Geomean (92-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (100-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 18.28 ms | 77.84 s | 10,847 | 1.00× |
-| 2 | **Rust** | 20.18 ms | 62.78 s | 9,501 | 1.10× |
-| 3 | **C++** | 22.75 ms | 69.67 s | 12,103 | 1.24× |
-| 4 | **Go** | 23.87 ms | 76.86 s | 9,894 | 1.31× |
-| 5 | **Python** | 171.64 ms | 599.34 s | 6,767 | 9.39× |
+| 1 | **Zig** | 28.06 ms | 180.44 s | 12,515 | 1.00× |
+| 2 | **Rust** | 30.74 ms | 172.44 s | 11,102 | 1.10× |
+| 3 | **C++** | 34.62 ms | 184.26 s | 13,322 | 1.23× |
+| 4 | **Go** | 36.72 ms | 223.79 s | 11,680 | 1.31× |
 
 ### Speed vs Code Size
 
@@ -117,13 +116,13 @@ per-problem detail pages carry each failure's reason class.
 ## Per-Problem Detail
 
 Median wall time per fresh-process invocation, for each (language, problem).
-Split across 11 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 5 in Deep Coverage).
+Split across 11 pages, one per 100-problem band, so this main page stays navigable.  Each band's table is tier-filtered (10 langs in Foundation bands, 4 in Deep Coverage).
 
 | Band | Tier | Languages | Page |
 |------|------|-----------|------|
 | p0001–p0100 | Foundation | 10 | [Open](per_problem/per_problem_0001-0100.md) |
 | p0101–p0200 | Foundation | 10 | [Open](per_problem/per_problem_0101-0200.md) |
-| p0201–p0300 | Deep Coverage | 5 | [Open](per_problem/per_problem_0201-0300.md) |
+| p0201–p0300 | Deep Coverage | 4 | [Open](per_problem/per_problem_0201-0300.md) |
 | p0301–p0400 | Frontier | 3 | [Open](per_problem/per_problem_0301-0400.md) |
 | p0401–p0500 | Frontier | 3 | [Open](per_problem/per_problem_0401-0500.md) |
 | p0501–p0600 | Frontier | 3 | [Open](per_problem/per_problem_0501-0600.md) |

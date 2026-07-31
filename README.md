@@ -19,11 +19,11 @@ tier.  Live definitions in [`data/tiers.json`](data/tiers.json).
 | Tier | Problem range | Languages in scope | Role |
 |------|---------------|---------------------|------|
 | **Foundation** | 1–200 | All 10 (ARM64, C, C++, C#, Go, Java, JS, Python, Rust, Zig) | Apples-to-apples 10-language comparison — the headline ranking |
-| **Deep Coverage** | 201–300 | C++, Go, Python, Rust, Zig | Deeper comparison among the 5 languages that intentionally extend past 200 |
+| **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | Deeper comparison among the 4 languages that intentionally extend past 200 |
 | **Frontier** | 301+ | C++, Go, Rust | Exploration zone — 3-way C++/Go/Rust verification trio on unexplored problems |
 
 Foundation problems are the apples-to-apples cross-language comparison surface.
-Deep Coverage extends 5 of those languages to harder problems; the other 5 are
+Deep Coverage extends 4 of those languages to harder problems; the other 6 are
 intentionally capped at 200 to keep the 10-language story clean.  Frontier work
 ships as paired C++/Go/Rust implementations — 3-way agreement is the
 verification protocol (see [JOURNEY.md](JOURNEY.md)).
@@ -70,7 +70,7 @@ cd benchmarks
 # Foundation tier (all 10 langs, 1-200) — the apples-to-apples surface
 cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
 
-# Deep Coverage tier (5 langs, 201-300) — language extension
+# Deep Coverage tier (4 langs, 201-300) — language extension
 cmd/euler-bench/euler-bench per-iter --lang cpp,go,python,rust,zig --problems 201-300 --iters 10 --write
 
 # Frontier tier (3 langs, 301+) — C++/Go/Rust verification trio on unexplored work
@@ -116,7 +116,7 @@ that rejects any staged file under `data/` not on the small config allowlist
 | `scripts/tiers.py` | Shared tier helper — `load_tiers`, `langs_in_tier`, `in_scope`, etc. |
 | `scripts/sanitization_gate.py` | Pre-commit hook: rejects any raw bench data file outside the config allowlist |
 | `charts/per_iter_total.png` | Foundation per-invocation total (10 langs over the common set) |
-| `charts/per_iter_total_tier2.png` | Deep Coverage per-invocation total (5 langs over the tier-2 common set) |
+| `charts/per_iter_total_tier2.png` | Deep Coverage per-invocation total (4 langs over the tier-2 common set) |
 | `charts/per_iter_speed_vs_size.png` | Foundation speed vs source lines |
 | `charts/per_iter_speed_vs_size_tier2.png` | Deep Coverage speed vs source lines |
 | `charts/per_iter_coverage_grid.png` | Tier-aware coverage heatmap (variable bands × variable lang rows) |
