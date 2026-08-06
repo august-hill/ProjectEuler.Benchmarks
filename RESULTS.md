@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 3723 measured (82.3% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 3726 measured (82.4% coverage).**
 > The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 436 of ≤707 problems in scope)
+### Per-Invocation Cost (Common Set, 437 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (436-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (437-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 58.63 ms | 1276.98 s | 61,212 | 1.00× |
-| 2 | **C++** | 61.30 ms | 1298.70 s | 49,193 | 1.05× |
-| 3 | **Go** | 77.94 ms | 1543.33 s | 62,968 | 1.33× |
+| 1 | **Rust** | 58.49 ms | 1277.00 s | 61,399 | 1.00× |
+| 2 | **C++** | 61.34 ms | 1298.79 s | 49,369 | 1.05× |
+| 3 | **Go** | 78.16 ms | 1543.60 s | 63,177 | 1.34× |
 
 ### Speed vs Code Size
 
