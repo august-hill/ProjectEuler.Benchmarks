@@ -1,7 +1,7 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 3768 measured (83.3% coverage).**
-> The cross-language ranking below is computed over the **199-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 3769 measured (83.4% coverage).**
+> The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
@@ -12,12 +12,12 @@
 
 All 10 languages benchmarked across the first 200 problems — the apples-to-apples comparison surface that anchors the suite's headline rankings.
 
-### Per-Invocation Cost (Common Set, 199 of 200 problems)
+### Per-Invocation Cost (Common Set, 200 of 200 problems)
 
 Each program runs in fresh OS processes (no warmup, no shared state) under the
 magnitude-adaptive sampling rule, minimum reported; every invocation pays full startup + algorithm
 cost — the cost a real CLI / cron / shell-loop user actually pays.  The ranking
-below is the **geometric mean** of per-problem medians over the 199-problem
+below is the **geometric mean** of per-problem medians over the 200-problem
 common set, with cells floored at 100 µs so timer-granularity trivia can't swing
 the mean; the sum over the same set is shown as a secondary column.  See
 [METHODOLOGY.md](METHODOLOGY.md) §3 (sampling) and §6 (ranking) for why.
@@ -26,18 +26,18 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 > **The top compiled languages are a statistical tie for #1, not a strict order.** Bootstrapping the geomean over the common set (2000× resamples) leaves several compiled langs with overlapping 95% confidence intervals and non-trivial P(#1) (the chance a lang is fastest across resamples) — the chart above shows the intervals. Read the table below as **tiers**, not a 1-N ranking: the fine order among the top compiled langs is within measurement noise. The coarse structure (compiled → managed → Python) is robust.
 
-| Rank | Language | Geomean (199-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.76 ms | 21.12 s | 13,404 | 1.00× |
-| 2 | **ARM64** | 1.81 ms | 30.46 s | 40,083 | 1.03× |
-| 3 | **C** | 1.84 ms | 19.80 s | 14,446 | 1.05× |
-| 4 | **C++** | 2.01 ms | 20.09 s | 10,321 | 1.14× |
-| 5 | **Rust** | 2.01 ms | 23.55 s | 11,555 | 1.14× |
-| 6 | **Go** | 2.24 ms | 26.78 s | 13,156 | 1.27× |
-| 7 | **JavaScript** | 4.21 ms | 58.40 s | 9,264 | 2.39× |
-| 8 | **Java** | 5.34 ms | 37.12 s | 10,558 | 3.03× |
-| 9 | **C#** | 6.38 ms | 33.38 s | 10,960 | 3.62× |
-| 10 | **Python** | 17.71 ms | 335.71 s | 8,494 | 10.04× |
+| 1 | **Zig** | 1.83 ms | 24.11 s | 13,474 | 1.00× |
+| 2 | **ARM64** | 1.88 ms | 33.92 s | 40,297 | 1.03× |
+| 3 | **C** | 1.91 ms | 22.49 s | 14,524 | 1.04× |
+| 4 | **C++** | 2.08 ms | 22.78 s | 10,369 | 1.14× |
+| 5 | **Rust** | 2.09 ms | 27.47 s | 11,614 | 1.14× |
+| 6 | **Go** | 2.32 ms | 30.64 s | 13,225 | 1.27× |
+| 7 | **JavaScript** | 4.38 ms | 67.58 s | 9,310 | 2.39× |
+| 8 | **Java** | 5.53 ms | 43.20 s | 10,611 | 3.02× |
+| 9 | **C#** | 6.60 ms | 38.58 s | 11,019 | 3.61× |
+| 10 | **Python** | 18.21 ms | 340.71 s | 8,561 | 9.95× |
 
 ### Speed vs Code Size
 
