@@ -61,7 +61,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0151** | 8.0 µs | 1.4 µs | 2.5 µs | 3.7 µs | 1.8 µs | 3.5 µs~ | 604.8 µs | 49.2 µs | 77.9 µs | 39.0 µs |
 | **p0152** | 1.61 s | 830.39 ms | 814.72 ms | 666.63 ms | 737.75 ms | 1.20 s | 979.41 ms | 866.38 ms | 5.69 s | 803.60 ms |
 | **p0153** | 2.38 s | 2.36 s | 2.37 s | 2.29 s | 3.06 s | 2.40 s | 2.71 s | 2.38 s | 7.06 s | 24.57 s |
-| **p0154** | 3.45 s | 2.68 s | 2.69 s | 3.92 s | 2.99 s | 3.86 s | 5.20 s | 6.08 s | 9.19 s | ✗ fail |
+| **p0154** | 3.45 s | 2.68 s | 2.69 s | 3.92 s | 2.99 s | 3.86 s | 5.20 s | 6.08 s | 9.19 s | 5.00 s |
 | **p0155** | 794.80 ms | 622.88 ms | 662.89 ms | 1.11 s | 535.19 ms | 733.99 ms | 1.44 s | 3.19 s | 1.00 s | 6.93 s |
 | **p0156** | 145.60 ms | 88.34 ms | 89.42 ms | 76.73 ms | 74.13 ms | 122.78 ms | 247.91 ms | 104.00 ms | 1.04 s | 8.05 s |
 | **p0157** | 5.00 ms | 4.65 ms | 5.15 ms | 4.67 ms | 4.65 ms | 5.02 ms | 7.06 ms | 6.80 ms | 8.76 ms | 233.23 ms |
@@ -108,8 +108,6 @@ in tier-1 display order (native → managed → interpreted).
 | **p0198** | 131.57 ms | 134.71 ms | 114.67 ms | 118.87 ms | 398.62 ms | 302.54 ms | 460.93 ms | 556.01 ms | 770.93 ms | 8.31 s |
 | **p0199** | 1.43 ms | 580.0 µs | 730.5 µs | 617.7 µs | 756.2 µs | 1.45 ms | 1.75 ms | 1.35 ms | 3.25 ms | 28.29 ms |
 | **p0200** | 75.54 ms | 9.54 ms | 9.65 ms | 8.34 ms | 9.39 ms | 9.36 ms | 47.88 ms | 50.71 ms | 40.51 ms | 156.35 ms |
-
-> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 > † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
