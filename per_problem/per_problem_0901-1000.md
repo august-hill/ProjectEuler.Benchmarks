@@ -11,7 +11,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0901** | 92.16 ms | 10.58 ms | 123.20 ms |
 | **p0902** | — | — | — |
 | **p0903** | — | — | — |
-| **p0904** | — | — | — |
+| **p0904** | 108.50 ms | 161.32 ms | 158.96 ms |
 | **p0905** | 342.76 ms | 11.53 ms | 709.42 ms |
 | **p0906** | 1.54 s | 2.15 s | 80.43 s |
 | **p0907** | 20.7 µs | 21.3 µs | 28.0 µs |
@@ -22,7 +22,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0912** | — | — | — |
 | **p0913** | — | — | — |
 | **p0914** | 101.55 ms | 3.65 s | 100.08 ms |
-| **p0915** | — | — | — |
+| **p0915** | 1.24 s | 25.51 ms | 7.45 ms |
 | **p0916** | — | — | — |
 | **p0917** | — | — | — |
 | **p0918** | 10.4 µs | 4.29 ms | 7.60 ms |
@@ -31,7 +31,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0921** | — | — | — |
 | **p0922** | — | — | — |
 | **p0923** | — | — | — |
-| **p0924** | — | — | — |
+| **p0924** | 1.07 s | 1.35 s† | 9.33 ms |
 | **p0925** | — | — | — |
 | **p0926** | 98.31 ms | 87.14 ms | 137.41 ms |
 | **p0927** | — | — | — |
@@ -110,6 +110,8 @@ in tier-1 display order (native → managed → interpreted).
 | **p1000** | 16.40 ms | 9.39 ms | 50.45 ms |
 
 > ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
+
+> † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
 > ~ — *wide spread*: observed samples span more than 3× the reported figure. Since noise here is one-sided and the reported figure is the MINIMUM, a wide spread does not make the number too high — it means the machine was disturbed at some point while that cell was sampled. The threshold is calibrated to the sampling schedule, because observing more samples mechanically widens min..max (METHODOLOGY.md §3b).
 
