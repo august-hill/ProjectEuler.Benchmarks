@@ -29,7 +29,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0919** | 9.73 s | 41.38 s | 49.15 s |
 | **p0920** | 748.87 ms | 235.28 ms | 4.59 s |
 | **p0921** | 451.77 ms | 393.24 ms | 361.93 ms |
-| **p0922** | — | — | — |
+| **p0922** | 12.36 ms | 14.76 ms | 21.12 ms |
 | **p0923** | — | — | — |
 | **p0924** | 1.07 s | 1.35 s† | 9.33 ms |
 | **p0925** | — | — | — |
@@ -46,7 +46,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0936** | — | — | — |
 | **p0937** | 938.35 ms | 898.69 ms | 1.10 s |
 | **p0938** | 351.52 ms | 716.81 ms | 529.01 ms |
-| **p0939** | — | — | — |
+| **p0939** | 71.63 ms | 242.46 ms | 92.70 ms |
 | **p0940** | 39.4 µs | 85.7 µs | 3.61 ms |
 | **p0941** | — | — | — |
 | **p0942** | — | — | — |
@@ -82,7 +82,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0972** | 1.84 s | 2.49 s | 2.54 s |
 | **p0973** | — | — | — |
 | **p0974** | 4.56 ms | 223.6 µs | 17.01 ms |
-| **p0975** | ✗ fail | — | — |
+| **p0975** | 1.39 s | 2.03 s | 965.06 ms |
 | **p0976** | — | — | — |
 | **p0977** | — | — | — |
 | **p0978** | <1 µs~ | <1 µs~ | 2.8 µs~ |
@@ -108,8 +108,6 @@ in tier-1 display order (native → managed → interpreted).
 | **p0998** | 249.00 ms | 1.06 s | 739.95 ms |
 | **p0999** | 294.5 µs | 13.80 ms | 12.3 µs |
 | **p1000** | 16.40 ms | 9.39 ms | 50.45 ms |
-
-> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 > † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
