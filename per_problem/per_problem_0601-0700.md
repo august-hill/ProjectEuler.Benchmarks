@@ -79,7 +79,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0669** | 1.94 ms | 2.56 ms | 2.84 ms |
 | **p0670** | 50.60 ms | 54.85 ms | 82.77 ms |
 | **p0671** | — | — | — |
-| **p0672** | — | — | — |
+| **p0672** | 1.09 ms | 310.47 ms | 2.58 ms |
 | **p0673** | 242.6 µs~ | 68.8 µs | 187.5 µs~ |
 | **p0674** | — | — | — |
 | **p0675** | 2.65 s | 2.66 s | 3.20 s |
@@ -106,7 +106,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0696** | — | — | — |
 | **p0697** | 6.5 µs | 5.0 µs | 5.2 µs |
 | **p0698** | 252.8 µs | 146.3 µs | 165.1 µs |
-| **p0699** | — | — | — |
+| **p0699** | 2.44 s | 7.68 s | 1.40 s |
 | **p0700** | <1 µs | <1 µs | 1.4 µs~ |
 
 > ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
