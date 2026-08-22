@@ -107,7 +107,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0897** | 1.30 s | 1.31 s | 140.95 ms |
 | **p0898** | 114.13 ms | 434.07 ms | 5.94 s |
 | **p0899** | 1.0 µs | 392.8 µs | 144.64 ms |
-| **p0900** | — | — | — |
+| **p0900** | 12.91 ms | 336.31 ms | 489.1 µs |
 
 > ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
