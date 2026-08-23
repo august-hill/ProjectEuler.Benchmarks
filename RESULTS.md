@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4151 measured (91.8% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4154 measured (91.9% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 580 of ≤707 problems in scope)
+### Per-Invocation Cost (Common Set, 581 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (580-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (581-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **C++** | 72.22 ms | 1731.57 s | 81,993 | 1.00× |
-| 2 | **Rust** | 72.48 ms | 1649.99 s | 104,277 | 1.00× |
-| 3 | **Go** | 86.73 ms | 2039.27 s | 102,369 | 1.20× |
+| 1 | **C++** | 71.74 ms | 1731.57 s | 82,163 | 1.00× |
+| 2 | **Rust** | 72.32 ms | 1650.01 s | 104,503 | 1.01× |
+| 3 | **Go** | 85.79 ms | 2039.27 s | 102,591 | 1.20× |
 
 ### Speed vs Code Size
 
