@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4221 measured (93.4% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4222 measured (93.4% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
