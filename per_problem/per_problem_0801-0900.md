@@ -15,7 +15,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0805** | — | 27.52 ms | — |
 | **p0806** | — | 220.58 ms | — |
 | **p0807** | — | 4.86 ms | — |
-| **p0808** | ✗ fail | 169.86 ms | — |
+| **p0808** | 15.91 ms | 169.86 ms | — |
 | **p0809** | 23.3 µs | 12.22 ms | 60.34 ms |
 | **p0810** | 9.57 s | 2.00 s | 8.93 s |
 | **p0811** | 79.53 ms | 34.56 ms | 12.38 ms |
@@ -108,8 +108,6 @@ in tier-1 display order (native → managed → interpreted).
 | **p0898** | 114.13 ms | 434.07 ms | 5.94 s |
 | **p0899** | 1.0 µs | 392.8 µs | 144.64 ms |
 | **p0900** | 12.91 ms | 336.31 ms | 489.1 µs |
-
-> ✗ — *process-contract failure* (METHODOLOGY.md §2): the row is recorded as a failure with its reason class (untimed-work / parallel-execution) — there is no path by which a contract-breaking measurement appears as a fast time.
 
 > ~ — *wide spread*: observed samples span more than 3× the reported figure. Since noise here is one-sided and the reported figure is the MINIMUM, a wide spread does not make the number too high — it means the machine was disturbed at some point while that cell was sampled. The threshold is calibrated to the sampling schedule, because observing more samples mechanically widens min..max (METHODOLOGY.md §3b).
 
