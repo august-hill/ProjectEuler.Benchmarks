@@ -92,21 +92,21 @@ in tier-1 display order (native → managed → interpreted).
 | **p0582** | 2.97 ms | 2.84 ms | 1.57 ms |
 | **p0583** | 9.51 s | 4.84 s | 59.42 s |
 | **p0584** | 238.74 ms | 210.31 ms | 924.94 ms |
-| **p0585** | — | 474.82 ms | — |
-| **p0586** | — | 14.42 ms | — |
+| **p0585** | 2.02 s | 474.82 ms | — |
+| **p0586** | 1.43 s | 14.42 ms | — |
 | **p0587** | 26.9 µs | 24.2 µs~ | 44.2 µs |
 | **p0588** | 675.55 ms | 226.8 µs | 160.8 µs |
 | **p0589** | 964.82 ms | 1.82 s | 445.36 ms |
 | **p0590** | 157.26 ms | 276.84 ms | 234.72 ms |
-| **p0591** | — | 2.33 ms | — |
+| **p0591** | 2.99 ms | 2.33 ms | — |
 | **p0592** | 45.35 ms | 1.18 s† | 77.42 ms |
 | **p0593** | 1.80 s | 2.15 s | 2.44 s |
 | **p0594** | 95.67 ms | 101.22 ms | 1.98 ms |
 | **p0595** | 775.4 µs | 803.3 µs | 54.45 ms |
 | **p0596** | 491.29 ms | 463.12 ms | 656.08 ms |
-| **p0597** | — | 47.06 ms | — |
+| **p0597** | 129.16 ms | 47.06 ms | — |
 | **p0598** | 7.08 s | 97.01 s | 1.06 s |
-| **p0599** | — | 397.6 µs | — |
+| **p0599** | 5.74 s | 397.6 µs | — |
 | **p0600** | 231.98 ms | 1.39 s | 967.40 ms |
 
 > ‖ — *parallel-class problem* (METHODOLOGY.md §5): every tier language fields its idiomatic parallel implementation; (×N) is the achieved parallel speedup (CPU time / wall time). These rows are never directly comparable to serial-class rows.
