@@ -76,7 +76,7 @@ The frontier verification trio — C++, Go, Rust — on problems above 300. 3-wa
 
 | Rank | Language | Geomean (624-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 73.64 ms | 1707.68 s | 121,156 | 1.00× |
+| 1 | **Rust** | 73.65 ms | 1707.69 s | 121,162 | 1.00× |
 | 2 | **C++** | 75.45 ms | 1830.59 s | 89,874 | 1.02× |
 | 3 | **Go** | 86.79 ms | 2103.66 s | 113,826 | 1.18× |
 
