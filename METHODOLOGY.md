@@ -161,6 +161,16 @@ published number does not claim precision it does not have.
   source that sample corroboration cannot detect (two equally-slowed samples
   agree with each other), so it must be prevented upstream and made visible
   in the data.
+- **Toolchains are held fixed and recorded.** Every run stores the exact
+  compiler/runtime version string (`runs.compiler`, `run_history.compiler`),
+  and RESULTS.md renders the per-language toolchain table from it. A compiler
+  or runtime upgrade is a **re-bench event**, not a rolling change: bump the
+  toolchains together at a chosen cadence (quarterly is the working rhythm —
+  Rust ships every six weeks, chasing each release would mean a re-bench every
+  six weeks), then re-measure every affected language column in full before
+  the new numbers are compared with anything. If the `runs` table ever holds
+  more than one toolchain for a language, the report flags that column as
+  mixed and its ranking is provisional until the column is re-benched.
 
 ## 5. Concurrency policy: serial-class by default, symmetric parallel-class
 

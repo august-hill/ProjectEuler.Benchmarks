@@ -252,6 +252,27 @@ process, *every* in-process cache starts empty.  No language gets an unfair
 amortization advantage.  No source-code refactoring is required to maintain cross-
 language honesty — the OS enforces it for free.
 
+## Toolchains
+
+Every measurement records the exact compiler/runtime string that produced it
+(`runs.compiler`, also kept per row in `run_history`).  A toolchain bump is a
+**re-bench event**: the affected language column is re-measured in full so the
+table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
+`runs` table:
+
+| Language | Toolchain | Cells | Last measured |
+|----------|-----------|------:|---------------|
+| **ARM64** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
+| **C** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
+| **C++** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 927 | 2026-09-04 |
+| **C#** | `10.0.101` | 200 | 2026-07-30 |
+| **Go** | `go version go1.26.5 darwin/arm64` | 925 | 2026-09-04 |
+| **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
+| **JavaScript** | `v24.18.0` | 200 | 2026-07-30 |
+| **Python** | `Python 3.14.6` | 318 | 2026-08-07 |
+| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1002 | 2026-09-04 |
+| **Zig** | `0.15.2` | 341 | 2026-07-30 |
+
 ## Reproducibility
 
 ```bash
