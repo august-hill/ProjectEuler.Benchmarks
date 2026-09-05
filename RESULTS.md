@@ -32,7 +32,7 @@ the mean; the sum over the same set is shown as a secondary column.  See
 | 2 | **ARM64** | 1.88 ms | 33.92 s | 40,297 | 1.03× |
 | 3 | **C** | 1.91 ms | 22.49 s | 14,524 | 1.04× |
 | 4 | **C++** | 2.08 ms | 22.78 s | 10,369 | 1.14× |
-| 5 | **Rust** | 2.09 ms | 27.47 s | 11,614 | 1.14× |
+| 5 | **Rust** | 2.08 ms | 27.47 s | 11,614 | 1.14× |
 | 6 | **Go** | 2.32 ms | 30.64 s | 13,225 | 1.27× |
 | 7 | **JavaScript** | 4.38 ms | 67.58 s | 9,310 | 2.39× |
 | 8 | **Java** | 5.53 ms | 43.20 s | 10,611 | 3.02× |
@@ -76,7 +76,7 @@ The frontier verification trio — C++, Go, Rust — on problems above 300. 3-wa
 
 | Rank | Language | Geomean (622-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 73.66 ms | 1707.86 s | 120,054 | 1.00× |
+| 1 | **Rust** | 73.63 ms | 1707.50 s | 120,054 | 1.00× |
 | 2 | **C++** | 75.27 ms | 1829.71 s | 89,206 | 1.02× |
 | 3 | **Go** | 86.95 ms | 2103.53 s | 113,127 | 1.18× |
 
