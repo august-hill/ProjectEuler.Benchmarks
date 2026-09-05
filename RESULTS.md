@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4357 measured (96.4% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4358 measured (96.4% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -266,7 +266,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | **C** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
 | **C++** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 929 | 2026-09-04 |
 | **C#** | `10.0.101` | 200 | 2026-07-30 |
-| **Go** | `go version go1.26.5 darwin/arm64` | 926 | 2026-09-04 |
+| **Go** | `go version go1.26.5 darwin/arm64` | 927 | 2026-09-04 |
 | **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
 | **JavaScript** | `v24.18.0` | 200 | 2026-07-30 |
 | **Python** | `Python 3.14.6` | 318 | 2026-08-07 |
