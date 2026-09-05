@@ -25,6 +25,7 @@ Scope:
 
 import json
 import math
+import datetime as _dt
 import sqlite3
 import sys
 from pathlib import Path
@@ -201,6 +202,28 @@ def load_lang_data(lang: str) -> dict:
         return {}
     cur = db.execute("SELECT * FROM runs WHERE lang = ?", (lang,))
     return {row["problem"]: dict(row) for row in cur}
+
+
+def toolchain_summary() -> dict:
+    """Per-lang toolchain provenance from `runs.compiler`.
+
+    Returns {lang: [(compiler_str, cells, last_measured_epoch), ...]} sorted
+    by cell count desc. More than one entry for a lang means the current
+    table mixes toolchain versions — the report flags that, because a
+    toolchain bump is a re-bench event (METHODOLOGY.md §4), not a rolling one.
+    """
+    db = _db()
+    if db is None:
+        return {}
+    cur = db.execute(
+        "SELECT lang, COALESCE(compiler, '(unrecorded)') AS compiler, "
+        "COUNT(*) AS n, MAX(measured_at) AS last FROM runs "
+        "GROUP BY lang, compiler ORDER BY lang, n DESC"
+    )
+    out: dict = {}
+    for row in cur:
+        out.setdefault(row["lang"], []).append((row["compiler"], row["n"], row["last"]))
+    return out
 
 
 def time_ns(entry: dict):
@@ -1492,6 +1515,38 @@ def render_results_md(agg: dict) -> str:
     md.append("amortization advantage.  No source-code refactoring is required to maintain cross-")
     md.append("language honesty — the OS enforces it for free.")
     md.append("")
+    md.append("## Toolchains")
+    md.append("")
+    md.append("Every measurement records the exact compiler/runtime string that produced it")
+    md.append("(`runs.compiler`, also kept per row in `run_history`).  A toolchain bump is a")
+    md.append("**re-bench event**: the affected language column is re-measured in full so the")
+    md.append("table never silently mixes versions (METHODOLOGY.md §4).  Current state of the")
+    md.append("`runs` table:")
+    md.append("")
+    md.append("| Language | Toolchain | Cells | Last measured |")
+    md.append("|----------|-----------|------:|---------------|")
+    tc = toolchain_summary()
+    mixed = []
+    for lang in LANGS:
+        rows = tc.get(lang, [])
+        if not rows:
+            md.append(f"| **{DISPLAY[lang]}** | — | 0 | — |")
+            continue
+        if len(rows) > 1:
+            mixed.append(lang)
+        for i, (comp, n, last) in enumerate(rows):
+            name = f"**{DISPLAY[lang]}**" if i == 0 else ""
+            when = _dt.date.fromtimestamp(last).isoformat() if last else "—"
+            warn = " ⚠️ mixed" if len(rows) > 1 else ""
+            md.append(f"| {name} | `{comp}` | {n} | {when}{warn} |")
+    md.append("")
+    if mixed:
+        md.append("> ⚠️ **Mixed toolchains** in " +
+                  ", ".join(DISPLAY[l] for l in mixed) +
+                  " — those columns contain cells measured under more than one "
+                  "compiler version.  Treat their rankings as provisional until the "
+                  "column is re-benched under a single toolchain.")
+        md.append("")
     md.append("## Reproducibility")
     md.append("")
     md.append("```bash")
