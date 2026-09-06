@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4433 measured (98.1% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4434 measured (98.1% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 664 of ≤707 problems in scope)
+### Per-Invocation Cost (Common Set, 665 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (664-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (665-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 75.32 ms | 1763.10 s | 133,884 | 1.00× |
-| 2 | **C++** | 78.26 ms | 1911.51 s | 97,598 | 1.04× |
-| 3 | **Go** | 87.63 ms | 2135.00 s | 124,663 | 1.16× |
+| 1 | **Rust** | 75.15 ms | 1763.11 s | 134,278 | 1.00× |
+| 2 | **C++** | 78.05 ms | 1911.52 s | 97,867 | 1.04× |
+| 3 | **Go** | 87.64 ms | 2135.10 s | 125,119 | 1.17× |
 
 ### Speed vs Code Size
 
@@ -264,7 +264,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 |----------|-----------|------:|---------------|
 | **ARM64** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
 | **C** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
-| **C++** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 964 | 2026-09-06 |
+| **C++** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 965 | 2026-09-06 |
 | **C#** | `10.0.101` | 200 | 2026-07-30 |
 | **Go** | `go version go1.26.5 darwin/arm64` | 967 | 2026-09-06 |
 | **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
