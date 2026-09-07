@@ -87,7 +87,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0877** | <1 µs | 1.96 s | 1.1 µs~ |
 | **p0878** | 250.37 ms | 77.33 ms | 551.45 ms |
 | **p0879** | 24.73 ms | 24.70 ms | 32.63 ms |
-| **p0880** | 3.57 s† | 374.32 ms | 1.12 s |
+| **p0880** | 3.65 s | 374.32 ms | 1.12 s |
 | **p0881** | 1.26 ms | 291.61 ms | 14.20 ms |
 | **p0882** | 4.03 ms | 3.21 ms | 7.56 ms |
 | **p0883** | 226.33 ms | 562.62 ms | 286.30 ms |
@@ -108,8 +108,6 @@ in tier-1 display order (native → managed → interpreted).
 | **p0898** | 114.13 ms | 434.07 ms | 5.94 s |
 | **p0899** | 1.0 µs | 392.8 µs | 144.64 ms |
 | **p0900** | 12.91 ms | 336.31 ms | 489.1 µs |
-
-> † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
 > ~ — *wide spread*: observed samples span more than 3× the reported figure. Since noise here is one-sided and the reported figure is the MINIMUM, a wide spread does not make the number too high — it means the machine was disturbed at some point while that cell was sampled. The threshold is calibrated to the sampling schedule, because observing more samples mechanically widens min..max (METHODOLOGY.md §3b).
 
