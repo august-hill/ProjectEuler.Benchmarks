@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4506 measured (99.7% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4507 measured (99.7% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 701 of ≤707 problems in scope)
+### Per-Invocation Cost (Common Set, 702 of ≤707 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (701-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (702-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 77.34 ms | 1799.61 s | 145,353 | 1.00× |
-| 2 | **C++** | 82.17 ms | 1980.05 s | 106,639 | 1.06× |
-| 3 | **Go** | 90.78 ms | 2181.56 s | 136,526 | 1.17× |
+| 1 | **Rust** | 77.79 ms | 1804.30 s | 145,884 | 1.00× |
+| 2 | **C++** | 82.38 ms | 1980.52 s | 106,967 | 1.06× |
+| 3 | **Go** | 91.34 ms | 2188.23 s | 136,900 | 1.17× |
 
 ### Speed vs Code Size
 
@@ -270,7 +270,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
 | **JavaScript** | `v24.18.0` | 200 | 2026-07-30 |
 | **Python** | `Python 3.14.6` | 318 | 2026-08-07 |
-| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1002 | 2026-09-04 |
+| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1003 | 2026-09-11 |
 | **Zig** | `0.15.2` | 341 | 2026-07-30 |
 
 ## Reproducibility
