@@ -10,3 +10,11 @@ updates:
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 10
+
+  # report.py (and archive/legacy/) import matplotlib and numpy; requirements.txt
+  # declares them so the dependency graph and Dependabot can see them.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 10
