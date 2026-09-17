@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4513 measured (99.8% coverage).**
+> **Scope: 4521 in-scope cells across 1007 problems × tiered languages — 4514 measured (99.8% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -270,7 +270,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
 | **JavaScript** | `v24.18.0` | 200 | 2026-07-30 |
 | **Python** | `Python 3.14.6` | 318 | 2026-08-07 |
-| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1004 | 2026-09-12 |
+| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1005 | 2026-09-17 |
 | **Zig** | `0.15.2` | 341 | 2026-07-30 |
 
 ## Reproducibility
