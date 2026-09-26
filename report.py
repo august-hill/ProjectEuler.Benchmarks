@@ -69,7 +69,7 @@ _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
 # Display cap: max(t2_hi, 1007) covers PE's full published range (PE reached
 # #1007 in 2026-07) so coverage % reckons against the true universe.
-_DISPLAY_HI = max(_T2_HI, 1007)
+_DISPLAY_HI = max(_T2_HI, 1010)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
 # idiomatic-parallel by policy and get a distinct marker in every table where

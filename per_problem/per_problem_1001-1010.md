@@ -1,4 +1,4 @@
-# Per-Problem Detail — Problems 1001–1007 (Frontier, 3 langs)
+# Per-Problem Detail — Problems 1001–1010 (Frontier, 3 langs)
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
@@ -15,5 +15,8 @@ in tier-1 display order (native → managed → interpreted).
 | **p1005** | 761.1 µs | 1.22 ms | 1.35 ms |
 | **p1006** | 15.16 ms | 15.10 ms | 86.45 ms |
 | **p1007** | 2.27 s | 2.51 s | 2.81 s |
+| **p1008** | — | 857.50 ms | 861.41 ms |
+| **p1009** | — | — | — |
+| **p1010** | — | — | — |
 
 ⬅ [Back to RESULTS](../RESULTS.md)
