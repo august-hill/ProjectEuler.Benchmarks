@@ -1344,8 +1344,13 @@ def render_results_md(agg: dict) -> str:
     md.append("- 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)")
     md.append("- 🔴 **Red** — fail (wrong answer, build error, timeout)")
     md.append("- ⚫ **Black** — missing entry (no measurement)")
-    md.append("- **`*`** — *partial measurement* (single sample; suite standard is "
-              "magnitude-adaptive sampling per METHODOLOGY.md §3b)")
+    # Legend line only when a partial (single-sample) cell exists — same test as
+    # the per-problem tables, so the legend never describes a marker nobody sees.
+    if any(s is not None and s < 2
+           for a in agg.values() if isinstance(a, dict)
+           for s in a.get("per_problem_samples", {}).values()):
+        md.append("- **`*`** — *partial measurement* (single sample; suite standard is "
+                  "magnitude-adaptive sampling per METHODOLOGY.md §3b)")
     md.append("")
     md.append("![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)")
     md.append("")

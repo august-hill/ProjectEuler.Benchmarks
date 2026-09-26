@@ -97,7 +97,6 @@ invocation-isolation + answer-correctness audit and how fast it runs:
 - 🟤 **Burnt orange** — pass ≥ 10 s (serious algorithm — multi-second computation)
 - 🔴 **Red** — fail (wrong answer, build error, timeout)
 - ⚫ **Black** — missing entry (no measurement)
-- **`*`** — *partial measurement* (single sample; suite standard is magnitude-adaptive sampling per METHODOLOGY.md §3b)
 
 ![Coverage + Speed Heatmap](charts/per_iter_coverage_grid.png)
 
