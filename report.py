@@ -668,6 +668,10 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     if n_bands == 1:
         axes = [axes]
 
+    # Cells per color, tallied as drawn — the legend shows each count so a
+    # glance confirms "fail 0 · missing 0" without scanning the grid.
+    color_counts = {}
+
     for band_i, ax in enumerate(axes):
         band_probs = bands[band_i]
         band_langs = bands_langs[band_i]
@@ -681,9 +685,11 @@ def render_coverage_grid_chart(agg: dict) -> Path:
                 st = agg[lang]["grid_status"][p]
                 ns = agg[lang]["grid_ns"][p]
                 s = agg[lang]["grid_samples"][p]
+                color = cell_color(st, ns)
+                color_counts[color] = color_counts.get(color, 0) + 1
                 ax.add_patch(plt.Rectangle(
                     (ci, n_band_langs - 1 - ri), 1, 1,
-                    facecolor=cell_color(st, ns),
+                    facecolor=color,
                     edgecolor="white", linewidth=0.6,
                 ))
                 # (cell markers intentionally OFF for this experiment —
@@ -718,7 +724,8 @@ def render_coverage_grid_chart(agg: dict) -> Path:
     # Single legend at the bottom of the whole figure.
     from matplotlib.patches import Patch
     legend_patches = [
-        Patch(facecolor=c, edgecolor="black", linewidth=0.4, label=lbl)
+        Patch(facecolor=c, edgecolor="black", linewidth=0.4,
+              label=f"{lbl}  ({color_counts.get(c, 0):,})")
         for c, lbl in LEGEND_ITEMS
     ]
     fig.legend(handles=legend_patches, loc="lower center",
