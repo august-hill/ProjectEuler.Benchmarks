@@ -1,136 +1,111 @@
 # Project Euler — Cross-Language Benchmarks
 
-**Per-invocation cost of solving Project Euler problems in 10 programming languages.**
+**What does it cost to solve a Project Euler problem, from a fresh process, in
+ten different languages?**
 
-Solutions written by [Claude](https://claude.ai) (Opus + Sonnet) across C, C++,
-Rust, Go, Zig, Java, C#, JavaScript, Python, and ARM64 Assembly.  Benchmarked on
-Apple Silicon.  See [JOURNEY.md](JOURNEY.md) for the full story — including the
-reset from 200+ problems back to a verified 10×10 core and the disciplined
-expansion since.
+This repo is the public face of a long-running experiment: every Project Euler
+problem from 1 to 1010, solved by [Claude](https://claude.ai) and benchmarked on
+one fixed Apple Silicon machine across **C, C++, Rust, Go, Zig, Java, C#,
+JavaScript, Python and ARM64 assembly**. The solutions live in ten private
+repos; this repo carries the method, the measurements (rendered, never raw) and
+the story of how it was built.
 
 ![Per-Invocation Cost — Foundation](charts/per_iter_total.png)
 
-## Current scope: tiered 3-tier model
+## Where things stand (2026-09-26)
 
-The suite uses an explicit **tier model** — different languages cover different
-problem ranges, so cross-language comparisons stay apples-to-apples within each
-tier.  Live definitions in [`data/tiers.json`](data/tiers.json).
+| Tier | Problems | Languages | Coverage |
+|------|----------|-----------|----------|
+| **Foundation** | 1–200 | all 10 | 200/200 in every language |
+| **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | 100/100 in each |
+| **Frontier** | 301–1010 | C++, Go, Rust | 709/710 — every problem PE has published but one |
 
-| Tier | Problem range | Languages in scope | Role |
-|------|---------------|---------------------|------|
-| **Foundation** | 1–200 | All 10 (ARM64, C, C++, C#, Go, Java, JS, Python, Rust, Zig) | Apples-to-apples 10-language comparison — the headline ranking |
-| **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | Deeper comparison among the 4 languages that intentionally extend past 200 |
-| **Frontier** | 301+ | C++, Go, Rust | Exploration zone — 3-way C++/Go/Rust verification trio on unexplored problems |
+- **Every frontier problem is solved three times, independently.** Separate
+  C++, Go and Rust solvers work from the problem statement alone, never seeing
+  each other's code or answers; the three answers are compared only afterwards.
+  Agreement is the verification — nothing is submitted to Project Euler.
+- **All ~4,700 cells were re-measured on 2026-09-25/26** after a coordinated
+  toolchain upgrade, so every language column is on a single, recorded
+  compiler/runtime version (see the Toolchains table in
+  [RESULTS.md](RESULTS.md)).
+- **Headline ranking** (Foundation tier, geometric mean over the 200 shared
+  problems): Zig, ARM64, C, C++, Rust and Go cluster within ~30% of each other;
+  JavaScript, Java and C# follow at roughly 2.5–3.5× the leader; Python trails
+  at ~10×. Full tables and per-tier rankings are in [RESULTS.md](RESULTS.md).
 
-Foundation problems are the apples-to-apples cross-language comparison surface.
-Deep Coverage extends 4 of those languages to harder problems; the other 6 are
-intentionally capped at 200 to keep the 10-language story clean.  Frontier work
-ships as paired C++/Go/Rust implementations — 3-way agreement is the
-verification protocol (see [JOURNEY.md](JOURNEY.md)).
+## How it works, in one paragraph
 
-**See [RESULTS.md](RESULTS.md)** for per-tier rankings and the tier-aware coverage
-heatmap, and [METHODOLOGY.md](METHODOLOGY.md) for the normative methodology
-(metric, sampling, process-contract enforcement, concurrency policy, rankings).  Per-problem detail tables live under
-[`per_problem/`](per_problem/), one page per 100-problem band.
+Each (language, problem) cell is compiled, then run as a **fresh OS process**
+several times — more samples for cheap, noisy programs, fewer for expensive,
+stable ones — and the **minimum** is reported, because timing noise on a
+single machine only ever adds time. Every sample is checked against the
+expected answer, and a process-contract gate rejects runs that hide work
+outside the timer or quietly use more than one core. Toolchains and
+third-party libraries are held fixed and upgraded together, once a quarter,
+followed by a full re-bench. The normative details are in
+[METHODOLOGY.md](METHODOLOGY.md).
 
-## What we measure
+## Read more
 
-One thing: **how long does it take to run, from a fresh OS process**.
-
-For each (language, problem):
-
-1. Build the binary.
-2. Run it 10 times, each in a fresh `fork` + `exec` invocation.
-3. Compare the answer against the canonical (each source file's `// Answer:`
-   header comment).  Abort on mismatch.
-4. Report the median wall time across the 10 runs.
-
-This matches what a real CLI user, cron job, or shell-loop invocation pays.  It
-doesn't reward language-internal caches (Rust `OnceLock`, primesieve internal
-state, `@lru_cache`) that disappear at process exit anyway — the OS clears them
-between invocations, so each language is honestly measured at its actual
-per-invocation cost.
-
-## What we don't measure (and why)
-
-- **In-process warm iterations.**  A "1000 iterations in a tight loop" metric is
-  meaningful for server / daemon scenarios, but those are a different question
-  with different right answers.  See [JOURNEY.md](JOURNEY.md) — particularly the
-  "From In-Process Warm to Process-Per-Iteration" chapter — for the full
-  reasoning behind retiring that metric.
-- **Compile time as a headline number.**  Build cost is real but in our model
-  the binary is built once and invoked many times.  Recorded as diagnostic data,
-  not part of the ranking.
+| Document | What's in it |
+|----------|--------------|
+| [RESULTS.md](RESULTS.md) | Per-tier rankings, the coverage heatmap, the toolchain table |
+| [per_problem/](per_problem/) | Timing detail for every problem, one page per 100-problem band |
+| [METHODOLOGY.md](METHODOLOGY.md) | The normative spec: metric, sampling rule, process-contract gate, concurrency policy, environment and toolchain policy |
+| [JOURNEY.md](JOURNEY.md) | The story — the reset to a verified core, the harness rewrites, the gates that measured the weather, the independence campaign, and what LLM-driven development taught us along the way |
 
 ## Reproducibility
 
 ```bash
 cd benchmarks
 
-# Foundation tier (all 10 langs, 1-200) — the apples-to-apples surface
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-200 --iters 10 --write
+# Bench one language over a problem set (writes the private SQLite store)
+cmd/euler-bench/euler-bench per-iter --lang rust --problems 1-200 --write
 
-# Deep Coverage tier (4 langs, 201-300) — language extension
-cmd/euler-bench/euler-bench per-iter --lang cpp,go,python,rust,zig --problems 201-300 --iters 10 --write
+# Sequential multi-language run with streaming logs
+python3 scripts/run_bench.py --problems 1-25 --langs cpp,go,rust
 
-# Frontier tier (3 langs, 301+) — C++/Go/Rust verification trio on unexplored work
-cmd/euler-bench/euler-bench per-iter --lang cpp,go,rust --problems 301-500 --iters 10 --write
+# Full re-bench after a toolchain upgrade: one language at a time, each over
+# an explicit list of the cells it actually has
+python3 scripts/rebench_all.py LISTS.json
 
-# Regen RESULTS.md + per-band detail pages + all charts (PNG + SVG)
+# Regenerate RESULTS.md, per-band pages and all charts
 python3 report.py
 ```
 
 The Go tool ([`cmd/euler-bench/`](cmd/euler-bench/)) is the single source of
-truth for measurement — one binary builds, runs, validates answers, and writes
-sanitized data atomically.  No flock, no hook chain, no per-language scripts.
-`report.py` consumes [`data/tiers.json`](data/tiers.json) via the shared
-[`scripts/tiers.py`](scripts/tiers.py) helper, so changing the tier model is a
-config edit, not a code refactor.
+truth for measurement: one binary builds, runs, validates answers and writes
+results atomically. `report.py` reads the tier model from
+[`data/tiers.json`](data/tiers.json), so changing tiers is a config edit.
 
 ## Trust + safety
 
-This repo is **public**; the lang repos are **private**.  Per the project's
-[PE compliance rules](CLAUDE.md), **the public repo carries no raw bench data
-at all** — only rendered narrative (RESULTS.md, JOURNEY.md, this README,
-per-band detail pages) and charts.  All measurements (including answer values)
-live in the gitignored SQLite SSOT `data/bench-private.db`.
-
-This is a structural invariant, not a field-stripping discipline: leak
-prevention is enforced at the file-system boundary by `.gitignore` plus a
-pre-commit hook ([`scripts/sanitization_gate.py`](scripts/sanitization_gate.py))
-that rejects any staged file under `data/` not on the small config allowlist
-(`tiers.json`, `parked.json`, `difficulty.json`, `levels.json`).
+This repo is **public**; the language repos are **private**. Project Euler's
+[publishing policy](https://projecteuler.net/about#publish) restricts solution
+discussion above problem 100, so this repo carries **no raw bench data at all** —
+only rendered tables, narrative and charts. Answers live solely in the
+gitignored SQLite store `data/bench-private.db`, and a pre-commit hook
+([`scripts/sanitization_gate.py`](scripts/sanitization_gate.py)) rejects any
+staged data file outside a small config allowlist. Narrative about problems
+above 100 stays at the level of process — never answers, techniques or hints.
 
 ## Repo layout
 
 | Path | What |
 |------|------|
-| `RESULTS.md` | Per-tier rankings, coverage heatmap, methodology |
-| `per_problem/per_problem_*.md` | Per-band timing detail tables (one page per 100-problem band) |
-| `JOURNEY.md` | The story — how we got here, what we learned, what we tried that didn't work |
-| `cmd/euler-bench/` | The Go bench + write tool (`run`, `failures`, `status`, `per-iter`) — single SSOT writer |
-| `report.py` | Markdown + chart generator (reads SQLite SSOT, writes `RESULTS.md` + `per_problem/*` + `charts/`) |
-| `data/bench-private.db` | SQLite SSOT (gitignored) — `runs` + `run_history` tables |
-| `data/tiers.json` | Tier model SSOT — which languages are in scope for which problem range |
-| `data/{parked,difficulty,levels}.json` | Other config (parked problems, PE-site metadata) |
-| `scripts/tiers.py` | Shared tier helper — `load_tiers`, `langs_in_tier`, `in_scope`, etc. |
-| `scripts/sanitization_gate.py` | Pre-commit hook: rejects any raw bench data file outside the config allowlist |
-| `charts/per_iter_total.png` | Foundation per-invocation total (10 langs over the common set) |
-| `charts/per_iter_total_tier2.png` | Deep Coverage per-invocation total (4 langs over the tier-2 common set) |
-| `charts/per_iter_speed_vs_size.png` | Foundation speed vs source lines |
-| `charts/per_iter_speed_vs_size_tier2.png` | Deep Coverage speed vs source lines |
-| `charts/per_iter_coverage_grid.png` | Tier-aware coverage heatmap (variable bands × variable lang rows) |
-| `archive/legacy/` | Pre-2026-05-23 site (three-mode-report era + per-tier coverage) — historical reference only |
+| `README.md`, `RESULTS.md`, `METHODOLOGY.md`, `JOURNEY.md` | Overview, results, spec, story |
+| `per_problem/per_problem_*.md` | Per-band timing detail (one page per 100 problems) |
+| `charts/` | Rankings, speed-vs-size scatters and the coverage heatmap, per tier (PNG + SVG) |
+| `cmd/euler-bench/` | The Go bench tool — the only writer of measurements |
+| `report.py` | Markdown + chart generator (reads the SQLite store) |
+| `scripts/run_bench.py`, `scripts/rebench_all.py` | Streaming multi-language bench orchestrators |
+| `scripts/tiers.py`, `scripts/sanitization_gate.py` | Tier helper; pre-commit leak gate |
+| `data/tiers.json`, `data/{parked,difficulty,levels,parallel}.json` | Config: tier model, parked problems, PE metadata, parallel-class list |
+| `data/bench-private.db` | The SQLite store (gitignored) — `runs` + `run_history` |
+| `archive/legacy/` | The pre-2026-05-23 site — historical reference only |
 
 ## License + contact
 
-Project Euler problems and answers belong to Project Euler.  Per their
-[publishing policy](https://projecteuler.net/about#publish), solution discussion
-above problem 100 is restricted.  This repo strictly observes that boundary —
-machine-readable answer values appear in *no* public file regardless of problem
-number.  Discussion in MDs (story, methodology, scope explanations) follows the
-≤100 rule.
-
-Solutions were generated and audited by [Claude](https://claude.ai).  Methodology
-discussion + the open question of what we should add next live in the GitHub
-issues of the public repo.
+Project Euler problems and answers belong to Project Euler. Solutions were
+generated and audited by Claude (Opus, Sonnet and Fable models) under human
+direction. Methodology discussion and suggestions are welcome as GitHub issues.

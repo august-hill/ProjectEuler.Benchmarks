@@ -1128,8 +1128,8 @@ the 60+ min that ran into the harness ceiling.
 **Surfacing real source-header bugs:** Round 4 also revealed two genuine
 correctness regressions that the old warm-bench harness never noticed —
 C p151 and C p199. Both are scale-encoded decimal-answer problems where the
-`// Answer:` source header was written as the decimal form (`0.123456`)
-rather than the encoded integer form the code actually returns (`123456`).
+`// Answer:` source header was written as the decimal form (`0.xxxxxx`)
+rather than the scaled integer form the code actually returns (`xxxxxx`).
 The new fresh-process bench's strict canonical comparison correctly rejects
 these with `status='fail'`. The other 5 incomplete langs likely have the
 same bug at the same problems — predictable cross-lang signature, fixable
@@ -1660,3 +1660,170 @@ or too loose; it was that we were reading a clock (`wall`) that bundles the sign
 with a load-driven confound. The remedy was not a better threshold on the wrong
 observable but the *right* observable: the one that moves with the thing you care
 about and stays still for everything else. Measure the thing, not its shadow.
+
+## Episode: The minimum, not the median (2026-07-25)
+
+For months every cell was measured the same way: run it twice, accept if the two
+runs agreed within 5%, otherwise take a third and report the median. It looked
+careful. It was — for programs that run for seconds. Below about ten
+milliseconds it was quietly wrong.
+
+The evidence came from the data itself. Across 3,670 passing rows, the spread
+between a cell's fastest and slowest sample grew steadily as programs got
+cheaper: under 2% for anything over a second, 17% at 10–100 ms, 36% between
+10 µs and 1 ms, and over 50% below 10 µs. Timing noise on one machine is
+roughly *additive* — process spawn, first-exec code-signature checks, scheduler
+jitter, timer granularity — so the same few hundred microseconds of noise that
+vanish against a two-second run swamp a fifty-microsecond one. And two samples
+drawn from a long-tailed distribution can agree with each other perfectly while
+both sitting far above the true cost. Agreement was not evidence of
+convergence; at the cheap end it was mostly luck.
+
+Two changes followed, both now in METHODOLOGY.md §3:
+
+- **Sample by magnitude.** A cell gets as many fresh-process samples as its cost
+  warrants — fifteen under a millisecond, down to two at a second and above —
+  inside a 90-second per-cell budget. Cheap cells finally get enough draws; the
+  multi-second tail stops paying for a third run it never needed. The whole
+  pass got *faster* (about 26 minutes) while getting more accurate.
+- **Report the minimum.** Because the noise only ever *adds* time, the fastest
+  observed run is the best estimate of what the program actually costs. The
+  median answers "what does a typical noisy run look like," which is a question
+  about the machine, not the language.
+
+### Methodology lesson
+
+A statistic has to match the shape of the noise. Median and mean assume noise
+that scatters both ways; one-sided noise wants the minimum. We had a rule that
+was right where we'd tested it and wrong where we hadn't looked — and the fix
+came from measuring our own measurements across thousands of rows, not from
+reasoning about any one of them.
+
+## Episode: Three strangers agree — the independence campaign (2026-08 → 2026-09)
+
+Above problem 300 the suite covers only C++, Go and Rust, and there was a
+problem with how many of those cells came to exist: often one language solved a
+problem and the other two were *ported* from it. A port that agrees with its
+source proves the port is faithful — it proves nothing about whether the answer
+is right. Three copies of one derivation are one witness, not three.
+
+So in August the rule changed: **every frontier cell is written by an
+independent solver that has seen only the problem statement.** Each problem gets
+three separate workers — one per language — that never see each other's code,
+notes or answers. Answers are compared only after all three have reported.
+Agreement is then real evidence; disagreement is a finding, settled by a
+definition-level brute force rather than by a fourth clever solution.
+
+Isolation turned out to be an engineering problem in its own right. Each worker
+runs under an explicit allowlist of paths, and the places an answer can leak
+from kept multiplying:
+
+- the private bench database (it stores every answer, so a routine timing query
+  reads the answer sideways);
+- held-back folders of earlier failed attempts, and old scratch directories;
+- the orchestrating session itself, which must not paste a sibling's result — or
+  even a hint about its size — into the next worker's brief;
+- and, as the next episode tells, the orchestrator's own memory.
+
+The briefs themselves needed discipline. An orchestrator trying to be helpful
+tends to add "structural notes" — *this is really the classical X*, *the answer
+will be huge*, *you'll want data structure Y*. Every one of those that turned
+out wrong was an **assertion**; every one that helped was a **warning** ("the
+modulus is composite, so don't assume inverses"; "floating point will betray
+you here"). The rule that emerged: state anchors bare, phrase any hunch as
+"candidate — verify before trusting," and otherwise let the solver derive the
+structure itself.
+
+By late August the campaign had produced 340 consecutive unanimous problems. By
+mid-September every published problem from 301 to 1007 was a full independent
+trio, with a handful of deliberate exceptions held for cause.
+
+### Methodology lesson
+
+Verification by agreement is only as strong as the independence of the parties.
+The expensive part of independence isn't writing three solutions — it's
+auditing every channel through which the third solver might learn what the
+first two found.
+
+## Episode: The last hard problem, and the leak in the orchestrator's memory (2026-09)
+
+One frontier problem — p761 — resisted everything. Independent workers across
+several models ran for hours, built partial models that reproduced the
+problem's own worked examples to a few digits, and honestly reported that they
+could not reach the required eight. Go eventually got there after four resumed
+sessions; Rust followed. C++ had to be filled with a *port* to complete the
+trio, and the port was flagged as exactly what the previous episode warned
+against: one witness wearing two coats.
+
+The fix was supposed to be simple: one more independent C++ attempt. Instead it
+exposed a leak nobody had audited. The orchestrating session keeps a small
+persistent memory index — and that index is **automatically loaded into every
+worker it spawns**. One line in it recorded the Go/Rust answer for p761. Every
+allowlist in every brief had been correct; the answer arrived before the brief
+did.
+
+A worker caught it. Briefed that seeing a sibling answer would make its cell
+worthless, it noticed the number in its own startup context and stopped before
+doing any work. The index was scrubbed — and the next worker stopped for the
+same reason. The subtle part: spawned workers receive a *snapshot* of the index
+taken when the orchestrating session began, not the current file. Editing the
+file fixed every future session and none of the current one's workers. The
+independent attempt had to be relaunched from a brand-new session, which loaded
+the clean index — and there it succeeded, building on the notes of the attempts
+that had failed before it. The same week, the three newest problems (1008–1010)
+went from statement to verified trio in about two minutes per solver.
+
+### Methodology lesson
+
+Isolation has to cover what a worker *starts with*, not just what it can open.
+The allowlist governed file access; the leak rode in through context the
+platform injected before the first instruction. The rule now: answers never go
+in anything that is auto-loaded, and any scrub is followed by a fresh session,
+because a running session cannot un-see what it loaded at birth.
+
+## Episode: The quarterly toolchain round (2026-09-25/26)
+
+The toolchain policy says compilers move together, once a quarter, followed by a
+full re-bench. This round started with an upgrade nobody had asked for: an
+operating-system tooling update changed the C/C++ compiler's *build* while
+leaving its version number untouched — both builds report as clang 21.0.0.
+Because every row records the full version string, the report caught the drift
+anyway, and C, C++ and ARM64 measurements were held until the whole suite could
+move at once.
+
+The round itself: Rust 1.95 → 1.98, Go 1.26 → 1.27, the new clang build, Java 21
+→ 25 (the new LTS), and patch releases of Python, Node and .NET. Zig stayed
+pinned at 0.15 on purpose — its next release is a language migration, not a
+version bump.
+
+Two habits paid for themselves:
+
+- **A small trial first.** Problems 1–25 in all ten languages took five
+  minutes and gave a free calibration: Zig's toolchain *hadn't changed*, yet its
+  numbers moved 11% — so on these tiny problems anything inside ±10% is noise.
+  By that yardstick only one language had genuinely moved.
+- **A script, not a model, runs the benchmark.** The full re-bench — 4,686 cells,
+  one language at a time — ran for 6.4 hours as a detached process. The
+  orchestrating model slept, woke when each language finished, and did real
+  work only twice: when one C++ cell stopped compiling because the new standard
+  library dropped a non-standard internal it had relied on, and when a cell
+  sitting just under its time budget tipped over once and passed on re-run.
+
+The result was reassuringly dull. Across every language and every size band,
+the median new-to-old ratio sat between 0.96 and 1.01 — the upgrades changed
+essentially nothing — with one exception: the new Node release added a small
+fixed cost per process, slowing sub-millisecond JavaScript cells by about 22%
+and larger ones by 1–3%.
+
+The round also closed a gap in the policy. The report records compilers, but
+some C++ cells link third-party libraries and the Python cells use numpy — and
+a library upgrade would shift timings without tripping the mixed-toolchain
+flag. Library versions are now pinned and tracked alongside the compilers
+(METHODOLOGY.md §4).
+
+### Methodology lesson
+
+Record the full identity of everything that can move a number, then change
+those things deliberately, together, and on a schedule. The drift that almost
+slipped through was the one with no version bump; the gap that remained was the
+dependency nobody had thought of as a toolchain.

@@ -67,9 +67,11 @@ _TIERS = load_tiers()
 # the grid and excludes it from per-lang totals.
 _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
-# Display cap: max(t2_hi, 1007) covers PE's full published range (PE reached
-# #1007 in 2026-07) so coverage % reckons against the true universe.
-_DISPLAY_HI = max(_T2_HI, 1010)
+# PE_MAX = highest problem PE has published. The ONE number to bump when PE
+# publishes more (1010 as of 2026-09-25). Both the stats/coverage scope and the
+# coverage grid derive from it, so they cannot drift apart by accident.
+PE_MAX = 1010
+_DISPLAY_HI = max(_T2_HI, PE_MAX)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
 # idiomatic-parallel by policy and get a distinct marker in every table where
@@ -110,12 +112,11 @@ def allowance_ns(lang: str) -> int:
     return _ALLOWANCE_NS.get(lang, 250_000_000)
 SCOPE_PROBLEMS = [f"{i:04d}" for i in range(1, _DISPLAY_HI + 1)]
 
-# Coverage-grid display range — deliberately DECOUPLED from _DISPLAY_HI. The grid is a
-# full-PE-range landscape map (extended to 1000 once PE crossed #999, 2026-06; 1005 and then
-# 1007 as PE published more, 2026-07); the report's stats/coverage scope (_DISPLAY_HI) stays
-# at its audited ceiling. A solved problem above _DISPLAY_HI therefore shows as a cell on the
-# grid but is NOT folded into per-lang totals, coverage %, or tier denominators (just a map).
-_GRID_HI = 1007
+# Coverage-grid display range. Defaults to PE_MAX (the full published range). It MAY be set
+# above _DISPLAY_HI to map newly published problems before their stats are audited; a cell
+# above _DISPLAY_HI shows on the grid but is not folded into totals, coverage %, or tier
+# denominators. (Until 2026-09 this was a separate hardcoded 1007 and silently lagged.)
+_GRID_HI = PE_MAX
 GRID_PROBLEMS = [f"{i:04d}" for i in range(1, _GRID_HI + 1)]
 
 # Languages — used for data loading and the total-cost bar chart.  Alphabetic
