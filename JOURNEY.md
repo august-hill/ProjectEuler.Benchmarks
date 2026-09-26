@@ -1827,3 +1827,41 @@ Record the full identity of everything that can move a number, then change
 those things deliberately, together, and on a schedule. The drift that almost
 slipped through was the one with no version bump; the gap that remained was the
 dependency nobody had thought of as a toolchain.
+
+## Episode: The problem that was filed as impossible (2026-09-26)
+
+One problem, p693, had sat outside the suite since July with a note that read
+like a closed case. The C++ solve was correct — it reproduced both of the
+statement's worked values — but it swept every (index, value) state, a
+quadratic space, and at full scale would need about 3.6 hours against a
+10-minute budget. Two shortcuts were tried and ruled out, and the note
+concluded: intractable, not a language problem, don't re-optimize. In August a
+Rust solve reached the same wall, faster but still hours, and reaffirmed the
+verdict.
+
+The verdict was wrong, and it took one sentence of doubt to find out. Asked
+whether some piece of math was missing, the orchestrating session stopped
+arguing about the total work and looked at the thing actually being asked for:
+a *maximum* over starting points. A fifteen-second probe at small scale — printing the per-start
+quantity and looking for pattern rather than cost — revealed structure in
+*which* start wins that the earlier analysis had never examined. It collapsed
+the search from every state to a few hundred cheap checks; full scale fell from
+hours to about ten seconds.
+
+The first C++ and Rust versions of the new method were a port, one witness
+again. So a fresh Go worker was given only the statement, its two worked
+values, and the fact that the naive method takes hours — no answer, no code,
+no verdict. It found a *different* sub-quadratic method, built on a provable
+pruning bound rather than the same structure, and agreed with the answer exactly. It also
+corrected an example value the orchestrator had misremembered in its brief.
+The problem closed the suite's last open cell: 4,530 of 4,530.
+
+### Methodology lesson
+
+"This is intractable" is a hypothesis, and it should be written down as one:
+what was measured, which routes were ruled out and why, and which questions
+were never asked. Stored as a directive, the verdict outlived the evidence —
+each later session inherited the conclusion instead of the open question. And
+the size of a state space is not the cost of an answer: when the target is a
+maximum, the useful question is how the winner depends on the input, not how
+much work it takes to visit everything.
