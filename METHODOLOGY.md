@@ -171,6 +171,22 @@ published number does not claim precision it does not have.
   the new numbers are compared with anything. If the `runs` table ever holds
   more than one toolchain for a language, the report flags that column as
   mixed and its ranking is provisional until the column is re-benched.
+- **Third-party libraries are part of the toolchain.** `runs.compiler`
+  records only the compiler/runtime string, so a library upgrade changes
+  timings without tripping the mixed-toolchain flag. Libraries therefore move
+  only in the same quarterly round, and this table is the record:
+
+  | Library | Used by | Version | Held by |
+  |---|---|---|---|
+  | Boost (headers) | C++ (15 cells) | 1.90.0 | `brew pin boost` |
+  | primesieve | C++ (4 cells) | 12.14 | `brew pin primesieve` |
+  | numpy | Python (85 cells) | 2.5.3 | pip, in Homebrew Python's site-packages |
+  | num-bigint / num-traits / num-integer / num-rational, primal | Rust | per crate | each cell's committed `Cargo.lock` |
+
+  Quarterly round: `brew unpin boost primesieve`, upgrade libraries together
+  with the compilers, update this table, re-pin, then re-bench the affected
+  columns in full. Rust crates move only when a cell's `Cargo.lock` is
+  deliberately updated (Dependabot PRs included), and that cell is re-benched.
 
 ## 5. Concurrency policy: serial-class by default, symmetric parallel-class
 
