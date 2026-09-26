@@ -60,7 +60,9 @@ Before any `git push origin main` that updates **RESULTS.md** or **charts/*.png*
 
 ## History notes
 
-**2026-04-18 cleanup (commit `2a24766`)**: stripped answers and technique mentions for problems >100 from the live tree. Pre-`2a24766` git history was NOT rewritten — the trade-off was accepted because archaeology is unlikely. That pre-`2a24766` history still contains pre-cleanup data.
+**2026-04-18 cleanup (commit `2a24766`)**: stripped answers and technique mentions for problems >100 from the live tree. Pre-`2a24766` git history was NOT rewritten at the time — superseded by the 2026-09-26 full rewrite below.
+
+**2026-09-26 full history rewrite**: a scan of EVERY blob in history against every >100 answer in the private DB found 169 distinct leaked answers — almost all in the retired per-language `data/<lang>.json` + `data/answers.json` files (pre-2026-05-25), plus 4 values in code comments / a usage string / JOURNEY / an old README that the data-only gate never covered. `git filter-repo` removed those 12 data files from all history and replaced the 4 strings; the re-scan found 0. All commit hashes changed (other clones must re-clone); stale Dependabot branches were deleted so no old commit stays reachable. Pre-rewrite history is preserved OFFLINE only, in a bundle outside this repo. Going forward, scan every tracked text file (comments and usage strings included) against all >100 answers before any push.
 
 **2026-05-09 sanitization-regression rewrite**: a refresh commit (former `dcf10e5`) mistakenly republished `data/*.json` with `"answer"` fields for problems >100 — ~891 leaked values were live for ~30 minutes before detection. History was rewritten via reset + clean recommit + force-push: the bad SHA was replaced by a sanitized equivalent. The leak likely persists in: GitHub's object database (~90 days until garbage collection), GitHub Search index until next reindex, and the GitHub Archive Project's daily snapshot. Going forward, the pre-commit ritual in `feedback_pe_data_sanitization.md` (in author's auto-memory) is mandatory before any `data/*.json` change.
 
