@@ -16,7 +16,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p1006** | 15.16 ms | 15.10 ms | 86.45 ms |
 | **p1007** | 2.27 s | 2.51 s | 2.81 s |
 | **p1008** | — | 857.50 ms | 861.41 ms |
-| **p1009** | — | — | — |
+| **p1009** | — | 140.9 µs | 531.4 µs |
 | **p1010** | — | — | — |
 
 ⬅ [Back to RESULTS](../RESULTS.md)
