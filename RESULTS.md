@@ -1,6 +1,6 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4530 in-scope cells across 1010 problems × tiered languages — 4522 measured (99.8% coverage).**
+> **Scope: 4530 in-scope cells across 1010 problems × tiered languages — 4527 measured (99.9% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
@@ -28,16 +28,16 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 | Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.83 ms | 24.11 s | 13,474 | 1.00× |
-| 2 | **ARM64** | 1.88 ms | 33.92 s | 40,297 | 1.03× |
-| 3 | **C** | 1.91 ms | 22.49 s | 14,524 | 1.04× |
-| 4 | **C++** | 2.08 ms | 22.78 s | 10,369 | 1.14× |
-| 5 | **Rust** | 2.08 ms | 27.47 s | 11,614 | 1.14× |
-| 6 | **Go** | 2.32 ms | 30.64 s | 13,225 | 1.27× |
-| 7 | **JavaScript** | 4.38 ms | 67.58 s | 9,310 | 2.39× |
-| 8 | **Java** | 5.53 ms | 43.20 s | 10,611 | 3.02× |
-| 9 | **C#** | 6.60 ms | 38.58 s | 11,019 | 3.61× |
-| 10 | **Python** | 18.21 ms | 340.71 s | 8,561 | 9.95× |
+| 1 | **Zig** | 1.83 ms | 23.82 s | 13,474 | 1.00× |
+| 2 | **ARM64** | 1.88 ms | 34.11 s | 40,297 | 1.03× |
+| 3 | **C** | 1.91 ms | 22.00 s | 14,524 | 1.04× |
+| 4 | **C++** | 2.02 ms | 21.70 s | 10,369 | 1.10× |
+| 5 | **Rust** | 2.10 ms | 27.81 s | 11,614 | 1.15× |
+| 6 | **Go** | 2.32 ms | 31.02 s | 13,225 | 1.27× |
+| 7 | **JavaScript** | 4.57 ms | 68.30 s | 9,310 | 2.50× |
+| 8 | **Java** | 5.46 ms | 42.45 s | 10,611 | 2.98× |
+| 9 | **C#** | 6.50 ms | 37.79 s | 11,019 | 3.55× |
+| 10 | **Python** | 18.19 ms | 334.39 s | 8,561 | 9.95× |
 
 ### Speed vs Code Size
 
@@ -55,10 +55,10 @@ Same per-invocation metric, restricted to the deeper subset of languages (C++, G
 
 | Rank | Language | Geomean (100-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 28.06 ms | 180.44 s | 12,515 | 1.00× |
-| 2 | **Rust** | 30.74 ms | 172.44 s | 11,102 | 1.10× |
-| 3 | **C++** | 34.62 ms | 184.26 s | 13,322 | 1.23× |
-| 4 | **Go** | 36.72 ms | 223.79 s | 11,680 | 1.31× |
+| 1 | **Zig** | 27.77 ms | 168.81 s | 12,515 | 1.00× |
+| 2 | **Rust** | 30.91 ms | 166.52 s | 11,102 | 1.11× |
+| 3 | **C++** | 33.28 ms | 161.61 s | 13,322 | 1.20× |
+| 4 | **Go** | 37.51 ms | 216.17 s | 11,680 | 1.35× |
 
 ### Speed vs Code Size
 
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 704 of ≤710 problems in scope)
+### Per-Invocation Cost (Common Set, 709 of ≤710 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (704-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (709-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 78.21 ms | 1805.66 s | 146,316 | 1.00× |
-| 2 | **C++** | 83.11 ms | 1984.46 s | 107,233 | 1.06× |
-| 3 | **Go** | 92.03 ms | 2192.25 s | 137,205 | 1.18× |
+| 1 | **Rust** | 77.90 ms | 1796.81 s | 147,179 | 1.00× |
+| 2 | **C++** | 81.24 ms | 1912.44 s | 107,782 | 1.04× |
+| 3 | **Go** | 91.64 ms | 2213.79 s | 138,274 | 1.18× |
 
 ### Speed vs Code Size
 
@@ -262,16 +262,16 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 
 | Language | Toolchain | Cells | Last measured |
 |----------|-----------|------:|---------------|
-| **ARM64** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
-| **C** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 200 | 2026-07-30 |
-| **C++** | `Apple clang version 21.0.0 (clang-2100.1.1.101)` | 1004 | 2026-09-12 |
-| **C#** | `10.0.101` | 200 | 2026-07-30 |
-| **Go** | `go version go1.26.5 darwin/arm64` | 1009 | 2026-09-25 |
-| **Java** | `openjdk version "21.0.2" 2024-01-16 LTS` | 200 | 2026-07-30 |
-| **JavaScript** | `v24.18.0` | 200 | 2026-07-30 |
-| **Python** | `Python 3.14.6` | 318 | 2026-08-07 |
-| **Rust** | `rustc 1.95.0 (59807616e 2026-04-14)` | 1009 | 2026-09-25 |
-| **Zig** | `0.15.2` | 341 | 2026-07-30 |
+| **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-25 |
+| **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-25 |
+| **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1009 | 2026-09-26 |
+| **C#** | `10.0.401` | 200 | 2026-09-25 |
+| **Go** | `go version go1.27.1 darwin/arm64` | 1009 | 2026-09-26 |
+| **Java** | `openjdk version "25.0.4.1" 2026-08-18 LTS` | 200 | 2026-09-25 |
+| **JavaScript** | `v24.21.0` | 200 | 2026-09-25 |
+| **Python** | `Python 3.14.7` | 318 | 2026-09-25 |
+| **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1009 | 2026-09-26 |
+| **Zig** | `0.15.2` | 341 | 2026-09-25 |
 
 ## Reproducibility
 
