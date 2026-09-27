@@ -36,7 +36,7 @@ the mean; the sum over the same set is shown as a secondary column.  See
 | 6 | **Go** | 2.32 ms | 31.02 s | 13,225 | 1.27× |
 | 7 | **JavaScript** | 4.57 ms | 68.30 s | 9,310 | 2.50× |
 | 8 | **Java** | 5.46 ms | 42.45 s | 10,611 | 2.98× |
-| 9 | **C#** | 6.50 ms | 37.79 s | 11,019 | 3.55× |
+| 9 | **C#** | 6.28 ms | 37.39 s | 11,014 | 3.43× |
 | 10 | **Python** | 18.19 ms | 334.39 s | 8,561 | 9.95× |
 
 ### Speed vs Code Size
@@ -76,9 +76,9 @@ The frontier verification trio — C++, Go, Rust — on problems above 300. 3-wa
 
 | Rank | Language | Geomean (710-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 78.43 ms | 1807.01 s | 147,266 | 1.00× |
-| 2 | **C++** | 81.79 ms | 1922.42 s | 107,852 | 1.04× |
-| 3 | **Go** | 92.44 ms | 2259.29 s | 138,418 | 1.18× |
+| 1 | **Rust** | 77.35 ms | 1805.04 s | 147,148 | 1.00× |
+| 2 | **C++** | 81.79 ms | 1922.42 s | 107,852 | 1.06× |
+| 3 | **Go** | 91.35 ms | 2258.82 s | 138,389 | 1.18× |
 
 ### Speed vs Code Size
 
@@ -264,7 +264,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-25 |
 | **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-25 |
 | **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1010 | 2026-09-26 |
-| **C#** | `10.0.401` | 200 | 2026-09-25 |
+| **C#** | `10.0.401` | 200 | 2026-09-26 |
 | **Go** | `go version go1.27.1 darwin/arm64` | 1010 | 2026-09-26 |
 | **Java** | `openjdk version "25.0.4.1" 2026-08-18 LTS` | 200 | 2026-09-25 |
 | **JavaScript** | `v24.21.0` | 200 | 2026-09-25 |
