@@ -61,9 +61,45 @@ At write time, the contract is enforced from these observables:
 3. **Compile-time-folding check**: a near-zero runtime on a non-trivial
    problem in an ahead-of-time language flags the row for review — work can
    also hide in compile-time evaluation, which no runtime observable can see.
+   The rule this check polices is §2a (input opacity).
 
 These checks are structural, not advisory: a row that breaks the contract
 cannot silently enter the dataset.
+
+### 2a. Input opacity: the compiler must not know the question (added 2026-09-27)
+
+A real tool learns its input at runtime, so no work that depends on that input
+can be done ahead of time. Every PE problem, by contrast, has its input fixed
+in the source — and an optimizing compiler that can see the input can evaluate
+the whole solve during compilation, leaving the timer to measure a constant
+return. That is work outside the timed region, the same breach as §2's static
+initializers, just hidden in the compiler.
+
+The rule is one question about any precomputed value: **if the problem's
+input changed at runtime, would this still be valid?**
+
+- **Yes → allowed.** Tables independent of the input (a fixed small-primes
+  list, a CRC or factorial table, mathematical constants) may be built at
+  compile time in any language (`comptime`, `constexpr`, `const fn`). Ordinary
+  optimization — inlining, strength reduction, dead-code elimination — is
+  likewise fine.
+- **No → must run inside the timed region.** Anything derived from, sized by,
+  or searching over the problem's input — including a table whose bound is the
+  problem's N.
+
+Enforcement is uniform across languages: the problem's input must be
+**opaque to the compiler** — read at runtime, or passed through an
+optimization barrier (`std::hint::black_box`, `std.mem.doNotOptimizeAway`, a
+`volatile` read, or the language's equivalent). With the input opaque, the
+compiler physically cannot fold input-dependent work, while input-independent
+tables still work. This section overrides any per-language guidance to the
+contrary.
+
+History: in May 2026 an A/B test showed p009's Zig cell at 125 ns with
+compile-time inputs and 43 µs with runtime inputs; a September sweep found
+near-zero cells in Zig (explicit compile-time solves), Rust and C (optimizer
+folding with no keyword at all). The previous policy only flagged such rows
+for review; this rule makes the requirement explicit.
 
 ## 3. Sampling: magnitude-adaptive count, minimum reported
 
