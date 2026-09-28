@@ -191,6 +191,16 @@ signal. Cells measuring under 1 µs are reported as `<1 µs` rather than as a
 specific figure; the stored `time_ns` is retained for auditing but the
 published number does not claim precision it does not have.
 
+Every harness must read a clock at least as fine as that platform tick
+(`mach_absolute_time`, or the language's monotonic high-resolution timer).
+A coarse clock does not merely add noise: combined with the minimum
+estimator (§3a) it biases results *downward*, because the minimum picks the
+luckiest rounding. Until 2026-09-27 the ARM64 harness read
+`clock_gettime(CLOCK_MONOTONIC)`, which on macOS ticks in whole microseconds;
+all 200 ARM64 times were exact microsecond multiples and 26 sub-microsecond
+cells were recorded as 0 ns. The harness now uses `mach_absolute_time`, like
+the C harness, and every ARM64 cell was re-measured.
+
 ## 4. Environment
 
 - All numbers come from **one fixed machine** (Apple Silicon, macOS), and are

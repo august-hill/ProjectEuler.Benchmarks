@@ -29,7 +29,7 @@ the mean; the sum over the same set is shown as a secondary column.  See
 | Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
 | 1 | **Zig** | 1.83 ms | 23.82 s | 13,489 | 1.00× |
-| 2 | **ARM64** | 1.88 ms | 34.11 s | 40,297 | 1.03× |
+| 2 | **ARM64** | 1.89 ms | 33.99 s | 40,297 | 1.03× |
 | 3 | **C** | 1.91 ms | 22.00 s | 14,525 | 1.04× |
 | 4 | **C++** | 2.02 ms | 21.70 s | 10,369 | 1.10× |
 | 5 | **Rust** | 2.10 ms | 27.81 s | 11,614 | 1.14× |
@@ -261,7 +261,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 
 | Language | Toolchain | Cells | Last measured |
 |----------|-----------|------:|---------------|
-| **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-25 |
+| **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-27 |
 | **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-27 |
 | **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1010 | 2026-09-26 |
 | **C#** | `10.0.401` | 200 | 2026-09-26 |
