@@ -83,6 +83,12 @@ input changed at runtime, would this still be valid?**
   compile time in any language (`comptime`, `constexpr`, `const fn`). Ordinary
   optimization — inlining, strength reduction, dead-code elimination — is
   likewise fine.
+  The table must also be **generic**: something a library could ship without
+  knowing which problem it serves. A table whose contents, size, or bound were
+  chosen with knowledge of *this problem's* solution structure (e.g. "compute
+  the first 200 game values because the pattern is known to repeat before
+  then") is part of the solve and runs inside the timed region, even if it
+  would stay valid for other inputs.
 - **No → must run inside the timed region.** Anything derived from, sized by,
   or searching over the problem's input — including a table whose bound is the
   problem's N.
