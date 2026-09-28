@@ -68,9 +68,9 @@ _TIERS = load_tiers()
 _T2_HI = tier_problem_range("tier_2_deep_coverage", _TIERS)[1] or 300
 _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
 # PE_MAX = highest problem PE has published. The ONE number to bump when PE
-# publishes more (1010 as of 2026-09-25). Both the stats/coverage scope and the
+# publishes more (1011 as of 2026-09-28). Both the stats/coverage scope and the
 # coverage grid derive from it, so they cannot drift apart by accident.
-PE_MAX = 1010
+PE_MAX = 1011
 _DISPLAY_HI = max(_T2_HI, PE_MAX)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
