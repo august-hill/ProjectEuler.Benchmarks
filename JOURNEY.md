@@ -1865,3 +1865,67 @@ each later session inherited the conclusion instead of the open question. And
 the size of a state space is not the cost of an answer: when the target is a
 maximum, the useful question is how the winner depends on the input, not how
 much work it takes to visit everything.
+
+## Episode: The compiler that already knew the question (2026-09-26/27)
+
+The coverage grid makes outliers easy to see: a column of light green with one
+orange cell in it. Looking for those led somewhere unexpected — not to the
+slow cells, which turned out to be honest early attempts, but to the
+suspiciously *fast* ones.
+
+The first was a Rust cell timed at exactly zero nanoseconds. Its inputs were
+constants, and the compiler had simply worked out the answer while building
+the program; the timer measured a function that returned a number. A sweep of
+every compiled cell under a microsecond found the same thing elsewhere, in
+three forms. Some were honest: short closed-form formulas that genuinely take
+a few nanoseconds. Some were accidental: C and Zig cells whose input data sat
+in the source, so the optimizer folded the whole computation away with no
+instruction to do so. And some were deliberate: dozens of Zig cells computed
+their entire answer in a compile-time block, exactly as the Zig repository's
+own guidelines encouraged — "comptime is fair game, a Zig-specific
+differentiator." One cell went further and returned a constant justified by a
+proof written in a comment.
+
+The suite had been applying opposite rules to different languages. Rust cells
+were required to hide their inputs from the compiler precisely so this could
+not happen; Zig cells were invited to do it.
+
+The deciding argument was about what the benchmark is *for*. A real tool
+learns its input at runtime. It cannot get ahead of a question it has not been
+asked; if it had to compile per query, every compile-time "saving" would be
+paid on every execution — usually at a worse rate, since compile-time
+evaluators are slower than the machine. So the methodology gained a rule
+(§2a, input opacity) built on one question: *if the input changed at runtime,
+would this precomputed value still be valid?* A fixed table any library could
+ship is fine at compile time. Anything derived from, sized by, or searching
+over the problem's input — or chosen with knowledge of this problem's
+solution — runs inside the timer. The first draft allowed a table that was
+valid for any input but sized using what the author knew about the answer's
+structure; the rule was tightened the same day to close that gap.
+
+Enforcement is identical in every language: the input is made opaque to the
+compiler, so input-dependent work *cannot* be folded, while genuinely generic
+tables still can. Thirty-eight Zig cells, one C cell, and one Rust cell were
+rewired — same algorithms, same authors, only the input hidden — and the
+cell that returned a proof was re-solved from scratch by a fresh worker that
+had to count at runtime. Every answer stayed the same. One header turned out
+to carry a stray trailing period and had been silently failing its own
+answer check.
+
+The headline moved less than expected, and for an instructive reason. The
+ranking floors every cell at 100 µs so that timer-precision trivia cannot
+swing the geometric mean — which meant most zero-nanosecond cells were
+*already* being counted as 100 µs. Only cells whose real cost exceeded the
+floor shifted the ranking. In the 201–300 band that was enough: Zig's lead
+over Rust went from 9% to effectively zero. The per-problem comparisons —
+the grid, the individual rows — changed far more.
+
+### Methodology lesson
+
+A benchmark with fixed inputs must hide those inputs from the compiler, or it
+measures the compiler's evaluator instead of the program. And the rule has to
+live in one place: a per-language guideline quietly overrode the cross-language
+methodology for months. The methodology now says so explicitly — §2a overrides
+any language's own guidance — and every language's guide points to it. Look
+for outliers in both directions: slow cells are usually just old; impossibly
+fast ones are where the contract breaks.

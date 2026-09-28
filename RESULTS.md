@@ -28,16 +28,16 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 | Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.83 ms | 23.82 s | 13,478 | 1.00× |
+| 1 | **Zig** | 1.83 ms | 23.82 s | 13,489 | 1.00× |
 | 2 | **ARM64** | 1.88 ms | 34.11 s | 40,297 | 1.03× |
 | 3 | **C** | 1.91 ms | 22.00 s | 14,525 | 1.04× |
 | 4 | **C++** | 2.02 ms | 21.70 s | 10,369 | 1.10× |
-| 5 | **Rust** | 2.10 ms | 27.81 s | 11,614 | 1.15× |
+| 5 | **Rust** | 2.10 ms | 27.81 s | 11,614 | 1.14× |
 | 6 | **Go** | 2.32 ms | 31.02 s | 13,225 | 1.27× |
-| 7 | **JavaScript** | 4.57 ms | 68.30 s | 9,310 | 2.50× |
+| 7 | **JavaScript** | 4.57 ms | 68.30 s | 9,310 | 2.49× |
 | 8 | **Java** | 5.46 ms | 42.45 s | 10,611 | 2.98× |
-| 9 | **C#** | 6.28 ms | 37.39 s | 11,014 | 3.43× |
-| 10 | **Python** | 18.19 ms | 334.39 s | 8,561 | 9.95× |
+| 9 | **C#** | 6.28 ms | 37.39 s | 11,014 | 3.42× |
+| 10 | **Python** | 18.19 ms | 334.39 s | 8,561 | 9.92× |
 
 ### Speed vs Code Size
 
@@ -55,10 +55,10 @@ Same per-invocation metric, restricted to the deeper subset of languages (C++, G
 
 | Rank | Language | Geomean (100-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 28.23 ms | 168.81 s | 12,464 | 1.00× |
-| 2 | **Rust** | 30.91 ms | 166.52 s | 11,102 | 1.09× |
-| 3 | **C++** | 33.28 ms | 161.61 s | 13,322 | 1.18× |
-| 4 | **Go** | 37.51 ms | 216.17 s | 11,680 | 1.33× |
+| 1 | **Zig** | 30.78 ms | 169.37 s | 12,490 | 1.00× |
+| 2 | **Rust** | 30.91 ms | 166.52 s | 11,102 | 1.00× |
+| 3 | **C++** | 33.28 ms | 161.61 s | 13,322 | 1.08× |
+| 4 | **Go** | 37.51 ms | 216.17 s | 11,680 | 1.22× |
 
 ### Speed vs Code Size
 
@@ -270,7 +270,7 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | **JavaScript** | `v24.21.0` | 200 | 2026-09-25 |
 | **Python** | `Python 3.14.7` | 318 | 2026-09-25 |
 | **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1010 | 2026-09-26 |
-| **Zig** | `0.15.2` | 341 | 2026-09-27 |
+| **Zig** | `0.15.2` | 358 | 2026-09-27 |
 
 ## Reproducibility
 
