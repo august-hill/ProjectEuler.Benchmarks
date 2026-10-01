@@ -1929,3 +1929,54 @@ methodology for months. The methodology now says so explicitly — §2a override
 any language's own guidance — and every language's guide points to it. Look
 for outliers in both directions: slow cells are usually just old; impossibly
 fast ones are where the contract breaks.
+
+## Episode: Which language would we pick? (2026-10-01)
+
+The project began as a question: if Claude had to do computational work in one
+language, which should it be? Ten languages went in; within weeks the real work
+had narrowed to three. Python was the easiest to write and ran out of gas
+first. ARM64 assembly was fast but needed 3.6× the C++ line count to say
+anything. Java, C# and JavaScript formed their own cluster, 7–11× behind C++
+on the shared problems.
+
+The first answer drawn from the data was "C++", and it was drawn from the
+wrong slice. The headline ranking is computed over problems 1–200, because that
+is the only band every language covers. It is also the easiest band. Split the
+full corpus by band and the picture changes:
+
+| Band | Rust vs C++ (geomean) | Rust faster on | Go vs C++ |
+|------|----------------------:|---------------:|----------:|
+| 1–200 | 1.17 | 40% | 1.73 |
+| 201–300 | 0.83 | 55% | 1.20 |
+| 301–500 | 0.98 | 49% | 1.40 |
+| 501–700 | 0.95 | 49% | 1.09 |
+| 701–900 | 1.26 | 51% | 1.63 |
+| 901–1011 | 0.79 | 55% | 1.09 |
+| **201–1011** | **0.98** | **51%** | **1.30** |
+
+Beyond the Foundation, Rust and C++ are a statistical tie, and Rust is ahead
+in four of five bands. Hundreds of cells differ by more than 2× in each
+direction. Two compilers sharing an optimizer do not produce gaps like that.
+Above 300 every language is an independent solve, so the spread measures which
+algorithm the solver reached for in that language. For "which language should
+Claude work in", that is exactly the number that matters. Rust also earned its
+place a second way: ports into it repeatedly surfaced overflow and undefined
+behaviour that the C++ originals had carried silently.
+
+A new language was considered and set aside. Its pitch was concision. But
+concision is not the bottleneck on hard problems; algorithm choice is. Its
+best case was to tie Rust, at the cost of hundreds of hard solves to find out.
+
+The verdict: **Rust and C++ as co-leads, Go as the tiebreaker.** Go's value is
+not speed. It is independence. It is more than 2× faster than C++ on ~150
+problems, which means its solvers often take a different route, and it fails
+differently: a garbage collector, a different standard library, silent
+wrapping where Rust traps. A third vote that shares the others' failure modes
+verifies nothing.
+
+### Methodology lesson
+
+The common-coverage set is the fair surface for comparing *all* languages, and
+the wrong one for choosing *between* the finalists. Any ranking computed over
+the easiest band should say so, and should be checked against the band where
+the decision will actually be exercised.

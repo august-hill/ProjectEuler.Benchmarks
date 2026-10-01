@@ -32,6 +32,11 @@ the story of how it was built.
   problems): Zig, ARM64, C, C++, Rust and Go cluster within ~30% of each other;
   JavaScript, Java and C# follow at roughly 2.5–3.5× the leader; Python trails
   at ~10×. Full tables and per-tier rankings are in [RESULTS.md](RESULTS.md).
+- **Above the Foundation tier, Rust and C++ are co-leads.** Over the ~810
+  problems in 201–1011, Rust's geometric mean is 0.98× C++ and it is faster on
+  51% of problems; Go runs at 1.30×. The Foundation band, being the easiest,
+  understates Rust. See the JOURNEY episode
+  ["Which language would we pick?"](JOURNEY.md#episode-which-language-would-we-pick-2026-10-01).
 
 ## How it works, in one paragraph
 
