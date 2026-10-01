@@ -106,7 +106,7 @@ in tier-1 display order (native → managed → interpreted).
 | **p0896** | 102.23 ms | 1.37 s† | 41.84 ms |
 | **p0897** | 1.26 s | 1.57 s | 136.38 ms |
 | **p0898** | 114.43 ms | 430.86 ms | 5.66 s |
-| **p0899** | 1.0 µs | 394.3 µs | 139.53 ms |
+| **p0899** | <1 µs | 394.3 µs | 139.53 ms |
 | **p0900** | 12.18 ms | 303.29 ms | 452.4 µs |
 
 > † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).

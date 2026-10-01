@@ -28,11 +28,11 @@ the mean; the sum over the same set is shown as a secondary column.  See
 
 | Rank | Language | Geomean (200-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Zig** | 1.83 ms | 23.82 s | 13,489 | 1.00× |
+| 1 | **Zig** | 1.83 ms | 23.82 s | 13,530 | 1.00× |
 | 2 | **ARM64** | 1.89 ms | 33.99 s | 40,297 | 1.03× |
-| 3 | **C** | 1.91 ms | 22.00 s | 14,525 | 1.04× |
-| 4 | **C++** | 2.02 ms | 21.70 s | 10,369 | 1.10× |
-| 5 | **Rust** | 2.10 ms | 27.81 s | 11,614 | 1.14× |
+| 3 | **C** | 1.91 ms | 22.00 s | 14,541 | 1.04× |
+| 4 | **C++** | 2.02 ms | 21.70 s | 10,371 | 1.10× |
+| 5 | **Rust** | 2.10 ms | 27.81 s | 11,616 | 1.14× |
 | 6 | **Go** | 2.32 ms | 31.02 s | 13,225 | 1.27× |
 | 7 | **JavaScript** | 4.57 ms | 68.30 s | 9,310 | 2.49× |
 | 8 | **Java** | 5.46 ms | 42.45 s | 10,611 | 2.98× |
@@ -76,9 +76,9 @@ The frontier verification trio — C++, Go, Rust — on problems above 300. 3-wa
 
 | Rank | Language | Geomean (711-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 76.85 ms | 1805.16 s | 147,059 | 1.00× |
-| 2 | **C++** | 79.16 ms | 1876.79 s | 107,505 | 1.03× |
-| 3 | **Go** | 91.00 ms | 2238.67 s | 138,237 | 1.18× |
+| 1 | **Rust** | 76.85 ms | 1805.16 s | 147,064 | 1.00× |
+| 2 | **C++** | 79.16 ms | 1876.79 s | 107,506 | 1.03× |
+| 3 | **Go** | 91.00 ms | 2238.67 s | 138,240 | 1.18× |
 
 ### Speed vs Code Size
 
@@ -262,15 +262,15 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 | Language | Toolchain | Cells | Last measured |
 |----------|-----------|------:|---------------|
 | **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-27 |
-| **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-27 |
-| **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1011 | 2026-09-28 |
+| **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-30 |
+| **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1011 | 2026-09-30 |
 | **C#** | `10.0.401` | 200 | 2026-09-26 |
-| **Go** | `go version go1.27.1 darwin/arm64` | 1011 | 2026-09-28 |
+| **Go** | `go version go1.27.1 darwin/arm64` | 1011 | 2026-09-30 |
 | **Java** | `openjdk version "25.0.4.1" 2026-08-18 LTS` | 200 | 2026-09-25 |
 | **JavaScript** | `v24.21.0` | 200 | 2026-09-25 |
 | **Python** | `Python 3.14.7` | 318 | 2026-09-25 |
-| **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1011 | 2026-09-28 |
-| **Zig** | `0.15.2` | 358 | 2026-09-27 |
+| **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1011 | 2026-09-30 |
+| **Zig** | `0.15.2` | 358 | 2026-09-30 |
 
 ## Reproducibility
 
