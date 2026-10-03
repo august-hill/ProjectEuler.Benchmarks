@@ -4,7 +4,7 @@
 ten different languages?**
 
 This repo is the public face of a long-running experiment: every Project Euler
-problem from 1 to 1010, solved by [Claude](https://claude.ai) and benchmarked on
+problem from 1 to 1011, solved by [Claude](https://claude.ai) and benchmarked on
 one fixed Apple Silicon machine across **C, C++, Rust, Go, Zig, Java, C#,
 JavaScript, Python and ARM64 assembly**. The solutions live in ten private
 repos; this repo carries the method, the measurements (rendered, never raw) and
@@ -12,13 +12,13 @@ the story of how it was built.
 
 ![Per-Invocation Cost — Foundation](charts/per_iter_total.png)
 
-## Where things stand (2026-09-26)
+## Where things stand (2026-10-03)
 
 | Tier | Problems | Languages | Coverage |
 |------|----------|-----------|----------|
 | **Foundation** | 1–200 | all 10 | 200/200 in every language |
 | **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | 100/100 in each |
-| **Frontier** | 301–1010 | C++, Go, Rust | 709/710 — every problem PE has published but one |
+| **Frontier** | 301–1011 | C++, Go, Rust | 711/711 — every problem PE has published |
 
 - **Every frontier problem is solved three times, independently.** Separate
   C++, Go and Rust solvers work from the problem statement alone, never seeing
