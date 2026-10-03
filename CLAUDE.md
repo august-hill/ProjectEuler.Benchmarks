@@ -54,7 +54,7 @@ Before any `git push origin main` that updates **RESULTS.md** or **charts/*.png*
 - Algorithm-choice diversity — same problem benchmarked with different algorithms across langs.
 - Stale entries from old harness versions.
 
-**The check:** after running `python3 report.py` (the regen entrypoint per README:56), inspect the "Per-lang coverage in scope" block it prints to stdout — also reproduced as the rank table at the top of RESULTS.md. If a managed lang is in the top 3, OR a compiled lang is ranked below #6, **investigate before pushing.** Add a caveat to RESULTS.md if the issue can't be resolved in-session; do not push the ranking as authoritative.
+**The check:** after running `python3 report.py` (the regen entrypoint; see README), inspect the "Per-lang coverage in scope" block it prints to stdout — also reproduced as the rank table at the top of RESULTS.md. If a managed lang is in the top 3, OR a compiled lang is ranked below #6, **investigate before pushing.** Add a caveat to RESULTS.md if the issue can't be resolved in-session; do not push the ranking as authoritative.
 
 **Reference incident:** 2026-05-22 session 477aafc3 pushed a chart with C# at #1 over ARM64/Zig/C++. User caught it on review; investigation surfaced two structural bugs. Caveated chart now in place; multi-session cache-strip campaign queued.
 
@@ -68,4 +68,4 @@ Before any `git push origin main` that updates **RESULTS.md** or **charts/*.png*
 
 ## Verification protocol (cross-cutting reminder)
 
-This repo doesn't run verification itself, but the suite's policy is: **no submission to projecteuler.net**; verify by independent **Go and C++ implementations** agreeing (2026-05-22 change — Python's wall cost above level 4 displaced it as C++'s pair; see `data/tiers.json` for the tiered language model). The 10 language CLAUDE.md files contain the full PE Project Rules block — apply them when working on any sibling repo.
+This repo doesn't run verification itself, but the suite's policy is: **no submission to projecteuler.net**; verify by independent **C++, Go, and Rust implementations** agreeing (the Tier 3 trio in `data/tiers.json`). The canonical PE Project Rules block lives in `pe/cpp/CLAUDE.md`; the other language CLAUDE.md files point to it — apply it when working on any sibling repo.
