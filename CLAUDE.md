@@ -19,6 +19,7 @@ PE's publishing rule (projecteuler.net/about#publish) restricts public solution 
 ### NEVER allowed in the public repo: raw bench data files (post-2026-05-25 SQLite migration)
 - **No `data/*.json` bench files. No `*.db` files.** The public repo carries ONLY rendered narrative (RESULTS.md, JOURNEY.md, README.md) and charts/*.png|svg. All raw bench data lives in the **gitignored** `data/bench-private.db` (SQLite, with answer column).
 - The `sanitization_gate.py` pre-commit hook enforces this at the file-system boundary: any staged file under `data/` not on the small config-allowlist (`tiers.json`, `parked.json`, `difficulty.json`, `levels.json`) gets rejected. Leak prevention is now structural, not field-stripping.
+- The `readme_coverage_gate.py` pre-commit hook (runs after the sanitization gate) fails the commit when README.md's tier-table `N/M` counts, ranges, or "1 to <K>" intro disagree with `data/bench-private.db`. After benching a new problem, update those README lines in the same commit. Skips silently if the DB is absent. Hooks live in untracked `.git/hooks/pre-commit` — re-create it on a fresh clone.
 - Policy history: 2026-05-09 sanitization-regression leaked ~891 answer values via a per-field stripping bug. 2026-05-23 tightened "strip for >100" to "strip for all." 2026-05-25 moved SSOT to SQLite — no public raw data → no field-stripping bug class possible.
 
 ### NEVER allowed in this repo (for problems >100)
