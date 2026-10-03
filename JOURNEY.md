@@ -1980,3 +1980,36 @@ The common-coverage set is the fair surface for comparing *all* languages, and
 the wrong one for choosing *between* the finalists. Any ranking computed over
 the easiest band should say so, and should be checked against the band where
 the decision will actually be exercised.
+
+### Coda: measuring Claude instead of the programs
+
+The bench measures how fast a program runs. It cannot say which language is easiest for
+Claude to write in. A follow-up pilot tried to measure that directly: fifteen problems, each
+solved from the statement alone in Rust, C++, Go and OCaml (a strict-typed challenger), by
+separate workers that could not see each other or any existing solution. Nine of the fifteen
+were published after the model's training cutoff, so no answer could have been remembered.
+
+Every one of the sixty attempts was correct on its first declared answer. At this difficulty
+the language did not change whether Claude got the problem right, and time to a correct answer
+differed by about ten percent, which is noise at this sample size. What the language did change
+was the shape of the work:
+
+- **Go wrote about three times as much code** as the other three, without being slower to a
+  correct answer.
+- **Most C++ build failures came from one habit**: a GCC-only convenience header that Apple's
+  clang does not ship. One line of guidance removes it.
+- **OCaml's native integers are 63 bits wide**, one bit short of everyone else's, and they wrap
+  silently. Its workers caught the risk with their own cross-checks.
+- **Rust had the cleanest record**: no failed builds and code nearly as compact as C++. That
+  agrees with the bench, though the margin was within noise.
+
+Two cautions came out of the pilot itself. A hard problem solved quickly is not evidence of
+memorisation: problems published after the cutoff were solved just as fast. Memorisation showed
+up differently, as workers on older problems saying outright that they remembered an answer and
+using it to settle an ambiguity. And with every attempt correct, correctness carried no signal;
+telling languages apart would need problems Claude fails often.
+
+### Methodology lesson
+
+A benchmark of the programs and a benchmark of the programmer are different experiments. The
+second needs problems the model cannot have seen, and a difficulty at which it sometimes fails.
