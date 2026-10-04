@@ -1,12 +1,12 @@
 # Project Euler — Cross-Language Benchmarks
 
-> **Scope: 4533 in-scope cells across 1011 problems × tiered languages — 4533 measured (100.0% coverage).**
+> **Scope: 4536 in-scope cells across 1012 problems × tiered languages — 4536 measured (100.0% coverage).**
 > The cross-language ranking below is computed over the **200-problem common set** (problems in 1-200 where every language has a passing measurement) — the apples-to-apples Foundation comparison surface.  Per-tier rankings and coverage detail appear further below.
 > Growing carefully — each new problem and language is audited for state-leak
 > safety, verified for answer correctness, and added only when it cleanly fits the
 > measurement methodology.  See [JOURNEY.md](JOURNEY.md) for the full story of how
 > we got here, including the reset from 200+ problems back to a verified 10×10
-> core, then the disciplined expansion to today's 1011-problem scope.
+> core, then the disciplined expansion to today's 1012-problem scope.
 
 ## Foundation — Tier 1 (10 languages, problems 1-200)
 
@@ -70,15 +70,15 @@ Same scatter as the Foundation chart, restricted to the tier-2 active languages 
 
 The frontier verification trio — C++, Go, Rust — on problems above 300. 3-way cross-language agreement is the verification protocol (strictly stronger than 2-way; see JOURNEY.md "Tier Reframing" episode for the p254 lesson that motivated it). Python and Zig are explicitly out of this tier — python's wall cost makes it impractical at level 5+, and zig's role caps at Tier 2.
 
-### Per-Invocation Cost (Common Set, 711 of ≤711 problems in scope)
+### Per-Invocation Cost (Common Set, 712 of ≤712 problems in scope)
 
 ![Per-Invocation Cost — Tier 3](charts/per_iter_total_tier3.png)
 
-| Rank | Language | Geomean (711-problem common set) | Total (sum) | Lines of code | vs Fastest |
+| Rank | Language | Geomean (712-problem common set) | Total (sum) | Lines of code | vs Fastest |
 |------|----------|--------------------:|------------:|--------------:|-----------:|
-| 1 | **Rust** | 76.85 ms | 1805.16 s | 147,064 | 1.00× |
-| 2 | **C++** | 79.16 ms | 1876.79 s | 107,506 | 1.03× |
-| 3 | **Go** | 91.00 ms | 2238.67 s | 138,240 | 1.18× |
+| 1 | **Rust** | 77.14 ms | 1806.27 s | 147,319 | 1.00× |
+| 2 | **C++** | 79.50 ms | 1878.51 s | 107,656 | 1.03× |
+| 3 | **Go** | 91.22 ms | 2239.15 s | 138,500 | 1.18× |
 
 ### Speed vs Code Size
 
@@ -129,7 +129,7 @@ Split across 11 pages, one per 100-problem band, so this main page stays navigab
 | p0701–p0800 | Frontier | 3 | [Open](per_problem/per_problem_0701-0800.md) |
 | p0801–p0900 | Frontier | 3 | [Open](per_problem/per_problem_0801-0900.md) |
 | p0901–p1000 | Frontier | 3 | [Open](per_problem/per_problem_0901-1000.md) |
-| p1001–p1011 | Frontier | 3 | [Open](per_problem/per_problem_1001-1011.md) |
+| p1001–p1012 | Frontier | 3 | [Open](per_problem/per_problem_1001-1012.md) |
 
 ## Method
 
@@ -181,7 +181,7 @@ the honest cost of the language model under a CLI-invocation workload.
 
 ### Note on Zig timings (comptime-fold bias)
 
-> Of the 1011 problems benchmarked, **roughly 20-25% of cells** are fully
+> Of the 1012 problems benchmarked, **roughly 20-25% of cells** are fully
 > constant-foldable under Zig's `-O ReleaseFast` flag: the inputs are compile-time
 > literals and the arithmetic is pure, so the optimizer reduces `solve()` to a
 > constant return.  Known fold-candidates include p001, p002, p005, p006, p009,
@@ -263,20 +263,20 @@ table never silently mixes versions (METHODOLOGY.md §4).  Current state of the
 |----------|-----------|------:|---------------|
 | **ARM64** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-27 |
 | **C** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 200 | 2026-09-30 |
-| **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1011 | 2026-09-30 |
+| **C++** | `Apple clang version 21.0.0 (clang-2100.3.34.2)` | 1012 | 2026-10-04 |
 | **C#** | `10.0.401` | 200 | 2026-09-26 |
-| **Go** | `go version go1.27.1 darwin/arm64` | 1011 | 2026-09-30 |
+| **Go** | `go version go1.27.1 darwin/arm64` | 1012 | 2026-10-04 |
 | **Java** | `openjdk version "25.0.4.1" 2026-08-18 LTS` | 200 | 2026-09-25 |
 | **JavaScript** | `v24.21.0` | 200 | 2026-09-25 |
 | **Python** | `Python 3.14.7` | 318 | 2026-09-25 |
-| **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1011 | 2026-09-30 |
+| **Rust** | `rustc 1.98.1 (48a229cea 2026-09-01)` | 1012 | 2026-10-04 |
 | **Zig** | `0.15.2` | 358 | 2026-09-30 |
 
 ## Reproducibility
 
 ```bash
 cd pe/benchmarks
-cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1011 --write
+cmd/euler-bench/euler-bench per-iter --lang all --problems 1-1012 --write
 python3 report.py
 ```
 

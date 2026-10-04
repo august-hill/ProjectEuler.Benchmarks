@@ -4,7 +4,7 @@
 ten different languages?**
 
 This repo is the public face of a long-running experiment: every Project Euler
-problem from 1 to 1011, solved by [Claude](https://claude.ai) and benchmarked on
+problem from 1 to 1012, solved by [Claude](https://claude.ai) and benchmarked on
 one fixed Apple Silicon machine across **C, C++, Rust, Go, Zig, Java, C#,
 JavaScript, Python and ARM64 assembly**. The solutions live in ten private
 repos; this repo carries the method, the measurements (rendered, never raw) and
@@ -12,13 +12,13 @@ the story of how it was built.
 
 ![Per-Invocation Cost — Foundation](charts/per_iter_total.png)
 
-## Where things stand (2026-10-03)
+## Where things stand (2026-10-04)
 
 | Tier | Problems | Languages | Coverage |
 |------|----------|-----------|----------|
 | **Foundation** | 1–200 | all 10 | 200/200 in every language |
 | **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | 100/100 in each |
-| **Frontier** | 301–1011 | C++, Go, Rust | 711/711 — every problem PE has published |
+| **Frontier** | 301–1012 | C++, Go, Rust | 712/712 — every problem PE has published |
 
 - **Every frontier problem is solved three times, independently.** Separate
   C++, Go and Rust solvers work from the problem statement alone, never seeing
@@ -33,7 +33,7 @@ the story of how it was built.
   JavaScript, Java and C# follow at roughly 2.5–3.5× the leader; Python trails
   at ~10×. Full tables and per-tier rankings are in [RESULTS.md](RESULTS.md).
 - **Above the Foundation tier, Rust and C++ are co-leads.** Over the ~810
-  problems in 201–1011, Rust's geometric mean is 0.98× C++ and it is faster on
+  problems in 201–1012, Rust's geometric mean is 0.98× C++ and it is faster on
   51% of problems; Go runs at 1.30×. The Foundation band, being the easiest,
   understates Rust. See the JOURNEY episode
   ["Which language would we pick?"](JOURNEY.md#episode-which-language-would-we-pick-2026-10-01).
