@@ -68,6 +68,18 @@ func (r *perIterResult) timeMaxNs() int64    { return maxI64(r.TimeSamplesNs) }
 func (r *perIterResult) wallMedianNs() int64 { return medianI64(r.WallSamplesNs) }
 func (r *perIterResult) wallMinNs() int64    { return minI64(r.WallSamplesNs) }
 
+// minLaunchExcessNs is the smallest per-launch wall − time (the wall-suspect input):
+// pairing each launch with itself cancels launch-to-launch run-time variation.
+func (r *perIterResult) minLaunchExcessNs() int64 {
+	var m int64
+	for i, t := range r.TimeSamplesNs {
+		if e := r.WallSamplesNs[i] - t; i == 0 || e < m {
+			m = e
+		}
+	}
+	return m
+}
+
 // samplesJSON serializes every successful sample as [[time_ns, wall_ns, cpu_ns], ...]
 // in launch order (run_history.samples_json, schema v3), so statistics can be
 // recomputed later without re-benching. "" (→ NULL) when there are no samples.

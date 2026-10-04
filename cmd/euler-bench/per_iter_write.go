@@ -314,7 +314,11 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	}
 	// Warnings (flags): recorded, not fatal.
 	var flags []string
-	// wall-suspect: min wall − min time exceeds the startup allowance. NOT a failure — wall
+	// wall-suspect: the smallest PER-LAUNCH excess min_i(wall_i − time_i) exceeds the
+	// startup allowance. Per-launch, not min(wall) − min(time): the two minima can come
+	// from different launches, and on long cells launch-to-launch time spread (0.25-1.9 s
+	// measured) alone exceeded the allowance (7 false flags, 2026-10-04). Untimed work
+	// recurs in every launch's own excess, so the smallest one still carries it. NOT a failure — wall
 	// excess conflates untimed work with load-driven spawn/scheduling latency, so it
 	// is only an audit hint (and the sole untimed-work signal for parallel-class,
 	// which gets a generous allowance before the flag trips).
@@ -322,7 +326,7 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	if parallelClass {
 		wallAllow = 2000e6
 	}
-	if row.SubprocessWallNs-row.TimeNs > wallAllow {
+	if r.minLaunchExcessNs() > wallAllow {
 		flags = append(flags, "wall-suspect")
 	}
 	if len(r.TimeSamplesNs) >= 2 && !r.corroborated() {
