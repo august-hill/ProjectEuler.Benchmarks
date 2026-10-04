@@ -29,6 +29,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -65,7 +66,23 @@ func (r *perIterResult) timeMedianNs() int64 { return medianI64(r.TimeSamplesNs)
 func (r *perIterResult) timeMinNs() int64    { return minI64(r.TimeSamplesNs) }
 func (r *perIterResult) timeMaxNs() int64    { return maxI64(r.TimeSamplesNs) }
 func (r *perIterResult) wallMedianNs() int64 { return medianI64(r.WallSamplesNs) }
-func (r *perIterResult) cpuMedianNs() int64  { return medianI64(r.CPUSamplesNs) }
+func (r *perIterResult) wallMinNs() int64    { return minI64(r.WallSamplesNs) }
+
+// samplesJSON serializes every successful sample as [[time_ns, wall_ns, cpu_ns], ...]
+// in launch order (run_history.samples_json, schema v3), so statistics can be
+// recomputed later without re-benching. "" (→ NULL) when there are no samples.
+func (r *perIterResult) samplesJSON() string {
+	if len(r.TimeSamplesNs) == 0 {
+		return ""
+	}
+	triples := make([][3]int64, len(r.TimeSamplesNs))
+	for i, t := range r.TimeSamplesNs {
+		triples[i] = [3]int64{t, r.WallSamplesNs[i], r.CPUSamplesNs[i]}
+	}
+	b, _ := json.Marshal(triples)
+	return string(b)
+}
+func (r *perIterResult) cpuMedianNs() int64 { return medianI64(r.CPUSamplesNs) }
 
 // corroborated reports whether some pair of time samples agrees within 5%
 // (METHODOLOGY.md §3). With 1 sample it is vacuously false; callers only

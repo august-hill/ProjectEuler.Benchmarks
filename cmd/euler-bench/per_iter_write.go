@@ -281,7 +281,13 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	row.TimeMinNs = r.timeMinNs()
 	row.TimeMaxNs = r.timeMaxNs()
 	row.Samples = len(r.TimeSamplesNs)
-	row.SubprocessWallNs = r.wallMedianNs()
+	// Wall is the MINIMUM sample too (schema v3, 2026-10-04). The first launch of a
+	// freshly built binary pays a one-off pre-main delay (code-signing / AV scan,
+	// ~0.25 s measured on p1012); with n=2 the median is the mean of that cold launch
+	// and a warm one, which falsely tripped wall-suspect on 513 of 515 flagged cells.
+	// Untimed work recurs on every launch, so the min still carries it.
+	row.SubprocessWallNs = r.wallMinNs()
+	row.SamplesJSON = r.samplesJSON()
 	row.CompileTimeNs = r.CompileTimeNs
 	row.PeakRSSBytes = r.PeakRSSBytes
 	row.CPUNs = r.cpuMedianNs()
@@ -308,7 +314,7 @@ func buildRunRow(lang *Lang, r *perIterResult, canonical string,
 	}
 	// Warnings (flags): recorded, not fatal.
 	var flags []string
-	// wall-suspect: wall−time exceeds the startup allowance. NOT a failure — wall
+	// wall-suspect: min wall − min time exceeds the startup allowance. NOT a failure — wall
 	// excess conflates untimed work with load-driven spawn/scheduling latency, so it
 	// is only an audit hint (and the sole untimed-work signal for parallel-class,
 	// which gets a generous allowance before the flag trips).

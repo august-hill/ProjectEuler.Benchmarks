@@ -3,9 +3,11 @@
 // (no raw bench data is committed). Companion / dud_audit / report.py all read
 // from this DB.
 //
-// Schema (version 1, established 2026-05-25):
+// Schema (version 1, established 2026-05-25; v2 2026-07-03; v3 2026-10-04):
 //   runs         latest measurement per (lang, problem)   PK = (lang, problem)
-//   run_history  every measurement appended; enables drift audit + sample accumulation
+//   run_history  every measurement appended; enables drift audit + sample accumulation.
+//                v3: samples_json holds every sample [[time_ns, wall_ns, cpu_ns], ...]
+//                in launch order, so statistics are recomputable without a re-bench.
 //   schema_version  single-row metadata
 //
 // Why SQLite (not JSON):
@@ -115,7 +117,8 @@ func ensureSchema(db *sql.DB) error {
 			platform           TEXT,
 			cpu_ns             INTEGER,
 			loadavg            REAL,
-			flags              TEXT
+			flags              TEXT,
+			samples_json       TEXT
 		)`,
 		`CREATE INDEX IF NOT EXISTS ix_history_by_problem
 			ON run_history(lang, problem, measured_at DESC)`,
@@ -133,7 +136,7 @@ func ensureSchema(db *sql.DB) error {
 	var v int
 	err := db.QueryRow("SELECT version FROM schema_version LIMIT 1").Scan(&v)
 	if err == sql.ErrNoRows {
-		if _, err := db.Exec("INSERT INTO schema_version (version) VALUES (2)"); err != nil {
+		if _, err := db.Exec("INSERT INTO schema_version (version) VALUES (3)"); err != nil {
 			return fmt.Errorf("init schema_version: %w", err)
 		}
 	} else if err != nil {
@@ -154,8 +157,18 @@ func ensureSchema(db *sql.DB) error {
 		if _, err := db.Exec("UPDATE schema_version SET version = 2"); err != nil {
 			return fmt.Errorf("bump schema_version: %w", err)
 		}
-	} else if v != 2 {
-		return fmt.Errorf("unsupported schema_version=%d (this tool expects 2)", v)
+		v = 2
+	} else if v != 2 && v != 3 {
+		return fmt.Errorf("unsupported schema_version=%d (this tool expects 3)", v)
+	}
+	// v2 -> v3 (2026-10-04): per-sample history. Rows written before v3 keep NULL.
+	if v == 2 {
+		if _, err := db.Exec("ALTER TABLE run_history ADD COLUMN samples_json TEXT"); err != nil {
+			return fmt.Errorf("v2->v3 migration failed: %w", err)
+		}
+		if _, err := db.Exec("UPDATE schema_version SET version = 3"); err != nil {
+			return fmt.Errorf("bump schema_version: %w", err)
+		}
 	}
 	return nil
 }
@@ -184,6 +197,7 @@ type runRow struct {
 	CPUNs            int64   // median rusage user+sys across samples
 	LoadAvg          float64 // max 1-min loadavg observed across samples
 	Flags            string  // comma-separated warnings; empty -> NULL
+	SamplesJSON      string  // run_history only: [[time_ns, wall_ns, cpu_ns], ...]; empty -> NULL
 }
 
 // writeRun upserts the given row into `runs` AND appends it to `run_history`,
@@ -224,8 +238,8 @@ func writeRun(db *sql.DB, r *runRow) error {
 			subprocess_wall_ns, compile_time_ns, peak_rss_bytes,
 			source_lines, source_bytes, source_hash,
 			error, measured_at, compiler, platform,
-			cpu_ns, loadavg, flags
-		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ?,?,?)`
+			cpu_ns, loadavg, flags, samples_json
+		) VALUES (?,?,?,?, ?,?,?,?, ?,?,?, ?,?,?, ?,?,?,?, ?,?,?, ?)`
 
 	// INTEGER fields stored as-is — including legitimate 0 measurements
 	// (closed-form algos can clock at sub-ns, faster than CLOCK_MONOTONIC's
@@ -244,7 +258,7 @@ func writeRun(db *sql.DB, r *runRow) error {
 	if _, err := tx.Exec(upsertRuns, args...); err != nil {
 		return fmt.Errorf("upsert runs: %w", err)
 	}
-	if _, err := tx.Exec(insertHistory, args...); err != nil {
+	if _, err := tx.Exec(insertHistory, append(args, nullableString(r.SamplesJSON))...); err != nil {
 		return fmt.Errorf("insert run_history: %w", err)
 	}
 	return tx.Commit()

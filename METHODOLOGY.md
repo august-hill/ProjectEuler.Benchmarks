@@ -53,11 +53,19 @@ At write time, the contract is enforced from these observables:
    and scheduling latency, and so flipped its verdict with system load —
    identical clean source (cpp p593) failed at load 5 and passed at load 1.5.
    Parallel-class problems (§5) legitimately run `cpu ≫ time` and are exempt.
-2. **Wall-suspect flag (advisory, never fatal)**: `wall − time` exceeding the
-   startup allowance is recorded as a non-fatal `wall-suspect` flag. It is the
-   only untimed-work signal available for parallel-class problems (which get a
-   generous ≈ 2 s allowance before it trips) and an audit hint elsewhere — but
-   it never fails a row on its own, precisely because wall excess is load-driven.
+2. **Wall-suspect flag (advisory, never fatal)**: minimum `wall` − minimum
+   `time` exceeding the startup allowance is recorded as a non-fatal
+   `wall-suspect` flag. It is the only untimed-work signal available for
+   parallel-class problems (which get a generous ≈ 2 s allowance before it
+   trips) and an audit hint elsewhere — but it never fails a row on its own,
+   precisely because wall excess is load-driven. The stored
+   `subprocess_wall_ns` is the **minimum** wall sample, for the same reason as
+   §3: wall noise is one-sided. In particular, the first launch of a freshly
+   built binary pays a one-off pre-main delay (code-signing / security scan,
+   ≈ 0.25 s measured), and before 2026-10-04 the wall statistic was the
+   median — which for 2-sample cells is the mean of that cold launch and a warm
+   one, falsely flagging 513 of the 515 flagged cells. Genuine untimed work
+   recurs on every launch, so the minimum still carries it.
 3. **Compile-time-folding check**: a near-zero runtime on a non-trivial
    problem in an ahead-of-time language flags the row for review — work can
    also hide in compile-time evaluation, which no runtime observable can see.
@@ -317,4 +325,8 @@ from swinging a geometric mean.
   table and chart (`*`).
 - The dataset keeps append-only history (`run_history`) alongside the
   current-best table, so any published number can be traced to its samples,
-  their spread, and the load conditions under which they were taken.
+  their spread, and the load conditions under which they were taken. Since
+  schema v3 (2026-10-04) every sample is stored individually
+  (`samples_json`: `[time, wall, cpu]` per launch, in launch order), so any
+  statistic can be recomputed without re-measuring; rows written earlier carry
+  only their summary statistics.
