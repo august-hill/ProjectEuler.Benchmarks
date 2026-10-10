@@ -4,7 +4,7 @@
 ten different languages?**
 
 This repo is the public face of a long-running experiment: every Project Euler
-problem from 1 to 1012, solved by [Claude](https://claude.ai) and benchmarked on
+problem from 1 to 1013, solved by [Claude](https://claude.ai) and benchmarked on
 one fixed Apple Silicon machine across **C, C++, Rust, Go, Zig, Java, C#,
 JavaScript, Python and ARM64 assembly**. The solutions live in ten private
 repos; this repo carries the method, the measurements (rendered, never raw) and
@@ -18,7 +18,7 @@ the story of how it was built.
 |------|----------|-----------|----------|
 | **Foundation** | 1–200 | all 10 | 200/200 in every language |
 | **Deep Coverage** | 201–300 | C++, Go, Rust, Zig | 100/100 in each |
-| **Frontier** | 301–1012 | C++, Go, Rust | 712/712 — every problem PE has published |
+| **Frontier** | 301–1013 | C++, Go, Rust | 713/713 — every problem PE has published |
 
 - **Every frontier problem is solved three times, independently.** Separate
   C++, Go and Rust solvers work from the problem statement alone, never seeing

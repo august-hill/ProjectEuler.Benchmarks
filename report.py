@@ -70,7 +70,7 @@ _T3_LO = tier_problem_range("tier_3_frontier", _TIERS)[0] or 301
 # PE_MAX = highest problem PE has published. The ONE number to bump when PE
 # publishes more (1012 as of 2026-10-04). Both the stats/coverage scope and the
 # coverage grid derive from it, so they cannot drift apart by accident.
-PE_MAX = 1012
+PE_MAX = 1013
 _DISPLAY_HI = max(_T2_HI, PE_MAX)
 
 # Parallel-class problems (METHODOLOGY.md §5) — rows on these problems are
