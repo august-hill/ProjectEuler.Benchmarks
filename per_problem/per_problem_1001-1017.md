@@ -1,4 +1,4 @@
-# Per-Problem Detail — Problems 1001–1015 (Frontier, 3 langs)
+# Per-Problem Detail — Problems 1001–1017 (Frontier, 3 langs)
 
 ⬅ [Back to RESULTS](../RESULTS.md)
 
@@ -23,6 +23,8 @@ in tier-1 display order (native → managed → interpreted).
 | **p1013** | 35.8 µs | 28.5 µs | 58.2 µs |
 | **p1014** | 12.9 µs | 14.8 µs | 16.0 µs~ |
 | **p1015** | 436.44 ms | 1.53 s | 280.45 ms |
+| **p1016** | 2.42 s | 682.42 ms | 909.40 ms |
+| **p1017** | 3.6 µs~ | <1 µs | 12.0 µs~ |
 
 > † — *no corroboration*: no two samples agreed within 5% even at the cell's full sample count. Diagnostic only — the reported minimum still stands; it flags a disturbed measurement environment worth re-benching (METHODOLOGY.md §3).
 
